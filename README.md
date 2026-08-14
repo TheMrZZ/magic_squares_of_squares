@@ -6,7 +6,6 @@ Authors: [Florian ERNST](https://github.com/Themrzz), [Albin MOREL](https://gith
   - [Introduction](#introduction)
   - [🗞️ List of tested values of `N` with no perfect magic square](#️-list-of-tested-values-of-n-with-no-perfect-magic-square)
   - [👶 "Smallest" quasi-magic-square found](#-smallest-quasi-magic-square-found)
-  - [🔮 Conjecture on quasi magic squares](#-conjecture-on-quasi-magic-squares)
   - [🕶️ "Largest" quasi magic square found](#️-largest-quasi-magic-square-found)
   - [💻 How to try](#-how-to-try)
     - [Testing ranges of `N`](#testing-ranges-of-n)
@@ -15,6 +14,7 @@ Authors: [Florian ERNST](https://github.com/Themrzz), [Albin MOREL](https://gith
   - [🤔 How it works](#-how-it-works)
   - [🚀 Optimizations](#-optimizations)
   - [🕐 Benchmarks](#-benchmarks)
+  - [🪦 Disproved conjecture](#-disproved-conjecture)
 
 ## Introduction
 
@@ -31,11 +31,13 @@ For example, this is a quasi magic square of squares (all of these integers are 
 
 We aim to:
 1. Find as many "quasi-magic-squares" as possible, and if possible find a real 3x3 magic square of squares ;
-2. Empirically show that all "quasi-magic-squares" are under the following form:
+2. Generate arbitrarily large "quasi-magic-squares" using the following form, which empirically always yields one:
 
 $$
 N = (3 k p^2)^2, \quad \text{where } k \in \mathbb{N}^+ \text{ and } p \text{ is a prime such that } p \equiv 1 \pmod{6}.
 $$
+
+*Note: we originally conjectured that **all** quasi magic squares have $N$ of this form. This turned out to be false — see [Disproved conjecture](#-disproved-conjecture) at the bottom.*
 
 
 ## 🗞️ List of tested values of $N$ with no perfect magic square
@@ -55,28 +57,9 @@ Here's the smallest quasi-magic-square of squares we found:
 
 All rows, columns, and diagonal sums are equal to $21609$ except for the bottom-left to top-right diagonal which is equal to $10092$.
 
-## 🔮 Conjecture on quasi magic squares
-
-1. We conjecture that all quasi magic squares have $N$ such as
-
-$$
-N = (3 k p^2)^2, \quad \text{where } k \in \mathbb{N}^+ \text{ and } p \text{ is a prime such that } p \equiv 1 \pmod{6}.
-$$
-
-2. We also conjecture that any $N$ of this form is a quasi magic square.
-
-*Note: The list of first 54 primes of form 6n+1 can be found in [OEIS A002476](https://oeis.org/A002476).*
-
-👉 Conjecture #1 has been tested up to N = 10 million: [see here](https://github.com/TheMrZZ/magic_squares_of_squares/blob/main/quasi_magic_squares_list_10million.txt).
-
-👉 Conjecture #2 has been tested up to $k=10$ for all primes of form 6n+1 from $7$ to $199$ (21 different primes): [see here](https://github.com/TheMrZZ/magic_squares_of_squares/blob/main/quasi_magic_squares_k10_p199.txt).
-
-
-**We have no idea *why* this conjecture works**, but we've tested it empirically on large numbers. Our only guess concerns the `3²` which we assume is related to the size of the magic square (`3x3`).
-
 ## 🕶️ "Largest" quasi magic square found
 
-The above conjecture allows us to generate quasi magic squares with arbitrarily large $N$. The biggest we generated was $N = 46 432 503 939 600$ (46 trillion 432 billion) with $k=10$ and $p=199$:
+The $(3kp^2)^2$ form allows us to generate quasi magic squares with arbitrarily large $N$. The biggest we generated was $N = 46 432 503 939 600$ (46 trillion 432 billion) with $k=10$ and $p=199$:
 |          |          |          |
 | -------- | -------- | -------- |
 | 3751060² | 5653160² | 635480²  |
@@ -131,7 +114,7 @@ cargo test_n 1 100_000 # Checks all N from 1 to 100k
 
 ### Testing ranges of $k$ and $p$
 
-To ensure our conjecture works for all $k$ and $p$ in a range, you can run:
+To ensure the $(3kp^2)^2$ form yields a quasi magic square for all $k$ and $p$ in a range, you can run:
 
 ```sh
 cargo test_kp 5 43 # Checks all k from 1 to 5 and all prime p of form 6n+1 from 7 to 43
@@ -311,3 +294,31 @@ These tests were performed on an AMD 5600X processor with 6x2 cores. They all le
 | Check all $(k, p)$ with $k <= 5, p <= 19$   | 0.01s    |
 | Check all $(k, p)$ with $k <= 10, p <= 73$  | 9.07s    |
 | Check all $(k, p)$ with $k <= 10, p <= 199$ | 649s     |
+
+## 🪦 Disproved conjecture
+
+We originally conjectured that:
+
+1. All quasi magic squares have $N$ such as
+
+$$
+N = (3 k p^2)^2, \quad \text{where } k \in \mathbb{N}^+ \text{ and } p \text{ is a prime such that } p \equiv 1 \pmod{6}.
+$$
+
+2. Any $N$ of this form is a quasi magic square.
+
+*Note: The list of first 54 primes of form 6n+1 can be found in [OEIS A002476](https://oeis.org/A002476).*
+
+**Conjecture #1 is false.** It held for all 30 quasi magic squares up to $N = 10$ million, but the very first counter-example sits just past that bound, at $N = 10{,}543{,}009$:
+
+|       |       |       |
+| ----- | ----- | ----- |
+| 843²  | 3134² | 102²  |
+| 2914² | 822²  | 1173² |
+| 1158² | 213²  | 3026² |
+
+All axes sum to $10{,}543{,}009$ except the bottom-left to top-right diagonal ($2{,}027{,}052$). Here $N = 3247^2 = (17 \times 191)^2$: it is a perfect square, but $3247$ is not divisible by $3$ (so $N$ is not a multiple of $9$), and neither $17$ nor $191$ is $\equiv 1 \pmod 6$.
+
+It turns out this was already known territory: every quasi magic square below 10 million belongs to the [Lucas family](http://www.multimagie.com/English/Lucas.htm), a parametric family whose magic sum is always a perfect square — that's what conjecture #1 was unknowingly describing. Sporadic quasi magic squares outside the family exist; examples with a *non-square* magic sum were published by Michael Schweitzer, and later by Ajai Choudhry ($N = 551{,}144{,}881$) and Jean-Claude Rosa — see [multimagie.com](http://www.multimagie.com/English/SquaresOfSquaresSearch.htm). Notably, the Lucas family is proven unable to produce a perfect 8/8 magic square of squares, so if one exists it must come from outside this family.
+
+**Conjecture #2 still stands empirically**: it has been tested up to $k=10$ for all primes of form 6n+1 from $7$ to $199$ (21 different primes): [see here](https://github.com/TheMrZZ/magic_squares_of_squares/blob/main/quasi_magic_squares_k10_p199.txt). This is the form used by `cargo generate`.
