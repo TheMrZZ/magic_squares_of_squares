@@ -204,6 +204,56 @@ Bremner's $e=425$ example was the only one known.  Scanning all $e<10^9$
 finds $2{,}352{,}941$ such configurations --- every single one an integer
 scaling of $e=425$, and none with eight square entries.
 
+\section{The minimal two-prime case}
+
+\begin{theorem}\label{thm:minimal}
+There is no magic square of squares whose center root is $s\,pq$, where
+$p\neq q$ are primes $\equiv 1\pmod 4$, each to the first power, and $s$ is
+free of such primes.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Here $D(e)$ has exactly four elements: the interior conjugate pair
+$m,m' = s^2|\im(\pi^4\chi^{\pm4})|$ and the axis elements
+$X=s^2q^2|\im\pi^4|$, $Y=s^2p^2|\im\chi^4|$.  Since $u,v,u+v,u-v$ are four
+distinct elements of $D(e)$, they exhaust it.  Write $\pi^4=R_A+I_Ai$,
+$\chi^4=R_B+I_Bi$; recall $R_A,R_B$ are odd, $4\mid I_A,I_B$, and by
+Lemma~\ref{lem:bridge} $p\nmid I_A$, $q\nmid I_B$ (and $I_A,I_B\neq0$).
+Enumerate the placements of $\{X,Y\}$ among $\{u,v,u+v,u-v\}$:
+
+\emph{(1) $\{u,v\}=\{X,Y\}$.}  Then $\{u\pm v\}=\{m,m'\}$ and the
+conjugate-pair identities force
+$\{u,v\}=\{s^2|R_BI_A|,\,s^2|I_BR_A|\}$.  Matching against $X,Y$ and
+multiplying the two resulting equations gives $|R_A R_B| = p^2q^2$; but
+$|R_A|<p^2$ and $|R_B|<q^2$ strictly (as $I_A,I_B\neq0$), a contradiction.
+The crossed matching forces $|R_A|=p^2$ outright, equally impossible.
+
+\emph{(2) $\{u,v\}=\{m,m'\}$.}  Then $\{u\pm v\}=\{X,Y\}$ and
+$u+v,\,u-v \in \{2s^2|R_BI_A|,\,2s^2|I_BR_A|\}$; matching yields either
+$2|R_B|=q^2$ or $4|R_AR_B|=p^2q^2$, both impossible by parity.
+
+\emph{(3) mixed placements.}  One axis element lies in $\{u,v\}$, the other
+in $\{u\pm v\}$.  Each of the $64$ sign/placement sub-cases yields two linear
+equations in $W=R_AI_B$, $Z=I_AR_B$; solving and substituting into the norm
+relations $(W/I_B)^2+I_A^2=p^4$, $(Z/I_A)^2+I_B^2=q^4$ leaves a difference
+that factors, in every sub-case, into terms from the list
+\[
+(I_Aq^2\pm I_Bp^2),\quad (2I_Aq^2\pm I_Bp^2),\quad (I_Aq^2\pm 2I_Bp^2),\quad
+3I_Aq^2,\quad 3I_Bp^2 .
+\]
+The all-positive combinations cannot vanish; the difference combinations
+vanish only if $I_Aq^2\in\{I_Bp^2,\,2I_Bp^2\}$ or $I_Bp^2 = 2I_Aq^2$, each of
+which equates a quantity prime to $p$ with one divisible by $p^2$
+(Lemma~\ref{lem:bridge}).  Hence no sub-case admits a solution.
+\end{proof}
+
+\begin{remark}
+Bremner's seven-square-entry example has center root $425 = 5^2\cdot 17$,
+just outside the hypothesis (exponent $2$): consistent with
+Theorem~\ref{thm:minimal}, the near-miss lives at the smallest center type
+the theorem does not reach.
+\end{remark}
+
 \section{The two-prime frontier}
 
 For $e = s\,p^aq^b$ with two distinct primes $\equiv 1\pmod 4$, the
