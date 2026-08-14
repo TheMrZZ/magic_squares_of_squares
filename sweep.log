@@ -1,0 +1,18 @@
+===== CHUNK 10M..20M =====
+Checking N = 10000000..20000000 
+------------------------------------------------------
+Partial magic square for N = 10458756, e = 1276, incorrect axes = [4884528]
+a = 1628, b = 2794, c = 44, d = 2134, e = 1276, f = 2068, g = 1804, h = 1012, i = 2486
+✅ N is in the form of (k*3*p²)² with p=7 and k=22
+------------------------------------------------------
+Partial magic square for N = 10543009, e = 822, incorrect axes = [2027052]
+a = 843, b = 3134, c = 102, d = 2914, e = 822, f = 1173, g = 1158, h = 213, i = 3026
+❌ N is not a multiple of 9
+❌😱😱😱😱😱😱😱😱😱 N is not a multiple of (k*3*p)²
+
+thread 'main' (3313184) panicked at src/main.rs:86:21:
+N is not a multiple of (k*3*p²)²
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+===== chunk 10M done, exit=134 =====
+===== CHUNK 20M..30M =====
+Checking N = 20000000..30000000 
