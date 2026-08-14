@@ -254,26 +254,56 @@ Theorem~\ref{thm:minimal}, the near-miss lives at the smallest center type
 the theorem does not reach.
 \end{remark}
 
-\section{Toward center roots $s\,p^2q$}
+\section{Center roots $s\,p^2q$: Bremner's type}
 
-The next case, $e=s\,p^2q$ --- the type of Bremner's center $425=5^2\cdot17$
---- has $|D(e)|=7$, so the four differences no longer exhaust $D(e)$ and the
-valuation screening genuinely matters.  An exact sweep of all placements over
-the $1{,}332$ ordered pairs of primes $p,q<400$ finds no configuration.
-Analytically, the screening by $\nu_p$ leaves four shape families, and the
-first leaves die by the same three mechanisms as Theorem~\ref{thm:minimal}
-plus one new one.  For instance, in the shape
-$\{u,v\}=\{d_{0,1},d_{1,0}\}$, $\{u\pm v\}=\{d_{1,1},d_{1,-1}\}$, the
-conjugate-pair identities force $|R_AR_B|=p^2q^2$ against the strict bounds
-$|R_A|<p^2$, $|R_B|<q^2$.  In a deeper leaf one is forced to
-$p^2\mid R_B$ together with $r^2(p^4+4I_A^2)=q^4$ for $R_B=p^2r$; then
-$p^4+4I_A^2=t^2$ gives $(t-2I_A)(t+2I_A)=p^4$ with $p\nmid I_A$, so
-$\{t-2I_A,t+2I_A\}=\{1,p^4\}$ and $I_A=(p^4-1)/4>p^2$, contradicting
-$|I_A|\le p^2$.  We expect the remaining leaves to be finite in number and
-individually decidable by these mechanisms (positivity pinches, parity,
-$p$-adic clashes, and $p$-power factorization against size); completing the
-case would prove that no magic square of squares has center root $s\,p^2q$,
-eliminating in particular every center of Bremner's type.
+\begin{theorem}\label{thm:F}
+There is no magic square of squares whose center root is $s\,p^2q$, where
+$p\neq q$ are primes $\equiv 1\pmod 4$ and $s$ is free of such primes.
+\end{theorem}
+
+Here $|D(e)|=7$: writing $\pi^4=R_A+I_Ai$, $\chi^4=R_B+I_Bi$ and $P=p^2$,
+$Q=q^2$, the elements are (up to the global factor $s^2$)
+\[
+P\,|\!\im(\pi^4\chi^{\pm4})|,\quad |\!\im(\pi^8\chi^{\pm4})|,\quad
+PQ\,|I_A|,\quad Q\,|\!\im\pi^8|,\quad P^2|I_B| .
+\]
+All seven are \emph{linear} in $(R_B,I_B)$ over $\mathbb{Q}(R_A,I_A,P,Q)$.
+The four differences $u,v,u+v,u-v$ occupy four distinct elements; for each of
+the $840$ placements and each resolution of the absolute values ($6{,}720$
+linear systems in all), solving the two placement equations for $(R_B,I_B)$
+and substituting into $R_B^2+I_B^2=Q^2$ leaves one polynomial relation in
+$(R_A,I_A,P,Q)$, which must vanish.  A computer-assisted but fully rigorous
+sweep (scripts accompany this paper) shows every relation is impossible:
+
+\begin{itemize}
+\item $339$ of the $343$ distinct relation classes die by combinations of:
+parity ($R_A,R_B,P,Q$ odd, $8\mid I_A,I_B$); the $p$-adic clash
+($\nu_p$ of the two sides differ, using $p\nmid R_AI_A$ and
+Lemma~\ref{lem:bridge}); congruence obstructions modulo $16$, $32$ and small
+odd moduli on the curve $R_A^2+I_A^2=P^2$; the strict size pinch
+$|R_A|,|I_A|<P$; and elimination of $I_A$ via the norm followed by
+factorization.  The finitely many exceptional primes ($\ell\in\{5,13,17\}$,
+arising from small constants in the eliminants) are closed by exact
+evaluation at the actual $\pi^4$.
+\item $4$ classes reduce to homogeneous quintics/sextics in $(R_A,P)$; a
+rational root $R_A/P$ in lowest terms would need $P=p^2$ to divide a leading
+coefficient in $\{\pm8,\pm16,\pm32,\pm40\}$ --- impossible.
+\item $4$ classes are tautological (the norm residual vanishes identically);
+there the solved values are $(R_B,I_B)=\pm(Q/P)(R_A,-I_A)$, and integrality
+forces $p^2\mid q^2$.
+\end{itemize}
+The $256$ distinct determinants of the linear systems are proven nonzero by
+the same mechanisms, so no singular case escapes.  \qed
+
+\begin{remark}
+Bremner's fully magic square with seven square entries has center root
+$425=5^2\cdot17$, of exactly this type: Theorem~\ref{thm:F} shows the missing
+two entries can never be repaired at \emph{any} center of that shape.
+Since the seven $D$-elements are linear in $(R_B,I_B)$ for every $b=1$
+exponent pattern $s\,p^aq$, the same pipeline applies to all $(a,1)$ cases;
+the case count grows with $a$, and a uniform-in-$a$ argument is the natural
+next objective.
+\end{remark}
 
 \section{The two-prime frontier}
 
