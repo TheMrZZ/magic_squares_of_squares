@@ -49,3 +49,24 @@ second-order lifts (expanding RL = ±i IL + p*(...) on the actual pi-power
 orbit) or per-(j, Delta) concrete certificates (each finite; (2,1)/(3,1)
 already done).  This is the precise uniform incarnation of the coincidence
 ladder — the same structure that makes Bremner's near-miss possible.
+
+## Exact-orbit analysis (breakthrough of the residue)
+
+The p-adic embeddings give EXACT substitutions (no truncation):
+R_j - w*I_j = pi_-^{4j} with pi_+ unit, nu_p(pi_-) = 1.  Every relation
+becomes a finite Laurent polynomial in (x, y, X, Y, w, W) with definite
+monomial valuations. Results:
+
+- 2-level templates (24 residual relations): NO regime cancels. Leading
+  coefficients are either nonzero numerics times Q^2 (dead for all p) or
+  Q^2*X*x^3*(X - c) with c in {±1, ±2, ±1/4}: dead UNLESS
+  pi_+^{4*Delta} = c (mod p) — six explicit special-value congruences.
+- 1-level templates: 144 leaves dead by unit leading coefficients
+  (-3, ±1, -2, -5 times Q^2); the -5 cases need p = 5 separately;
+  48 tautological leaves need the integrality layer (solved (RB, IB)
+  forms; expected to die by the p | Q argument as in Theorem F).
+
+Remaining for full Theorem H (uniform s p^a q): (i) second-coefficient
+ladder on the special-value loci, (ii) p = 5 ladder, (iii) tautological
+integrality layer, (iv) 3- and 4-level chain templates (2-3 chain vars).
+All are bounded, mechanical extensions of the same exact-orbit machinery.
