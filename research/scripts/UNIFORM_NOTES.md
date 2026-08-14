@@ -36,3 +36,16 @@ templates. Structure of the residue:
   finite check; the (2,1)/(3,1) certificates already cover j+D <= 3).
 
 If the 24 die uniformly: Theorem H (no center s p^a q for any a).
+
+## Final frontier characterization (leading-order analysis)
+
+The 24 residual relations, rewritten in H-variables (rh, ih, nh) via the
+inverse chain map, were subjected to a full weight-regime analysis
+(w(NL) = 2j, w(nh) = 2(j+Delta), all realizable minima enumerated) with
+phase-aligned substitutions RL -> ±i IL, rh -> ±i ih.  Result: in every
+regime the aligned leading form CANCELS IDENTICALLY.  So the uniform
+obstruction survives all first-order p-adic tools; resolving the 24 needs
+second-order lifts (expanding RL = ±i IL + p*(...) on the actual pi-power
+orbit) or per-(j, Delta) concrete certificates (each finite; (2,1)/(3,1)
+already done).  This is the precise uniform incarnation of the coincidence
+ladder — the same structure that makes Bremner's near-miss possible.
