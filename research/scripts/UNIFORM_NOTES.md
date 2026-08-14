@@ -18,3 +18,21 @@ one Gaussian prime. Findings:
 Next: rebuild the template engine over the enriched relaxation; the template
 count grows (chain patterns) but stays finite. If all die: Theorem H
 (no center s*p^a*q for any a), closing an infinite family uniformly.
+
+## Chain-engine results (2-level uniform templates)
+
+9,216 leaf systems; 8,832 killed by the enriched relaxation (chain variables,
+positivity, mod-2, p-adic patterns, mod-16). Residue: 384 leaves in exactly
+24 distinct relations (chain_flags.pkl), all of shape {m, xL, y}-mixed
+templates. Structure of the residue:
+
+- Pure circle-geometry conditions on (pi^{4j}, pi^{4D}) — independent of a.
+- Leading-order p-adic analysis kills the anti-aligned sign patterns; the
+  aligned patterns (the true ones — all powers of one pi share a Gaussian
+  phase mod p) survive to the next p-adic order: this is the uniform shadow
+  of the axis-excess coincidence ladder seen in Theorems D/E/F.
+- Next weapons: LTE 2-adics (v2(Im pi^{4j}) = v2(j) + v2(Im pi^4)),
+  second-order p-adic expansion, or per-(j,D) concrete kills (each is a
+  finite check; the (2,1)/(3,1) certificates already cover j+D <= 3).
+
+If the 24 die uniformly: Theorem H (no center s p^a q for any a).

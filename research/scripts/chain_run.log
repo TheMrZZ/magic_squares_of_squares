@@ -1,0 +1,12 @@
+...2000 {'killed': 1935, 'flag': 64}
+...4000 {'killed': 3839, 'flag': 160}
+...6000 {'killed': 5751, 'flag': 248}
+...8000 {'killed': 7711, 'flag': 288}
+FINAL: {'killed': 8832, 'flag': 384} total=9216
+distinct flagged relations: 24
+[16] -2*NL*Q**2*(NL - RL)*(2*ID*IL*ND*NL + ID*IL*ND*RL - ID*IL*NL*RD - 2*ND**2*NL**2 - ND**2*NL*RL + 2*ND**2*RL**2 + ND*NL**2*RD - ND*RD*RL**2 + NL*RD**2*R
+[16] 2*NL*Q**2*(NL - RL)*(2*ID*IL*ND*NL + ID*IL*ND*RL + ID*IL*NL*RD + 2*ND**2*NL**2 + ND**2*NL*RL - 2*ND**2*RL**2 + ND*NL**2*RD - ND*RD*RL**2 - NL*RD**2*RL
+[16] -2*NL*Q**2*(NL + RL)*(2*ID*IL*ND*NL - ID*IL*ND*RL + ID*IL*NL*RD - 2*ND**2*NL**2 + ND**2*NL*RL + 2*ND**2*RL**2 - ND*NL**2*RD + ND*RD*RL**2 - NL*RD**2*R
+[16] 2*NL*Q**2*(NL + RL)*(2*ID*IL*ND*NL - ID*IL*ND*RL - ID*IL*NL*RD + 2*ND**2*NL**2 - ND**2*NL*RL - 2*ND**2*RL**2 - ND*NL**2*RD + ND*RD*RL**2 + NL*RD**2*RL
+[16] NL*Q**2*(2*ID*IL*ND*NL**2 - 2*ID*IL*ND*NL*RL + 2*ID*IL*ND*RL**2 + 4*ID*IL*NL**2*RD - 2*ID*IL*NL*RD*RL - 2*ND**2*NL**3 + 2*ND**2*NL**2*RL - 3*ND**2*NL*
+[16] -NL*Q**2*(2*ID*IL*ND*NL**2 - 2*ID*IL*ND*NL*RL + 2*ID*IL*ND*RL**2 - 4*ID*IL*NL**2*RD + 2*ID*IL*NL*RD*RL + 2*ND**2*NL**3 - 2*ND**2*NL**2*RL + 3*ND**2*NL
