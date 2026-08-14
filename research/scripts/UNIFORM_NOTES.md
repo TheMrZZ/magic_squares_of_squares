@@ -70,3 +70,23 @@ Remaining for full Theorem H (uniform s p^a q): (i) second-coefficient
 ladder on the special-value loci, (ii) p = 5 ladder, (iii) tautological
 integrality layer, (iv) 3- and 4-level chain templates (2-3 chain vars).
 All are bounded, mechanical extensions of the same exact-orbit machinery.
+
+## Round 8: 1-level closed; Theorem H endgame identified
+
+- Tautological 1-level leaves (48): all solve to (RB, IB) = (±Q, 0); but
+  IB = Im chi^4 != 0 by the bridge lemma. Dead in one line.
+- p = 5 shapes (16, leading coeff -5*Q^2): exact 5-adic evaluation with
+  pi+ = 184, pi- = 445 (mod 625); nonvanishing for j over two full periods
+  of x mod 25 (period 5), which decides all j by periodicity. Dead.
+- Special-value loci endgame: survival at the loci needs
+  v_p(pi_+^{4 Delta} - c) >= kappa * j for c in {±1, ±2, ±1/4}; equality
+  pi_+^{4 Delta} = c exactly is impossible (norms: p^{2 Delta} = c^2).
+  Effective bounds on v_p(pi_+^{4 Delta} - c) are p-adic linear forms in
+  logarithms (Yu's theorem): v_p << log^2(Delta), whence j << log^2(Delta)
+  and a complete effective finiteness program for Theorem H:
+  all s p^a q centers, modulo executing the Baker-bound bookkeeping and the
+  resulting finite verification, plus the 3/4-level chain templates.
+
+Status: 1-level uniform DONE; 2-level uniform done off the six loci; loci
+reduced to an effective-finiteness program. This is the precise remaining
+gap between the certificates (F, G) and uniform Theorem H.
