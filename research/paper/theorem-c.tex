@@ -1,0 +1,236 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Zi}{\mathbb{Z}[i]}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\nup}{\nu_p}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\re}{Re}
+
+\title{A valuation obstruction for $3\times 3$ magic squares of squares,\\
+with a machine-checked proof}
+\author{Florian Ernst \and Albin Morel}
+\date{August 2026 --- draft}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study the open problem of whether a $3\times 3$ magic square whose nine
+distinct entries are perfect squares exists.  We reduce the problem to a purely
+additive condition on the set $D(e)=\{2xy : x^2+y^2=e^2\}$ attached to the
+center root $e$, and prove unconditionally that the center root of any such
+square must be divisible by at least two distinct primes $p\equiv 1\pmod 4$:
+for centers $e = s\,p^a$ with a single such prime, the elements of $D(e)$ have
+pairwise distinct $p$-adic valuations, which is incompatible with the required
+additive structure.  All results, including the reduction, are formally
+verified in Lean~4 with mathlib.  We also report an exhaustive computation
+showing no magic square of squares has center entry below $10^{20}$, and that
+Bremner's fully magic square with seven square entries is, up to scaling, the
+only one with center root below $10^9$.  Finally we describe a rigidity
+phenomenon that pins down the remaining two-prime case to explicit divisibility
+coincidences.
+\end{abstract}
+
+\section{Introduction}
+
+Whether nine distinct perfect squares can form a fully magic $3\times 3$
+square is a well-known open problem, popularized by Martin Gardner's 1996
+prize and studied extensively since; see Boyer's survey and problem
+collection~\cite{boyer}.  The strongest results to date are computational
+(searches over magic sums and over arithmetic-progression parameters) together
+with structural constraints on hypothetical solutions due to Morgenstern,
+Roberts, Underwood and others~\cite{boyer}.
+
+Throughout, a \emph{magic square of squares} is a $3\times 3$ array of nine
+distinct perfect squares whose three rows, three columns and both diagonals
+share a common sum $S$.  Summing the four lines through the center shows
+$S = 3E$ where $E=e^2$ is the center entry; we call $e$ the \emph{center
+root}.
+
+\subsection*{Results}
+
+\begin{theorem}[Reduction]\label{thm:reduction}
+Let $D(e)=\{2xy : x^2+y^2=e^2,\ 0<x<y\}$.  A magic square of squares with
+center $e^2$ exists if and only if there are $u,v$ with
+$u,\,v,\,u+v,\,u-v \in D(e)$ (all nonzero, $u\neq v$); the square's entries
+are then $e^2,\ e^2\pm u,\ e^2\pm v,\ e^2\pm(u+v),\ e^2\pm(u-v)$.
+\end{theorem}
+
+\begin{theorem}[Main theorem]\label{thm:main}
+If the center root $e$ is divisible by at most one prime $p\equiv 1\pmod 4$
+(to any power, and with arbitrary cofactor free of such primes), then no magic
+square of squares with center $e^2$ exists.  Equivalently: the center root of
+any magic square of squares is divisible by at least two distinct primes
+$\equiv 1 \pmod 4$.
+\end{theorem}
+
+\begin{theorem}[Computations]\label{thm:comp}
+There is no magic square of squares with center entry $e^2 < 10^{20}$.
+Moreover, every fully magic $3\times 3$ square with exactly seven square
+entries and center root $e<10^9$ is an integer scaling of Bremner's example
+with $e=425$.
+\end{theorem}
+
+All statements of Theorems~\ref{thm:reduction} and~\ref{thm:main}, including
+Fermat's theorem that three squares in arithmetic progression have common
+difference divisible by $24$, are formally verified in Lean~4 over
+mathlib; the library (thirteen files, no unproven assumptions) accompanies
+this paper.
+
+\section{The reduction}
+
+Every $3\times 3$ magic square has the form
+$c \pm \{0,u,v,u+v,u-v\}$ arranged as
+\[
+\begin{pmatrix} c+u & c-u-v & c+v\\ c-u+v & c & c+u-v\\ c-v & c+u+v & c-u
+\end{pmatrix},
+\]
+in which all eight line sums equal $3c$ identically.  Thus magic is free and
+the entire problem is the squareness of the nine cells.
+
+\begin{lemma}\label{lem:pair}
+For $c=e^2$, both $c-d$ and $c+d$ are squares if and only if $d\in D(e)\cup\{0\}$
+(up to sign).  Indeed if $x^2+y^2=e^2$ then $c-2xy=(x-y)^2$ and
+$c+2xy=(x+y)^2$; conversely if $c-d=A^2$ and $c+d=B^2$ then $A^2+B^2=2e^2$,
+$A\equiv B \pmod 2$, and $x=\tfrac{B-A}2$, $y=\tfrac{B+A}2$ satisfy
+$x^2+y^2=e^2$, $2xy=d$.
+\end{lemma}
+
+Theorem~\ref{thm:reduction} follows by applying Lemma~\ref{lem:pair} to the
+four center lines.  (Distinctness of the nine entries corresponds to
+$u,v,u\pm v \neq 0$ and $u \neq v$.)
+
+\section{Proof of the main theorem}
+
+Fix a prime $p\equiv 1\pmod 4$, write $p=\pi\bar\pi$ in $\Zi$ with
+$\pi = A + Bi$, $A^2+B^2=p$, and let $e = s\,p^a$ with $a\ge 0$ and $s$
+free of primes $\equiv 1\pmod 4$.
+
+\begin{lemma}[Rigid part]\label{lem:rigid}
+Every $z\in\Zi$ with $N(z)=s^2$ is a unit multiple of $s$.
+\end{lemma}
+
+\begin{proof}
+Induct on the least prime factor $q$ of $s$.  If $q\equiv 3\pmod 4$ then $q$
+is inert; $q \mid N(z) = z\bar z$ gives $q\mid z$, and we divide.  If $q=2$,
+then $1+i$ divides $z$ twice (as $2\mid N(z)$ twice), and
+$(1+i)^2 = 2i$ is $2$ times a unit.
+\end{proof}
+
+\begin{lemma}[Classification]\label{lem:classify}
+Every $z \in \Zi$ with $N(z) = s^2 p^{\,n}$ equals
+$u\, s\, \pi^{j} \bar\pi^{\,n-j}$ for a unit $u$ and some $0\le j\le n$.
+\end{lemma}
+
+\begin{proof}
+Induct on $n$: for $n\ge 1$, $\pi \mid p \mid z\bar z$, so $\pi\mid z$ or
+$\bar\pi \mid z$; divide and recurse, finishing with Lemma~\ref{lem:rigid}.
+\end{proof}
+
+\begin{lemma}[Bridge]\label{lem:bridge}
+For every $m\ge 1$, $p \nmid \im(\pi^m)$.
+\end{lemma}
+
+\begin{proof}
+Pick $\omega \in \Z/p$ with $\omega^2=-1$ (possible as $p\equiv 1 \bmod 4$)
+and consider the ring maps $\varphi_{\pm}:\Zi\to\Z/p$, $i\mapsto\pm\omega$.
+If $p \mid \im(\pi^m)$ then, since
+$\re(\pi^m)^2+\im(\pi^m)^2=p^m$, also $p\mid\re(\pi^m)$, so
+$\varphi_\pm(\pi)^m=0$; as $\Z/p$ is a field, $\varphi_\pm(\pi)=0$, i.e.
+$A\pm B\omega \equiv 0$.  Adding and subtracting gives $p\mid A$, $p \mid B$,
+contradicting $A^2+B^2=p$.
+\end{proof}
+
+\begin{lemma}[Representation structure]\label{lem:repstruct}
+Let $x^2+y^2 = e^2 = s^2p^{2a}$ with $xy\neq 0$.  Then there are
+$1\le t\le a$ and $\varepsilon\in\{\pm1\}$ with
+\[
+2xy \;=\; \varepsilon\; p^{\,2(a-t)}\;\bigl(s^2 \im \pi^{4t}\bigr),
+\qquad p \nmid s^2 \im \pi^{4t} .
+\]
+In particular $\nup(2xy) = 2(a-t)$, and distinct elements of $D(e)$ have
+pairwise distinct $p$-adic valuations $\{0,2,\dots,2a-2\}$.
+\end{lemma}
+
+\begin{proof}
+Write $z=x+yi$; by Lemma~\ref{lem:classify}, $z=u s\pi^j\bar\pi^{2a-j}$.
+Then $2xy=\im(z^2)$ and $z^2=u^2 s^2 \pi^{2j}\bar\pi^{2(2a-j)}$ with
+$u^2=\pm 1$.  If $j=a$ the product is real and $xy=0$.  Otherwise, with
+$t=|j-a|$, $\pi^{2j}\bar\pi^{2(2a-j)} = p^{2(a-t)}\cdot\pi^{\pm4t}$, and
+$\im(\bar\pi^{4t})=-\im(\pi^{4t})$; absorb signs into $\varepsilon$.
+Lemma~\ref{lem:bridge} and $p\nmid s$ give the non-divisibility.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Suppose $u,v,u+v,u-v\in D(e)$ as in Theorem~\ref{thm:reduction}, and give
+each the form of Lemma~\ref{lem:repstruct} with parameters
+$(t_i,\varepsilon_i)$ and constants $c_t = s^2\im\pi^{4t}$.
+If $t_1=t_2$ then $u=\pm v$, excluded.  Otherwise
+$\nup(u)\neq\nup(v)$; writing $u\pm v = p^{\,\min}\cdot(\text{bracket})$ where
+the bracket is $\varepsilon_i c_{t_i} + (\text{multiple of }p)$, the bracket
+is prime to $p$.  Comparing with the exact forms of $u+v$ and $u-v$ and using
+uniqueness of exact $p$-power extraction, $2(a-t_3)=2(a-t_4)=\min$, so
+$t_3=t_4$ and $u+v=\pm(u-v)$, forcing $u=0$ or $v=0$.  Contradiction.
+\end{proof}
+
+\begin{remark}
+The counting argument (four center lines require four representations)
+already forces two distinct primes \emph{or} $p^4\mid e$; the valuation
+argument closes the prime-power loophole entirely and is what we formalize.
+\end{remark}
+
+\section{Computations}
+
+Enumerating candidate centers directly through
+Theorem~\ref{thm:reduction} is far cheaper than enumerating magic sums:
+factoring $e$ in windows and generating $D(e)$ from the Gaussian
+factorization checks all $e<10^{10}$ (center entries to $10^{20}$) in minutes
+on a desktop; no configuration $u,v,u\pm v \in D(e)$ exists in that range.
+The same machinery classifies near-misses: configurations with two of the
+four differences in $D(e)$ and the other two ``half in'' (one square cell
+each) are exactly the fully magic squares with seven square entries, of which
+Bremner's $e=425$ example was the only one known.  Scanning all $e<10^9$
+finds $2{,}352{,}941$ such configurations --- every single one an integer
+scaling of $e=425$, and none with eight square entries.
+
+\section{The two-prime frontier}
+
+For $e = s\,p^aq^b$ with two distinct primes $\equiv 1\pmod 4$, the
+valuation pairs $(\nup,\nu_q)$ organize $D(e)$ into \emph{conjugate pairs}
+$\{d_{j,k}, d_{j,-k}\}$ of multiplicity exactly two off the axes, and axis
+singletons.  If $\{u+v,u-v\}$ is a conjugate pair $\{d,d'\}$ arising from
+$A=\pi^{4j}$, $B=\chi^{4k}$, then
+\[
+d+d' = 2\,\mathrm{scale}\cdot|\re B \,\im A|,\qquad
+d-d' = 2\,\mathrm{scale}\cdot|\im B\, \re A|,
+\]
+so $u$ and $v$ are \emph{completely determined} --- and their valuation pair
+coincides with that of $\{d,d'\}$, forcing $u,v\in\{d,d'\}$, which is absurd.
+Consequently every hypothetical two-prime solution requires an explicit
+divisibility coincidence ($q^t \mid \re \pi^{4j}$, $p^t\mid\re\chi^{4k}$, or a
+mod-$p$ or mod-$q$ cancellation in $u\pm v$).  These coincidences recur along
+arithmetic progressions of exponents, so closing them requires
+exact-magnitude input beyond valuations; we leave this as the principal open
+direction, noting that together with Theorem~\ref{thm:main} it would force
+every solution's center root into three or more primes $\equiv 1\pmod 4$.
+
+\begin{thebibliography}{9}
+\bibitem{boyer} C.~Boyer, \emph{Latest research on the ``3x3 magic square of
+squares'' problem}, \url{http://www.multimagie.com/English/SquaresOfSquaresSearch.htm}.
+\bibitem{bremner} A.~Bremner, \emph{On squares of squares~II}, Acta Arith.
+99 (2001), 289--308.
+\bibitem{gardner} M.~Gardner, \emph{The magic of 3x3}, Quantum 6 (1996), 24--26.
+\end{thebibliography}
+
+\end{document}

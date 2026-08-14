@@ -1,0 +1,13 @@
+[package]
+name = "msq-search"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rayon = "1.10"
+fxhash = "0.2"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
