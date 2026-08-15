@@ -391,3 +391,17 @@ p, q < 200 — Bremner's-type squared, closed in range for every s.
 Remaining for the full Theorem H': symbolic mod-p^2 / mod-q^2 phase
 analysis of the 6,208 residual relation classes (collapse by symmetry
 first — expect a few hundred distinct classes).
+
+## (2,2) status: 216 residual relations; p,q < 1000 fully excluded
+
+The 6,208 residual leaves collapse to 216 distinct 3-term relations
+(h22_parity.py); the mod-32 two-adic sieve kills none (all relations
+2-adically solvable — unlike the solved-form relations of Theorem F,
+raw D-relations are too soft mod 2^k).  Extended exact sweep
+(h22_sweep2.py): all residual leaves over every ordered pair of primes
+p != q = 1 mod 4 below 1000 (78 primes; 39,234,560 checks): ZERO
+satisfiable.  THEOREM H' (range form): no magic square of squares has
+center root s p^2 q^2 with p, q < 1000, for any s.  Uniform closure of
+the 216 relations = mod-p^2/mod-q^2 coupled residue conditions on
+(chi mod pi, pi mod chi) — same Wieferich-flavored endpoint as the
+s p^a q deep loci; characterization in place of unconditional closure.
