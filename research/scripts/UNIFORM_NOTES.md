@@ -1788,3 +1788,24 @@ out of reach. The kills MUST use both equations. Two-equation map
   3R₈Y ≡ ∓I₈X (multiply by X/Y, use X²+Y² = q⁴). Deep_val-style
   finish still needed. Next: formalize the easy two-equation cells,
   then the L2-partner deep cell.
+
+## Round 112 — the L2-cells fall: elementary two-equation chains
+
+The Ljunggren trap disappears once eq2 is substituted into eq1.
+Notation: h1: 2R₈Y = f·q²I₈ (Kb = L2), k := 3q² + 2efX (odd, and
+q ∤ k since q ∤ X).
+- (L2, L0): q²·h2 + q²I₈ = 2fR₈Y gives R₈·k = g·q²p⁴. p ∤ R₈ →
+  p⁴ ∣ k, k = p⁴κ; R₈κ = gq² with q ∤ κ → κ = ±1, R₈ = ±q².
+  Then h1 gives Y = ±RI, and X²+Y² = q⁴ with 4R²I² = p⁸ − q⁴
+  yields (2efX)² = (ε′p⁴−3q²)²: p⁸ − 3ε′p⁴q² + 2q⁴ = 0 →
+  ε′ = 1 and (p⁴ − q²)(p⁴ − 2q²) = 0: q = p² impossible (prime),
+  p⁴ = 2q² parity. DEAD, all elementary.
+- (L2, L1): same substitution gives R·k = ±p²q² after cancelling
+  through Y = IRv (I ⊥ R₈ chain). v_q(R) = 2, R = q²ρ, p ∤ ρ →
+  ρ = ±1, k = ±p²; then (R₈)v = fq² mod q² forces q² ∣ v, so
+  |Y| = |IRv| ≥ q⁴ > q² ≥ |Y|. DEAD by size.
+- (L2, L3/L4): expect the same skeleton (substitute, cancel, valuate,
+  size); to derive next.
+Also still open: the mirror deep cell (Kb ∈ {L1,L3,L4}, Kd = L2)
+with X ≡ ±q² (mod p²), and the form-B (2S) family. Formalization
+order: easy p²-chain cells → cross_L2_L0 → cross_L2_L1 → rest.
