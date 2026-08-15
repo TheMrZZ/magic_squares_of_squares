@@ -1360,3 +1360,19 @@ odd; omega needs `generalize` on the nonlinear R·X atom),
 `resid_pinch_product` (e₁q²I = RY ∧ e₂p²Y = IX ⇒ RX = ±p²q² ⇒ size).
 T1 and T3 residue types fully covered; T2's divisor-ratio enumeration
 (Y ∣ 2I ∧ I ∣ c″Y) is next.
+
+## Round 83 — T2 correction: the ratio branches end in quadratic kills
+
+Correction to Round 81's sketch: in the T2 ratio enumeration the
+branch Y = ±2I gives X = ±p² — NOT a pinch (|X| < q² allows it when
+p < q). The branch continues: X = ±p² ∧ Y² = q⁴ − p⁴ ∧ the (ii)
+equation determine R, and equating with R² = p⁴ − I² gives
+(1+c″²)(q/p)⁴ ∓ 2c′(q/p)² + (1−5c″²) = 0 — integer-ratio quadratics
+whose roots force q² = 2p² (kills: 2 ∤ odd q), q = p (excluded), or
+5q² = 11p² (kills mod 11 / at p = 5). All elementary, but the T2
+lemma is a ~300-line sub-case tree; the full branch structure will be
+verified symbolically before implementation. The single-equation
+Gaussian route is genuinely insufficient here (the p-side pinch closes
+p > 2q, the χ-side only q > 9p²; the middle band needs the partner
+equation) — matching the census's earlier finding that these leaves
+are not certified by any single-relation argument.
