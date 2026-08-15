@@ -23,3 +23,4 @@ import MsqLean.RelationFamilyF2
 import MsqLean.RelationFamilyF3
 import MsqLean.RelationFamilyF4
 import MsqLean.TwinCollapse
+import MsqLean.UniformTwin

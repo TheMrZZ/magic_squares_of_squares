@@ -857,3 +857,29 @@ machine-checked; what remains beyond it are the 82 alive relations
 (18 Pell-band + 64 wedge/zero-side) that need genuinely new
 mathematics, and the finite-bound closures (≤144) that are swept
 numerically.
+
+## Round 56 — Exponent-UNIFORM twin kills (`UniformTwin.lean`)
+
+Observation: the twin-collapse proofs never use the structure of the
+π-side factor or the integer coefficient. Promoting both to opaque
+parameters yields four theorems that kill the twin relation shapes at
+EVERY exponent (a,b) simultaneously (full build green, zero sorries):
+
+- `uniform_twin_L01`: Im(−c·χ⁴ + e·z·(χ⁴)^k − e·z·(χ̄⁴)^k) ≠ 0 for ANY
+  Gaussian z, any k ≥ 1, any odd c, any e — covers every lone-(0,1)
+  diff-twin relation at every (a,b) (z absorbs the π-power, c absorbs
+  the p^aq^b coefficient pattern).
+- `uniform_twin_L10`: the sum-twin mirror with opaque χ-side w.
+- `uniform_twin_L02` / `uniform_twin_L20`: lone (0,2)/(2,0) with any
+  EVEN twin power; the cofactor stays odd via c·Re(χ⁴) odd
+  (`Odd.mul` with `re4_odd'`).
+- Kit addition: `im_pow_fac` (Im(w^{k+1}) = Im(w)·v by induction) —
+  the Chebyshev-style divisibility that lets the unit factor survive
+  arbitrary twin powers.
+
+These are the first exponent-uniform formal kill theorems beyond the
+grading lemma: at any (a,b) the analogous lone+twin relations (the
+entire parity+unit-side census class at (2,2), and its counterparts at
+(3,2), (3,3), (4,4), …) are dead by ONE machine-checked statement per
+shape. The 12 concrete (2,2) twin theorems are now corollaries.
+Gotcha: `x ^ 4 ^ (j+1)` parses as `x ^ (4^(j+1))` — parenthesize.
