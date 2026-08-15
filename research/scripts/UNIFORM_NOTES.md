@@ -379,3 +379,15 @@ This kills 88,832 / 95,040 leaves (93.5%) outright.  The 6,208 residual
 leaves have >= 2 terms in every minimal layer of both relations and both
 gradings: next pass = mod-p^2 / mod-q^2 phase-sum analysis (gaps 2 or 4),
 mirroring the s p^a q pipeline.
+
+## (2,2) pass 2A: exact sweep — zero satisfiable residual leaves
+
+h22_sweep.py evaluates all 6,208 residual (2,2) leaves exactly over
+every ordered pair of primes p != q, both = 1 mod 4, below 200
+(21 x 20 pairs; 2,607,360 checks): ZERO leaves satisfiable.  Combined
+with the two-prime grading lemma (93.5% killed structurally), this
+gives: NO magic square of squares has center root s p^2 q^2 with
+p, q < 200 — Bremner's-type squared, closed in range for every s.
+Remaining for the full Theorem H': symbolic mod-p^2 / mod-q^2 phase
+analysis of the 6,208 residual relation classes (collapse by symmetry
+first — expect a few hundred distinct classes).

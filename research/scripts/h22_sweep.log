@@ -1,0 +1,23 @@
+residual leaves: 6208
+p=5 done, checks=124160
+p=13 done, checks=248320
+p=17 done, checks=372480
+p=29 done, checks=496640
+p=37 done, checks=620800
+p=41 done, checks=744960
+p=53 done, checks=869120
+p=61 done, checks=993280
+p=73 done, checks=1117440
+p=89 done, checks=1241600
+p=97 done, checks=1365760
+p=101 done, checks=1489920
+p=109 done, checks=1614080
+p=113 done, checks=1738240
+p=137 done, checks=1862400
+p=149 done, checks=1986560
+p=157 done, checks=2110720
+p=173 done, checks=2234880
+p=181 done, checks=2359040
+p=193 done, checks=2483200
+p=197 done, checks=2607360
+TOTAL checks 2607360; satisfied leaves: 0
