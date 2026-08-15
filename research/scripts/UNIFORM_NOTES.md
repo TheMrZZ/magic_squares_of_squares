@@ -423,3 +423,18 @@ relation triples are not doubly balanced (min p-layer and min q-layer
 each held by >= 2 terms in both relations) is impossible.  The entire
 two-prime landscape thus reduces, uniformly in (a,b), to explicit
 balanced families with coupled-residue survival conditions.
+
+## Three primes: the wall breached (range form)
+
+The grading machinery extends verbatim to >= 3 primes: for
+e = s p q r (all = 1 mod 4, distinct), D(e) is 13 elements
+p^{2-2al} q^{2-2be} r^{2-2ga} Im(pi^{4al} chi^{±4be} psi^{±4ga}) with a
+3-D grading; the lone-minimal-layer kill applies in any of the three
+gradings.  h111_engine.py: 137,280 leaves, 68.4% grading-killed,
+43,392 residual; exact sweep over ALL ordered triples of distinct
+primes below 120 (94,768,128 checks): ZERO satisfiable.  FIRST
+EXCLUSION IN THE >=3-PRIME LANDSCAPE: no magic square of squares has
+center root s p q r with p, q, r < 120, for any s.  The "positive-
+dimensional wall" applied to the solved-form approach; the raw-relation
+grading bypasses it entirely — the same doubly/triply-balanced
+characterization governs every number of primes.
