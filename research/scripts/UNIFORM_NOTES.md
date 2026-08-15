@@ -2016,3 +2016,24 @@ Architectural transfer from F is 1:1:
 Plan: rep_structure_sp3q → M-class defs + level-12 fact layer
 (re12/im12 formulas, parities, p∤, nonzero) → cores → dispatchers →
 router → ratio wrapper → capstone.
+
+## Round 127 — G cross-pair census + uniform kills for the new cells
+
+Census (g_cross_probe.py): all 57,344 level-12 cross-pair cells and
+every single equation are empty. Kill design for the T-form core
+(2R₁₂Y = f·Kb ∧ 3R₁₂Y + eI₁₂X = g·Kd, Kb/Kd over 8 G-lows):
+- (p²Lᵢ, p²Lⱼ): ALL 49 cells die by ONE argument — p²∣Y from eq1,
+  p²∣X from eq2, p⁴ ∣ q⁴. No Lᵢ fine structure needed.
+- (p²Lᵢ, M7): UNIFORM kill, independent of i: p²∣Y and
+  X ≡ egq² (mod p²) run the descent to (y'/2)² = m(q² − p⁴m);
+  the coprime split gives a second two-square rep q² = (p²a)² + b²
+  (or, in the q∣m branch, q = (p²c)² + d²), and rep uniqueness
+  forces Y = ±(im4)/2 = ±Y/2, resp. 2|C²−D²| = q — both absurd.
+  This uniformity is the key lemma-shape for the eventual all-a
+  induction.
+- (M7, ·): mirrors of F's cross_L2_* cells with p⁴ ↦ p⁶ (the
+  factored quadratic becomes (p⁶−q²)(p⁶−2q²), q = p³ impossible).
+- S-form: expected to mirror F's (all-elementary) with the same
+  uniformities.
+Needed new machinery: two-square rep uniqueness for q and q²
+(Gaussian: N(w) = q ⇒ w ~ unit·χ^{±1}; small, existing tools).
