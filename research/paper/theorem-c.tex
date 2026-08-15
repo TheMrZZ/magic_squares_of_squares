@@ -492,7 +492,13 @@ exact sweep of the $43{,}392$ residual leaves over \emph{every} ordered
 triple of distinct such primes below $120$ ($94{,}768{,}128$ checks)
 finds none satisfiable: \emph{no magic square of squares has center
 root $s\,pqr$ with $p,q,r<120$, for any $s$} — the first exclusion in
-the $\ge 3$-prime landscape.  The ``positive-dimensional wall'' blocked
+the $\ge 3$-prime landscape.  The mixed shape $e=s\,p^2qr$ behaves the
+same way ($|D|=22$, $86.9\%$ of $1{,}404{,}480$ leaves grading-killed,
+$92{,}413{,}440$ exact checks, no survivor below $75$).  The grading
+lemma itself is machine-checked: \texttt{im\_pipow\_mul\_not\_dvd} in
+the accompanying Lean library proves, with no \texttt{sorry}, that for
+$p=a^2+b^2$ prime, $k\ge 1$, and any Gaussian integer $W$ with
+$p\nmid N(W)$, $p$ never divides $\im\bigl((a+bi)^k\,W\bigr)$.  The ``positive-dimensional wall'' blocked
 only the solved-form pipeline; the raw-relation grading passes through
 it, and the same balanced-family characterization governs any number
 of primes.
