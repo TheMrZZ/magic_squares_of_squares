@@ -689,3 +689,20 @@ double-pinch bound lemmas.  Design outline: (1) per-factor reduction
 identities are `ring`-checkable; (2) unit-atom nonvanishing follows
 from GradingLemma + im/re nonzero lemmas; (3) pinch bounds are
 Int.le_of_dvd arguments.  Deferred as the next formalization arc.
+
+## FIRST MACHINE-CHECKED KILL OF A RESIDUAL (2,2) RELATION
+
+MsqLean/SimplestRelation.lean (zero sorries, builds with the full
+library): theorem `simplest_relation_nonzero` — for distinct odd primes
+p, q with Gaussian representations pi = A+Bi, chi = C+Di, the relation
+value Im(-p^2 pi^4 chibar^8 - q^2 pi^8 chibar^4 - pi^8 chibar^8) is
+never zero.  The formal proof implements the double-pinch certificate
+end-to-end: self-conjugacy from vanishing imaginary part, pi | G and
+the divisibility extraction pi | 2(C^2-D^2) (stripping pibar- and
+chi-units via primality of pi from its prime norm), the symmetric
+chi-side extraction q | (A^2-B^2), and the two-ordering strict pinch
+(|C^2-D^2| < q, |A^2-B^2| < p, both nonzero for odd primes).
+Supporting lemmas in PinchHelpers.lean (int_dvd_of_gaussian_dvd,
+strict_pinch, sq_ne_sq_of_odd_prime) and ParityFacts.lean.  This is
+the existence proof that the certificate engine's kills are mechanically
+formalizable — the path to a fully verified partial Theorem H'.

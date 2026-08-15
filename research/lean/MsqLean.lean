@@ -15,4 +15,5 @@ import MsqLean.TheoremCFinal
 import MsqLean.TheoremDIdentity
 import MsqLean.TheoremEKernel
 import MsqLean.TwoPrimeClassify
-import MsqLean.ParityFacts
+import MsqLean.PinchHelpers
+import MsqLean.SimplestRelation
