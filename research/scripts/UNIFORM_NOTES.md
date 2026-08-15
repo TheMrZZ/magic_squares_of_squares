@@ -1645,3 +1645,18 @@ The same enumeration pattern (R₈ ∣ q² or R₈ ∣ p²q²-reduced-to-q²)
 covers branch A3. Remaining to design: A4 (both equations cross-type).
 Then the level-8 mixed core can be written with: immediate branches,
 ratio-P, Round-99 ratio, and the R₈-enumeration lemmas.
+
+## Round 102 — Branch A4: the product-mod-p kill; all F branches designed
+
+A4 (both equations cross-type, I₈X = f·p²(RY+εIX) ∧
+R₈Y = g·p²(RY+ε′IX)): multiply, cancel I·X·Y, and reduce mod p —
+every term except (2R)(R²−I²) carries p², so p ∣ 2R·R₈, contradicting
+p ∤ R and p ∣ R₈ ⇒ p ∣ 2I². Two lines of mathematics.
+
+Complete F-residue branch inventory, all designed:
+- immediate (pinch X = ±q², R₈ = ±p⁴, 2RX = ±p²q² parity) ✓
+- ratio-P (resid_ratio_core_P, P = p⁴) ✓ proven
+- Round-99 ratio (R₈Y vs q²I₈) — to Lean
+- R₈ ∣ q² enumeration (A1/A3) — to Lean
+- product-mod-p (A4) — to Lean (short)
+Then mixed_pair_core_8, twin-split wrappers, router, assembly.
