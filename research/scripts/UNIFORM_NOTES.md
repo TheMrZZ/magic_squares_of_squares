@@ -1733,3 +1733,15 @@ coefficient-2 systems (2I₈X = ±Vc ∧ 2R₈Y = ±Vd) — most cells kill
 even faster (2X = ±q² parity), but the p⁴Y-cell feeds ratio-P with
 I := I₈ directly, and the q²I₈-cell needs a factor-2 r8-derive
 variant. Next: that coefficient-2 core, then the mixed-cd buckets.
+
+## Round 109 (2026-08-15)
+`mixed_pair_core_8_two` complete (commit 0c7e55a): all 12 cells of the
+coefficient-2 level-8 system for s·p²·q closed. Highlights:
+- (L0, L2): I₈ = Y·k divisibility, then 2(kX) = f·p⁴ parity kill
+  (generalize needs the `2*(k*X)` association or omega sees a nonlinear atom).
+- (L3, L2) and (L4, L2): `deep_val_cell` — p² ∥ X forces p⁴ | 5R⁴;
+  p = 5 dies by norm bound, p ≠ 5 by p | R vs coprime_re8_im8.
+  L4 side enters with f ↦ −f to match the (RY − IX) orientation.
+- Remaining for Theorem F: mixed-cd bucket wrappers, extraction-tier
+  call-sites (twoterm_p_extract), E-reuse p²-cancel wrapper, router,
+  no_four_diffs_sp2q, capstone.
