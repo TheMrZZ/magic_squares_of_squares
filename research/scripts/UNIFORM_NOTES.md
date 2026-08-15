@@ -2068,3 +2068,27 @@ and the norm gives J²(x′² + 4t²w²) = q⁴, so J ∣ q²:
 - J = ±q²: x′² + 4t²w² = 1 with tw ≠ 0, dead.
 Remaining T-cells after this: (M7, p²L5/L6) and the five
 (p²Lᵢ, M7) mixed-level cells; S-core needs its seven row cells.
+
+## Round 130 (2026-08-16)
+
+**Theorem G T-form core COMPLETE.** The five remaining (p²Lᵢ, M7) T-cells
+(i∈{2..6}) — the ones round 128 showed need eq1's fine structure — fell to a
+single uniform lemma `cross12_row_M7`, generic in the p² cofactor Mb:
+
+- eq2 (3R₁₂Y + eI₁₂X = gq²I₁₂) + coprimality R₁₂⊥I₁₂ give 3Y = I₁₂v and
+  R₁₂v + eX = gq².
+- Substituting into the norm 9(X²+Y²) = 9q⁴ makes the q⁴ terms cancel
+  (coefficient 9 matches exactly): v(9R₁₂² + I₁₂²) = 18gq²R₁₂.
+- R₁₂ ∣ v (via R₁₂⊥I₁₂²), so u(9R₁₂² + I₁₂²) = 18gq².
+- eq1 forces p²∣Y for EVERY p²-divisible row value → p²∣v → p²∣u → p²∣18gq²,
+  impossible (p odd prime ≠ q; p∣18 → p=3 → A²+B²=3, killed mod 4).
+
+This is where the round-128 relaxed chain failed: the (5,313) witness survives
+the mod-p² congruences alone, but not the FULL norm relation — the norm is
+what upgrades "p²∣Y consistent" into "p² divides 18gq²".
+
+**S-form does NOT mirror:** eq1 there is 2I₁₂X = fp²Mb, and the norm gives
+w(2geq²R₁₂ − w(R₁₂²+9I₁₂²)) = 8q⁴ (coefficient mismatch 1 vs 9 leaves an
+8q⁴ remainder, no factoring). The seven S-form (p²Lᵢ, M7) cells need
+per-class structure. i=0 sketch: 2X = fp⁶w + norm → w''²(p¹²+4I₁₂²) = q⁴,
+a Q² = R₁₂² + 5I₁₂² locus. Next.
