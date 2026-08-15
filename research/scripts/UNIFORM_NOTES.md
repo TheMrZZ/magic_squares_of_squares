@@ -1245,3 +1245,22 @@ cases in (j,k)); (1,1) is real and contradicts 2xy ≠ 0; the other
 8 × 2 unit-sign cases fold to the four classes (all 18 blocks
 template-generated, compiled after one fix). Next: the assignment
 analysis `no_four_diffs_spq`.
+
+## Round 76 — Theorem E step 2 scoping: the assignment systems
+
+Numeric probe: over all 380 ordered pairs from the first 20 useful
+primes, NO assignment system (A + B = C, A − B = D with each of
+A,B,C,D a signed D-class value) has a solution — Theorem E verified
+numerically at scale before formalizing.
+
+Structural reduction for the Lean case analysis: writing the four
+constraints as 2A = C + D, 2B = C − D with C = ±V_c, D = ±V_d:
+- c = d collapses to A = 0 or B = 0, contradicting u, v ≠ 0 — dead
+  with no arithmetic.
+- Remaining: 6 unordered class pairs × relative sign = 12 systems,
+  each demanding simultaneously V_c + σV_d = ±2V_a and
+  V_c − σV_d = ±2V_b. Each single equation is a (1,1)-grid relation
+  with an even coefficient (outside the odd-c uniform theorems), so
+  the kills are joint-system arguments: pinches |X| < q², |R| < p²,
+  nonzero products IX, RY, and p/q-divisibility interplay. Catalog
+  per system to be built next.
