@@ -1710,3 +1710,16 @@ level-≤4 classes) dispatches as:
 - I₈X vs p⁴Y with R₈Y-partner: covered by the K₂-side kills above
   (every K₂ has one).
 All 25 cells covered; two thin lemma variants to add during assembly.
+
+## Round 107 — mixed_pair_core_8 machine-checked (all 25 cells)
+
+The central Theorem F lemma compiles, zero sorries: the twin-split
+system I₈X = f·K₁ ∧ R₈Y = g·K₂ over the five level-≤4 classes is
+impossible. Cell dispatch: global kills (R₈ = ±p⁴, 2RX = ±p²q²,
+X = ±q²), the I∣Y/p²∣m chains, resid_r8_derive with per-partner
+finishers, resid_cross_p2q2, resid_cross_product, pX_extract.
+Sign bookkeeping caught by Lean: the ε = −1 cross-collapse has
+c = f·p² with negated M (NOT c = −f·p²), and the L4-side of
+cross_product needs (−g, −1). Remaining F: the per-bucket twin-split
+wrappers (S/D-massage into the core), extraction-tier wrappers, the
+E-reuse wrapper, and the full router/assembly.

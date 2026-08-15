@@ -34,3 +34,4 @@ import MsqLean.TheoremEResidue
 import MsqLean.TheoremEDispatch
 import MsqLean.TheoremF
 import MsqLean.TheoremFInt
+import MsqLean.TheoremFCore
