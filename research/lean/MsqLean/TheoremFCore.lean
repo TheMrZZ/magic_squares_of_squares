@@ -3925,4 +3925,101 @@ lemma descent_norm4 (a b : ℕ) [ha : Fact (Nat.Prime a)] [hb : Fact (Nat.Prime 
   exact no_s4_sub_4t4 u v ((a : ℤ) * (b : ℤ)) hv0 huodd hcopuv hfinal
 
 
+set_option maxHeartbeats 1600000 in
+/-- Deep ratio cell (K2 = ±2·K3 coordinates): 3RY = IX or RY = 3IX,
+whose coprime chains force the norm system that dies by Fermat
+descent. -/
+lemma ratio_K2_K3_kill
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (R I X Y δ : ℤ) (hδ : δ = 1 ∨ δ = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hcopRI : IsCoprime R I) (hcopXY : IsCoprime X Y)
+    (hR0 : R ≠ 0) (hI0 : I ≠ 0) (hX0 : X ≠ 0) (hY0 : Y ≠ 0)
+    (h : R * Y + I * X = 2 * δ * (I * X - R * Y)) : False := by
+  have hP3 : Prime (3 : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; norm_num
+  rcases hδ with rfl | rfl
+  · -- 3RY = IX
+    have h3 : 3 * (R * Y) = I * X := by linarith
+    have hRX : R ∣ X := by
+      refine hcopRI.dvd_of_dvd_mul_right ?_
+      exact ⟨3 * Y, by linear_combination -h3⟩
+    obtain ⟨xh, hxh⟩ := hRX
+    subst hxh
+    have hYI : Y ∣ I := by
+      refine (hcopXY.symm).dvd_of_dvd_mul_right ?_
+      exact ⟨3 * R, by linear_combination -h3⟩
+    obtain ⟨ih, hih⟩ := hYI
+    subst hih
+    have h3c : ih * xh = 3 := by
+      have h0 : R * Y * (3 - ih * xh) = 0 := by linear_combination h3
+      rcases mul_eq_zero.mp h0 with h' | h'
+      · exact absurd h' (mul_ne_zero hR0 hY0)
+      · linarith
+    have hihd : ih ∣ 3 := ⟨xh, h3c.symm⟩
+    have hcases : (ih = 1 ∧ xh = 3) ∨ (ih = -1 ∧ xh = -3)
+        ∨ (ih = 3 ∧ xh = 1) ∨ (ih = -3 ∧ xh = -1) := by
+      obtain ⟨i, hi, ha⟩ := (dvd_prime_pow hP3 1).mp (by simpa using hihd)
+      interval_cases i
+      rotate_left
+      · rw [pow_one] at ha
+        rcases Int.associated_iff.mp ha with rfl | rfl
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl, by linarith⟩))
+        · exact Or.inr (Or.inr (Or.inr ⟨rfl, by linarith⟩))
+      rw [pow_zero] at ha
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp ha) with rfl | rfl
+      · exact Or.inl ⟨rfl, by linarith⟩
+      · exact Or.inr (Or.inl ⟨rfl, by linarith⟩)
+    rcases hcases with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · exact descent_norm4 q p hqodd hpodd (Ne.symm hpq) R
+        (by linear_combination hp4 - hq4)
+    · exact descent_norm4 q p hqodd hpodd (Ne.symm hpq) R
+        (by linear_combination hp4 - hq4)
+    · exact descent_norm4 p q hpodd hqodd hpq Y
+        (by linear_combination hq4 - hp4)
+    · exact descent_norm4 p q hpodd hqodd hpq Y
+        (by linear_combination hq4 - hp4)
+  · -- RY = 3IX
+    have h3 : R * Y = 3 * (I * X) := by linarith
+    have hIY : I ∣ Y := by
+      refine hcopRI.symm.dvd_of_dvd_mul_right ?_
+      exact ⟨3 * X, by linear_combination h3⟩
+    obtain ⟨yh, hyh⟩ := hIY
+    subst hyh
+    have hXR : X ∣ R := by
+      refine (hcopXY).dvd_of_dvd_mul_right ?_
+      exact ⟨3 * I, by linear_combination h3⟩
+    obtain ⟨rh, hrh⟩ := hXR
+    subst hrh
+    have h3c : rh * yh = 3 := by
+      have h0 : I * X * (rh * yh - 3) = 0 := by linear_combination h3
+      rcases mul_eq_zero.mp h0 with h' | h'
+      · exact absurd h' (mul_ne_zero hI0 hX0)
+      · linarith
+    have hrhd : rh ∣ 3 := ⟨yh, h3c.symm⟩
+    have hcases : (rh = 1 ∧ yh = 3) ∨ (rh = -1 ∧ yh = -3)
+        ∨ (rh = 3 ∧ yh = 1) ∨ (rh = -3 ∧ yh = -1) := by
+      obtain ⟨i, hi, ha⟩ := (dvd_prime_pow hP3 1).mp (by simpa using hrhd)
+      interval_cases i
+      rotate_left
+      · rw [pow_one] at ha
+        rcases Int.associated_iff.mp ha with rfl | rfl
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl, by linarith⟩))
+        · exact Or.inr (Or.inr (Or.inr ⟨rfl, by linarith⟩))
+      rw [pow_zero] at ha
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp ha) with rfl | rfl
+      · exact Or.inl ⟨rfl, by linarith⟩
+      · exact Or.inr (Or.inl ⟨rfl, by linarith⟩)
+    rcases hcases with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · exact descent_norm4 q p hqodd hpodd (Ne.symm hpq) I
+        (by linear_combination hp4 - hq4)
+    · exact descent_norm4 q p hqodd hpodd (Ne.symm hpq) I
+        (by linear_combination hp4 - hq4)
+    · exact descent_norm4 p q hpodd hqodd hpq X
+        (by linear_combination hq4 - hp4)
+    · exact descent_norm4 p q hpodd hqodd hpq X
+        (by linear_combination hq4 - hp4)
+
+
 end FCore
