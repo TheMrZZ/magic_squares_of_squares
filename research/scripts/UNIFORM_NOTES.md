@@ -1485,3 +1485,26 @@ the class-expression fix. The dispatcher layer for the Theorem E
 assignment analysis is COMPLETE: 01, 02, 03, 12, 13, 23.
 Remaining: outer {c,d} split (16 combos incl. c = d degenerates via
 class-nonzeroness) + rep_structure plumbing + the final theorem.
+
+## Round 91 — ★ THEOREM E FULLY MACHINE-CHECKED ★
+
+`no_magic_square_of_squares_spq_center` (in TheoremEDispatch.lean)
+compiles with zero sorries, full library build green (8,742 jobs):
+
+**No 3×3 fully magic square of nine perfect squares has center entry
+(s·p·q)² for distinct primes p, q ≡ 1 (mod 4) and rigid cofactor s.**
+
+The first fully-formal two-prime impossibility theorem. The complete
+chain: converse_reduction (center → four D-set differences) →
+rep_structure_spq (18-case Gaussian classification of the D-set) →
+no_four_diffs_spq (s²-cancellation + repackaging) →
+no_assignment_spq (16-combo class router, c = d degenerates via
+class-nonzeroness) → six pair-dispatchers → three certificate tiers
+(two-term Gaussian kills, parity/product/size/pinch-product residues,
+the ratio system with its factored quadratic finishers).
+
+Together with machine-checked Theorem C (single-prime centers, any
+power), the formally verified impossibility now covers all center
+roots s·pᵃ (a arbitrary) and s·p·q. This extends the formal frontier
+from "one useful prime never suffices" to the first genuinely
+two-prime form.
