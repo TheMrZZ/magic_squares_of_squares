@@ -463,9 +463,25 @@ leaves collapse to $216$ distinct three-term relations, and an exact
 sweep over every ordered pair of primes $p\ne q\equiv 1\pmod 4$ below
 $1000$ ($39{,}234{,}560$ checks) finds none satisfiable: \emph{no magic
 square of squares has center root $s\,p^2q^2$ with $p,q<1000$, for any
-$s$.}  The uniform closure of the $216$ relations reduces to coupled
-residue conditions on $(\chi \bmod \pi,\ \pi \bmod \chi)$ — the same
-Wieferich-flavored endpoint as the deep loci above.
+$s$.}  Beyond the sweep, per-factor certificates close a majority of the
+residual structure \emph{unconditionally}: each relation factors over
+$\mathbb{Q}$, and a factor is proven nonzero by parity (always-odd
+integers), by a \emph{unit side} (its reduction modulo $\pi$ or
+$\chi$ factors into unit atoms times a nonzero constant $c$, so no
+prime beyond $|c|$ ever divides it — and $p \nmid F$ alone gives
+$F \ne 0$), or by a \emph{double pinch} (each side reduces to units
+times a single small core $2\re(\chi^2)$ or $2\im(\chi^2)$,
+strictly bounded by twice the opposite prime and nonzero for an odd
+prime; the two prime orderings then close both cases with no wedge).
+This certifies $56$ of the $216$ relations dead, and at leaf level
+$96.1\%$ of \emph{all} $95{,}040$ placement leaves are closed
+unconditionally; the remaining $3{,}728$ leaves live inside $160$
+relations whose reductions carry explicit cyclotomic cores
+($2R \pm p^2$, $\re\chi^4$, $\re\chi^8$ — each provably nonzero)
+of quadratic-or-higher size, where prime-ratio wedges persist.  The
+same three-sided machinery certifies $36$ of the $600$ three-prime
+relations and closes $71.4\%$ of all $s\,pqr$ leaves
+unconditionally.
 
 The grading lemma is exponent-independent, and its reach \emph{grows}
 with the exponents: for general $e = s\,p^aq^b$ the set $D(e)$ is
