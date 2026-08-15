@@ -447,3 +447,14 @@ N(W): p never divides Im((a+bi)^k * W).  This is the exact statement
 powering every lone-minimal-layer kill in the two- and three-prime
 engines; the computational range theorems now rest on a formally
 verified core lemma.
+
+## Mixed three primes: (2,1,1) also excluded in range
+
+h211_engine.py: e = s p^2 q r has |D| = 22 with the 3-D grading;
+1,404,480 leaves, 86.9% grading-killed, 183,360 residual; exact sweep
+over all ordered triples of distinct primes = 1 mod 4 below 75
+(92,413,440 checks): ZERO satisfiable.  No magic square of squares has
+center root s p^2 q r with p, q, r < 75, for any s.  Every center-type
+family the machinery has touched — s p^a q for a <= 4 levels, s p^2 q^2,
+s p q r, s p^2 q r — is either unconditionally impossible or excluded
+throughout the computed ranges.
