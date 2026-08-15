@@ -352,6 +352,50 @@ theorem over all $s\,p^aq$, with only the Baker-bound bookkeeping, the
 resulting finite verification, and the three- and four-level chain templates
 outstanding.
 
+\subsection*{Three and four levels: the $Q$-collapse and the leading pair}
+
+The three- and four-level chain templates are now closed to the same
+standard.  A merged sweep ($36{,}288$ three-level and $31{,}104$ four-level
+leaves) kills $95.7\%$, resp.\ $91.4\%$, by the zero-solution, imbalance,
+residual-unit and singular mechanisms.  The residue collapses to $8$,
+resp.\ $12$, \emph{deep shapes} --- same-orientation interior elements plus
+one axis element --- and for each of the twenty shapes a symbolic
+computation gives the decisive structural fact: writing the solved value as
+$\chi^4 = Q\,N/D$, the numerator has $Q$-degree exactly one and the
+denominator is $Q$-free.  Setting $N = Q\,A$, the modulus condition
+$|\chi^4| = Q^2$ eliminates $q$ \emph{entirely}: a deep-shape leaf survives
+if and only if
+\[
+c \;=\; |A|^2 - |D|^2 \;=\; 0,
+\]
+a single integer identity in the $\pi$-orbit algebra.  Expanding $c$ over
+its monomial valuation groups $\gamma\,\pi^{P\cdot j}\bar\pi^{B\cdot j}$
+(the substitution is exact, with no unit ambiguity), realness pairs the
+groups conjugately, and for \emph{every} shape and \emph{every}
+strong-separation ordering of the orbit indices the minimal-valuation set
+is exactly one conjugate pair with real coefficient $\gamma\in\{\pm1,\pm2\}$
+--- a unit for every odd $p$.  The pair sums to
+$2\gamma\,p^{a_0}\re(\bar\pi^{4M})$ and $v_p\!\bigl(\re(\bar\pi^{4M})\bigr)=0$,
+so $v_p(c)$ is finite: \emph{every deep-shape leaf whose orbit indices avoid
+an explicit finite union of valuation-tie hyperplanes is impossible,
+uniformly in $p\ge 5$.}
+
+On the tie set, layering $c$ by $\pi$-exponent reduces everything to
+integer \emph{phase sums} $S_e(j)=\sum_i\gamma_i(2A)^{B_i\cdot j}$
+(here $\pi = A+Bi$): survival requires $p \mid S_\pi(j)$ and
+$p \mid S_{\bar\pi}(j)$ simultaneously --- a double multiplicative-order
+condition on $2A \bmod p$.  A census over $p<200$, orbit indices
+$\le 6$, finds $1{,}806$ such double-vanishing points among $362{,}880$
+($0.5\%$); exact evaluation shows $c\ne 0$ at every one, with even escape
+depths $v_p(c)-e_{\min}\in\{2,\dots,20\}$ governed by the multiplicative
+order of $2A$ --- the special-value loci in exact arithmetic form.
+Independently, a direct sweep of the criterion over all twenty shapes
+($p<200$, indices $\le 4$, $q<500$; $3{,}236{,}352$ exact checks) finds no
+survivor.  The uniform program for $s\,p^aq$ thus stands closed at one and
+two levels unconditionally, and at three and four levels outside the thin
+double-vanishing set, where the small-order degeneration awaits its own
+(expectedly self-similar) leading-pair analysis.
+
 For $e = s\,p^aq^b$ with two distinct primes $\equiv 1\pmod 4$, the
 valuation pairs $(\nup,\nu_q)$ organize $D(e)$ into \emph{conjugate pairs}
 $\{d_{j,k}, d_{j,-k}\}$ of multiplicity exactly two off the axes, and axis
