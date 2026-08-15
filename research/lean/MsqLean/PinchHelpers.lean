@@ -27,7 +27,7 @@ lemma int_dvd_of_gaussian_dvd (p : ℕ) [hp : Fact (Nat.Prime p)]
 
 /-- Strict pinch: a nonzero integer of absolute value below p cannot be
 divisible by p. -/
-lemma strict_pinch (p n : ℤ) (hp : 0 < p) (h : p ∣ n) (h0 : n ≠ 0)
+lemma strict_pinch_int (p n : ℤ) (hp : 0 < p) (h : p ∣ n) (h0 : n ≠ 0)
     (hlt : |n| < p) : False := by
   have habs : p ∣ |n| := (dvd_abs p n).mpr h
   have := Int.le_of_dvd (abs_pos.mpr h0) habs

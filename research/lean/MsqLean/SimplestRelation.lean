@@ -351,7 +351,7 @@ theorem simplest_relation_nonzero
   rcases Nat.lt_trichotomy p q with hlt | heq | hgt
   · -- p < q: pinch on q ∣ A²−B², |A²−B²| < p < q
     have hpq' : ((p : ℤ)) < (q : ℤ) := by exact_mod_cast hlt
-    exact strict_pinch (q : ℤ) (A ^ 2 - B ^ 2) (by exact_mod_cast Int.natCast_pos.mpr hq.out.pos) hqAB hAB0 (by omega)
+    exact strict_pinch_int (q : ℤ) (A ^ 2 - B ^ 2) (by exact_mod_cast Int.natCast_pos.mpr hq.out.pos) hqAB hAB0 (by omega)
   · exact hpq heq
   · have hqp' : ((q : ℤ)) < (p : ℤ) := by exact_mod_cast hgt
-    exact strict_pinch (p : ℤ) (C ^ 2 - D ^ 2) (by exact_mod_cast Int.natCast_pos.mpr hp.out.pos) hpCD hCD0 (by omega)
+    exact strict_pinch_int (p : ℤ) (C ^ 2 - D ^ 2) (by exact_mod_cast Int.natCast_pos.mpr hp.out.pos) hpCD hCD0 (by omega)
