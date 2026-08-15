@@ -1,0 +1,11 @@
+relations: 600
+KILLED: 36 / 600; certificates: {'unit-side': 36, 'parity': 36}
+alive: 564; signatures: 10
+276 ['[None, None, None]']
+40 ["[None, ('small', 1), ('small', 1)]"]
+40 ["[('small', 1), None, ('small', 1)]"]
+40 ["[('small', 1), ('small', 1), None]"]
+32 ["[('small', 1), None, None]"]
+32 ["[None, ('small', 1), None]"]
+32 ["[None, None, ('small', 1)]"]
+24 ["[('small', 2), None, None]"]

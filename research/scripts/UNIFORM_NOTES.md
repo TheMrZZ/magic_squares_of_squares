@@ -561,3 +561,14 @@ cyclotomic cores (2R ± p^2 — odd hence nonzero; Re(chi^4), Re(chi^8)
 nonzero by irrationality of the corresponding quartic/octic roots) of
 quadratic-or-higher size, where first-order pinches leave prime-ratio
 wedges — the precise remaining frontier.
+
+## Three-sided certificates for (1,1,1): 36 relations, 71.4% of leaves
+
+sym3_unit.py runs the same per-factor machinery with THREE reductions
+(mod pi / mod chi / mod psi): 36 / 600 relations certified dead
+(parity + unit-side; no triple-pinches fire — every surviving relation
+has at least one side whose reduction contains deeper cyclotomic-style
+irreducibles).  Leaf level: 4,176 of the 43,392 residual leaves die via
+a dead relation, so 98,064 / 137,280 = 71.4% of ALL (1,1,1) leaves are
+now closed unconditionally (grading lemma + certificates), the rest
+confined to 564 explicit relations.
