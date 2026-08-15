@@ -30,3 +30,4 @@ import MsqLean.SpectatorCorner
 import MsqLean.TheoremE
 import MsqLean.TheoremEInt
 import MsqLean.TheoremEGauss
+import MsqLean.TheoremEResidue

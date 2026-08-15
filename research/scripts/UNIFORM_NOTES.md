@@ -1349,3 +1349,14 @@ types up to symmetry:
 
 Remaining Lean work: ~8 bespoke residue lemmas + the generated
 dispatcher + final assembly through the reduction.
+
+## Round 82 — Theorem E residue lemmas T1/T3 (`TheoremEResidue.lean`)
+
+Machine-checked: `resid_even_odd` (2eUX = s·q²·U kills by even ≠ odd
+after cancelling U), `resid_product` (the anti-aligned pair
+2eRY = sq²I ∧ 2e′IX = s′p²Y multiplies to 4ee′RX = ss′p²q², even ≠
+odd; omega needs `generalize` on the nonlinear R·X atom),
+`resid_size` (RX = ±p²q² beaten by R² < p⁴ ∧ X² < q⁴),
+`resid_pinch_product` (e₁q²I = RY ∧ e₂p²Y = IX ⇒ RX = ±p²q² ⇒ size).
+T1 and T3 residue types fully covered; T2's divisor-ratio enumeration
+(Y ∣ 2I ∧ I ∣ c″Y) is next.
