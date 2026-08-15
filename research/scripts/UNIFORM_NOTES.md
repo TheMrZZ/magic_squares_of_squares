@@ -1077,3 +1077,25 @@ Coverage stands at 100% for all ten censused exponent grids:
   needed zero additions — the toolkit looks saturated for twins.
 - `symN_census.py`: the engine generalized to any number of primes;
   four-prime (1,1,1,1) census launched (14,944 relations).
+
+## Round 66 — The Lean layer BEATS the census engine at (2,2,1)
+
+Scanning the 6,208 census-ALIVE relations at (2,2,1) for corner
+shapes with a constant spectator prime coordinate:
+
+- 80 relations (60 aligned + 20 mixed-anchor-1) have spectator power 0:
+  they are p⁴ · (two-prime corner) and are ALREADY DEAD by
+  `uniform_corner_aligned` / `uniform_corner_mixed` — the census's
+  per-prime certificate test fails because the third prime's side cert
+  cannot certify a two-prime pinch, so the engine under-kills.
+- 256 more (aligned + mixed-anchor-1) carry a constant nonzero
+  spectator factor ψ^{4γ} with uniform conjugation: the corner
+  divisibility chains survive with W = ψ^{4γ} riding along (strip
+  steps need only π∤W, χ∤W and their stars) — a "spectator corner"
+  generalization will kill them.
+- Remaining corner-shaped alive: mixed at anchor α ≥ 2 (152, where
+  the pinch genuinely fails) and varying-conjugation patterns (976).
+
+Consequence: census "alive" counts at multi-prime grids overstate the
+frontier; the machine-checked uniform layer strictly exceeds the
+symbolic engine's certificate coverage.
