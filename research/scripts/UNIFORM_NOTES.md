@@ -1767,3 +1767,24 @@ capstone, so no class repeats):
 - bespoke leftovers: level-8 + L2 in the SAME equation:
   p² ∣ (Im(π⁸χ⁴) ∓ q²·Im(π⁸)) and the (X ≡ ±q² mod p², p²∣Y)
   valuation cell. Expect deep_val-style arguments.
+
+## Round 111 — cross-pair cells: probe + the Ljunggren trap
+
+Probe (cross_pair_probe.py): all 44,800 (2T/2S, 3T±S/3S±T) cross-pair
+cells over 8 primes are empty; even every SINGLE equation is empty
+(cross_pair_single.py). But single-equation kills are a trap: pushing
+2T = ±L1 or 2T = ±L2 through the coprime-cancellation chain ends in
+R₈ ∣ q², whose R₈ = ±1 branch is 2R² − 1 = p⁴ — Ljunggren territory,
+out of reach. The kills MUST use both equations. Two-equation map
+(T = R₈Y, S = I₈X; first equation fixes p-valuations):
+- Kb = L0: 2R₈ = ±p⁴ parity kill. Kb = L1/L3: eq1 forces v_p(Y) = 2,
+  v_p(X) = 0; then any p²-class partner forces p² ∣ I₈X → p² ∣ X,
+  contradiction (or p⁴ ∣ q⁴ via X²+Y²). Kb = L2: eq1 gives
+  v_p(Y) = 0 and q² ∣ R₈; partner analysis still open.
+- ALL remaining hard cells pair with L2 (q²I₈): canonical form
+  X ≡ ±q² (mod p²) with p² ∥ Y. Progress: X = ±q² exactly forces
+  Y = 0 (dead); otherwise p⁴ ≤ 2q² (size window) plus
+  2q²x₂ = ∓(p⁴x₂² + y²). Also mod q²: 3R₈X ≡ ±I₈Y alongside
+  3R₈Y ≡ ∓I₈X (multiply by X/Y, use X²+Y² = q⁴). Deep_val-style
+  finish still needed. Next: formalize the easy two-equation cells,
+  then the L2-partner deep cell.
