@@ -145,3 +145,25 @@ N*conj(D) = ± real * (Gaussian square): the chi-square criterion, a
 pointwise-decidable Diophantine condition (candidate q determined by the
 factorization). These eight shapes are the true 3-level frontier of
 Theorem H, one layer deeper than the 2-level special-value loci.
+
+## 4-level merged sweep COMPLETE; the twelve deep shapes
+
+31,104 leaves: 28,416 dead (ZERO 6,144 + RESID 10,368 + IMB 8,448 +
+SING 3,456 = 91.4%). The 2,688 residual leaves collapse to TWELVE
+element-set shapes, each with exactly 224 leaves — the same structural
+family as at 3 levels: same-orientation interior elements across levels
+plus one axis element per shape (e.g. {m1p, m2p, m4p, x3}).
+For each shape, N*conj(D) factors explicitly (fail12_analysis.py) into
+
+  (monomial in Q, N_i, and a BARE pi- or pi-bar power)
+  x (purely imaginary difference bracket, Z... - Zbar...)
+  x (two mixed brackets whose pi/pi-bar valuation differences are even),
+
+identical in kind to the 3-level fail8 factorizations. So the survival
+condition at 4 levels is again the chi-square criterion:
+N*conj(D) = ± real * (Gaussian square), pointwise decidable with the
+candidate q pinned by the factorization. Conclusion: the deep-shape
+frontier is STABLE across levels — levels 3 and 4 produce no new
+obstruction type, only more copies of the same chi-square locus. The
+uniform-in-level question for Theorem H now reduces entirely to closing
+this single criterion class.

@@ -1,0 +1,37 @@
+shapes: 12
+shape ('m1p', 'm2p', 'm4p', 'x3') (example ('m1p', 'm2p', 'x3', 'm4p', (1, 1, 1, -1))):
+  N*conj(D) factored: -N3v*Q*Z1b*(Z1*Z2*Z3 - Z1b*Z2b*Z3b)*(N2v*N3v*N4v - N3v*N4v*Z2b + Z2b*Z3b*Z4b)*(2*N2v*N3v*N4v*Z2 - 2*N2v*N3v*N4v*Z2b - N2v*Z2*Z3*Z4 + N2v*Z2b*Z3b*Z4b - Z2*Z2b*Z3*Z4 + Z2*Z2b*Z3b*Z4b)
+
+shape ('m1p', 'm3p', 'm4p', 'x2') (example ('m1p', 'x2', 'm3p', 'm4p', (1, 1, 1, 1))):
+  N*conj(D) factored: -N3v*Q*Z1b*(Z1*Z2 - Z1b*Z2b)*(2*N2v*N3v*N4v - N4v*Z2b*Z3b - Z2b*Z3b*Z4b)*(N2v*N3v*N4v*Z2*Z3 - N2v*N3v*N4v*Z2b*Z3b - N2v*N3v*Z2*Z3*Z4 + N2v*N3v*Z2b*Z3b*Z4b + Z2*Z2b*Z3*Z3b*Z4 - Z2*Z2b*Z3*Z3b*Z4b)
+
+shape ('m1p', 'm3m', 'm4m', 'x2') (example ('m1p', 'x2', 'm3m', 'm4m', (1, 1, 1, -1))):
+  N*conj(D) factored: -N3v*Q*(Z1*Z2 - Z1b*Z2b)*(2*N2v*N3v*N4v*Z1b + N4v*Z1*Z2*Z3 - Z1*Z2*Z3*Z4)*(N2v*N3v*N4v*Z1**2*Z2*Z3 - N2v*N3v*N4v*Z1b**2*Z2b*Z3b + N2v*N3v*Z1**2*Z2*Z3*Z4 - N2v*N3v*Z1b**2*Z2b*Z3b*Z4b + Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4 - Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4b)
+
+shape ('m1p', 'm4p', 'x2', 'x3') (example ('m1p', 'x2', 'x3', 'm4p', (1, 1, 1, -1))):
+  N*conj(D) factored: -N2v*N3v*Q*Z1b*(Z2*Z3*Z4 - Z2b*Z3b*Z4b)*(2*N2v*N3v**2*N4v*Z1*Z2 - 2*N2v*N3v**2*N4v*Z1b*Z2b - N2v*N3v*N4v*Z1*Z2*Z3 + N2v*N3v*N4v*Z1b*Z2b*Z3b + N3v*Z1*Z2*Z2b*Z3b*Z4b - N3v*Z1b*Z2b**2*Z3b*Z4b - Z1*Z2*Z2b*Z3*Z3b*Z4b + Z1b*Z2b**2*Z3b**2*Z4b)
+
+shape ('m1m', 'm2m', 'm4m', 'x3') (example ('m1m', 'm2m', 'x3', 'm4m', (1, 1, 1, -1))):
+  N*conj(D) factored: -N3v*Q*Z1*(Z1*Z2*Z3 - Z1b*Z2b*Z3b)*(N2v*N3v*N4v - N3v*N4v*Z2 + Z2*Z3*Z4)*(2*N2v*N3v*N4v*Z2 - 2*N2v*N3v*N4v*Z2b - N2v*Z2*Z3*Z4 + N2v*Z2b*Z3b*Z4b - Z2*Z2b*Z3*Z4 + Z2*Z2b*Z3b*Z4b)
+
+shape ('m1m', 'm3p', 'm4p', 'x2') (example ('m1m', 'x2', 'm3p', 'm4p', (1, 1, 1, -1))):
+  N*conj(D) factored: -N3v*Q*(Z1*Z2 - Z1b*Z2b)*(2*N2v*N3v*N4v*Z1 + N4v*Z1b*Z2b*Z3b - Z1b*Z2b*Z3b*Z4b)*(N2v*N3v*N4v*Z1**2*Z2*Z3 - N2v*N3v*N4v*Z1b**2*Z2b*Z3b + N2v*N3v*Z1**2*Z2*Z3*Z4 - N2v*N3v*Z1b**2*Z2b*Z3b*Z4b + Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4 - Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4b)
+
+shape ('m1m', 'm3m', 'm4m', 'x2') (example ('m1m', 'x2', 'm3m', 'm4m', (1, 1, 1, 1))):
+  N*conj(D) factored: -N3v*Q*Z1*(Z1*Z2 - Z1b*Z2b)*(2*N2v*N3v*N4v - N4v*Z2*Z3 - Z2*Z3*Z4)*(N2v*N3v*N4v*Z2*Z3 - N2v*N3v*N4v*Z2b*Z3b - N2v*N3v*Z2*Z3*Z4 + N2v*N3v*Z2b*Z3b*Z4b + Z2*Z2b*Z3*Z3b*Z4 - Z2*Z2b*Z3*Z3b*Z4b)
+
+shape ('m1m', 'm4m', 'x2', 'x3') (example ('m1m', 'x2', 'x3', 'm4m', (1, 1, 1, -1))):
+  N*conj(D) factored: -N2v*N3v*Q*Z1*(Z2*Z3*Z4 - Z2b*Z3b*Z4b)*(2*N2v*N3v**2*N4v*Z1*Z2 - 2*N2v*N3v**2*N4v*Z1b*Z2b - N2v*N3v*N4v*Z1*Z2*Z3 + N2v*N3v*N4v*Z1b*Z2b*Z3b + N3v*Z1*Z2**2*Z3*Z4 - N3v*Z1b*Z2*Z2b*Z3*Z4 - Z1*Z2**2*Z3**2*Z4 + Z1b*Z2*Z2b*Z3*Z3b*Z4)
+
+shape ('m2p', 'm3p', 'm4p', 'x1') (example ('x1', 'm2p', 'm3p', 'm4p', (1, 1, 1, -1))):
+  N*conj(D) factored: -N2v*N3v*Q*Z1b*Z2b*(Z1 - Z1b)*(2*N3v*N4v - N4v*Z3b - Z3b*Z4b)*(N3v*N4v*Z3 - N3v*N4v*Z3b - N3v*Z3*Z4 + N3v*Z3b*Z4b + Z3*Z3b*Z4 - Z3*Z3b*Z4b)
+
+shape ('m2p', 'm4p', 'x1', 'x3') (example ('x1', 'm2p', 'x3', 'm4p', (1, 1, 1, 1))):
+  N*conj(D) factored: -N3v*Q*Z1b*Z2b*(Z3*Z4 - Z3b*Z4b)*(2*N2v*N3v**2*N4v*Z1 - 2*N2v*N3v**2*N4v*Z1b + N2v*N3v*Z1*Z3b*Z4b - N2v*N3v*Z1b*Z3b*Z4b - N3v*N4v*Z1*Z2*Z3 + N3v*N4v*Z1b*Z2b*Z3b - Z1*Z2*Z3*Z3b*Z4b + Z1b*Z2b*Z3b**2*Z4b)
+
+shape ('m2m', 'm3m', 'm4m', 'x1') (example ('x1', 'm2m', 'm3m', 'm4m', (1, 1, 1, -1))):
+  N*conj(D) factored: -N2v*N3v*Q*Z1*Z2*(Z1 - Z1b)*(2*N3v*N4v - N4v*Z3 - Z3*Z4)*(N3v*N4v*Z3 - N3v*N4v*Z3b - N3v*Z3*Z4 + N3v*Z3b*Z4b + Z3*Z3b*Z4 - Z3*Z3b*Z4b)
+
+shape ('m2m', 'm4m', 'x1', 'x3') (example ('x1', 'm2m', 'x3', 'm4m', (1, 1, 1, 1))):
+  N*conj(D) factored: -N3v*Q*Z1*Z2*(Z3*Z4 - Z3b*Z4b)*(2*N2v*N3v**2*N4v*Z1 - 2*N2v*N3v**2*N4v*Z1b + N2v*N3v*Z1*Z3*Z4 - N2v*N3v*Z1b*Z3*Z4 - N3v*N4v*Z1*Z2*Z3 + N3v*N4v*Z1b*Z2b*Z3b - Z1*Z2*Z3**2*Z4 + Z1b*Z2b*Z3*Z3b*Z4)
+
