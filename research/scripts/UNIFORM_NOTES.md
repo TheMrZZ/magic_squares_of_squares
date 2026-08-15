@@ -1002,3 +1002,28 @@ The uniform layer is now: 2 corner theorems + 2 master twin theorems
 every exponent tested, with the twin coverage now provably exact — a
 lone+twin relation escapes iff v₂(L) = 1 + v₂(T), and no such
 relation occurs in any census.
+
+## Round 62 — Three-prime layer: 36/36 kills are twin instances
+
+Reclassifying the 36 unconditional (1,1,1) kills through the twin
+lens: every one is a lone+twin shape where the twin pair flips the
+conjugation of one or two primes.
+
+- 14 + 14 single-flip relations = literal instances of
+  `uniform_twin_master_pi` / `uniform_twin_master_chi` — the third
+  prime's Gaussian factor rides inside the opaque slot; the parity
+  hypothesis is discharged by the new `mul_parity` lemma
+  (odd-Re/even-Im closed under multiplication).
+- 4 + 4 double-flip relations collapse over the composite
+  W = χ̄⁴ψ⁴. Sum-type (lone = unflipped part) is again master_pi with
+  w := W. Diff-type (lone = star W) is the new
+  `uniform_twin_composite_chi` in `MsqLean/UniformTwin3.lean`, built
+  on `im_composite_ne_zero` (W never real: star-fixedness forces
+  χ̄ ∣ χ⁴ψ̄⁴, impossible for distinct split primes) and
+  `star_dvd_star`.
+
+So the ENTIRE unconditional layer at (1,1,1) — three primes — is
+covered by the uniform twin machinery. The two-prime master theorems
+were already prime-count-agnostic in their opaque slot; only the
+composite-lone case needed a genuinely three-prime statement. Full
+build green, zero sorries.
