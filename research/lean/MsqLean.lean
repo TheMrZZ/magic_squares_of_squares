@@ -17,3 +17,4 @@ import MsqLean.TheoremEKernel
 import MsqLean.TwoPrimeClassify
 import MsqLean.PinchHelpers
 import MsqLean.SimplestRelation
+import MsqLean.RelationFamily

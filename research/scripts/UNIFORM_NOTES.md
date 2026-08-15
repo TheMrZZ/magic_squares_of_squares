@@ -727,3 +727,18 @@ p | C or p | D with C^2, D^2 < q — coordinate pinch (strict, both
 orderings); symmetrically q | A or q | B.  Both certificate variants
 (Re-core, Im-core) now have verified Lean templates; the remaining 30
 double-pinch relations are sign/star permutations of the two.
+
+## Eight double-pinch relations machine-checked (parametric family)
+
+Four concrete chains now verified (SimplestRelation.lean, zero
+sorries): simplest/second/third/fourth_relation_nonzero — the four
+(e2,e3) sign-variants of the aligned conjugation class, mixing Re-cores
+(p | 2(C^2-D^2)) and Im-cores (p | 4CD -> coordinate pinch) per side.
+RelationFamily.lean packages them as ONE parametric theorem
+relation_family_aligned (e2, e3 in {±1} hypotheses, 4-way rcases
+delegating to the chains via convert+push_cast+ring), plus the D -> -D
+mirror relation_family_aligned_mirror covering the fully-unconjugated
+class.  8 / 32 double-pinch relations formally dead; the (-,+,+)
+star-swapped class (8 more) follows the same recipe; the remaining 16
+carry the extra always-odd cubic factor (2X-q^2 / 2R+p^2) and need the
+two-factor treatment.
