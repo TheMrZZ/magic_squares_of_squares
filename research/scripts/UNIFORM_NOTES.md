@@ -468,3 +468,12 @@ residual; exact sweep over ALL ordered quadruples from
 square of squares has center root s p q r t with p,q,r,t < 40, for
 any s — the first four-prime exclusion.  The grading framework now
 spans one, two, three and four primes uniformly.
+
+## (1,1,1) residual structure: 600 relations, 23 grading classes
+
+h111_rels.py: the 43,392 residual (1,1,1) leaves collapse to 600
+distinct 3-term relations in 23 grading-shape classes (largest classes:
+mixed-support triples like {(0,1,1),(1,1,0),(1,1,1)}).  Same compact
+endpoint as two primes (216 relations): the entire multi-prime frontier
+consists of small explicit relation families whose survival is a
+coupled-residue condition across the primes involved.
