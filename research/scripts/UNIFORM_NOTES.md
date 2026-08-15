@@ -103,3 +103,31 @@ pi_+^{4 Delta_i} = kappa (mod p) for small rational kappa.  The uniform
 Theorem H program now rests on the single special-value phenomenon
 addressed by the Baker-bound step.  Remaining elementary layer: 4-level
 templates (expected to mirror).
+
+## The imbalance theorem (2-level case of Theorem H CLOSED)
+
+Master argument: any configuration's chi^4 equals the solved value
+zeta = Q*N/D, where N, D lie in the pi-orbit algebra (chi-free except Q).
+In Gaussian coordinates (Z = pi-power variables):
+
+- D is purely imaginary => pi/pibar-BALANCED: v_pi(D) = v_pibar(D).
+- N has a UNIQUE monomial of pibar-valuation zero (coefficient ±1, ±2 —
+  a unit for every odd p), while every monomial has pi-valuation >= 2.
+  Hence v_pibar(N) = 0 exactly and v_pi(N) >= 2, for ALL j, Delta >= 1.
+
+Then v_pibar(chi^4) = 0 forces v_pi(chi^4) >= 2, contradicting that chi^4
+is coprime to p.  This kills all 24 residual 2-level relations — including
+every special-value locus — with NO Baker input, NO second-order lifts.
+Verified symbolically for all 24 (script: the imbalance check).  Combined
+with the earlier 1-level closure: **all 1- and 2-level uniform templates
+for centers s p^a q are impossible, for every a, p, q, s.**
+
+## Merged engines (3- and 4-level, running)
+
+Per-leaf battery: ZERO-KILL (solved (RB,IB) = (0,0), dead by IB != 0),
+IMB-KILL (imbalance), RESID-KILL (norm residual unit-leading — cannot
+vanish), SING (separately closed).  Interim: >93% killed; FAILs are
+balanced-zeta locus leaves, for which the chi-adic constraint applies:
+chi^4 = Q N / D with N,D chi-free integers forces chi^2 | N — only
+finitely many q per (p, j, Delta), each an exact finite check.  Uniformity
+of that last class is the remaining question for 3+ levels.
