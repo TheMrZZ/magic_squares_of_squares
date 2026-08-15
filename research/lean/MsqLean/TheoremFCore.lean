@@ -1723,7 +1723,7 @@ lemma cross_L2_L34_int
       have h16v : 16 * v ^ 2 ≤ (q : ℤ) ^ 2 := by nlinarith [hnorm2, hI16, hv2, sq_nonneg xh]
       rcases hf with rfl | rfl <;>
         nlinarith [hbig, h16v, hq2p4, sq_nonneg (6 * v + 1), sq_nonneg (6 * v - 1)])
-  · -- R = ±q²: x̂² + I²v² = 1 impossible with I² ≥ 16
+  · -- R = ±q²: xh² + I²v² = 1 impossible with I² ≥ 16
     rcases Int.associated_iff.mp hass with hR | hR
     all_goals (
       have hR2 : R ^ 2 = (q : ℤ) ^ 4 := by rw [hR]; try ring
@@ -1758,6 +1758,307 @@ lemma cross_L1_L2_int
   rw [hc] at hin
   generalize hM : R * (e * X - g * (q : ℤ) ^ 2) = M at hin
   rcases hf with rfl | rfl <;> omega
+
+
+set_option maxHeartbeats 3200000 in
+/-- Mirror cells (Kb = L3 or L4, Kd = L2), integer core (σ = ±1 picks
+the class). Round-115 chain: R (or R/3) divides Y, the 3Y₁ = Iw trick
+avoids any case split on 3 ∣ I, p² ∣ w, R ∣ X, and the norm forces
+R ∣ q² (or R₃ ∣ q²) with three associated-power kills. -/
+lemma cross_L34_L2_int
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (R I X Y f g e σ : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hσ : σ = 1 ∨ σ = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hpR : ¬ (p : ℤ) ∣ R)
+    (hpR8 : ¬ (p : ℤ) ∣ (R ^ 2 - I ^ 2))
+    (hY0 : Y ≠ 0) (hI0 : I ≠ 0) (hR0 : R ≠ 0)
+    (hI4 : (4 : ℤ) ∣ I)
+    (hcop : IsCoprime R I)
+    (h1 : 2 * ((R ^ 2 - I ^ 2) * Y) = f * ((p : ℤ) ^ 2 * (σ * (R * Y) + I * X)))
+    (h2 : 3 * ((R ^ 2 - I ^ 2) * Y) + e * ((2 * R * I) * X)
+      = g * ((q : ℤ) ^ 2 * (2 * R * I))) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have h3P : Prime (3 : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; norm_num
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  have hq40 : ((q : ℤ) ^ 4) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  have hp20 : ((p : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hp.out.pos.ne')
+  have hp3ge : (3 : ℤ) ≤ (p : ℤ) := by
+    have h2' := hp.out.two_le
+    have : p ≠ 2 := by rintro rfl; simp at hpodd
+    have : 3 ≤ p := by omega
+    exact_mod_cast this
+  have hp4ge : (16 : ℤ) ≤ (p : ℤ) ^ 4 := by
+    have hp2sq : (9 : ℤ) ≤ (p : ℤ) ^ 2 := by nlinarith [hp3ge]
+    nlinarith [hp2sq]
+  have hIR8 : IsCoprime I (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime I (R ^ 2) := hcop.symm.pow_right
+    have h1'' := h0.add_mul_right_right (-I)
+    have heq : R ^ 2 + -I * I = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hRR8 : IsCoprime R (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime R (I ^ 2) := hcop.pow_right
+    have h1'' := (h0.neg_right).add_mul_right_right R
+    have heq : -I ^ 2 + R * R = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hI16 : (16 : ℤ) ≤ I ^ 2 := by
+    obtain ⟨t, ht⟩ := hI4
+    have ht0 : t ≠ 0 := by rintro rfl; simp at ht; exact hI0 ht
+    have ht2 : 1 ≤ t ^ 2 := by rcases lt_or_gt_of_ne ht0 with h | h <;> nlinarith
+    have hIt : I ^ 2 = 16 * t ^ 2 := by rw [ht]; ring
+    linarith [ht2, hIt]
+  have hR3Y : R ∣ 3 * Y := by
+    refine hRR8.dvd_of_dvd_mul_right ?_
+    exact ⟨2 * I * (g * (q : ℤ) ^ 2 - e * X), by linear_combination h2⟩
+  by_cases h3R : (3 : ℤ) ∣ R
+  · -- Case B: 3 ∣ R, work with R₃ = R/3
+    obtain ⟨R₃, hR3⟩ := h3R
+    subst hR3
+    have hR30 : R₃ ≠ 0 := by rintro rfl; simp at hR0
+    have hRY : R₃ ∣ Y := by
+      obtain ⟨c, hc⟩ := hR3Y
+      exact ⟨c, by linarith⟩
+    obtain ⟨Y₁, hYdef⟩ := hRY
+    subst hYdef
+    have hY1B : ((3 * R₃) ^ 2 - I ^ 2) * Y₁ = 2 * I * (g * (q : ℤ) ^ 2 - e * X) := by
+      have h0 : (3 * R₃) * (((3 * R₃) ^ 2 - I ^ 2) * Y₁
+          - 2 * I * (g * (q : ℤ) ^ 2 - e * X)) = 0 := by
+        linear_combination h2
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hR0
+      · linarith
+    have hIY1 : I ∣ Y₁ := by
+      refine hIR8.dvd_of_dvd_mul_right ?_
+      exact ⟨2 * (g * (q : ℤ) ^ 2 - e * X), by linear_combination hY1B⟩
+    obtain ⟨w, hwdef⟩ := hIY1
+    subst hwdef
+    have hR8wB : ((3 * R₃) ^ 2 - I ^ 2) * w = 2 * (g * (q : ℤ) ^ 2 - e * X) := by
+      have h0 : I * (((3 * R₃) ^ 2 - I ^ 2) * w
+          - 2 * (g * (q : ℤ) ^ 2 - e * X)) = 0 := by
+        linear_combination hY1B
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI0
+      · linarith
+    have hclubsB : 2 * (((3 * R₃) ^ 2 - I ^ 2) * R₃) * w
+        = f * (p : ℤ) ^ 2 * (3 * σ * R₃ ^ 2 * w + X) := by
+      have h0 : I * (2 * (((3 * R₃) ^ 2 - I ^ 2) * R₃) * w
+          - f * (p : ℤ) ^ 2 * (3 * σ * R₃ ^ 2 * w + X)) = 0 := by
+        linear_combination h1
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI0
+      · linarith
+    have hpR3 : ¬ (p : ℤ) ∣ R₃ := fun hd => hpR (hd.mul_left 3)
+    have hp2w : (p : ℤ) ^ 2 ∣ w := by
+      have hc2 : IsCoprime ((p : ℤ)) 2 :=
+        (hpP.coprime_iff_not_dvd).mpr (fun hd => by
+          have h2' : p ∣ 2 := by exact_mod_cast hd
+          have := Nat.le_of_dvd (by norm_num) h2'
+          have := hp.out.two_le
+          omega)
+      have hcall : IsCoprime ((p : ℤ) ^ 2) (2 * (((3 * R₃) ^ 2 - I ^ 2) * R₃)) :=
+        ((hc2.mul_right (((hpP.coprime_iff_not_dvd).mpr hpR8).mul_right
+          ((hpP.coprime_iff_not_dvd).mpr hpR3)))).pow_left
+      refine hcall.dvd_of_dvd_mul_right ?_
+      exact ⟨f * (3 * σ * R₃ ^ 2 * w + X), by linear_combination hclubsB⟩
+    obtain ⟨wh, hwh⟩ := hp2w
+    have hXrelB : f * X = R₃ * wh * (2 * ((3 * R₃) ^ 2 - I ^ 2) - 3 * f * σ * R₃ * (p : ℤ) ^ 2) := by
+      have h0 : (p : ℤ) ^ 2 * (f * X
+          - R₃ * wh * (2 * ((3 * R₃) ^ 2 - I ^ 2) - 3 * f * σ * R₃ * (p : ℤ) ^ 2)) = 0 := by
+        rcases hf with rfl | rfl
+        · linear_combination -hclubsB + (R₃ * (18 * R₃ ^ 2 - 2 * I ^ 2 - 3 * σ * R₃ * (p : ℤ) ^ 2)) * hwh
+        · linear_combination -hclubsB + (R₃ * (18 * R₃ ^ 2 - 2 * I ^ 2 + 3 * σ * R₃ * (p : ℤ) ^ 2)) * hwh
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hp20
+      · linarith
+    have hR3X : R₃ ∣ X := by
+      have hd : R₃ ∣ f * X := ⟨wh * (2 * ((3 * R₃) ^ 2 - I ^ 2) - 3 * f * σ * R₃ * (p : ℤ) ^ 2),
+        by linear_combination hXrelB⟩
+      rcases hf with rfl | rfl
+      · simpa using hd
+      · exact dvd_neg.mp (by simpa using hd)
+    obtain ⟨xh, hxh⟩ := hR3X
+    subst hxh
+    have hw2 : w ^ 2 = (p : ℤ) ^ 4 * wh ^ 2 := by rw [hwh]; ring
+    have hnormB : R₃ ^ 2 * (xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) = (q : ℤ) ^ 4 := by
+      linear_combination hq4 - R₃ ^ 2 * I ^ 2 * hw2
+    have hR3q2 : R₃ ∣ (q : ℤ) ^ 2 := by
+      have hsq : R₃ ^ 2 ∣ ((q : ℤ) ^ 2) ^ 2 :=
+        ⟨xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2), by linear_combination -hnormB⟩
+      exact (Int.pow_dvd_pow_iff two_ne_zero).mp hsq
+    have hwh0 : wh ≠ 0 := by
+      rintro rfl
+      simp at hwh
+      subst hwh
+      exact hY0 (by ring)
+    have hwh2 : 1 ≤ wh ^ 2 := by rcases lt_or_gt_of_ne hwh0 with h | h <;> nlinarith
+    have hIwh : (16 : ℤ) ≤ I ^ 2 * wh ^ 2 := by nlinarith [hI16, hwh2]
+    have hbig : 16 * (p : ℤ) ^ 4 ≤ I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) := by
+      have h0 : (0 : ℤ) ≤ (p : ℤ) ^ 4 := by positivity
+      nlinarith [hIwh, h0]
+    obtain ⟨i, hi, hass⟩ := (dvd_prime_pow hqP 2).mp hR3q2
+    interval_cases i
+    · -- R₃ = ±1: I² = p⁴ − 9 between consecutive squares
+      rw [pow_zero] at hass
+      have hR1 : R₃ = 1 ∨ R₃ = -1 := Int.isUnit_iff.mp (associated_one_iff_isUnit.mp hass)
+      have hR2 : R₃ ^ 2 = 1 := by rcases hR1 with rfl | rfl <;> norm_num
+      have hI2eq : I ^ 2 = (p : ℤ) ^ 4 - 9 := by linear_combination hp4 - 9 * hR2
+      have hlow : ((p : ℤ) ^ 2 - 1) ^ 2 < I ^ 2 := by nlinarith [hp3ge]
+      have habs : (p : ℤ) ^ 2 - 1 < |I| := by
+        have h0 : (0 : ℤ) ≤ |I| := abs_nonneg I
+        have hsq : ((p : ℤ) ^ 2 - 1) ^ 2 < |I| ^ 2 := by rw [sq_abs]; exact hlow
+        nlinarith [hsq, h0, sq_nonneg ((p : ℤ) ^ 2 - 1 - |I|)]
+      have hge : (p : ℤ) ^ 2 ≤ |I| := by omega
+      have hup : (p : ℤ) ^ 4 ≤ I ^ 2 := by nlinarith [hge, abs_nonneg I, sq_abs I]
+      linarith [hI2eq, hup]
+    · -- R₃ = ±q: window kill
+      rw [pow_one] at hass
+      rcases Int.associated_iff.mp hass with hR | hR
+      all_goals (
+        have hR2 : R₃ ^ 2 = (q : ℤ) ^ 2 := by rw [hR]; try ring
+        have hI2eq : I ^ 2 = (p : ℤ) ^ 4 - 9 * (q : ℤ) ^ 2 := by
+          linear_combination hp4 - 9 * hR2
+        have hinner : xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) = (q : ℤ) ^ 2 := by
+          have h0 : (q : ℤ) ^ 2 * ((xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) - (q : ℤ) ^ 2) = 0 := by
+            linear_combination hnormB - (xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) * hR2
+          rcases mul_eq_zero.mp h0 with h | h
+          · exact absurd h hq20
+          · linarith
+        nlinarith [hbig, hinner, hI2eq, hI16, sq_nonneg xh, hp4ge])
+    · -- R₃ = ±q²: inner = 1
+      rcases Int.associated_iff.mp hass with hR | hR
+      all_goals (
+        have hR2 : R₃ ^ 2 = (q : ℤ) ^ 4 := by rw [hR]; try ring
+        have hinner : xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) = 1 := by
+          have h0 : (q : ℤ) ^ 4 * ((xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) - 1) = 0 := by
+            linear_combination hnormB - (xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) * hR2
+          rcases mul_eq_zero.mp h0 with h | h
+          · exact absurd h hq40
+          · linarith
+        nlinarith [hbig, hinner, sq_nonneg xh, hp4ge])
+  · -- Case A: 3 ∤ R
+    have hc3 : IsCoprime R 3 := ((h3P.coprime_iff_not_dvd).mpr h3R).symm
+    have hRY : R ∣ Y := hc3.dvd_of_dvd_mul_left hR3Y
+    obtain ⟨Y₁, hYdef⟩ := hRY
+    subst hYdef
+    have hY1 : 3 * ((R ^ 2 - I ^ 2) * Y₁) = 2 * I * (g * (q : ℤ) ^ 2 - e * X) := by
+      have h0 : R * (3 * ((R ^ 2 - I ^ 2) * Y₁) - 2 * I * (g * (q : ℤ) ^ 2 - e * X)) = 0 := by
+        linear_combination h2
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hR0
+      · linarith
+    have hI3Y1 : I ∣ 3 * Y₁ := by
+      refine hIR8.dvd_of_dvd_mul_right ?_
+      exact ⟨2 * (g * (q : ℤ) ^ 2 - e * X), by linear_combination hY1⟩
+    obtain ⟨w, hw⟩ := hI3Y1
+    have hclubs : 2 * ((R ^ 2 - I ^ 2) * R) * w = f * (p : ℤ) ^ 2 * (σ * R ^ 2 * w + 3 * X) := by
+      have h0 : I * (2 * ((R ^ 2 - I ^ 2) * R) * w
+          - f * (p : ℤ) ^ 2 * (σ * R ^ 2 * w + 3 * X)) = 0 := by
+        linear_combination 3 * h1 - 2 * (R ^ 2 - I ^ 2) * R * hw
+          + f * (p : ℤ) ^ 2 * σ * R ^ 2 * hw
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI0
+      · linarith
+    have hp2w : (p : ℤ) ^ 2 ∣ w := by
+      have hc2 : IsCoprime ((p : ℤ)) 2 :=
+        (hpP.coprime_iff_not_dvd).mpr (fun hd => by
+          have h2' : p ∣ 2 := by exact_mod_cast hd
+          have := Nat.le_of_dvd (by norm_num) h2'
+          have := hp.out.two_le
+          omega)
+      have hcall : IsCoprime ((p : ℤ) ^ 2) (2 * ((R ^ 2 - I ^ 2) * R)) :=
+        ((hc2.mul_right (((hpP.coprime_iff_not_dvd).mpr hpR8).mul_right
+          ((hpP.coprime_iff_not_dvd).mpr hpR)))).pow_left
+      refine hcall.dvd_of_dvd_mul_right ?_
+      exact ⟨f * (σ * R ^ 2 * w + 3 * X), by linear_combination hclubs⟩
+    obtain ⟨wh, hwh⟩ := hp2w
+    have hXrel : 3 * (f * X) = R * wh * (2 * (R ^ 2 - I ^ 2) - f * σ * R * (p : ℤ) ^ 2) := by
+      have h0 : (p : ℤ) ^ 2 * (3 * (f * X)
+          - R * wh * (2 * (R ^ 2 - I ^ 2) - f * σ * R * (p : ℤ) ^ 2)) = 0 := by
+        rcases hf with rfl | rfl
+        · linear_combination -hclubs + (R * (2 * R ^ 2 - 2 * I ^ 2 - σ * R * (p : ℤ) ^ 2)) * hwh
+        · linear_combination -hclubs + (R * (2 * R ^ 2 - 2 * I ^ 2 + σ * R * (p : ℤ) ^ 2)) * hwh
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hp20
+      · linarith
+    have hR3X : R ∣ 3 * X := by
+      have hd : R ∣ 3 * (f * X) := ⟨wh * (2 * (R ^ 2 - I ^ 2) - f * σ * R * (p : ℤ) ^ 2),
+        by linear_combination hXrel⟩
+      rcases hf with rfl | rfl
+      · simpa using hd
+      · exact dvd_neg.mp (by simpa [mul_comm, mul_left_comm] using hd)
+    have hRX : R ∣ X := hc3.dvd_of_dvd_mul_left hR3X
+    obtain ⟨xh, hxh⟩ := hRX
+    subst hxh
+    have hw9 : 9 * Y₁ ^ 2 = I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) := by
+      have hsq : (3 * Y₁) ^ 2 = (I * ((p : ℤ) ^ 2 * wh)) ^ 2 := by
+        rw [show I * ((p : ℤ) ^ 2 * wh) = I * w from by rw [hwh], ← hw]
+      linear_combination hsq
+    have hnorm : R ^ 2 * (9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) = 9 * (q : ℤ) ^ 4 := by
+      linear_combination 9 * hq4 - R ^ 2 * hw9
+    have hR3q2 : R ∣ 3 * (q : ℤ) ^ 2 := by
+      have hsq : R ^ 2 ∣ (3 * (q : ℤ) ^ 2) ^ 2 :=
+        ⟨9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2), by linear_combination -hnorm⟩
+      exact (Int.pow_dvd_pow_iff two_ne_zero).mp hsq
+    have hRq2 : R ∣ (q : ℤ) ^ 2 := hc3.dvd_of_dvd_mul_left hR3q2
+    have hwh0 : wh ≠ 0 := by
+      rintro rfl
+      simp at hwh
+      subst hwh
+      have hY10 : Y₁ = 0 := by linarith [hw]
+      exact hY0 (by rw [hY10]; ring)
+    have hwh2 : 1 ≤ wh ^ 2 := by rcases lt_or_gt_of_ne hwh0 with h | h <;> nlinarith
+    have hIwh : (16 : ℤ) ≤ I ^ 2 * wh ^ 2 := by nlinarith [hI16, hwh2]
+    have hbig : 16 * (p : ℤ) ^ 4 ≤ I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) := by
+      have h0 : (0 : ℤ) ≤ (p : ℤ) ^ 4 := by positivity
+      nlinarith [hIwh, h0]
+    obtain ⟨i, hi, hass⟩ := (dvd_prime_pow hqP 2).mp hRq2
+    interval_cases i
+    · -- R = ±1: I² = p⁴ − 1 between consecutive squares
+      rw [pow_zero] at hass
+      have hR1 : R = 1 ∨ R = -1 := Int.isUnit_iff.mp (associated_one_iff_isUnit.mp hass)
+      have hR2 : R ^ 2 = 1 := by rcases hR1 with rfl | rfl <;> norm_num
+      have hI2eq : I ^ 2 = (p : ℤ) ^ 4 - 1 := by linear_combination hp4 - hR2
+      have hlow : ((p : ℤ) ^ 2 - 1) ^ 2 < I ^ 2 := by nlinarith [hp3ge]
+      have habs : (p : ℤ) ^ 2 - 1 < |I| := by
+        have h0 : (0 : ℤ) ≤ |I| := abs_nonneg I
+        have hsq : ((p : ℤ) ^ 2 - 1) ^ 2 < |I| ^ 2 := by rw [sq_abs]; exact hlow
+        nlinarith [hsq, h0, sq_nonneg ((p : ℤ) ^ 2 - 1 - |I|)]
+      have hge : (p : ℤ) ^ 2 ≤ |I| := by omega
+      have hup : (p : ℤ) ^ 4 ≤ I ^ 2 := by nlinarith [hge, abs_nonneg I, sq_abs I]
+      linarith [hI2eq, hup]
+    · -- R = ±q: window kill
+      rw [pow_one] at hass
+      rcases Int.associated_iff.mp hass with hR | hR
+      all_goals (
+        have hR2 : R ^ 2 = (q : ℤ) ^ 2 := by rw [hR]; try ring
+        have hI2eq : I ^ 2 = (p : ℤ) ^ 4 - (q : ℤ) ^ 2 := by linear_combination hp4 - hR2
+        have hinner : 9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) = 9 * (q : ℤ) ^ 2 := by
+          have h0 : (q : ℤ) ^ 2 * ((9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) - 9 * (q : ℤ) ^ 2) = 0 := by
+            linear_combination hnorm - (9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) * hR2
+          rcases mul_eq_zero.mp h0 with h | h
+          · exact absurd h hq20
+          · linarith
+        nlinarith [hbig, hinner, hI2eq, hI16, sq_nonneg xh, hp4ge])
+    · -- R = ±q²: inner = 9
+      rcases Int.associated_iff.mp hass with hR | hR
+      all_goals (
+        have hR2 : R ^ 2 = (q : ℤ) ^ 4 := by rw [hR]; try ring
+        have hinner : 9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2) = 9 := by
+          have h0 : (q : ℤ) ^ 4 * ((9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) - 9) = 0 := by
+            linear_combination hnorm - (9 * xh ^ 2 + I ^ 2 * ((p : ℤ) ^ 4 * wh ^ 2)) * hR2
+          rcases mul_eq_zero.mp h0 with h | h
+          · exact absurd h hq40
+          · linarith
+        nlinarith [hbig, hinner, sq_nonneg xh, hp4ge])
 
 
 end FCore
