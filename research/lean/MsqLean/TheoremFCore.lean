@@ -1415,4 +1415,155 @@ lemma cross_L2_L0_int
     nlinarith [hmain]
 
 
+set_option maxHeartbeats 1600000 in
+/-- Cross cell (Kb = L2, Kd = L1), integer core: the coprime
+cancellation chain Y = IRv, R₈v = fq² forces R = ±q² and q² ∣ v, so
+Y² ≥ q⁸ — impossible against X² + Y² = q⁴. -/
+lemma cross_L2_L1_int
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (R I X Y f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hpR : ¬ (p : ℤ) ∣ R)
+    (hqX : ¬ (q : ℤ) ∣ X)
+    (hY0 : Y ≠ 0) (hI0 : I ≠ 0) (hR0 : R ≠ 0)
+    (hcop : IsCoprime R I)
+    (h1 : 2 * ((R ^ 2 - I ^ 2) * Y) = f * ((q : ℤ) ^ 2 * (2 * R * I)))
+    (h2 : 3 * ((R ^ 2 - I ^ 2) * Y) + e * ((2 * R * I) * X)
+      = g * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I)) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  have hp20 : ((p : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hp.out.pos.ne')
+  have h1' : (R ^ 2 - I ^ 2) * Y = f * (q : ℤ) ^ 2 * (R * I) := by linarith [h1]
+  have hIR8 : IsCoprime I (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime I (R ^ 2) := hcop.symm.pow_right
+    have h1'' := h0.add_mul_right_right (-I)
+    have heq : R ^ 2 + -I * I = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hIY : I ∣ Y := by
+    refine hIR8.dvd_of_dvd_mul_right ?_
+    exact ⟨f * (q : ℤ) ^ 2 * R, by linear_combination h1'⟩
+  obtain ⟨w, hw⟩ := hIY
+  subst hw
+  have hR8w : (R ^ 2 - I ^ 2) * w = f * (q : ℤ) ^ 2 * R := by
+    have h0 : I * ((R ^ 2 - I ^ 2) * w - f * (q : ℤ) ^ 2 * R) = 0 := by
+      linear_combination h1'
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  have hRR8 : IsCoprime R (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime R (I ^ 2) := hcop.pow_right
+    have h1'' := (h0.neg_right).add_mul_right_right R
+    have heq : -I ^ 2 + R * R = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hRw : R ∣ w := by
+    refine hRR8.dvd_of_dvd_mul_right ?_
+    exact ⟨f * (q : ℤ) ^ 2, by linear_combination hR8w⟩
+  obtain ⟨v, hv⟩ := hRw
+  subst hv
+  have hR8v : (R ^ 2 - I ^ 2) * v = f * (q : ℤ) ^ 2 := by
+    have h0 : R * ((R ^ 2 - I ^ 2) * v - f * (q : ℤ) ^ 2) = 0 := by
+      linear_combination hR8w
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hR0
+    · linarith
+  have hRk : R * (3 * f * (q : ℤ) ^ 2 + 2 * e * X) = g * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 := by
+    have h0 : I * (R * (3 * f * (q : ℤ) ^ 2 + 2 * e * X)
+        - g * (p : ℤ) ^ 2 * (q : ℤ) ^ 2) = 0 := by
+      linear_combination h2 - 3 * I * R * hR8v
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  have hqk : ¬ (q : ℤ) ∣ (3 * f * (q : ℤ) ^ 2 + 2 * e * X) := by
+    intro hd
+    have h2X : (q : ℤ) ∣ 2 * e * X := by
+      have h3 : (q : ℤ) ∣ 3 * f * (q : ℤ) ^ 2 := ⟨3 * f * q, by ring⟩
+      exact (Int.dvd_add_right h3).mp hd
+    have h2X' : (q : ℤ) ∣ 2 * X := by
+      rcases he with rfl | rfl
+      · simpa using h2X
+      · exact dvd_neg.mp (by simpa using h2X)
+    rcases hqP.dvd_mul.mp h2X' with hq2 | hX
+    · have hq2' : q ∣ 2 := by exact_mod_cast hq2
+      have := Nat.le_of_dvd (by norm_num) hq2'
+      have := hq.out.two_le
+      omega
+    · exact hqX hX
+  have hq2R : (q : ℤ) ^ 2 ∣ R := by
+    have hc : IsCoprime ((q : ℤ) ^ 2) (3 * f * (q : ℤ) ^ 2 + 2 * e * X) :=
+      ((hqP.coprime_iff_not_dvd).mpr hqk).pow_left
+    exact hc.dvd_of_dvd_mul_right ⟨g * (p : ℤ) ^ 2, by linear_combination hRk⟩
+  obtain ⟨ρ, hρdef⟩ := hq2R
+  subst hρdef
+  have hρk : ρ * (3 * f * (q : ℤ) ^ 2 + 2 * e * X) = g * (p : ℤ) ^ 2 := by
+    have h0 : (q : ℤ) ^ 2 * (ρ * (3 * f * (q : ℤ) ^ 2 + 2 * e * X)
+        - g * (p : ℤ) ^ 2) = 0 := by
+      linear_combination hRk
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hq20
+    · linarith
+  have hpρ : ¬ (p : ℤ) ∣ ρ := fun hd => hpR (hd.mul_left _)
+  have hp2k : (p : ℤ) ^ 2 ∣ (3 * f * (q : ℤ) ^ 2 + 2 * e * X) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) ρ :=
+      ((hpP.coprime_iff_not_dvd).mpr hpρ).pow_left
+    exact hc.dvd_of_dvd_mul_right ⟨g, by linear_combination hρk⟩
+  obtain ⟨κ, hκ⟩ := hp2k
+  have hρκ : ρ * κ = g := by
+    have h0 : (p : ℤ) ^ 2 * (ρ * κ - g) = 0 := by
+      linear_combination hρk - ρ * hκ
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hp20
+    · linarith
+  have hρunit : ρ = 1 ∨ ρ = -1 := by
+    rcases hg with rfl | rfl
+    · rcases Int.eq_one_or_neg_one_of_mul_eq_one' hρκ with ⟨h, _⟩ | ⟨h, _⟩
+      · exact Or.inl h
+      · exact Or.inr h
+    · have h' : ρ * (-κ) = 1 := by linear_combination -hρκ
+      rcases Int.eq_one_or_neg_one_of_mul_eq_one' h' with ⟨h, _⟩ | ⟨h, _⟩
+      · exact Or.inl h
+      · exact Or.inr h
+  have hqI : ¬ (q : ℤ) ∣ I := by
+    intro hd
+    have h1'' : (q : ℤ) ∣ ((q : ℤ) ^ 2 * ρ) ^ 2 + I ^ 2 := by
+      obtain ⟨i, hi⟩ := hd
+      exact ⟨q ^ 3 * ρ ^ 2 + q * i ^ 2, by rw [hi]; ring⟩
+    rw [hp4] at h1''
+    have hqp : (q : ℤ) ∣ (p : ℤ) := hqP.dvd_of_dvd_pow h1''
+    have hqp' : q ∣ p := by exact_mod_cast hqp
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hq.out hp.out).mp hqp').symm
+  have hq2v : (q : ℤ) ^ 2 ∣ v := by
+    have hc : IsCoprime ((q : ℤ) ^ 2) (I ^ 2) :=
+      (((hqP.coprime_iff_not_dvd).mpr hqI).pow_left).pow_right
+    refine hc.dvd_of_dvd_mul_right ?_
+    exact ⟨(q : ℤ) ^ 2 * ρ ^ 2 * v - f, by linear_combination -hR8v⟩
+  obtain ⟨u, hu⟩ := hq2v
+  subst hu
+  have hu0 : u ≠ 0 := by
+    rintro rfl
+    have h00 : (0 : ℤ) = f * (q : ℤ) ^ 2 := by linear_combination hR8v
+    rcases hf with rfl | rfl
+    · exact hq20 (by linarith)
+    · exact hq20 (by linarith)
+  have hρ2 : ρ ^ 2 = 1 := by rcases hρunit with rfl | rfl <;> norm_num
+  have hI2 : 1 ≤ I ^ 2 := by rcases lt_or_gt_of_ne hI0 with h | h <;> nlinarith
+  have hu2 : 1 ≤ u ^ 2 := by rcases lt_or_gt_of_ne hu0 with h | h <;> nlinarith
+  have hq2ge : (2 : ℤ) ≤ (q : ℤ) := by exact_mod_cast hq.out.two_le
+  have hkey2 : X ^ 2 + (q : ℤ) ^ 8 * (I ^ 2 * u ^ 2) = (q : ℤ) ^ 4 := by
+    linear_combination hq4 - (q : ℤ) ^ 8 * (I ^ 2 * u ^ 2) * hρ2
+  have hIu : 1 ≤ I ^ 2 * u ^ 2 := by nlinarith [hI2, hu2]
+  have hq4ge : (16 : ℤ) ≤ (q : ℤ) ^ 4 := by nlinarith [hq2ge, sq_nonneg ((q : ℤ) - 2), sq_nonneg ((q : ℤ) ^ 2 - 4)]
+  have hq4pos : (0 : ℤ) < (q : ℤ) ^ 4 := by positivity
+  have hq8ge : (q : ℤ) ^ 4 * 16 ≤ (q : ℤ) ^ 8 := by nlinarith [hq4ge, hq4pos]
+  have hq8pos : (0 : ℤ) < (q : ℤ) ^ 8 := by positivity
+  have hq8Iu : (q : ℤ) ^ 8 ≤ (q : ℤ) ^ 8 * (I ^ 2 * u ^ 2) := by nlinarith [hIu, hq8pos]
+  nlinarith [hkey2, sq_nonneg X, hq8ge, hq8Iu, hq4ge]
+
+
 end FCore
