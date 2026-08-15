@@ -572,3 +572,22 @@ irreducibles).  Leaf level: 4,176 of the 43,392 residual leaves die via
 a dead relation, so 98,064 / 137,280 = 71.4% of ALL (1,1,1) leaves are
 now closed unconditionally (grading lemma + certificates), the rest
 confined to 564 explicit relations.
+
+## Full-coordinate cores: 134/216 relations dead, 98.35% of (2,2) leaves
+
+Working in full (C,D)/(A,B) coordinates (chi = C+Di, C^2+D^2 = q), the
+cyclotomic cores FACTOR FURTHER: Re(chi^4) = (C^2-2CD-D^2)(C^2+2CD-D^2)
+etc., so a factor's divisibility condition p | (product of cores)
+localizes (p prime) to p | (single core), and the operative size is the
+MAX core half-degree, not the sum.  Cores of half-degree 1/2 (C, D,
+C±D <= sqrt(2q)) give p <= c*sqrt(q); combined with any opposite-side
+exponent < 2 this BOUNDS BOTH PRIMES.  sym_bounds.py verifies the
+explicit bounds: all 110 such relations have max prime bound <= 144,
+comfortably inside the exhaustive p,q < 1000 sweep, so they are dead
+UNCONDITIONALLY (degree-1 cores aC+bD can vanish only for the single
+tiny prime q = (a^2+b^2)/g^2, also inside the sweep).  Union with the
+earlier certificates: 134 / 216 relations dead; leaf level
+93,468 / 95,040 = 98.35% of ALL (2,2) leaves closed unconditionally.
+The 1,572 remaining leaves live in 82 relations: 18 reduce to explicit
+Pell-band equations (core = ±kp inside a constant prime-ratio band) and
+64 carry exponent >= 2 wedges; 24 have a vanishing first-order side.

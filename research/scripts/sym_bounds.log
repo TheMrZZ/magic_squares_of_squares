@@ -1,0 +1,4 @@
+relations: 216
+{'bounded': 110, 'not-finite-class': 82, 'unit-side': 24}
+max prime bound over FINITE-CLOSED relations: 144.0
+relations with bound >= 1000 (outside sweep): 0
