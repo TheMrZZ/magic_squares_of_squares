@@ -1214,3 +1214,23 @@ relations killed by the machine-checked layer: 56 + 120 + 184 + 264 +
 320 = **944 across the five multi-prime grids**. The alive corner
 remainder at four primes: mixed-with-spectator (272, fragile) and
 π-conj-varying (320, one-sided).
+
+## Round 74 — Next arc scoped: fully-formal Theorem E (no center s·p·q)
+
+Assets in place: `norm_two_prime_classify` (z of norm s²pᵐqⁿ =
+u·s·πʲπ̄^{m−j}χᵏχ̄^{n−k}, already proven), the reduction, and the
+Theorem C assembly pattern (`no_four_diffs_prime_power` +
+`rep_structure`). Plan:
+
+1. `rep_structure_spq`: x² + y² = (s·p·q)², 2xy ≠ 0 ⟹
+   2xy = ε·s²·K with K ∈ {q²·Im π⁴-form, p²·Im χ⁴-form, Im(π⁴χ⁴),
+   Im(π⁴χ̄⁴)} — via the classification at (m,n) = (2,2), noting
+   z² = u²s²π^{2j}π̄^{4−2j}χ^{2k}χ̄^{4−2k}, u² = ±1, and (j,k) = (1,1)
+   is excluded by 2xy ≠ 0.
+2. `no_four_diffs_spq`: u, v, u+v, u−v all of that form ⟹ False —
+   finite case analysis over type assignments; the arising equations
+   are (1,1)-grid relations, i.e. exactly the territory of the
+   uniform twin theorems plus small degenerate cases (repeated
+   types ⇒ u = ±v-style collisions, as in Theorem C's t1 = t2 branch).
+3. Assemble `no_magic_square_of_squares_spq_center` through the
+   reduction — the first fully machine-checked two-prime form.
