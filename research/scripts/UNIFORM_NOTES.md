@@ -484,3 +484,9 @@ h111_engine300.py: same (1,1,1) engine over all ordered triples of
 distinct primes = 1 mod 4 below 300 (951,326,208 checks): ZERO
 satisfiable.  No magic square of squares has center root s p q r with
 p, q, r < 300, for any s.
+
+## (2,1,1) bound raised: p,q,r < 150
+
+h211_engine150.py: 616,089,600 checks over all ordered triples of
+distinct primes = 1 mod 4 below 150: ZERO satisfiable.  No magic
+square of squares has center root s p^2 q r with p, q, r < 150.
