@@ -1048,3 +1048,22 @@ uniform toolkit — now 2 corner + 2 master twin + 2 composite twin
 theorems + instances — covers 100% of unconditional kills at every
 exponent censused so far: (2,2), (3,2), (3,3), (4,2), (4,3), (5,2),
 (4,4) two-prime; (1,1,1), (2,1,1) three-prime.
+
+## Round 64 — (2,2,1) census: 160/160 covered after power-generalization
+
+(2,2,1): 6368 relations, 160 killed unconditionally — again all twin
+shapes. Two composite patterns needed power-generalized theorems:
+
+- `uniform_twin_composite_chi_pow` + `im_composite_pow_ne_zero`:
+  composite W = χ̄^{4(k+1)}ψ^{4(l+1)} with lone = star W (covers the
+  ((1,1),(2,2)) diff-type shapes).
+- `uniform_twin_composite_lone_pow`: lone Z = π^{4(k+1)}χ^{4(l+1)},
+  twin part Z^{t+1} (covers the ((1,2),(1,2)) sum-type shape; the
+  lone is a first power, so the 2-adic rule is trivially satisfied).
+- Lesson recorded: `linear_combination` across simp-normalized
+  hypotheses requires re-running the im_mul/re_mul simp AFTER any
+  rw that introduces fresh Im-of-product atoms, and normalizing the
+  key goal with the same set.
+
+Coverage stands at 100% for all ten censused exponent grids:
+(2,2)…(4,4) two-prime, (1,1,1), (2,1,1), (2,2,1) three-prime.
