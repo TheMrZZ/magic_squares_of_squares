@@ -1982,3 +1982,15 @@ in the ratio layer is done. Remaining: assemble no_ratio2 (routing
 all 49 class pairs to their kills), the distinctness wrapper
 deriving the six hypotheses from u ≠ 0, v ≠ 0, u ≠ ±v, then
 no_four_diffs_sp2q and the capstone.
+
+## Round 124 — ★★★ THEOREM F MACHINE-CHECKED ★★★
+
+no_magic_square_of_squares_sp2q_center compiles, zero sorries: no
+3×3 fully magic square of nine distinct perfect squares has center
+entry (s·p²·q)² for distinct primes p, q ≡ 1 (mod 4) and rigid s.
+The formal frontier now covers center classes s·pᵃ (Theorem C/D),
+s·p·q (Theorem E), and s·p²·q (Theorem F). The F-proof is the
+deepest yet: seven D-classes, two 25-cell cross-pair cores, a
+49-cell ratio layer, and a genuine invocation of Fermat's right
+triangle theorem (mathlib not_fermat_42) through the descent
+u⁴ − 4v⁴ = w². Deliverables (README/paper/artifact/memory) next.

@@ -4858,4 +4858,37 @@ theorem no_four_diffs_sp2q
     ε1 ε2 ε3 ε4 hε1 hε2 hε3 hε4 hKa hKb hKc hKd hab hac had hbc hbd hcd hE1 hE2
 
 
+/-- **Theorem F, machine-checked.** No 3×3 fully magic square of nine
+perfect squares has center entry (s·p²·q)² for distinct primes
+p, q ≡ 1 (mod 4) and rigid s. -/
+theorem no_magic_square_of_squares_sp2q_center
+    (hp4 : p % 4 = 1) (hq4 : q % 4 = 1) (hpq : p ≠ q)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1) (hs0 : 0 < s)
+    (A B C D E F G H I S : ℤ)
+    (sqA : IsSq A) (sqB : IsSq B) (sqC : IsSq C) (sqD : IsSq D) (sqE : IsSq E)
+    (sqF : IsSq F) (sqG : IsSq G) (sqH : IsSq H) (sqI : IsSq I)
+    (r1 : A + B + C = S) (r2 : D + E + F = S) (r3 : G + H + I = S)
+    (c1 : A + D + G = S) (c2 : B + E + H = S) (c3 : C + F + I = S)
+    (d1 : A + E + I = S) (d2 : C + E + G = S)
+    (hE : E = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ 4 * (q : ℤ) ^ 2)
+    (hAE : A ≠ E) (hCE : C ≠ E) (hAC : A ≠ C) (hHE : H ≠ E) : False := by
+  obtain ⟨e, u, v, x1, y1, x2, y2, x3, y3, x4, y4, hEe, hAu, hCv,
+    hxy1, hq1, hxy2, hq2, hxy3, hq3, hxy4, hq4'⟩ :=
+    converse_reduction A B C D E F G H I S sqA sqB sqC sqD sqE sqF sqG sqH sqI
+      r1 r2 r3 c1 c2 c3 d1 d2
+  have he2 : e ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ 4 * (q : ℤ) ^ 2 := by omega
+  rw [he2] at hxy1 hxy2 hxy3 hxy4
+  obtain ⟨PA, PB, hAB⟩ := Nat.Prime.sq_add_sq (p := p) (by omega)
+  obtain ⟨QC, QD, hCD⟩ := Nat.Prime.sq_add_sq (p := q) (by omega)
+  have hu0 : u ≠ 0 := by omega
+  have hv0 : v ≠ 0 := by omega
+  have huv : u ≠ v := by omega
+  have huv' : u ≠ -v := by omega
+  exact no_four_diffs_sp2q p q (by omega) (by omega) hpq
+    (PA : ℤ) (PB : ℤ) (QC : ℤ) (QD : ℤ)
+    (by exact_mod_cast hAB) (by exact_mod_cast hCD)
+    s hs hs0 u v hu0 hv0 huv huv'
+    x1 y1 x2 y2 x3 y3 x4 y4 hxy1 hq1 hxy2 hq2 hxy3 hq3 hxy4 hq4'
+
+
 end FCore
