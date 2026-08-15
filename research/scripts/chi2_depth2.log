@@ -1,0 +1,4 @@
+exceptions found: 1806 ; c=0 points: 0
+escape-depth distribution (v_p(c) - e_min): {2: 504, 4: 588, 6: 210, 8: 252, 12: 126, 16: 84, 20: 42}
+LTE comparisons: 1806 ; matches: 0
+mismatch examples: [(2, 0, False), (4, 0, False), (6, 0, False), (8, 0, False), (2, 0, False), (4, 0, False), (2, 0, False), (4, 0, False), (6, 0, False), (8, 0, False)]

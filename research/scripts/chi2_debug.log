@@ -1,0 +1,5 @@
+shape ('m1p', 'm3p', 'x1', 'x2') p = 5 pi = (1, 2) t = 2A = 2 js = (1, 1, 3)
+min set size: 2 coeffs: [-1, 1]
+b exponents: [40, 40] Db = 0
+ord(t) = 4 ; Db mod d = 0
+t^Db mod p = 1

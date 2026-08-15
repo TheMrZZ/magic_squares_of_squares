@@ -306,3 +306,19 @@ ZERO feasible triples, coefficient pairs identical to the float run
 ((1,2) for the 8 unconditionally-closed shapes, (-1,1) for the 12
 hyperplane-locus shapes).  ALL EXACT-CERTIFIED.  The 8-shape
 unconditional closure is now fully rigorous at the certificate level.
+
+## Correction: the degeneration cancellation is EXACT (Delta b = 0)
+
+Debugging the degeneration points (chi2_debug.py) shows the (-1,+1)
+minimal pair always has IDENTICAL B-exponents on the tie locus: the
+pair is {(P,B,+1),(B,P,-1)}-type, and the tie P.j = B.j forces both
+weight coordinates equal, so the pair annihilates identically as
+Gaussian integers — not merely mod p.  (This also explains the
+"trivial" classification: Delta b = 0.)  No lifting-the-exponent input
+is needed anywhere.  Consequence: on each of the 12 hyperplane loci,
+c equals the SUM OF THE REMAINING GROUPS exactly, and the frontier is
+a level-2 leading analysis: delete the cancelling pair, re-run the
+minimal-set LP restricted to the hyperplane.  Unit-leading survivors
+at level 2 for all 12 shapes would close levels 3-4 completely.
+The measured even escape depths (2..20) are the layer gaps to the
+first surviving level-2 group, linear in the orbit indices.
