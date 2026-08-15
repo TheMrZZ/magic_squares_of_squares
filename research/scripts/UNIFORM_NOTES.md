@@ -2053,3 +2053,18 @@ fine structure per low class — exactly like Theorem F's mirror cells
 Consequence for the uniform-induction hope: the level-transfer step
 needs the per-class mirror-cell work at every level; F's proofs are
 the templates but not free. rep_sq_unique (shipped) remains useful.
+
+## Round 129 — (M7, p²L3/L4) derived: the q = p⁴ − 4 kill
+
+After the M7-chain and elimination: fJK = gp⁴(R₄Jw ± 2X); w even
+dies by parity; w odd forces J ∣ X (p ∤ J since J ≡ 4R₄² mod p),
+and the norm gives J²(x′² + 4t²w²) = q⁴, so J ∣ q²:
+- J = ±1: 4R₄² = p⁴ ± 1: minus-branch splits (p²−1)/2 · (p²+1)/2
+  into coprime squares differing by 1; plus-branch dies mod 4.
+- J = ±q: mod-4 forces 4R₄² = p⁴ − q and p⁴ ∣ 3fq + 2eεx′ with the
+  window p⁴ ≤ 5q; the fδ = 1 branch gives t²w² = R₄²(q − R₄²) and
+  R₄ ∣ q² with R₄² ≤ q forces R₄ = ±1, hence q = p⁴ − 4 =
+  (p²−2)(p²+2), composite — dead. The fδ = −1 branch dies by size.
+- J = ±q²: x′² + 4t²w² = 1 with tw ≠ 0, dead.
+Remaining T-cells after this: (M7, p²L5/L6) and the five
+(p²Lᵢ, M7) mixed-level cells; S-core needs its seven row cells.
