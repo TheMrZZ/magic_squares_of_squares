@@ -1834,3 +1834,22 @@ p² ∥ Y, X ≡ egq² (mod p²), and y² = n(2q² − p⁴n) with n odd killed
 by 2-adics; n = 2m, q ∤ m leads to q² = (p²a)² + b² — a second rep
 of q² as a sum of two squares, suggesting a rep-uniqueness or
 further-descent finish. Next tick.
+
+## Round 115 — (L3/L4, L2) mirror cells: complete derivation
+
+σ-parametrized (σ = ±1 picks L3/L4): eq1: 2R₈Y = fp²(σRY + IX),
+eq2: 3R₈Y + 2eRIX = 2gq²RI.
+Case 3 ∤ R: eq2 gives R ∣ 3Y → R ∣ Y =: RY₁; then I ∣ 3Y₁, and the
+trick is to set 3Y₁ = Iw (NO case split on 3 ∣ I): R₈w = 2(gq²−eX);
+eq1·3 gives 2R₈Rw = fp²(σR²w + 3X) → p² ∣ w, w = p²ŵ;
+then 3fX = Rŵ(2R₈ − fσRp²) → R ∣ X = Rx̂ and (9X² + (3Y)²):
+R²(9x̂² + I²p⁴ŵ²) = 9q⁴ → R ∣ 3q² → R ∣ q². Subcases:
+  R² = q⁴: 9x̂² + I²p⁴ŵ² = 9 with I²p⁴ ≥ 256 → ŵ = 0 → Y = 0 ✗.
+  R² = q²: I² = p⁴ − q² > 0 → q² < p⁴, but ŵ ≠ 0 → 16p⁴ ≤ 9q² ✗.
+  R² = 1: I² = p⁴ − 1 between consecutive squares ✗.
+Case 3 ∣ R (then 3 ∤ I): R = 3R₃: R₃ ∣ Y = R₃Y₁, I ∣ Y₁ = Iw,
+R₈w = 2(gq² − eX), p² ∣ w, R₃ ∣ X, norm R₃²(x̂² + I²p⁴ŵ²) = q⁴ →
+R₃ ∣ q²: {q⁴: ŵ = 0 ✗; q²: I² = p⁴ − 9q² > 0 vs 16p⁴ ≤ q² ✗;
+1: I² = p⁴ − 9 between consecutive squares (needs p ≥ 3) ✗}.
+All elementary. Once formalized, the ENTIRE T-form 25-cell table is
+closed; then the 2S-mirror family and the bucket dispatcher.
