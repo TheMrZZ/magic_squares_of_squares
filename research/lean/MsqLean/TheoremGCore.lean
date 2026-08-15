@@ -204,4 +204,144 @@ lemma dispatch_lowG
   · exact mul_left_cancel₀ hp2 (by linear_combination hE2)
 
 
+/-- Level-12 T-form cells with two p²-divisible partners die
+uniformly: p² ∣ Y then p² ∣ X force p ∣ q. Generic in both
+cofactors, covering 49 cells of the core at once. -/
+lemma cross12_p2p2
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Mb Md f g e : ℤ) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = f * ((p : ℤ) ^ 2 * Mb))
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = g * ((p : ℤ) ^ 2 * Md)) :
+    False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR12, hpI12⟩ := p_not_dvd_re12_im12 p hpodd A B hpAB
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2Y : (p : ℤ) ^ 2 ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * (((⟨A, B⟩ : GaussianInt) ^ 12).re)) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpR12)).pow_left
+    refine hc.dvd_of_dvd_mul_right ?_
+    exact ⟨f * Mb, by linear_combination h1⟩
+  obtain ⟨y, hy⟩ := hp2Y
+  have hIX : (p : ℤ) ^ 2 ∣ (((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    have hEX : e * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        = (p : ℤ) ^ 2 * (g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) * y) := by
+      linear_combination h2 - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) * hy
+    rcases he with rfl | rfl
+    · exact ⟨g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) * y, by linarith [hEX]⟩
+    · exact ⟨-(g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) * y), by linarith [hEX]⟩
+  have hp2X : (p : ℤ) ^ 2 ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) ((((⟨A, B⟩ : GaussianInt) ^ 12).im)) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpI12).pow_left
+    exact hc.dvd_of_dvd_mul_right (by rwa [mul_comm] at hIX)
+  obtain ⟨x, hx⟩ := hp2X
+  have hq4c := norm4_coord q C D hqCD
+  have hq4d : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    refine ⟨(p : ℤ) ^ 3 * (x ^ 2 + y ^ 2), ?_⟩
+    rw [← hq4c, hx, hy]; ring
+  have hpq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4d
+  have : p ∣ q := by exact_mod_cast hpq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+
+/-- (p²·L0-row, M7): 2R₁₂ = f·p⁶, even = odd. -/
+lemma cross12_L0_M7
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = f * ((p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) : False := by
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have h0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) * (2 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) - f * (p : ℤ) ^ 6) = 0 := by
+    linear_combination h1
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact hY0 h
+  · obtain ⟨c, hc⟩ := (odd_cast p hpodd).pow (n := 6)
+    generalize hM : (((⟨A, B⟩ : GaussianInt) ^ 12).re) = M at h
+    rcases hf with rfl | rfl <;> omega
+
+/-- (p²·L1-row, M7): eliminate R₁₂Y, cancel the common I₄-factor of
+I₁₂, and 2J(eX − gq²) = −3f·p⁴q² is even = odd. -/
+lemma cross12_L1_M7
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f g e : ℤ) (hf : f = 1 ∨ f = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = f * ((p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)))
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      = g * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))) : False := by
+  have hI0 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have hI12f : (((⟨A, B⟩ : GaussianInt) ^ 12).im) = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) := by
+    rw [im12_eq]; ring
+  have h0 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (2 * ((3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * (e * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - g * (q : ℤ) ^ 2))
+      + 3 * f * ((p : ℤ) ^ 4 * (q : ℤ) ^ 2)) = 0 := by
+    linear_combination 2 * h2 - 3 * h1 - 2 * (e * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - g * (q : ℤ) ^ 2) * hI12f
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact hI0 h
+  · obtain ⟨c, hc⟩ := ((odd_cast p hpodd).pow (n := 4)).mul ((odd_cast q hqodd).pow (n := 2))
+    generalize hM : (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * (e * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - g * (q : ℤ) ^ 2) = M at h
+    generalize hN : (p : ℤ) ^ 4 * (q : ℤ) ^ 2 = N at h hc
+    rcases hf with rfl | rfl <;> omega
+
+/-- S-form M7-row: 2X = f·q², even = odd. -/
+lemma cross12S_M7row
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))) : False := by
+  have hI120 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ≠ 0 := im12_ne_zero p hpodd A B hpAB
+  have h0 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * (2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - f * (q : ℤ) ^ 2) = 0 := by
+    linear_combination h1
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact hI120 h
+  · obtain ⟨c, hc⟩ := (odd_cast q hqodd).pow (n := 2)
+    rcases hf with rfl | rfl <;> omega
+
+/-- Level-12 S-form cells with two p²-divisible partners: mirror of
+cross12_p2p2. -/
+lemma cross12S_p2p2
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Mb Md f g e : ℤ) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((p : ℤ) ^ 2 * Mb))
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * ((p : ℤ) ^ 2 * Md)) :
+    False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR12, hpI12⟩ := p_not_dvd_re12_im12 p hpodd A B hpAB
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2X : (p : ℤ) ^ 2 ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpI12)).pow_left
+    refine hc.dvd_of_dvd_mul_right ?_
+    exact ⟨f * Mb, by linear_combination h1⟩
+  obtain ⟨x, hx⟩ := hp2X
+  have hRY : (p : ℤ) ^ 2 ∣ (((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hEX : e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        = (p : ℤ) ^ 2 * (g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) * x) := by
+      linear_combination h2 - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) * hx
+    rcases he with rfl | rfl
+    · exact ⟨g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) * x, by linarith [hEX]⟩
+    · exact ⟨-(g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) * x), by linarith [hEX]⟩
+  have hp2Y : (p : ℤ) ^ 2 ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) ((((⟨A, B⟩ : GaussianInt) ^ 12).re)) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpR12).pow_left
+    exact hc.dvd_of_dvd_mul_right (by rwa [mul_comm] at hRY)
+  obtain ⟨y, hy⟩ := hp2Y
+  have hq4c := norm4_coord q C D hqCD
+  have hq4d : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    refine ⟨(p : ℤ) ^ 3 * (x ^ 2 + y ^ 2), ?_⟩
+    rw [← hq4c, hx, hy]; ring
+  have hpq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4d
+  have : p ∣ q := by exact_mod_cast hpq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+
 end GCore
