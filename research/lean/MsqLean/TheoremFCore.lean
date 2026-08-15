@@ -1206,4 +1206,78 @@ lemma dispatch_lowE
   · exact mul_left_cancel₀ hp2 (by linear_combination hE2)
 
 
+/-- Extraction-tier corollary: c·Im z cannot carry a full p² when
+π ∣ z but π ∤ z̄ and p ∤ c. -/
+lemma p2_extract_kill
+    (hpodd : p % 2 = 1) (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (z : GaussianInt) (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (hz : (⟨A, B⟩ : GaussianInt) ∣ z)
+    (hzs : ¬ (⟨A, B⟩ : GaussianInt) ∣ star z)
+    (h : c * z.im = (p : ℤ) ^ 2 * m) : False := by
+  refine twoterm_p_extract p hpodd A B hpAB (⟨0, m⟩ : GaussianInt) z 0 1 c hc hz hzs ?_
+  show (1 : ℤ) * ((p : ℤ) ^ (2 * (0 + 1)) * (⟨0, m⟩ : GaussianInt).im) = c * z.im
+  show (1 : ℤ) * ((p : ℤ) ^ (2 * (0 + 1)) * m) = c * z.im
+  linear_combination -h
+
+/-- π divides neither conjugate of π⁸·w⁴ for w ∈ {χ, χ̄}. -/
+lemma pi_not_dvd_star_p8w4
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣
+      star (((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)) := by
+  intro h
+  rw [star_mul, star_pow, star_pow, mul_comm] at h
+  have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
+  rcases hπprime.dvd_mul.mp h with h1 | h1
+  · exact pi_not_dvd_star p hpodd A B hpAB (hπprime.dvd_of_dvd_pow h1)
+  · have h2 := hπprime.dvd_of_dvd_pow h1
+    have hstar : star (⟨C, D⟩ : GaussianInt) = (⟨C, -D⟩ : GaussianInt) := by
+      ext <;> simp
+    rw [hstar] at h2
+    have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+    exact not_dvd_other p q hpq A B C (-D) hpAB hqCD2 h2
+
+/-- p ∤ 2·Im(π⁸χ⁴) up to a factor prime to p: the p²-kill for a lone
+level-8 slot against two p²-classes. -/
+lemma p2_not_dvd_L5
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * L5 A B C D = (p : ℤ) ^ 2 * m) : False := by
+  refine p2_extract_kill p hpodd A B hpAB
+    (((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_right (dvd_pow_self _ (by norm_num)) _)
+    (pi_not_dvd_star_p8w4 p q hpodd hpq A B C D hpAB hqCD) ?_
+  unfold L5 at h
+  exact h
+
+/-- Same for L6 = Im(π⁸χ̄⁴). -/
+lemma p2_not_dvd_L6
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * L6 A B C D = (p : ℤ) ^ 2 * m) : False := by
+  have hstar : (star (⟨C, D⟩ : GaussianInt)) = (⟨C, -D⟩ : GaussianInt) := by
+    ext <;> simp
+  have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+  refine p2_extract_kill p hpodd A B hpAB
+    (((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, -D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_right (dvd_pow_self _ (by norm_num)) _)
+    (pi_not_dvd_star_p8w4 p q hpodd hpq A B C (-D) hpAB hqCD2) ?_
+  unfold L6 at h
+  rw [hstar] at h
+  exact h
+
+/-- p² never divides c·I₈ for p ∤ c: the L2-slot kill. -/
+lemma p2_not_dvd_I8
+    (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * (((⟨A, B⟩ : GaussianInt) ^ 8).im) = (p : ℤ) ^ 2 * m) : False := by
+  refine p2_extract_kill p hpodd A B hpAB ((⟨A, B⟩ : GaussianInt) ^ 8) c m hc
+    (dvd_pow_self _ (by norm_num))
+    (fun hd => pi_not_dvd_star p hpodd A B hpAB
+      ((prime_pi p A B hpAB).dvd_of_dvd_pow (by rwa [star_pow] at hd))) h
+
+
 end FCore
