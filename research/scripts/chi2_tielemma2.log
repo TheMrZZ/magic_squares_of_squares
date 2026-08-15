@@ -1,0 +1,49 @@
+   triple-ties feasible: 0
+3-level ('m1p', 'm2p', 'm3p', 'x1'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 6, 2), (4, 4, 0), 2, 1)]
+   triple-ties feasible: 0
+3-level ('m1p', 'm3p', 'x1', 'x2'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+3-level ('m1p', 'm2p', 'm3p', 'x2'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+3-level ('m1m', 'm2m', 'm3m', 'x1'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 6, 2), (4, 4, 0), 2, 1)]
+   triple-ties feasible: 0
+3-level ('m1m', 'm3m', 'x1', 'x2'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+3-level ('m1m', 'm2m', 'm3m', 'x2'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+3-level ('m2p', 'm3p', 'x1', 'y'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+3-level ('m2m', 'm3m', 'x1', 'y'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+4-level ('m1p', 'm2p', 'm4p', 'x3'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+4-level ('m1p', 'm3p', 'm4p', 'x2'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 2, 6, 2), (4, 4, 4, 0), 2, 1)]
+   triple-ties feasible: 0
+4-level ('m1p', 'm3m', 'm4m', 'x2'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 4, 4, 0), (0, 2, 6, 2), 1, 2)]
+   triple-ties feasible: 0
+4-level ('m1p', 'm4p', 'x2', 'x3'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+4-level ('m1m', 'm2m', 'm4m', 'x3'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+4-level ('m1m', 'm3p', 'm4p', 'x2'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 4, 4, 0), (0, 2, 6, 2), 1, 2)]
+   triple-ties feasible: 0
+4-level ('m1m', 'm3m', 'm4m', 'x2'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 2, 6, 2), (4, 4, 4, 0), 2, 1)]
+   triple-ties feasible: 0
+4-level ('m1m', 'm4m', 'x2', 'x3'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+4-level ('m2p', 'm3p', 'm4p', 'x1'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 4, 6, 2), (4, 4, 4, 0), 2, 1)]
+   triple-ties feasible: 0
+4-level ('m2p', 'm4p', 'x1', 'x3'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+   triple-ties feasible: 0
+4-level ('m2m', 'm3m', 'm4m', 'x1'): feasible leading pairs 1, coeff combos {(1, 2): 1}, NON-CANCELLING: 1
+   bad: [((0, 4, 6, 2), (4, 4, 4, 0), 2, 1)]
+   triple-ties feasible: 0
+4-level ('m2m', 'm4m', 'x1', 'x3'): feasible leading pairs 1, coeff combos {(-1, 1): 1}, NON-CANCELLING: 0
+LEMMA FAILS

@@ -268,3 +268,31 @@ now well-defined (self-similar leading-pair analysis at level 2).  If
 level-2 leading groups are again unique unit conjugate pairs for every
 pattern, escape requires a second independent cancellation; termination
 of this recursion = full uniform closure of levels 3-4.
+
+## The tie-structure dichotomy: 8 of 20 deep shapes closed unconditionally
+
+LP certificates over the valuation-group forms (chi2_tielemma*.py,
+chi2_pform.py), for every one of the 20 deep shapes:
+  - every P-form is a SINGLETON (no two live groups share a pi-weight);
+  - NO triple of distinct P-forms can jointly achieve the minimum
+    (all 3-subsets LP-infeasible, all shapes);
+  - exactly ONE pair of P-forms is jointly-minimal-feasible: the
+    shape's unique tie hyperplane.
+Hence for every real weight j >= 1 the minimal pi-layer of c is either a
+single group (unit coefficient => v finite => c != 0) or that one pair.
+On the tie locus, conjugation symmetry (P-attainers {P1,P2} tied at e)
+makes the minimal PIBAR-layer sum to (gamma1+gamma2) * t^e mod pi:
+  - 8 shapes have (gamma1,gamma2) = (1,2): the layer is 3 t^e, nonzero
+    mod p for every p >= 5.  So v_pibar(c) = e is finite ALWAYS:
+    THESE 8 SHAPES ARE IMPOSSIBLE UNCONDITIONALLY — all p >= 5, all
+    orbit indices, all q.  (Exactly the 8 shapes with zero census
+    exceptions — perfect agreement.)
+  - 12 shapes have (gamma1,gamma2) = (-1,1): the layer vanishes
+    IDENTICALLY (trivial cancellation).  Their surviving locus is
+    exactly the single tie hyperplane, where the leading contribution
+    is pi^e pibar^{b}(pibar^{Db} - 1) and lifting-the-exponent gives
+    the exact escape depth: v = v_pi(pibar^d - 1) + v_p(Db/d) when
+    ord(2A mod p) = d | Db, else depth 0 (dead).
+Status: the 3/4-level uniform frontier is now 12 shapes x 1 hyperplane
+each, LTE-governed.  (LP feasibility currently float-verified via HiGHS;
+exact rational re-certification is a mechanical follow-up.)
