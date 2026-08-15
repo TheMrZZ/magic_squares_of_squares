@@ -494,6 +494,18 @@ power-law prime families ($r \sim p^2$-type rays of the associated
 log-inequalities) — a complete geometric characterization of the
 three-prime frontier.
 
+One residual relation is now \emph{machine-checked dead}: the Lean
+theorem \texttt{simplest\_relation\_nonzero} formalizes a complete
+double-pinch certificate — for distinct odd primes $p,q$ with Gaussian
+representations $\pi = A+Bi$, $\chi = C+Di$, the relation value
+$\im(-p^2\pi^4\bar\chi^8 - q^2\pi^8\bar\chi^4 - \pi^8\bar\chi^8)$
+is never zero: vanishing would make the Gaussian value self-conjugate,
+$\pi$ divides it, stripping $\bar\pi$- and $\chi$-units leaves
+$p \mid 2(C^2-D^2)$, symmetrically $q \mid (A^2-B^2)$, and the strict
+two-ordering pinch is absurd.  Since the other thirty-one double-pinch
+relations share this exact proof shape, a fully verified partial
+Theorem~H$'$ is now a matter of mechanical generation.
+
 The residual band relations were probed to second order: on several
 hundred integer points of the band loci the relation values carry
 $v_p = 1$ at $96\%$ of points but $v_p = 2$ at about $4\%$ — the
