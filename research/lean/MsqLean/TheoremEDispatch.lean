@@ -872,5 +872,206 @@ lemma dispatch_03
     unfold K0 at hE1
     linear_combination hE1
 
+/-- Swap lemmas for the prime-exchange transport. -/
+private lemma K01_swap (p : ℕ) (C D : ℤ) : K1 p C D = K0 p C D := rfl
+private lemma K2_swap (A B C D : ℤ) : K2 C D A B = K2 A B C D := by
+  unfold K2; rw [mul_comm]
+private lemma K3_swap (A B C D : ℤ) : K3 C D A B = -(K3 A B C D) := by
+  rw [K3_coord, K3_coord]; ring
+
+set_option maxHeartbeats 1600000 in
+/-- Dispatch for {u+v, u−v} classes {K1, K2} by prime exchange. -/
+lemma dispatch_12
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = K0 q A B ∨ Ka = K1 p C D ∨ Ka = K2 A B C D ∨ Ka = K3 A B C D)
+    (hb : Kb = K0 q A B ∨ Kb = K1 p C D ∨ Kb = K2 A B C D ∨ Kb = K3 A B C D)
+    (hE1 : e3 * K1 p C D + e4 * K2 A B C D = 2 * e1 * Ka)
+    (hE2 : e3 * K1 p C D - e4 * K2 A B C D = 2 * e2 * Kb) : False := by
+  have h01 : K1 p C D = K0 p C D := K01_swap p C D
+  have h2s : K2 C D A B = K2 A B C D := K2_swap A B C D
+  have h3s : K3 C D A B = -(K3 A B C D) := K3_swap A B C D
+  rcases ha with rfl | rfl | rfl | rfl <;> rcases hb with rfl | rfl | rfl | rfl
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (K0 q A B) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (K1 p C D) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (K2 A B C D) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (-(K3 A B C D)) e1 (-e2) e3 e4 he1 (by rcases he2 with rfl | rfl <;> norm_num) he3 he4
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (K0 q A B) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inl (K01_swap p C D)) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (K1 p C D) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inl (K01_swap p C D)) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (K2 A B C D) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inl (K01_swap p C D)) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (-(K3 A B C D)) e1 (-e2) e3 e4 he1 (by rcases he2 with rfl | rfl <;> norm_num) he3 he4
+      (Or.inl (K01_swap p C D)) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (K0 q A B) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (K1 p C D) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (K2 A B C D) e1 e2 e3 e4 he1 he2 he3 he4
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (-(K3 A B C D)) e1 (-e2) e3 e4 he1 (by rcases he2 with rfl | rfl <;> norm_num) he3 he4
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (K0 q A B) (-e1) e2 e3 e4 (by rcases he1 with rfl | rfl <;> norm_num) he2 he3 he4
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (K1 p C D) (-e1) e2 e3 e4 (by rcases he1 with rfl | rfl <;> norm_num) he2 he3 he4
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (K2 A B C D) (-e1) e2 e3 e4 (by rcases he1 with rfl | rfl <;> norm_num) he2 he3 he4
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+  · exact dispatch_02 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (-(K3 A B C D)) (-e1) (-e2) e3 e4 (by rcases he1 with rfl | rfl <;> norm_num) (by rcases he2 with rfl | rfl <;> norm_num) he3 he4
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 + e4 * h2s)
+      (by linear_combination hE2 - e3 * h01 - e4 * h2s)
+
+set_option maxHeartbeats 1600000 in
+/-- Dispatch for {u+v, u−v} classes {K1, K3} by prime exchange. -/
+lemma dispatch_13
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = K0 q A B ∨ Ka = K1 p C D ∨ Ka = K2 A B C D ∨ Ka = K3 A B C D)
+    (hb : Kb = K0 q A B ∨ Kb = K1 p C D ∨ Kb = K2 A B C D ∨ Kb = K3 A B C D)
+    (hE1 : e3 * K1 p C D + e4 * K3 A B C D = 2 * e1 * Ka)
+    (hE2 : e3 * K1 p C D - e4 * K3 A B C D = 2 * e2 * Kb) : False := by
+  have h01 : K1 p C D = K0 p C D := K01_swap p C D
+  have h2s : K2 C D A B = K2 A B C D := K2_swap A B C D
+  have h3s : K3 C D A B = -(K3 A B C D) := K3_swap A B C D
+  rcases ha with rfl | rfl | rfl | rfl <;> rcases hb with rfl | rfl | rfl | rfl
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (K0 q A B) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (K1 p C D) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (K2 A B C D) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K0 q A B) (-(K3 A B C D)) e1 (-e2) e3 (-e4) he1 (by rcases he2 with rfl | rfl <;> norm_num) he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inl (K01_swap q A B).symm)) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (K0 q A B) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inl (K01_swap p C D)) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (K1 p C D) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inl (K01_swap p C D)) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (K2 A B C D) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inl (K01_swap p C D)) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K1 p C D) (-(K3 A B C D)) e1 (-e2) e3 (-e4) he1 (by rcases he2 with rfl | rfl <;> norm_num) he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inl (K01_swap p C D)) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (K0 q A B) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (K1 p C D) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (K2 A B C D) e1 e2 e3 (-e4) he1 he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (K2 A B C D) (-(K3 A B C D)) e1 (-e2) e3 (-e4) he1 (by rcases he2 with rfl | rfl <;> norm_num) he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm))) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (K0 q A B) (-e1) e2 e3 (-e4) (by rcases he1 with rfl | rfl <;> norm_num) he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inr (Or.inl (K01_swap q A B).symm))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (K1 p C D) (-e1) e2 e3 (-e4) (by rcases he1 with rfl | rfl <;> norm_num) he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inl (K01_swap p C D))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (K2 A B C D) (-e1) e2 e3 (-e4) (by rcases he1 with rfl | rfl <;> norm_num) he2 he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inr (Or.inr (Or.inl (K2_swap A B C D).symm)))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+  · exact dispatch_03 q p hqodd hpodd (fun h => hpq h.symm) C D A B hqCD hpAB
+      (-(K3 A B C D)) (-(K3 A B C D)) (-e1) (-e2) e3 (-e4) (by rcases he1 with rfl | rfl <;> norm_num) (by rcases he2 with rfl | rfl <;> norm_num) he3 (by rcases he4 with rfl | rfl <;> norm_num)
+      (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D])))) (Or.inr (Or.inr (Or.inr (by rw [K3_swap A B C D]))))
+      (by linear_combination hE1 - e3 * h01 - e4 * h3s)
+      (by linear_combination hE2 - e3 * h01 + e4 * h3s)
+
 end Dispatch
 

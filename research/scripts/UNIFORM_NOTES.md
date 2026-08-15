@@ -1472,3 +1472,16 @@ failed ring goal pointed straight at it. Remaining: dispatch_12/13
 (prime-swapped clones — the swap works by calling ratio_bridge and
 the kill lemmas with (q,C,D) and (p,A,B) exchanged), outer split,
 assembly.
+
+## Round 90 — ALL SIX pair-dispatchers complete
+
+`dispatch_12` and `dispatch_13` obtained by PRIME-EXCHANGE TRANSPORT:
+under (p,A,B) ↔ (q,C,D) the classes map K0 ↔ K1, K2 ↦ K2 (mul_comm),
+K3 ↦ −K3, so each is a 16-case mechanical bridge into dispatch_02/03
+with the K3 sign absorbed into ε₁/ε₂ (the products ε·K are invariant)
+and ONE uniform linear_combination per dispatcher
+(hE ± e3·h01 ± e4·swap-lemma). Both compiled on the first try after
+the class-expression fix. The dispatcher layer for the Theorem E
+assignment analysis is COMPLETE: 01, 02, 03, 12, 13, 23.
+Remaining: outer {c,d} split (16 combos incl. c = d degenerates via
+class-nonzeroness) + rep_structure plumbing + the final theorem.
