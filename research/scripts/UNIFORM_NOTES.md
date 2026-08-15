@@ -1308,3 +1308,11 @@ All three certificate tiers are elementary Lean material. Remaining
 work: implement the integer-certificate kernel (parity, mod-4 grid,
 q²∤, pinch, product), the small-coefficient Gaussian chains, and the
 generated 512-leaf dispatch.
+
+## Round 79 — Theorem E integer kernel (`TheoremEInt.lean`)
+
+Kernel lemmas machine-checked: `p_not_dvd_re4_im4` (p divides neither
+coordinate of π⁴: both ⇒ π̄ ∣ π³; one ⇒ both via R² + I² = p⁴),
+`coprime_re4_im4` (a shared prime r of R, I divides p⁴, so r = p,
+contradiction), `pinch_sq` (X = ±q² forces Y = 0), `four_w_two_ne`
+(the mod-4 finisher). Full build green.

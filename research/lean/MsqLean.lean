@@ -28,3 +28,4 @@ import MsqLean.UniformPinch
 import MsqLean.UniformTwin3
 import MsqLean.SpectatorCorner
 import MsqLean.TheoremE
+import MsqLean.TheoremEInt
