@@ -400,5 +400,256 @@ lemma dispatch_23
       (by rcases he2 with rfl | rfl <;> norm_num) ha hb
       (by linarith [hE1]) (by linarith [hE2])
 
+/-- Bridge from the dispatch-level ratio system to resid_ratio_core,
+absorbing the sign σ into the X coordinate. -/
+lemma ratio_bridge
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (e1 e3 σ : ℤ) (he1 : e1 = 1 ∨ e1 = -1) (he3 : e3 = 1 ∨ e3 = -1)
+    (hσ : σ = 1 ∨ σ = -1)
+    (hiii : e1 * ((p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      = σ * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)))
+    (hii : e3 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+      = σ * (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        - σ * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) : False := by
+  have hI0 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hRI := coprime_re4_im4 p hpodd A B hpAB
+  have hXY := coprime_re4_im4 q hqodd C D hqCD
+  have hpn := norm4_coord p A B hpAB
+  have hqn := norm4_coord q C D hqCD
+  have hw : e1 * σ = 1 ∨ e1 * σ = -1 := by
+    rcases he1 with rfl | rfl <;> rcases hσ with rfl | rfl <;> norm_num
+  have hwsq : (e1 * σ) * (e1 * σ) = 1 := by
+    rcases hw with h | h <;> rw [h] <;> norm_num
+  have he1sq : e1 * e1 = 1 := by rcases he1 with rfl | rfl <;> norm_num
+  have hσsq : σ * σ = 1 := by rcases hσ with rfl | rfl <;> norm_num
+  refine resid_ratio_core p q hpodd hqodd hpq
+    (by exact_mod_cast hp.out.pos) (by exact_mod_cast hq.out.pos)
+    (((⟨A, B⟩ : GaussianInt) ^ 4).re) (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+    (e1 * σ * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+    hI0 hY0 hRI ?_ hpn ?_
+    e3 e1 σ he3 he1 hσ ?_ ?_
+  · -- coprimality with the sign-absorbed X
+    rcases hw with h | h <;> rw [h]
+    · simpa using hXY
+    · rw [show (-1 : ℤ) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+        = -((((⟨C, D⟩ : GaussianInt) ^ 4).re)) from by ring]
+      exact hXY.neg_left
+  · -- norm identity with the sign-absorbed X
+    have : (e1 * σ * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2
+        = (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 := by
+      linear_combination ((((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2) * hwsq
+    linarith [hqn, this]
+  · -- hiii normalized
+    linear_combination e1 * hiii - (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * he1sq
+  · -- hii normalized
+    linear_combination hii - 3 * σ * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * he1sq
+
+set_option maxHeartbeats 1600000 in
+/-- Dispatch for {u+v, u−v} classes {K0, K2}. -/
+lemma dispatch_02
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = K0 q A B ∨ Ka = K1 p C D ∨ Ka = K2 A B C D ∨ Ka = K3 A B C D)
+    (hb : Kb = K0 q A B ∨ Kb = K1 p C D ∨ Kb = K2 A B C D ∨ Kb = K3 A B C D)
+    (hE1 : e3 * K0 q A B + e4 * K2 A B C D = 2 * e1 * Ka)
+    (hE2 : e3 * K0 q A B - e4 * K2 A B C D = 2 * e2 * Kb) : False := by
+  have hq4 : q % 4 = 1 := rep_mod_four q hqodd C D hqCD
+  have hI0 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hsmall : ∀ c : ℤ, c ≠ 0 → |c| ≤ 3 → ¬ (q : ℤ) ∣ c := fun c h1 h2 =>
+    useful_not_dvd_small q hq4 c h1 h2
+  rcases ha with rfl | rfl | rfl | rfl
+  · -- a = K0: (2e1 − e3)K0 = e4·K2
+    refine twoterm_q_mixed p q hpodd hqodd hpq A B C D hpAB hqCD (2 * e1 - e3) e4
+      (hsmall e4 (by rcases he4 with rfl | rfl <;> norm_num)
+        (by rcases he4 with rfl | rfl <;> norm_num)) ?_
+    unfold K0 K2 at hE1
+    linear_combination -hE1
+  · -- a = K1
+    rcases hb with rfl | rfl | rfl | rfl
+    · -- b = K0: E2 collapse
+      refine twoterm_q_mixed p q hpodd hqodd hpq A B C D hpAB hqCD (2 * e2 - e3) (-e4)
+        (hsmall (-e4) (by rcases he4 with rfl | rfl <;> norm_num)
+          (by rcases he4 with rfl | rfl <;> norm_num)) ?_
+      unfold K0 K2 at hE2
+      linear_combination -hE2
+    · -- b = K1: sum degenerate or qI_pY
+      rcases he1 with rfl | rfl <;> rcases he2 with rfl | rfl
+      · refine twoterm_qI_pY p q hpodd hqodd hpq A B C D hpAB hqCD e3 2
+          (hsmall 2 (by norm_num) (by norm_num)) ?_
+        unfold K0 K1 at hE1 hE2
+        linarith [hE1, hE2]
+      · have h0 : e3 * K0 q A B = 0 := by linarith [hE1, hE2]
+        unfold K0 at h0
+        rcases mul_eq_zero.mp h0 with h | h
+        · rcases he3 with rfl | rfl <;> norm_num at h
+        · rcases mul_eq_zero.mp h with h | h
+          · exact pow_ne_zero 2 (Int.natCast_ne_zero.mpr hq.out.pos.ne') h
+          · exact hI0 h
+      · have h0 : e3 * K0 q A B = 0 := by linarith [hE1, hE2]
+        unfold K0 at h0
+        rcases mul_eq_zero.mp h0 with h | h
+        · rcases he3 with rfl | rfl <;> norm_num at h
+        · rcases mul_eq_zero.mp h with h | h
+          · exact pow_ne_zero 2 (Int.natCast_ne_zero.mpr hq.out.pos.ne') h
+          · exact hI0 h
+      · refine twoterm_qI_pY p q hpodd hqodd hpq A B C D hpAB hqCD e3 (-2)
+          (hsmall (-2) (by norm_num) (by norm_num)) ?_
+        unfold K0 K1 at hE1 hE2
+        linarith [hE1, hE2]
+    · -- b = K2: E2 collapse
+      refine twoterm_q_mixed p q hpodd hqodd hpq A B C D hpAB hqCD e3 (2 * e2 + e4)
+        (hsmall _ (by rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl <;> norm_num)
+          (by rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl <;>
+            simp [abs_le] <;> norm_num)) ?_
+      unfold K0 K2 at hE2
+      linear_combination hE2
+    · -- b = K3: the ratio case
+      have hsum : e3 * K0 q A B = e1 * K1 p C D + e2 * K3 A B C D := by
+        linarith [hE1, hE2]
+      have hdiff : e4 * K2 A B C D = e1 * K1 p C D - e2 * K3 A B C D := by
+        linarith [hE1, hE2]
+      unfold K0 K1 at hsum hdiff
+      rw [K3_coord] at hsum hdiff
+      rw [K2_coord] at hdiff
+      rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl
+      · -- (e2,e4) = (1,1): ratio σ = +1
+        have hiii : e1 * ((p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+            = 1 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+          linarith [hdiff]
+        have hii : e3 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+            = 1 * (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+              - 1 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+          linarith [hsum, hiii]
+        exact ratio_bridge p q hpodd hqodd hpq A B C D hpAB hqCD e1 e3 1 he1 he3
+          (Or.inl rfl) hiii hii
+      · -- (1,-1): parity, e1p²Y = −2RY
+        have h2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            * (e1 * (p : ℤ) ^ 2 + 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)) = 0 := by
+          linear_combination -hdiff
+        rcases mul_eq_zero.mp h2 with h | h
+        · exact hY0 h
+        · exact resid_p2_even p hpodd (-(e1 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)))
+            (by rcases he1 with rfl | rfl <;> linarith [h])
+      · -- (-1,1): parity, e1p²Y = 2RY
+        have h2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            * (e1 * (p : ℤ) ^ 2 - 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)) = 0 := by
+          linear_combination -hdiff
+        rcases mul_eq_zero.mp h2 with h | h
+        · exact hY0 h
+        · exact resid_p2_even p hpodd (e1 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))
+            (by rcases he1 with rfl | rfl <;> linarith [h])
+      · -- (-1,-1): ratio σ = −1
+        have hiii : e1 * ((p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+            = (-1) * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+          linarith [hdiff]
+        have hii : e3 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+            = (-1) * (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+              - (-1) * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+          linarith [hsum, hiii]
+        exact ratio_bridge p q hpodd hqodd hpq A B C D hpAB hqCD e1 e3 (-1) he1 he3
+          (Or.inr rfl) hiii hii
+  · -- a = K2: E1 collapse
+    refine twoterm_q_mixed p q hpodd hqodd hpq A B C D hpAB hqCD e3 (2 * e1 - e4)
+      (hsmall _ (by rcases he1 with rfl | rfl <;> rcases he4 with rfl | rfl <;> norm_num)
+        (by rcases he1 with rfl | rfl <;> rcases he4 with rfl | rfl <;>
+          simp [abs_le] <;> norm_num)) ?_
+    unfold K0 K2 at hE1
+    linear_combination hE1
+  · -- a = K3
+    rcases hb with rfl | rfl | rfl | rfl
+    · refine twoterm_q_mixed p q hpodd hqodd hpq A B C D hpAB hqCD (2 * e2 - e3) (-e4)
+        (hsmall (-e4) (by rcases he4 with rfl | rfl <;> norm_num)
+          (by rcases he4 with rfl | rfl <;> norm_num)) ?_
+      unfold K0 K2 at hE2
+      linear_combination -hE2
+    · -- b = K1: ratio mirror (roles of E1/E2 swapped)
+      have hsum : e3 * K0 q A B = e1 * K3 A B C D + e2 * K1 p C D := by
+        linarith [hE1, hE2]
+      have hdiff : e4 * K2 A B C D = e1 * K3 A B C D - e2 * K1 p C D := by
+        linarith [hE1, hE2]
+      unfold K0 K1 at hsum hdiff
+      rw [K3_coord] at hsum hdiff
+      rw [K2_coord] at hdiff
+      rcases he1 with rfl | rfl <;> rcases he4 with rfl | rfl
+      · -- (e1,e4) = (1,1): parity, e2p²Y = −2RY
+        have h2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            * (e2 * (p : ℤ) ^ 2 + 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)) = 0 := by
+          linear_combination hdiff
+        rcases mul_eq_zero.mp h2 with h | h
+        · exact hY0 h
+        · exact resid_p2_even p hpodd (-(e2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)))
+            (by rcases he2 with rfl | rfl <;> linarith [h])
+      · -- (1,-1): ratio σ = +1
+        have hiii : e2 * ((p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+            = 1 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+          linarith [hdiff]
+        have hii : e3 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+            = 1 * (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+              - 1 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+          linarith [hsum, hiii]
+        exact ratio_bridge p q hpodd hqodd hpq A B C D hpAB hqCD e2 e3 1 he2 he3
+          (Or.inl rfl) hiii hii
+      · -- (-1,1): ratio σ = −1
+        have hiii : e2 * ((p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+            = (-1) * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+          linarith [hdiff]
+        have hii : e3 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+            = (-1) * (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+              - (-1) * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+          linarith [hsum, hiii]
+        exact ratio_bridge p q hpodd hqodd hpq A B C D hpAB hqCD e2 e3 (-1) he2 he3
+          (Or.inr rfl) hiii hii
+      · -- (-1,-1): parity, e2p²Y = 2RY
+        have h2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            * (e2 * (p : ℤ) ^ 2 - 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)) = 0 := by
+          linear_combination hdiff
+        rcases mul_eq_zero.mp h2 with h | h
+        · exact hY0 h
+        · exact resid_p2_even p hpodd (e2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))
+            (by rcases he2 with rfl | rfl <;> linarith [h])
+    · refine twoterm_q_mixed p q hpodd hqodd hpq A B C D hpAB hqCD e3 (2 * e2 + e4)
+        (hsmall _ (by rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl <;> norm_num)
+          (by rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl <;>
+            simp [abs_le] <;> norm_num)) ?_
+      unfold K0 K2 at hE2
+      linear_combination hE2
+    · -- b = K3: degenerate
+      rcases he1 with rfl | rfl <;> rcases he2 with rfl | rfl
+      · have h0 : e4 * K2 A B C D = 0 := by linarith [hE1, hE2]
+        rcases mul_eq_zero.mp h0 with h | h
+        · rcases he4 with rfl | rfl <;> norm_num at h
+        · exact absurd h (by
+            unfold K2
+            have := im_prod_pow_ne_zero p q hpodd hqodd hpq A B C D hpAB hqCD 0 0
+            simpa using this)
+      · have h0 : e3 * K0 q A B = 0 := by linarith [hE1, hE2]
+        unfold K0 at h0
+        rcases mul_eq_zero.mp h0 with h | h
+        · rcases he3 with rfl | rfl <;> norm_num at h
+        · rcases mul_eq_zero.mp h with h | h
+          · exact pow_ne_zero 2 (Int.natCast_ne_zero.mpr hq.out.pos.ne') h
+          · exact hI0 h
+      · have h0 : e3 * K0 q A B = 0 := by linarith [hE1, hE2]
+        unfold K0 at h0
+        rcases mul_eq_zero.mp h0 with h | h
+        · rcases he3 with rfl | rfl <;> norm_num at h
+        · rcases mul_eq_zero.mp h with h | h
+          · exact pow_ne_zero 2 (Int.natCast_ne_zero.mpr hq.out.pos.ne') h
+          · exact hI0 h
+      · have h0 : e4 * K2 A B C D = 0 := by linarith [hE1, hE2]
+        rcases mul_eq_zero.mp h0 with h | h
+        · rcases he4 with rfl | rfl <;> norm_num at h
+        · exact absurd h (by
+            unfold K2
+            have := im_prod_pow_ne_zero p q hpodd hqodd hpq A B C D hpAB hqCD 0 0
+            simpa using this)
+
 end Dispatch
 

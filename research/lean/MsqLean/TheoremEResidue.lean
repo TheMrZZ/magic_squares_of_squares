@@ -115,9 +115,9 @@ lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
     (R I X Y : ℤ) (hI : I ≠ 0) (hY : Y ≠ 0)
     (hRI : IsCoprime R I) (hXY : IsCoprime X Y)
     (hpn : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4) (hqn : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
-    (a b : ℤ) (ha : a = 1 ∨ a = -1) (hb : b = 1 ∨ b = -1)
+    (a b c : ℤ) (ha : a = 1 ∨ a = -1) (hb : b = 1 ∨ b = -1) (hc : c = 1 ∨ c = -1)
     (hiii : (p : ℤ) ^ 2 * Y = 2 * I * X)
-    (hii : a * (q : ℤ) ^ 2 * I = 3 * b * I * X - R * Y) : False := by
+    (hii : a * (q : ℤ) ^ 2 * I = 3 * b * I * X - c * R * Y) : False := by
   have hcancel : ∀ t : ℤ, I * t = 0 → t = 0 := fun t ht => by
     rcases mul_eq_zero.mp ht with h | h
     · exact absurd h hI
@@ -125,9 +125,15 @@ lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
   have hY2I : Y ∣ 2 * I := by
     have hd : Y ∣ (2 * I) * X := ⟨(p : ℤ) ^ 2, by linarith [hiii]⟩
     exact (hXY.symm).dvd_of_dvd_mul_right hd
+  have hcsq : c * c = 1 := by rcases hc with rfl | rfl <;> norm_num
   have hIY : I ∣ Y := by
-    have hd : I ∣ Y * R := ⟨3 * b * X - a * (q : ℤ) ^ 2, by linarith [hii]⟩
-    exact (hRI.symm).dvd_of_dvd_mul_right hd
+    have hd : I ∣ (c * Y) * R := ⟨3 * b * X - a * (q : ℤ) ^ 2, by linarith [hii]⟩
+    have h2 : I ∣ c * Y := (hRI.symm).dvd_of_dvd_mul_right hd
+    rcases hc with rfl | rfl
+    · simpa using h2
+    · have := h2
+      rw [show (-1 : ℤ) * Y = -Y from by ring] at this
+      exact (dvd_neg).mp this
   obtain ⟨k, hk⟩ := hIY
   obtain ⟨m, hm⟩ := hY2I
   have hkm : k * m = 2 := by
@@ -163,9 +169,9 @@ lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
       have h2 := hcancel _ (by linarith [hiii] : I * (2 * (p : ℤ) ^ 2 - 2 * X) = 0)
       linarith
     rw [hX] at hii hqn
-    have hR : 2 * R = 3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2 := by
-      have h2 := hcancel _ (by linarith [hii] :
-        I * (a * (q : ℤ) ^ 2 - 3 * b * (p : ℤ) ^ 2 + 2 * R) = 0)
+    have hR : 2 * (c * R) = 3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linear_combination hii :
+        I * (a * (q : ℤ) ^ 2 - 3 * b * (p : ℤ) ^ 2 + 2 * (c * R)) = 0)
       linarith
     have hI2 : 4 * I ^ 2 = (q : ℤ) ^ 4 - (p : ℤ) ^ 4 := by nlinarith [hqn]
     have hR2 : 4 * R ^ 2 = 5 * (p : ℤ) ^ 4 - (q : ℤ) ^ 4 := by nlinarith [hpn, hI2]
@@ -175,12 +181,13 @@ lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
       rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> norm_num
     have hkey : (q : ℤ) ^ 4 - 3 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2
         + 2 * (p : ℤ) ^ 4 = 0 := by
-      have hsq : (2 * R) ^ 2 = (3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2) ^ 2 := by
+      have hsq : (2 * (c * R)) ^ 2 = (3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2) ^ 2 := by
         rw [hR]
       have hexp : (3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2) ^ 2
           = 9 * (p : ℤ) ^ 4 - 6 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 + (q : ℤ) ^ 4 := by
         linear_combination 9 * (p : ℤ) ^ 4 * hbsq + (q : ℤ) ^ 4 * hasq
-      have hRR : (2 * R) ^ 2 = 4 * (R ^ 2) := by ring
+      have hRR : (2 * (c * R)) ^ 2 = 4 * (R ^ 2) := by
+        linear_combination 4 * R ^ 2 * hcsq
       linarith [hsq, hexp, hR2, hRR]
     rcases hw with hw | hw
     · rw [hw] at hkey
@@ -194,9 +201,9 @@ lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
       have h2 := hcancel _ (by linarith [hiii] : I * (2 * (p : ℤ) ^ 2 + 2 * X) = 0)
       linarith
     rw [hX] at hii hqn
-    have hR : 2 * R = 3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2 := by
+    have hR : 2 * (c * R) = 3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2 := by
       have h2 := hcancel _ (by linear_combination hii :
-        I * (a * (q : ℤ) ^ 2 + 3 * b * (p : ℤ) ^ 2 - 2 * R) = 0)
+        I * (a * (q : ℤ) ^ 2 + 3 * b * (p : ℤ) ^ 2 - 2 * (c * R)) = 0)
       linarith
     have hI2 : 4 * I ^ 2 = (q : ℤ) ^ 4 - (p : ℤ) ^ 4 := by nlinarith [hqn]
     have hR2 : 4 * R ^ 2 = 5 * (p : ℤ) ^ 4 - (q : ℤ) ^ 4 := by nlinarith [hpn, hI2]
@@ -206,12 +213,13 @@ lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
       rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> norm_num
     have hkey : (q : ℤ) ^ 4 + 3 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2
         + 2 * (p : ℤ) ^ 4 = 0 := by
-      have hsq : (2 * R) ^ 2 = (3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2) ^ 2 := by
+      have hsq : (2 * (c * R)) ^ 2 = (3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2) ^ 2 := by
         rw [hR]
       have hexp : (3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2) ^ 2
           = 9 * (p : ℤ) ^ 4 + 6 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 + (q : ℤ) ^ 4 := by
         linear_combination 9 * (p : ℤ) ^ 4 * hbsq + (q : ℤ) ^ 4 * hasq
-      have hRR : (2 * R) ^ 2 = 4 * (R ^ 2) := by ring
+      have hRR : (2 * (c * R)) ^ 2 = 4 * (R ^ 2) := by
+        linear_combination 4 * R ^ 2 * hcsq
       linarith [hsq, hexp, hR2, hRR]
     rcases hw with hw | hw
     · rw [hw] at hkey

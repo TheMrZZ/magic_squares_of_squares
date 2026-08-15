@@ -1443,3 +1443,19 @@ set-variables of big Gaussian expressions blows the whnf budget
 (use pow_two_pos_of_ne_zero); linear_combination does not accept /2
 in ℤ (use linarith for halving). Remaining: dispatch_02/03/12/13,
 outer 4×4 split, assembly.
+
+## Round 88 — dispatch_02 complete (3 of 6); ratio machinery wired
+
+`ratio_bridge` (σ-normalization into resid_ratio_core, with the σ-sign
+riding on BOTH mixed terms and c := σ) + `dispatch_02` — the {K0, K2}
+pair fully machine-checked: two-term collapses via twoterm_q_mixed /
+twoterm_qI_pY (coefficient side-conditions discharged by
+useful_not_dvd_small with rcases-norm_num), degenerate diagonals via
+K2 ≠ 0 (im_prod_pow_ne_zero at k = l = 0) and I ≠ 0, ratio cases via
+the bridge, parity collapses via resid_p2_even. The (e-sign →
+branch-type) bookkeeping was corrected against explicit re-derivation:
+in the {0,2} pair, (e2,e4) aligned diagonals are the ratio cases and
+anti-diagonals are parity, with the two groups needing OPPOSITE
+linear_combination orientations (−hdiff vs +hdiff). resid_ratio_core
+generalized with an independent third sign c. Remaining:
+dispatch_03 (K3-variant), dispatch_12/13 (prime-swapped), outer split.
