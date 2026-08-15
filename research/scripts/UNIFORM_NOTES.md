@@ -958,3 +958,23 @@ complete unconditional layer of the two-prime landscape.
   multiple twin powers (covered by uniform_twin_pi/chi); odd lone
   powers appear with arbitrary twin powers (covered by the oddlone
   pair).
+
+## Round 60 — (5,2)/(4,4) + the 2-adic master rule; 10 uniform theorems
+
+- (5,2): 1260 relations, 162 killed; (4,4): 3040 relations, 272 killed.
+- (4,4) fully covered by the existing theorems. (5,2) exposed lone
+  (4,0) with twin (5,β) — even lone power, odd twin power, NOT a
+  multiple. The 2-adic analysis explains everything:
+  u_k = Im(z^k)/Im(z) has v₂(u_k) = v₂(k) exactly (u_{2m} = 2·Re(z^m)·u_m
+  with Re odd), so the collapsed cofactor 2e·u_T·Re(w) − c·u_L is
+  nonzero iff **v₂(L) ≠ 1 + v₂(T)** — the twin master rule. All census
+  twin pairs across (2,2)…(5,2),(4,4) satisfy it; the pairs that would
+  violate it (e.g. L=4, T=2) never occur as relations.
+- New Lean: `pow_parity` (odd-Re/even-Im preserved under powers, joint
+  induction), `re_pow_odd`, `im_pow_four_fac` (v₂ ≥ 2 for 4 | L, no
+  induction — two squarings), and `uniform_twin_pi_fourlone` /
+  `uniform_twin_chi_fourlone` (lone 4(m+1), twin 2t+1, odd e, odd
+  Re-part; cofactor = 2·odd). Full build green, zero sorries.
+- The uniform layer now has 10 theorems (2 corner + 8 twin) covering
+  100% of unconditional kills at all six tested exponents:
+  (2,2), (3,2), (3,3), (4,2), (4,3), (5,2), (4,4).

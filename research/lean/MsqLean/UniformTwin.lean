@@ -259,3 +259,98 @@ theorem uniform_twin_chi_oddlone
   rcases mul_eq_zero.mp key with h | h
   · exact im4_ne_zero q hqodd C D hqCD h
   · exact odd_ne_zero (even_sub_odd ⟨e * z.re * v, by ring⟩ (hc.mul huodd)) h
+
+/-- Powers of an odd-Re/even-Im Gaussian integer keep odd Re and even Im. -/
+lemma pow_parity (z : GaussianInt) (hR : Odd z.re) (hI : Even z.im) (m : ℕ) :
+    Odd ((z ^ m).re) ∧ Even ((z ^ m).im) := by
+  induction m with
+  | zero =>
+    constructor
+    · simp only [pow_zero]
+      exact ⟨0, by simp⟩
+    · simp only [pow_zero]
+      exact ⟨0, by simp⟩
+  | succ n ih =>
+    obtain ⟨⟨r, hr⟩, ⟨s, hs⟩⟩ := ih
+    obtain ⟨a, ha⟩ := hR
+    obtain ⟨i, hi⟩ := hI
+    constructor
+    · rw [pow_succ, Zsqrtd.re_mul]
+      exact ⟨2 * r * a + r + a - 2 * s * i, by rw [hr, ha, hs, hi]; ring⟩
+    · rw [pow_succ, Zsqrtd.im_mul]
+      exact ⟨(2 * r + 1) * i + (2 * a + 1) * s, by rw [hr, ha, hs, hi]; ring⟩
+
+lemma re_pow_odd (z : GaussianInt) (hR : Odd z.re) (hI : Even z.im) (m : ℕ) :
+    Odd ((z ^ m).re) := (pow_parity z hR hI m).1
+
+/-- Im(z^(4m)) carries a factor 4·Im(z) (for m ≥ 1). -/
+lemma im_pow_four_fac (z : GaussianInt) (m : ℕ) :
+    ∃ u : ℤ, (z ^ (4 * (m + 1))).im
+      = z.im * (4 * u) := by
+  obtain ⟨v, hv⟩ := im_pow_fac z m
+  refine ⟨(z ^ (2 * (m + 1))).re * (z ^ (m + 1)).re * v, ?_⟩
+  have h1 : z ^ (4 * (m + 1)) = (z ^ (2 * (m + 1))) ^ 2 := by ring
+  have h2 : z ^ (2 * (m + 1)) = (z ^ (m + 1)) ^ 2 := by ring
+  rw [h1, sq_im, h2, sq_im, ← h2, hv]
+  ring
+
+/-- 4∤-lone twin kill, π-side: lone power 4(m+1), ODD twin power 2t+1.
+The 2-adic valuations differ (v₂(u_L) ≥ 2 vs v₂(2·u_T·Re w) = 1), so
+the cofactor is 2·odd. Needs odd sign e and odd Re w. -/
+theorem uniform_twin_pi_fourlone
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (w : GaussianInt) (m t : ℕ) (c e : ℤ) (hc : Odd c) (he : Odd e)
+    (hw : Odd w.re) :
+    (((-c : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (4 * (m + 1))
+      + ((e : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (2 * t + 1) * w
+      + ((e : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (2 * t + 1)
+        * star w).im ≠ 0 := by
+  intro h0
+  obtain ⟨u, hu⟩ := im_pow_four_fac ((⟨A, B⟩ : GaussianInt) ^ 4) m
+  obtain ⟨u', hu', hodd⟩ := im_pow_odd ((⟨A, B⟩ : GaussianInt) ^ 4)
+    (re4_odd' p hpodd A B hpAB) (im4_even A B) t
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hu, hu'] at h0
+  have key : (((⟨A, B⟩ : GaussianInt) ^ 4).im * 2)
+      * (e * u' * w.re - 2 * c * u) = 0 := by
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · have h2 : ((⟨A, B⟩ : GaussianInt) ^ 4).im = 0 := by omega
+    exact im4_ne_zero p hpodd A B hpAB h2
+  · obtain ⟨ε, hε⟩ := he
+    obtain ⟨k, hk⟩ := hodd
+    obtain ⟨ω, hω⟩ := hw
+    exact odd_ne_zero ⟨4 * ε * k * ω + 2 * ε * k + 2 * ε * ω + 2 * k * ω
+      + ε + k + ω - c * u, by rw [hε, hk, hω]; ring⟩ h
+
+/-- 4∤-lone twin kill, χ-side mirror. -/
+theorem uniform_twin_chi_fourlone
+    (q : ℕ) [hq : Fact (Nat.Prime q)] (hqodd : q % 2 = 1)
+    (C D : ℤ) (hqCD : C ^ 2 + D ^ 2 = q)
+    (z : GaussianInt) (m t : ℕ) (c e : ℤ) (hc : Odd c) (he : Odd e)
+    (hz : Odd z.re) :
+    (((-c : ℤ) : GaussianInt) * ((⟨C, D⟩ : GaussianInt) ^ 4) ^ (4 * (m + 1))
+      + ((e : ℤ) : GaussianInt) * z * ((⟨C, D⟩ : GaussianInt) ^ 4) ^ (2 * t + 1)
+      + ((-e : ℤ) : GaussianInt) * z
+        * (star ((⟨C, D⟩ : GaussianInt) ^ 4)) ^ (2 * t + 1)).im ≠ 0 := by
+  intro h0
+  obtain ⟨u, hu⟩ := im_pow_four_fac ((⟨C, D⟩ : GaussianInt) ^ 4) m
+  obtain ⟨u', hu', hodd⟩ := im_pow_odd ((⟨C, D⟩ : GaussianInt) ^ 4)
+    (re4_odd' q hqodd C D hqCD) (im4_even C D) t
+  rw [← star_pow] at h0
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hu, hu'] at h0
+  have key : (((⟨C, D⟩ : GaussianInt) ^ 4).im * 2)
+      * (e * z.re * u' - 2 * c * u) = 0 := by
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · have h2 : ((⟨C, D⟩ : GaussianInt) ^ 4).im = 0 := by omega
+    exact im4_ne_zero q hqodd C D hqCD h2
+  · obtain ⟨ε, hε⟩ := he
+    obtain ⟨k, hk⟩ := hodd
+    obtain ⟨ω, hω⟩ := hz
+    exact odd_ne_zero ⟨4 * ε * ω * k + 2 * ε * ω + 2 * ε * k + 2 * ω * k
+      + ε + ω + k - c * u, by rw [hε, hk, hω]; ring⟩ h
