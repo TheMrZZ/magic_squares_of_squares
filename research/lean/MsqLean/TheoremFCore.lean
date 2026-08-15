@@ -1280,4 +1280,139 @@ lemma p2_not_dvd_I8
       ((prime_pi p A B hpAB).dvd_of_dvd_pow (by rwa [star_pow] at hd))) h
 
 
+set_option maxHeartbeats 1600000 in
+/-- Cross cell (Kb = L2, Kd = L0), integer core: the system
+2R₈Y = f·q²I₈ ∧ 3R₈Y + e·I₈X = g·p⁴Y forces R₈ = ±q² and lands on
+the factored quadratic (p⁴ − q²)(p⁴ − 2q²) = 0. -/
+lemma cross_L2_L0_int
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (R I X Y f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hpR8 : ¬ (p : ℤ) ∣ (R ^ 2 - I ^ 2))
+    (hqX : ¬ (q : ℤ) ∣ X)
+    (hY0 : Y ≠ 0)
+    (h1 : 2 * ((R ^ 2 - I ^ 2) * Y) = f * ((q : ℤ) ^ 2 * (2 * R * I)))
+    (h2 : 3 * ((R ^ 2 - I ^ 2) * Y) + e * ((2 * R * I) * X) = g * ((p : ℤ) ^ 4 * Y)) :
+    False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hp0 : ((p : ℤ) ^ 4) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hp.out.pos.ne')
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  have hsub : (q : ℤ) ^ 2 * (2 * R * I) = 2 * f * ((R ^ 2 - I ^ 2) * Y) := by
+    rcases hf with rfl | rfl <;> linarith [h1]
+  have hkey : Y * ((R ^ 2 - I ^ 2) * (3 * (q : ℤ) ^ 2 + 2 * e * f * X)
+      - g * (q : ℤ) ^ 2 * (p : ℤ) ^ 4) = 0 := by
+    linear_combination (q : ℤ) ^ 2 * h2 - e * X * hsub
+  have hR8k : (R ^ 2 - I ^ 2) * (3 * (q : ℤ) ^ 2 + 2 * e * f * X)
+      = g * (q : ℤ) ^ 2 * (p : ℤ) ^ 4 := by
+    rcases mul_eq_zero.mp hkey with h | h
+    · exact absurd h hY0
+    · linarith
+  have hcop : IsCoprime ((p : ℤ) ^ 4) (R ^ 2 - I ^ 2) :=
+    ((hpP.coprime_iff_not_dvd).mpr hpR8).pow_left
+  have hp4k : (p : ℤ) ^ 4 ∣ (3 * (q : ℤ) ^ 2 + 2 * e * f * X) :=
+    hcop.dvd_of_dvd_mul_left ⟨g * (q : ℤ) ^ 2, by linear_combination hR8k⟩
+  obtain ⟨κ, hκ⟩ := hp4k
+  have hcancel : (R ^ 2 - I ^ 2) * κ = g * (q : ℤ) ^ 2 := by
+    have h0 : (p : ℤ) ^ 4 * ((R ^ 2 - I ^ 2) * κ - g * (q : ℤ) ^ 2) = 0 := by
+      linear_combination hR8k - (R ^ 2 - I ^ 2) * hκ
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hp0
+    · linarith
+  have hqκ : ¬ (q : ℤ) ∣ κ := by
+    intro hd
+    have hk : (q : ℤ) ∣ 3 * (q : ℤ) ^ 2 + 2 * e * f * X := hκ ▸ (hd.mul_left _)
+    have h2X : (q : ℤ) ∣ 2 * e * f * X := by
+      have h3 : (q : ℤ) ∣ 3 * (q : ℤ) ^ 2 := ⟨3 * q, by ring⟩
+      exact (Int.dvd_add_right h3).mp hk
+    have h2X' : (q : ℤ) ∣ 2 * X := by
+      rcases he with rfl | rfl <;> rcases hf with rfl | rfl <;>
+        first
+          | simpa using h2X
+          | simpa using (dvd_neg.mp (by simpa using h2X))
+    rcases hqP.dvd_mul.mp h2X' with h2 | hX
+    · have hq2 : q ∣ 2 := by exact_mod_cast h2
+      have h1' := Nat.le_of_dvd (by norm_num) hq2
+      have h2' := hq.out.two_le
+      omega
+    · exact hqX hX
+  have hκgq2 : κ ∣ g * (q : ℤ) ^ 2 := ⟨R ^ 2 - I ^ 2, by linear_combination -hcancel⟩
+  have hκq2 : κ ∣ (q : ℤ) ^ 2 := by
+    rcases hg with rfl | rfl
+    · simpa using hκgq2
+    · exact dvd_neg.mp (by simpa using hκgq2)
+  have hε : κ = 1 ∨ κ = -1 := by
+    obtain ⟨i, hi, hass⟩ := (dvd_prime_pow hqP 2).mp hκq2
+    interval_cases i
+    · rw [pow_zero] at hass
+      exact Int.isUnit_iff.mp (associated_one_iff_isUnit.mp hass)
+    · rw [pow_one] at hass
+      exact absurd hass.symm.dvd hqκ
+    · exact absurd ((dvd_pow_self (q : ℤ) two_ne_zero).trans hass.symm.dvd) hqκ
+  have hR8v : R ^ 2 - I ^ 2 = g * κ * (q : ℤ) ^ 2 := by
+    rcases hε with rfl | rfl <;> linarith [hcancel]
+  have hYRI : Y = g * κ * f * (R * I) := by
+    have h0 : (q : ℤ) ^ 2 * (2 * (g * κ) * Y - 2 * f * (R * I)) = 0 := by
+      linear_combination h1 - 2 * Y * hR8v
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hq20
+    · rcases hg with rfl | rfl <;> rcases hε with rfl | rfl <;>
+        rcases hf with rfl | rfl <;> linarith
+  have hXv : 2 * e * f * X = κ * (p : ℤ) ^ 4 - 3 * (q : ℤ) ^ 2 := by
+    linarith [hκ]
+  have hp8 : (R ^ 2 + I ^ 2) ^ 2 = (p : ℤ) ^ 8 := by rw [hp4]; ring
+  have hR8sq : (R ^ 2 - I ^ 2) ^ 2 = (q : ℤ) ^ 4 := by
+    rw [hR8v]
+    rcases hg with rfl | rfl <;> rcases hε with rfl | rfl <;> ring
+  have hRI : 4 * (R * I) ^ 2 = (p : ℤ) ^ 8 - (q : ℤ) ^ 4 := by
+    linear_combination hp8 - hR8sq
+  have hX2 : 4 * X ^ 2 = (κ * (p : ℤ) ^ 4 - 3 * (q : ℤ) ^ 2) ^ 2 := by
+    have hsq : (2 * e * f * X) ^ 2 = (κ * (p : ℤ) ^ 4 - 3 * (q : ℤ) ^ 2) ^ 2 := by
+      rw [hXv]
+    rcases he with rfl | rfl <;> rcases hf with rfl | rfl <;> linear_combination hsq
+  have hY2 : 4 * Y ^ 2 = (p : ℤ) ^ 8 - (q : ℤ) ^ 4 := by
+    have hsq : Y ^ 2 = (g * κ * f * (R * I)) ^ 2 := by rw [hYRI]
+    rcases hg with rfl | rfl <;> rcases hε with rfl | rfl <;>
+      rcases hf with rfl | rfl <;> linear_combination 4 * hsq + hRI
+  have hmain : (κ * (p : ℤ) ^ 4 - 3 * (q : ℤ) ^ 2) ^ 2 + (p : ℤ) ^ 8 - (q : ℤ) ^ 4
+      = 4 * (q : ℤ) ^ 4 := by
+    linear_combination 4 * hq4 - hX2 - hY2
+  rcases hε with rfl | rfl
+  · -- κ = 1: the factored quadratic
+    have hprod : ((p : ℤ) ^ 4 - (q : ℤ) ^ 2) * ((p : ℤ) ^ 4 - 2 * (q : ℤ) ^ 2) = 0 := by
+      have h2E : 2 * (((p : ℤ) ^ 4 - (q : ℤ) ^ 2) * ((p : ℤ) ^ 4 - 2 * (q : ℤ) ^ 2)) = 0 := by
+        linear_combination hmain
+      linarith
+    rcases mul_eq_zero.mp hprod with h | h
+    · -- p⁴ = q²: q = p², impossible for a prime
+      have hZ : ((p : ℤ)) ^ 4 = ((q : ℤ)) ^ 2 := by linarith
+      have hnat : p ^ 4 = q ^ 2 := by exact_mod_cast hZ
+      have hq' : q = p ^ 2 := by
+        have h22 : q ^ 2 = (p ^ 2) ^ 2 := by
+          rw [show (p ^ 2) ^ 2 = p ^ 4 from by ring]; exact hnat.symm
+        exact Nat.pow_left_injective (by norm_num) h22
+      have hpd : p ∣ q := by rw [hq']; exact ⟨p, by ring⟩
+      rcases (Nat.Prime.eq_one_or_self_of_dvd hq.out p hpd) with h1 | h1
+      · exact absurd h1 hp.out.one_lt.ne'
+      · subst h1
+        have h2q := hq.out.two_le
+        nlinarith [hq']
+    · -- p⁴ = 2q²: parity
+      obtain ⟨w, hw⟩ := (odd_cast p hpodd).pow (n := 4)
+      have : (2 : ℤ) * w + 1 = 2 * (q : ℤ) ^ 2 := by linarith
+      omega
+  · -- κ = −1: everything positive
+    have hppos : (0 : ℤ) < (p : ℤ) ^ 8 :=
+      pow_pos (by exact_mod_cast hp.out.pos) 8
+    have h6 : (0 : ℤ) ≤ 6 * (p : ℤ) ^ 4 * (q : ℤ) ^ 2 := by positivity
+    have h4 : (0 : ℤ) ≤ 4 * (q : ℤ) ^ 4 := by positivity
+    nlinarith [hmain]
+
+
 end FCore
