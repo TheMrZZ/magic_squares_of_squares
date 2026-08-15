@@ -1519,3 +1519,15 @@ Generator gotchas: the LAST disjunct of an n-way Or needs bare ?_
 (no Or.inl); rw closes rfl-goals so template tails must be
 try-tolerant. Next: the assignment catalog for 7 classes (numeric
 verification + certificate tiers), then dispatchers.
+
+## Round 93 — Theorem F numeric probe: same structure as E
+
+All 7-class half-systems e₃V_c + e₄V_d = ±2V_a verified over 380
+prime pairs: ZERO genuine solutions; the only numeric hits are the
+trivial diagonals c = d = a (which force v = 0 at the system level).
+So Theorem F's assignment analysis kills on single equations plus
+degenerates — the Theorem E architecture transfers directly. Plan:
+generalize the two-term Gaussian kills to an OPAQUE π-part (the
+χ-side regroup only needs χ ∤ star z, dischargeable for π⁴ and π⁸),
+then run the mechanical certificate classifier over the 7-class
+equations and size the residue tiers.
