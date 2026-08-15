@@ -3050,4 +3050,338 @@ lemma low_L2_kill (hpodd : p % 2 = 1) (hpq : p ≠ q)
   linear_combination h
 
 
+set_option maxHeartbeats 1600000 in
+/-- All-low bucket: an L2 slot dies through a relation of
+p²-divisible partners; no L2 reduces to Theorem E. -/
+lemma dispatch_lowF
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L2 q A B
+      ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L2 q A B
+      ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (had : Ka ≠ Kd)
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitF p q A B C D ha with haNL | rfl
+  · rcases lowsplitF p q A B C D hb with hbNL | rfl
+    · rcases lowsplitF p q A B C D hc with hcNL | rfl
+      · rcases lowsplitF p q A B C D hd with hdNL | rfl
+        · -- no L2 anywhere: Theorem E reuse
+          have conv : ∀ K : ℤ,
+              (K = L0 p C D ∨ K = L1 p q A B ∨ K = L3 p A B C D ∨ K = L4 p A B C D) →
+              (K = L0 p C D ∨ K = L1 p q A B ∨ K = L3 p A B C D ∨ K = L4 p A B C D) :=
+            fun _ h => h
+          exact dispatch_lowE p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd
+            e1 e2 e3 e4 he1 he2 he3 he4 haNL hbNL hcNL hdNL hE1 hE2
+        · -- L2 at d
+          obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+          obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+          exact low_L2_kill p q hpodd hpq A B hpAB e4 (2 * e1 * ma - e3 * mc)
+            (by rcases he4 with rfl | rfl <;> norm_num)
+            (by linear_combination hE1 + 2 * e1 * hma - e3 * hmc)
+      · -- L2 at c
+        rcases lowsplitF p q A B C D hd with hdNL | rfl
+        · obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+          obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+          exact low_L2_kill p q hpodd hpq A B hpAB e3 (2 * e1 * ma - e4 * md)
+            (by rcases he3 with rfl | rfl <;> norm_num)
+            (by linear_combination hE1 + 2 * e1 * hma - e4 * hmd)
+        · exact hcd rfl
+    · -- L2 at b
+      rcases lowsplitF p q A B C D hc with hcNL | rfl
+      · rcases lowsplitF p q A B C D hd with hdNL | rfl
+        · obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+          obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+          exact low_L2_kill p q hpodd hpq A B hpAB (2 * e2) (e3 * mc - e4 * md)
+            (by rcases he2 with rfl | rfl <;> norm_num)
+            (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+        · exact hbd rfl
+      · exact hbc rfl
+  · -- L2 at a
+    rcases lowsplitF p q A B C D hb with hbNL | rfl
+    · rcases lowsplitF p q A B C D hc with hcNL | rfl
+      · rcases lowsplitF p q A B C D hd with hdNL | rfl
+        · obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+          obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+          exact low_L2_kill p q hpodd hpq A B hpAB (2 * e1) (e3 * mc + e4 * md)
+            (by rcases he1 with rfl | rfl <;> norm_num)
+            (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+        · exact had rfl
+      · exact hac rfl
+    · exact hab rfl
+
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot a: the b/c/d relation kills any L2, else the
+doubled-8 relation dies by p² extraction. -/
+lemma dispatch_lone8a
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha8 : Ka = L5 A B C D ∨ Ka = L6 A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L2 q A B
+      ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitF p q A B C D hb with hbNL | rfl
+  · rcases lowsplitF p q A B C D hc with hcNL | rfl
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · -- no L2: doubled-8 relation, 2e1·Ka = e3Kc + e4Kd ≡ 0 (mod p²)
+        obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e1) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he1 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases ha8 with rfl | rfl
+        · exact p2_not_dvd_L5 p q hpodd hpq A B C D hpAB hqCD (2 * e1)
+            (e3 * mc + e4 * md) hcunit
+            (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+        · exact p2_not_dvd_L6 p q hpodd hpq A B C D hpAB hqCD (2 * e1)
+            (e3 * mc + e4 * md) hcunit
+            (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+      · -- L2 at d: use hE2 (a-free)
+        obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        exact low_L2_kill p q hpodd hpq A B hpAB e4 (e3 * mc - 2 * e2 * mb)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE2 + e3 * hmc - 2 * e2 * hmb)
+    · -- L2 at c
+      rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        exact low_L2_kill p q hpodd hpq A B hpAB e3 (2 * e2 * mb + e4 * md)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by linear_combination hE2 + 2 * e2 * hmb + e4 * hmd)
+      · exact hcd rfl
+  · -- L2 at b
+    rcases lowsplitF p q A B C D hc with hcNL | rfl
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e2) (e3 * mc - e4 * md)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+      · exact hbd rfl
+    · exact hbc rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot b. -/
+lemma dispatch_lone8b
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hb8 : Kb = L5 A B C D ∨ Kb = L6 A B C D)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L2 q A B
+      ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D)
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L2 q A B
+      ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hac : Ka ≠ Kc) (had : Ka ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitF p q A B C D ha with haNL | rfl
+  · rcases lowsplitF p q A B C D hc with hcNL | rfl
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e2) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he2 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hb8 with rfl | rfl
+        · exact p2_not_dvd_L5 p q hpodd hpq A B C D hpAB hqCD (2 * e2)
+            (e3 * mc - e4 * md) hcunit
+            (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+        · exact p2_not_dvd_L6 p q hpodd hpq A B C D hpAB hqCD (2 * e2)
+            (e3 * mc - e4 * md) hcunit
+            (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+      · -- L2 at d: use hE1 (b-free)
+        obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        exact low_L2_kill p q hpodd hpq A B hpAB e4 (2 * e1 * ma - e3 * mc)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 + 2 * e1 * hma - e3 * hmc)
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        exact low_L2_kill p q hpodd hpq A B hpAB e3 (2 * e1 * ma - e4 * md)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 + 2 * e1 * hma - e4 * hmd)
+      · exact hcd rfl
+  · rcases lowsplitF p q A B C D hc with hcNL | rfl
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e1) (e3 * mc + e4 * md)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+      · exact had rfl
+    · exact hac rfl
+
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot c. -/
+lemma dispatch_lone8c
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hc8 : Kc = L5 A B C D ∨ Kc = L6 A B C D)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L2 q A B
+      ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hab : Ka ≠ Kb) (had : Ka ≠ Kd) (hbd : Kb ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitF p q A B C D ha with haNL | rfl
+  · rcases lowsplitF p q A B C D hb with hbNL | rfl
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · -- no L2: 2e3·Kc = 2e1Ka + 2e2Kb ≡ 0 (mod p²)
+        obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e3) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he3 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hc8 with rfl | rfl
+        · exact p2_not_dvd_L5 p q hpodd hpq A B C D hpAB hqCD (2 * e3)
+            (2 * e1 * ma + 2 * e2 * mb) hcunit
+            (by linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+        · exact p2_not_dvd_L6 p q hpodd hpq A B C D hpAB hqCD (2 * e3)
+            (2 * e1 * ma + 2 * e2 * mb) hcunit
+            (by linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+      · -- L2 at d: c-free relation hE1 − hE2
+        obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e4) (2 * e1 * ma - 2 * e2 * mb)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+    · -- L2 at b
+      rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e2) (2 * e1 * ma - 2 * e4 * md)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e4 * hmd)
+      · exact hbd rfl
+  · -- L2 at a
+    rcases lowsplitF p q A B C D hb with hbNL | rfl
+    · rcases lowsplitF p q A B C D hd with hdNL | rfl
+      · obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        obtain ⟨md, hmd⟩ := low_p2_dvd p q A B C D hdNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e1) (2 * e2 * mb + 2 * e4 * md)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 + hE2 + 2 * e2 * hmb + 2 * e4 * hmd)
+      · exact had rfl
+    · exact hab rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot d. -/
+lemma dispatch_lone8d
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hd8 : Kd = L5 A B C D ∨ Kd = L6 A B C D)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L2 q A B
+      ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L2 q A B
+      ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D)
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (hbc : Kb ≠ Kc)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitF p q A B C D ha with haNL | rfl
+  · rcases lowsplitF p q A B C D hb with hbNL | rfl
+    · rcases lowsplitF p q A B C D hc with hcNL | rfl
+      · -- no L2: 2e4·Kd = 2e1Ka − 2e2Kb
+        obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e4) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he4 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hd8 with rfl | rfl
+        · exact p2_not_dvd_L5 p q hpodd hpq A B C D hpAB hqCD (2 * e4)
+            (2 * e1 * ma - 2 * e2 * mb) hcunit
+            (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+        · exact p2_not_dvd_L6 p q hpodd hpq A B C D hpAB hqCD (2 * e4)
+            (2 * e1 * ma - 2 * e2 * mb) hcunit
+            (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+      · -- L2 at c: d-free relation hE1 + hE2
+        obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e3) (2 * e1 * ma + 2 * e2 * mb)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+    · -- L2 at b
+      rcases lowsplitF p q A B C D hc with hcNL | rfl
+      · obtain ⟨ma, hma⟩ := low_p2_dvd p q A B C D haNL
+        obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e2) (2 * e3 * mc - 2 * e1 * ma)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 - hE2 + 2 * e3 * hmc - 2 * e1 * hma)
+      · exact hbc rfl
+  · -- L2 at a
+    rcases lowsplitF p q A B C D hb with hbNL | rfl
+    · rcases lowsplitF p q A B C D hc with hcNL | rfl
+      · obtain ⟨mb, hmb⟩ := low_p2_dvd p q A B C D hbNL
+        obtain ⟨mc, hmc⟩ := low_p2_dvd p q A B C D hcNL
+        exact low_L2_kill p q hpodd hpq A B hpAB (2 * e1) (2 * e3 * mc - 2 * e2 * mb)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 - hE2 + 2 * e3 * hmc - 2 * e2 * hmb + 0)
+      · exact hac rfl
+    · exact hab rfl
+
+
 end FCore
