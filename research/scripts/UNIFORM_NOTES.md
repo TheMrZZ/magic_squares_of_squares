@@ -1865,3 +1865,20 @@ machine-checked kill: L0 parity, L1/L3/L4 p-chains, L1-L2 mod-4,
 cross_pair_core_T (the 25-cell router with the easy cells inline),
 then the S-form mirror family (2I₈X = ±Kb ∧ 3I₈X ± R₈Y = ±Kd),
 then the (a,c)-bucket dispatcher into both cores.
+
+## Round 117 — S-form table fully derived (all elementary)
+
+System: 2I₈X = f·Kb ∧ 3I₈X + e·R₈Y = g·Kd (I₈ = 2RI).
+- Kb = L1: I-cancel → 4RX = fp²q², even = odd ✗.
+- Kb = L2: 2RI-cancel → 2X = fq² ✗.
+- Kb = L0: p²∣X twice → X = p⁴x₂, Y = 4fRIx₂ (x₂ ≠ 0 else q ∣ Y);
+  h2 becomes 2RIx₂(3p⁴+2efR₈) = gKd. Partners: L0 parity,
+  L1 even=odd, L3/L4 p²·(odd) parity, L2 → x₂(3p⁴+2efR₈) = gq²
+  squared against the norm x₂²(5p⁸−4R₈²) = q⁴ gives
+  (2R₈+efp⁴)(R₈+efp⁴) = 0: parity / RI = 0 ✗.
+- Kb = L3/L4 (σ): p²∣X, RY = σIx(4fR−p²), I∣Y, R∣x → X = p²Rx̂,
+  Y = σIx̂(4fR−p²); W := 6p²R² + eσR₈(4fR−p²) is ODD;
+  h2 ⇒ Ix̂W = g·Kd. Partners: L0 → p²∣RR₈ ✗; L1 → p²∣x̂ →
+  p⁴∣q⁴ ✗; L2 → x̂ ∣ q² odd vs RHS even ✗; L3/L4 → W = g·even ✗.
+No deep cells. Next: formalize cross_pair_core_S_int, then the
+(a,c)-bucket dispatcher into both cores.
