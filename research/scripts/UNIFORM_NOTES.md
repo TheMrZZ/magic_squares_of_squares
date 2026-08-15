@@ -1920,3 +1920,19 @@ derive the pairwise distinctness of the four class values from the
 distinctness of the differences, the s²-cancellation
 (no_four_diffs_sp2q), and the final
 no_magic_square_of_squares_sp2q_center. Mirror E's capstone assembly.
+
+## Round 121 — the distinctness gap: a ratio-kill layer is needed
+
+Adapting E's capstone exposed a real hole in the round-119 plan: the
+pairwise class-value distinctness only follows from u ≠ ±v for the
+slot pairs (a,b) and (c,d). For (a,c), (a,d), (b,c), (b,d), equal
+values force only v ∈ {0, ±2u}, whose surviving branch leaves RATIO
+relations between class values: W = ±2V and W = ±3V (and cross-class
+W = ±V from double-slot cells). Probes over 12 primes: zero hits for
+all ratios including ±1 (ratio_probe.py). Kill strategy for
+no_class_ratio: p-adic split — {L2, L5, L6} have v_p = 0 (the
+p2_not_dvd_* lemmas kill any p²-divisible multiple), {L0, L1, L3, L4}
+have v_p ≥ 2, so mixed pairs die instantly; both-high pairs divide by
+p² into E-class ratio relations; both-low-p pairs
+{L2, L5, L6} × {2, 3, ±1} need bespoke treatment. Next: build the
+ratio layer, then the value-level router wrapper, then the capstone.
