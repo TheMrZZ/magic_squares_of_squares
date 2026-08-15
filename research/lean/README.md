@@ -13,6 +13,7 @@ Gaussian representations `π = ⟨A, B⟩`, `χ = ⟨C, D⟩` in
 | `Reduction.lean` | The center reduction: a magic square of squares with center e² exists iff u, v, u+v, u−v ∈ D(e) (both directions). |
 | `TheoremCFinal.lean` | `no_magic_square_of_squares_single_prime_center` — the center root needs ≥ 2 distinct primes ≡ 1 (mod 4). |
 | `TheoremEDispatch.lean` | `no_magic_square_of_squares_spq_center` — **Theorem E**: no center root s·p·q (distinct useful primes, rigid s). Full chain: `rep_structure_spq` → `no_assignment_spq` → six pair-dispatchers → certificate tiers (`TheoremEInt/Gauss/Residue.lean`). |
+| `TheoremFCore.lean` | `no_magic_square_of_squares_sp2q_center` — **Theorem F**: no center root s·p²·q. Seven D-classes (`rep_structure_sp2q`), a 16-bucket router (`no_assignment_sp2q`), two 25-cell cross-pair cores (T/S forms), the Theorem-E-reuse dispatcher (p²-cancellation), and a 49-cell ratio layer whose deep cells reduce to the Fermat descent u⁴ − 4v⁴ = w² — resolved by mathlib's `not_fermat_42` (Fermat's right triangle theorem). |
 | `GradingLemma.lean` | `im_pipow_mul_not_dvd` — the two-prime grading/valuation-clash lemma. |
 
 ## The uniform kill layer (exponent-independent)
