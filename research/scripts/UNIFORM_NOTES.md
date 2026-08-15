@@ -742,3 +742,14 @@ class.  8 / 32 double-pinch relations formally dead; the (-,+,+)
 star-swapped class (8 more) follows the same recipe; the remaining 16
 carry the extra always-odd cubic factor (2X-q^2 / 2R+p^2) and need the
 two-factor treatment.
+
+CORRECTION to the previous section: re-examining the class reductions,
+only the (-1,-1,-1) conjugation class and its D -> -D mirror (1,1,1)
+are clean (units x single small core) on BOTH sides; the 8 relations
+now machine-checked are exactly that complete clean family.  All 24
+remaining double-pinch relations carry the always-odd cubic cofactor
+(u^2 ± u*ub + ub^2 = 2R ± p^2, or the chi-analogue) on at least one
+side, so their formal closure needs the two-factor treatment: the
+Gaussian extraction yields chi | (sixth-power core) which factors as
+(small core) * (odd cubic), and the odd-cubic branch q | 2R ± p^2 must
+be handled by the parity/second-factor argument rather than a pinch.
