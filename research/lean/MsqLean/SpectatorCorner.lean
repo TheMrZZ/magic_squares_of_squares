@@ -252,3 +252,26 @@ example
     (not_dvd_spec_pow_star p r hpr hrodd A B E F hpAB hrEF γ)
     (not_dvd_spec_pow q r hqr C D E F hqCD hrEF γ)
     e1 e2 e3 he1 he2 he3
+
+/-- A prime Gaussian factor divides a product only through a factor:
+discharger for multi-prime spectators W = W₁·W₂. -/
+lemma not_dvd_mul_spec
+    (p : ℕ) [hp : Fact (Nat.Prime p)]
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (W1 W2 : GaussianInt)
+    (h1 : ¬ (⟨A, B⟩ : GaussianInt) ∣ W1) (h2 : ¬ (⟨A, B⟩ : GaussianInt) ∣ W2) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ W1 * W2 := by
+  intro h
+  rcases (prime_pi p A B hpAB).dvd_mul.mp h with hd | hd
+  · exact h1 hd
+  · exact h2 hd
+
+/-- star distributes over the spectator product for discharging. -/
+lemma not_dvd_mul_spec_star
+    (p : ℕ) [hp : Fact (Nat.Prime p)]
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (W1 W2 : GaussianInt)
+    (h1 : ¬ (⟨A, B⟩ : GaussianInt) ∣ star W1) (h2 : ¬ (⟨A, B⟩ : GaussianInt) ∣ star W2) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ star (W1 * W2) := by
+  rw [star_mul, mul_comm]
+  exact not_dvd_mul_spec p A B hpAB (star W1) (star W2) h1 h2

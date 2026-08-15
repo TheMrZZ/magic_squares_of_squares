@@ -1202,3 +1202,15 @@ mismatch, composite lone slot, or the 2-adic violation).
   are instances.
 - Coverage: 100% of unconditional kills at all TWELVE censused grids,
   now spanning two, three, and four primes.
+
+## Round 73 — Four-prime harvest: total formal beats-census kill = 944
+
+Scanning the 14,712 census-alive four-prime relations for spectator
+corners: 24 plain + 128 single-spectator + 144 DOUBLE-spectator
+aligned corners + 24 plain mixed = **320 formally dead**. Double
+spectators (W = ψ⁴ω⁴ products) discharge via the new
+`not_dvd_mul_spec(_star)` lemmas. Running total of census-alive
+relations killed by the machine-checked layer: 56 + 120 + 184 + 264 +
+320 = **944 across the five multi-prime grids**. The alive corner
+remainder at four primes: mixed-with-spectator (272, fragile) and
+π-conj-varying (320, one-sided).
