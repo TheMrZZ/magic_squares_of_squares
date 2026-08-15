@@ -477,3 +477,10 @@ mixed-support triples like {(0,1,1),(1,1,0),(1,1,1)}).  Same compact
 endpoint as two primes (216 relations): the entire multi-prime frontier
 consists of small explicit relation families whose survival is a
 coupled-residue condition across the primes involved.
+
+## Three-prime bound raised: p,q,r < 300
+
+h111_engine300.py: same (1,1,1) engine over all ordered triples of
+distinct primes = 1 mod 4 below 300 (951,326,208 checks): ZERO
+satisfiable.  No magic square of squares has center root s p q r with
+p, q, r < 300, for any s.

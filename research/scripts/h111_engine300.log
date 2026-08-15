@@ -1,0 +1,5 @@
+/private/tmp/claude-501/-Users-florian-Documents-Programming/d6ff2cf3-0c62-42d0-b4a1-ed2c5a50d6c9/scratchpad/h111_engine300.py:3: SyntaxWarning: invalid escape sequence '\ '
+  (al,be,ga) in {0,1}^3 \ {0}, signs on nonzero later coords (canonical: first
+D size: 13
+leaves 137280, grading-killed 93888 (68.4%), residual 43392
+TOTAL checks 951326208; satisfied: 0
