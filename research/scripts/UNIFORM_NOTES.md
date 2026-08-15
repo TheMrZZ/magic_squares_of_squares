@@ -1234,3 +1234,14 @@ Theorem C assembly pattern (`no_four_diffs_prime_power` +
    types ⇒ u = ±v-style collisions, as in Theorem C's t1 = t2 branch).
 3. Assemble `no_magic_square_of_squares_spq_center` through the
    reduction — the first fully machine-checked two-prime form.
+
+## Round 75 — Theorem E arc step 1: rep_structure_spq DONE
+
+`MsqLean/TheoremE.lean`: `rep_structure_spq` — every representation
+x² + y² = (s·p·q)² with 2xy ≠ 0 has 2xy = ε·s²·K, K one of the four
+D-set magnitudes {q²·Im π⁴, p²·Im χ⁴, Im(π⁴χ⁴), Im(π⁴χ̄⁴)}, ε = ±1.
+Proof: `norm_two_prime_classify` at (m,n) = (2,2); z² = u²s²·(9 fold
+cases in (j,k)); (1,1) is real and contradicts 2xy ≠ 0; the other
+8 × 2 unit-sign cases fold to the four classes (all 18 blocks
+template-generated, compiled after one fix). Next: the assignment
+analysis `no_four_diffs_spq`.
