@@ -405,3 +405,21 @@ center root s p^2 q^2 with p, q < 1000, for any s.  Uniform closure of
 the 216 relations = mod-p^2/mod-q^2 coupled residue conditions on
 (chi mod pi, pi mod chi) — same Wieferich-flavored endpoint as the
 s p^a q deep loci; characterization in place of unconditional closure.
+
+## Uniform two-prime structure: the grading lemma for ALL (a,b)
+
+The D-set for e = s p^a q^b is always
+  { p^{2a-2al} q^{2b-2be} s^2 Im(pi^{4al} chi^{±4be}) },
+0<=al<=a, 0<=be<=b, (al,be)!=(0,0) — |D| = ((2a+1)(2b+1)-1)/2 — and the
+two-prime grading lemma applies verbatim for every (a,b).  Census
+(h_ab_census.py):
+  (2,2): 95k leaves, 93.5% killed, 216 residual relations
+  (3,2): 457k, 96.2%, 468        (4,2): 1.40M, 97.4%, 816
+  (3,3): 2.04M, 97.7%, 1008      (4,3): 6.04M, 98.4%, 1752
+  (4,4): 17.5M, 98.9%, 3040
+The kill fraction INCREASES with the exponents; residual relations grow
+only polynomially.  Uniform statement: for every (a,b), every leaf whose
+relation triples are not doubly balanced (min p-layer and min q-layer
+each held by >= 2 terms in both relations) is impossible.  The entire
+two-prime landscape thus reduces, uniformly in (a,b), to explicit
+balanced families with coupled-residue survival conditions.

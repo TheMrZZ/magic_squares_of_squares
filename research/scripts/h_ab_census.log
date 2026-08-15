@@ -1,0 +1,6 @@
+(a,b)=(2,2): |D|=12, leaves=95040, grading-killed=88832 (93.5%), residual relations=216
+(a,b)=(3,2): |D|=17, leaves=456960, grading-killed=439776 (96.2%), residual relations=468
+(a,b)=(3,3): |D|=24, leaves=2040192, grading-killed=1994240 (97.7%), residual relations=1008
+(a,b)=(4,2): |D|=22, leaves=1404480, grading-killed=1368256 (97.4%), residual relations=816
+(a,b)=(4,3): |D|=31, leaves=6041280, grading-killed=5946496 (98.4%), residual relations=1752
+(a,b)=(4,4): |D|=40, leaves=17546880, grading-killed=17354112 (98.9%), residual relations=3040
