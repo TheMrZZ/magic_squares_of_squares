@@ -90,3 +90,16 @@ All are bounded, mechanical extensions of the same exact-orbit machinery.
 Status: 1-level uniform DONE; 2-level uniform done off the six loci; loci
 reduced to an effective-finiteness program. This is the precise remaining
 gap between the certificates (F, G) and uniform Theorem H.
+
+## 3-level chain results (complete)
+
+36,288 leaf systems (all 3-level uniform templates): 26,880 regular + 2,496
+singular dead unconditionally via the exact-orbit leading-unit criterion;
+6,912 on special-value loci; ZERO cancellations, ZERO tautologies.
+Only 42 distinct locus signatures, all of the same family as 2-level:
+two-term leading forms  c*Q^2 * (unit monomial) * (X_i - kappa), i.e.
+pi_+^{4 Delta_i} = kappa (mod p) for small rational kappa.  The uniform
+(a,1) landscape is structurally identical at every level count; the entire
+Theorem H program now rests on the single special-value phenomenon
+addressed by the Baker-bound step.  Remaining elementary layer: 4-level
+templates (expected to mirror).
