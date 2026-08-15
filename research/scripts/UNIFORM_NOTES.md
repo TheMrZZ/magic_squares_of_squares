@@ -939,3 +939,22 @@ Conjecture (now with strong evidence): at every exponent (a,b), the
 unconditional symbolic layer consists EXACTLY of the corner triples
 and lone+twin multiples — i.e. the six uniform Lean theorems are the
 complete unconditional layer of the two-prime landscape.
+
+## Round 59 — (4,2)/(4,3) census + odd-lone theorems: coverage back to 100%
+
+- (4,2): 816 relations, 124 killed; (4,3): 1752 relations, 190 killed.
+- One shape at (4,·) escaped the multiple-power twin theorems: lone
+  (3,0) with twin (4,β) — twin power NOT a multiple of the lone power.
+  The kill still works because u_k = Im(z^k)/Im(z) satisfies
+  u_k ≡ k·R^(k−1) (mod 2): for ODD lone power the u-cofactor is odd
+  and the collapse survives ANY twin power.
+- Added `im_pow_odd` (Im(z^{2j+1}) = Im(z)·u with u odd, for z with
+  odd Re / even Im, by +2 induction), `im4_even`, and
+  `uniform_twin_pi_oddlone` / `uniform_twin_chi_oddlone` (lone power
+  2j+1, arbitrary twin power t+1, no divisibility hypothesis).
+- With these, the uniform theorems again cover 100% of unconditional
+  kills at all four higher exponents tested: (3,2), (3,3), (4,2),
+  (4,3). Twin census structure: even lone powers only ever appear with
+  multiple twin powers (covered by uniform_twin_pi/chi); odd lone
+  powers appear with arbitrary twin powers (covered by the oddlone
+  pair).
