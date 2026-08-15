@@ -494,17 +494,27 @@ power-law prime families ($r \sim p^2$-type rays of the associated
 log-inequalities) — a complete geometric characterization of the
 three-prime frontier.
 
-One residual relation is now \emph{machine-checked dead}: the Lean
-theorem \texttt{simplest\_relation\_nonzero} formalizes a complete
-double-pinch certificate — for distinct odd primes $p,q$ with Gaussian
-representations $\pi = A+Bi$, $\chi = C+Di$, the relation value
-$\im(-p^2\pi^4\bar\chi^8 - q^2\pi^8\bar\chi^4 - \pi^8\bar\chi^8)$
-is never zero: vanishing would make the Gaussian value self-conjugate,
-$\pi$ divides it, stripping $\bar\pi$- and $\chi$-units leaves
-$p \mid 2(C^2-D^2)$, symmetrically $q \mid (A^2-B^2)$, and the strict
-two-ordering pinch is absurd.  Since the other thirty-one double-pinch
-relations share this exact proof shape, a fully verified partial
-Theorem~H$'$ is now a matter of mechanical generation.
+All thirty-two pure double-pinch relations are now
+\emph{machine-checked dead} in Lean~4 with no \texttt{sorry}.  The
+mechanism is packaged as a reusable toolkit: \texttt{pi\_core\_disj}
+proves that $\pi \mid (\varepsilon_2 q^2 + \varepsilon_3\bar\chi^4)$
+forces $p \mid 2(C^2-D^2)$ or $p \mid 4CD$;
+\texttt{sq\_core\_disj} is the symmetric $\chi$-side statement; and
+\texttt{double\_pinch\_finish} shows any combination of the two core
+disjunctions is absurd by the strict two-ordering pinch (trichotomy on
+$p$ versus $q$).  The thirty-two relations organize into four
+slot-triple families, each formalized by a parametric theorem over all
+sign choices $\varepsilon_i \in \{\pm 1\}$, all odd prime pairs, and
+all Gaussian representations: vanishing makes the Gaussian value
+self-conjugate, each prime's side subtracts its manifestly divisible
+terms from the conjugated relation (one conjugation class per family
+requires regrouping the six-term identity $G - \bar G = 0$ before the
+extraction), unit factors are stripped by primality, and the exposed
+integer cores feed the pinch.  This closes the double-pinch layer of a
+verified partial Theorem~H$'$; the remaining twenty-four
+unconditionally-killed relations carry parity and unit-side
+certificates whose always-odd cubic cofactors await the same
+treatment.
 
 The residual band relations were probed to second order: on several
 hundred integer points of the band loci the relation values carry
