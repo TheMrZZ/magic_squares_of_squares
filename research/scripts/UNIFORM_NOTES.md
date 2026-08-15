@@ -1328,3 +1328,24 @@ primes ≡ 1 mod 4), `useful_not_dvd_small` (useful primes are ≥ 5, so
 ∤ {1,2,3}). Conjugate variants come free at call sites via (C, −D).
 Gotcha: `linear_combination` sign — the Im-goal enters with opposite
 orientation; use −h.
+
+## Round 81 — Theorem E refined dispatch: 960 leaves covered, 384-residue plan
+
+Refined dispatcher (two-term reduction whenever an equation's target
+class lies in {c,d}): 960 of the 1344 sign-leaves die by the three
+shipped two-term lemmas (q_mixed 384, p_mixed 384, qI_pY 192). The
+384-leaf residue = 24 shapes (both u,v classes outside {c,d}), ~4
+types up to symmetry:
+
+- T1 ({q²I, p²Y} vs mixed u,v): aligned ε ⇒ sum/diff give
+  I(2X ∓ q²) = 0 (even ≠ odd); anti-aligned ⇒ 2RY = ±q²I ∧
+  2IX = ±p²Y, multiply and cancel IY ⇒ 4RX = ±p²q² (even ≠ odd).
+- T2 ({q²I, mixed} vs {p²Y, other-mixed}): substitution gives
+  p²Y = ±2IX (or trivially dead variants) plus q²I = c′IX + c″RY;
+  coprimality (I⊥R, X⊥Y) forces Y ∣ 2I ∧ I ∣ c″Y, a FINITE ratio
+  enumeration (Y = ±I, ±2I, ±2I/3, ±I/3), each branch ending in
+  p² = ±2X-type parity, X = ±p² pinch, or 3 ∤ p² —
+  all elementary. Symmetric types by p↔q and conj mirrors.
+
+Remaining Lean work: ~8 bespoke residue lemmas + the generated
+dispatcher + final assembly through the reduction.
