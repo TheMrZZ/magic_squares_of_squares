@@ -633,3 +633,17 @@ congruences p ≡ ±1 (mod 8) resp. (mod 12) and symmetrically for q:
 the (2,2) frontier's band component is now a finite list of explicit
 simultaneous-representation Diophantine systems — the precise
 arithmetic objects whose emptiness (or not) decides those relations.
+
+## Band-system census: sporadic vs. persistent families
+
+band_probe2.py checks all prime pairs p,q < 50,000 for the coupled
+band conditions (p = k*F(C_q, D_q), q = l*G(A_p, B_p), |k|,|l| <= 3):
+30 co-occurrences total.  The disc-8-mixed systems are SPORADIC (one
+tiny pair each, e.g. (13,17) — all deep inside the verified sweeps).
+The disc12a <-> disc12b system persists (9 pairs by 50k, slowly
+growing): likely an infinite family, so those two band relations
+cannot be closed by emptiness of the coupled conditions; on their band
+pairs the full relation must be refuted at second order (the sweeps
+confirm it fails at every such pair in range).  The (2,2) frontier is
+now calibrated down to which of its 82 relations rest on empty,
+sporadic, or persistent Diophantine loci.

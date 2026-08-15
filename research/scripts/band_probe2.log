@@ -1,0 +1,12 @@
+coupled-system co-occurrences (p,q < 50000): 30
+9 ('disc12b', 'disc12a')
+9 ('disc12a', 'disc12b')
+1 ('disc8', 'disc12c')
+1 ('disc8', 'disc12d')
+1 ('disc8b', 'disc12c')
+1 ('disc8b', 'disc12d')
+1 ('disc12c', 'disc8')
+1 ('disc12c', 'disc8b')
+1 ('disc12d', 'disc8')
+1 ('disc12d', 'disc8b')
+examples: [(17, 13, 'disc8', 1, 'disc12c', 1), (17, 13, 'disc8', 1, 'disc12d', 1), (17, 13, 'disc8b', 1, 'disc12c', 1), (17, 13, 'disc8b', 1, 'disc12d', 1), (37, 13, 'disc12b', 1, 'disc12a', 1), (13, 17, 'disc12c', 1, 'disc8', 1), (13, 17, 'disc12c', 1, 'disc8b', 1), (13, 17, 'disc12d', 1, 'disc8', 1)]
