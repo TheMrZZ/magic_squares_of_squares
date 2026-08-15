@@ -673,3 +673,19 @@ thinning (Fermat-quotient flavor) that guards the s p^a q order loci.
 The two-prime b=2 program therefore ends, for now, as: 98.35% proven
 impossible unconditionally + a fully-mapped residual whose closure
 requires genuinely new (depth-uniform) arithmetic input.
+
+## Toward verified certificates: ParityFacts.lean + generator findings
+
+MsqLean/ParityFacts.lean (builds clean): opposite_parity, re4_odd
+(explicit-witness proofs that Re(pi^4) is odd and Im(pi^4) = 0 mod 4
+under the forced opposite parity of A, B).  Generation experiments
+(gen_parity_lean.py, gen_parity2.py): NO residual relation is killed by
+parity alone — every certified relation mixes certificate types
+(parity factor x unit-side/pinch factors), so mechanical Lean
+generation requires formalizing the unit-side reduction (p never
+divides a reduction that is units-times-constant — the GradingLemma
+argument specialized to each factor's explicit polynomial) and the
+double-pinch bound lemmas.  Design outline: (1) per-factor reduction
+identities are `ring`-checkable; (2) unit-atom nonvanishing follows
+from GradingLemma + im/re nonzero lemmas; (3) pinch bounds are
+Int.le_of_dvd arguments.  Deferred as the next formalization arc.
