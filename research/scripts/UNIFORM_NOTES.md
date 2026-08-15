@@ -706,3 +706,14 @@ Supporting lemmas in PinchHelpers.lean (int_dvd_of_gaussian_dvd,
 strict_pinch, sq_ne_sq_of_odd_prime) and ParityFacts.lean.  This is
 the existence proof that the certificate engine's kills are mechanically
 formalizable — the path to a fully verified partial Theorem H'.
+
+## The 32 double-pinch relations = one G-shape
+
+cert_table.py: every double-pinch relation uses the SAME three element
+slots {(1,2,±), (2,1,±), (2,2,±)} — i.e. G = e1 p^2 pi^4 chi_{s1}^8
++ e2 q^2 pi^8 chi_{s2}^4 + e3 pi^8 chi_{s3}^8 over sign/conjugation
+choices — 32 variants, evenly split 8/8/8/8 across the four core-type
+pairs (Re,Re)/(Im,Im)/(Re,Im)/(Im,Re).  simplest_relation_nonzero is
+the (all-minus, all-conjugated) instance; the other 31 are template
+instantiations with star swaps (Re-core via (star chi)^2 + chi^2 =
+2(C^2-D^2), Im-core via im_core_eq and coord_sq_lt pinch on C, D).
