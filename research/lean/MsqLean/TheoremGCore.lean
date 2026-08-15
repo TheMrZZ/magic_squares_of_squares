@@ -1452,4 +1452,185 @@ lemma cross12S_L0_M7
     have hI0 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 = 0 := by linarith
     exact hI120 (pow_eq_zero_iff (two_ne_zero) |>.mp hI0)
 
+/-- S-form (M1-row, M7) cell: cancelling I₄ from 2I₁₂X = f·p⁴q²I₄ leaves
+2·(3R₄²−I₄²)X = f·p⁴q², even = odd. Uses only the first equation. -/
+lemma cross12S_L1_M7
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (X : ℤ) (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * X) = f * ((p : ℤ) ^ 4 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)))) : False := by
+  have hI40 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have him12 := im12_eq A B
+  have h0 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (2 * ((3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * X) - f * ((p : ℤ) ^ 4 * (q : ℤ) ^ 2)) = 0 := by
+    linear_combination h1 - 2 * X * him12
+  have hkey : 2 * ((3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * X) = f * ((p : ℤ) ^ 4 * (q : ℤ) ^ 2) := by
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI40
+    · linarith
+  obtain ⟨m, hm⟩ := ((odd_cast p hpodd).pow (n := 4)).mul ((odd_cast q hqodd).pow (n := 2))
+  rw [hm] at hkey
+  have heven : Even (f * (2 * m + 1)) := ⟨(3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * X, by linarith⟩
+  rcases hf with rfl | rfl <;> obtain ⟨n, hn⟩ := heven <;> omega
+
+set_option maxHeartbeats 1600000 in
+/-- S-form (M2-row, M7) cell: cancelling 2I₄ from 2I₁₂X = f·p²q²I₈ gives
+JX = f·p²q²R₄ with J = 3R₄²−I₄². Then R₄ ∣ q² (via the second equation) and
+J ∣ q²; the branch J = ±q² dies by size (q⁴ = p⁴R₄² + I₄²q⁴w² needs
+I₄²w² ≥ 4), and J ∈ {±1, ±q} feeds M7_J_endgame. -/
+lemma cross12S_L2_M7
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q) (hq4m : q % 4 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f g e : ℤ) (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))))
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      = g * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))) : False := by
+  have hf2 : f ^ 2 = 1 := by rcases hf with rfl | rfl <;> norm_num
+  have he2 : e ^ 2 = 1 := by rcases he with rfl | rfl <;> norm_num
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hI40 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have hI120 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ≠ 0 := im12_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hq4c : (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 + (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hp4c : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 = (p : ℤ) ^ 4 := norm4_coord p A B hpAB
+  have hcop := coprime_re12_im12 p hpodd A B hpAB
+  have him12 := im12_eq A B
+  have him8 := im8_eq A B
+  have hre12 := re12_eq A B
+  have hR4odd : Odd (((⟨A, B⟩ : GaussianInt) ^ 4).re) := re4_odd' p hpodd A B hpAB
+  obtain ⟨J, hJ⟩ : ∃ J, J = 3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 := ⟨_, rfl⟩
+  have hI12I4J : (((⟨A, B⟩ : GaussianInt) ^ 12).im) = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * J := by rw [hJ]; linear_combination him12
+  -- key relation from eq1: J·X = f·p²·q²·R₄
+  have h0 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (J * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))))) = 0 := by
+    linear_combination h1 - 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * him12 + f * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * him8
+      + 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * hJ
+  have h0' : (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (J * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)))) = 0 := by linarith
+  have hJX : J * (((⟨C, D⟩ : GaussianInt) ^ 4).re) = f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))) := by
+    rcases mul_eq_zero.mp h0' with h | h
+    · exact absurd h hI40
+    · linarith
+  -- J ⊥ R₄
+  have hcJR : IsCoprime J ((((⟨A, B⟩ : GaussianInt) ^ 4).re)) := by
+    rw [Int.isCoprime_iff_gcd_eq_one]
+    by_contra hgc
+    obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hgc
+    have hrJ : (r : ℤ) ∣ J :=
+      (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_left _ _)
+    have hrR : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ 4).re) :=
+      (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_right _ _)
+    have hrP : Prime (r : ℤ) := by
+      rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+    obtain ⟨k, hk⟩ := hrR
+    obtain ⟨j, hj⟩ := hrJ
+    have hrI2 : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 := by
+      have hI2eq : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 = 3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - J := by rw [hJ]; ring
+      rw [hI2eq, hk, hj]
+      exact ⟨3 * (r * k ^ 2) - j, by ring⟩
+    have hrI : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ 4).im) := hrP.dvd_of_dvd_pow hrI2
+    exact hrP.not_unit ((coprime_re4_im4 p hpodd A B hpAB).isUnit_of_dvd' ⟨k, hk⟩ hrI)
+  -- R₄ ∣ X
+  have hR4X : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    have hd : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ∣ J * (((⟨C, D⟩ : GaussianInt) ^ 4).re) := ⟨f * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2), by linear_combination hJX⟩
+    exact (hcJR.symm).dvd_of_dvd_mul_left hd
+  -- M7 side: Y = I₁₂·w and 3X + eR₁₂w = gq²
+  have hIY : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hd : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) * (((⟨A, B⟩ : GaussianInt) ^ 12).re) := by
+      refine ⟨e * (g * (q : ℤ) ^ 2 - 3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re)), ?_⟩
+      linear_combination e * h2 - (((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * he2
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨w, hw⟩ := hIY
+  have hw0 : w ≠ 0 := by rintro rfl; exact hY0 (by simpa using hw)
+  have h3X : 3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * w) = g * (q : ℤ) ^ 2 := by
+    have h00 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * ((3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * w)) - g * (q : ℤ) ^ 2) = 0 := by
+      linear_combination h2 - e * (((⟨A, B⟩ : GaussianInt) ^ 12).re) * hw
+    rcases mul_eq_zero.mp h00 with h | h
+    · exact absurd h hI120
+    · linarith
+  -- R₄ ∣ q²
+  have hR4R12 : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ∣ (((⟨A, B⟩ : GaussianInt) ^ 12).re) :=
+    ⟨(((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - 3 * (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2, by linear_combination hre12⟩
+  have hR4gq2 : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ∣ g * (q : ℤ) ^ 2 := by
+    obtain ⟨x, hx⟩ := hR4X
+    obtain ⟨y, hy⟩ := hR4R12
+    exact ⟨3 * x + e * (y * w), by rw [← h3X, hx, hy]; ring⟩
+  have hR4q2 : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ∣ (q : ℤ) ^ 2 := by
+    have hgg : g * (g * (q : ℤ) ^ 2) = (q : ℤ) ^ 2 := by
+      rcases hg with rfl | rfl <;> ring
+    exact hgg ▸ hR4gq2.mul_left g
+  -- J ∣ q²
+  have hpJ : ¬ (p : ℤ) ∣ J := by
+    intro hd
+    obtain ⟨hpR12, hpI12⟩ := p_not_dvd_re12_im12 p hpodd A B hpAB
+    exact hpI12 (hI12I4J ▸ (hd.mul_left (((⟨A, B⟩ : GaussianInt) ^ 4).im)))
+  have hJq2 : J ∣ (q : ℤ) ^ 2 := by
+    have hd1 : J ∣ f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))) := hJX ▸ ⟨(((⟨C, D⟩ : GaussianInt) ^ 4).re), rfl⟩
+    have hd2 : J ∣ (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)) := by
+      have hff : f * (f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))))
+          = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)) := by
+        rcases hf with rfl | rfl <;> ring
+      exact hff ▸ hd1.mul_left f
+    have hcJp : IsCoprime J ((p : ℤ) ^ 2) :=
+      (((hpP.coprime_iff_not_dvd).mpr hpJ).symm).pow_right
+    have hd3 : J ∣ (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) := hcJp.dvd_of_dvd_mul_left hd2
+    exact hcJR.dvd_of_dvd_mul_right hd3
+  -- classify J against powers of q
+  obtain ⟨i, hi, hass⟩ := (dvd_prime_pow hqP 2).mp hJq2
+  have hq3 : (3 : ℤ) ≤ (q : ℤ) := by
+    have := hq.out.two_le
+    omega
+  have hq4S : (4 : ℤ) ≤ (q : ℤ) ^ 4 := by
+    nlinarith [pow_le_pow_left₀ (by norm_num : (0:ℤ) ≤ 3) hq3 4]
+  have hq2S : (4 : ℤ) ≤ (q : ℤ) ^ 2 := by
+    nlinarith [pow_le_pow_left₀ (by norm_num : (0:ℤ) ≤ 3) hq3 2]
+  interval_cases i
+  · -- J unit: S = q⁴
+    rcases Int.associated_iff.mp hass with hJ1 | hJ1 <;>
+    · refine M7_J_endgame p q hpodd hpq hq4m (((⟨A, B⟩ : GaussianInt) ^ 4).re) (((⟨A, B⟩ : GaussianInt) ^ 4).im) J ((q : ℤ) ^ 4)
+        hp4c hJ hR4odd hR4q2 hJq2 ?_ hq4S
+      simp only [pow_zero] at hJ1
+      rw [hJ1]; try ring
+  · -- J = ±q: S = q²
+    rcases Int.associated_iff.mp hass with hJ1 | hJ1 <;>
+    · refine M7_J_endgame p q hpodd hpq hq4m (((⟨A, B⟩ : GaussianInt) ^ 4).re) (((⟨A, B⟩ : GaussianInt) ^ 4).im) J ((q : ℤ) ^ 2)
+        hp4c hJ hR4odd hR4q2 hJq2 ?_ hq2S
+      rw [hJ1]; try ring
+  · -- J = ±q²: size kill (q⁴ = p⁴R₄² + I₄²q⁴w² needs I₄²w² ≥ 4)
+    have hJsq : J ^ 2 = (q : ℤ) ^ 4 := by
+      rcases Int.associated_iff.mp hass with hJ1 | hJ1 <;> (rw [hJ1]; try ring)
+    have hq40 : ((q : ℤ) ^ 4) ≠ 0 := by positivity
+    have hsq : (J * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = (f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)))) ^ 2 := by
+      rw [hJX]
+    have hXsq' : (q : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 = (q : ℤ) ^ 4 * ((p : ℤ) ^ 4 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2) := by
+      linear_combination hsq - (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 * hJsq
+        + (p : ℤ) ^ 4 * (q : ℤ) ^ 4 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 * hf2
+    have hX2 : (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 = (p : ℤ) ^ 4 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 := mul_left_cancel₀ hq40 hXsq'
+    have hYIJ : (((⟨C, D⟩ : GaussianInt) ^ 4).im) = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * J * w := by rw [hw, hI12I4J]; try ring
+    have hsqY : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * J * w) ^ 2 := by rw [hYIJ]
+    have hY2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 * ((q : ℤ) ^ 4 * w ^ 2) := by
+      linear_combination hsqY + (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 * w ^ 2 * hJsq
+    have heq : (p : ℤ) ^ 4 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 * ((q : ℤ) ^ 4 * w ^ 2) = (q : ℤ) ^ 4 := by
+      linear_combination hq4c - hX2 - hY2
+    -- bounds
+    have hI4sq : (4 : ℤ) ≤ (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 := by
+      obtain ⟨k, hk⟩ := im4_even A B
+      have hk0 : k ≠ 0 := by rintro rfl; exact hI40 (by simpa using hk)
+      have h1k : (1 : ℤ) ≤ k ^ 2 := by
+        rcases lt_or_gt_of_ne hk0 with h | h <;> nlinarith
+      rw [hk]; nlinarith
+    have hw2 : (1 : ℤ) ≤ w ^ 2 := by
+      rcases lt_or_gt_of_ne hw0 with h | h <;> nlinarith
+    have hR42 : (1 : ℤ) ≤ (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 := by
+      have hR40 : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ≠ 0 := by
+        rintro h0
+        rw [h0] at hR4odd
+        exact (by norm_num : ¬ Odd (0 : ℤ)) hR4odd
+      rcases lt_or_gt_of_ne hR40 with h | h <;> nlinarith
+    have hp2le : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+    have hq4pos : (0 : ℤ) < (q : ℤ) ^ 4 := by positivity
+    nlinarith [heq, hI4sq, hw2, hR42, hq4pos, hp2le,
+      mul_le_mul hI4sq hw2 (by norm_num) (by nlinarith : (0:ℤ) ≤ (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2),
+      pow_le_pow_left₀ (by norm_num : (0:ℤ) ≤ 2) hp2le 4]
+
 end GCore
