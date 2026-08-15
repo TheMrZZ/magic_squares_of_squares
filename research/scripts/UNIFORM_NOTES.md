@@ -1957,3 +1957,18 @@ no_ratio2 (W = 2δV impossible for class values W, V). Kill split:
   p⁸ = X² + (3Y)² — needs the p⁸ two-square rep classification.
 - W = 2δW same class: (1∓2)W = 0, class-nonzero.
 Next: formalize the easy ratio cells, then the two deep cells.
+
+## Round 122 — deep ratio cells = ONE Fermat-descent equation
+
+The L3↔L4 ratio cell: coprime chains force X = ±R, I = ±3Y (or the
+3-swapped mirror), whose norms give p² = s² + 2t², q² = s² − 2t², so
+(pq)² = s⁴ − 4t⁴. The L5↔L6 cell runs the same chains at level 8
+(gcd(R₈, I₈) = 1) and lands on p⁴ = u² + 2v², q² = u² − 2v², so
+(p²q)² = u⁴ − 4v⁴ — the SAME equation. Kill: u⁴ − 4v⁴ = w² with
+u odd, u ⊥ v, v ≠ 0 is impossible: w odd, split
+α = (u²−w)/2, β = (u²+w)/2, αβ = v⁴, coprime and positive, so
+α = m⁴, β = n⁴ (two rounds of Int.sq_of_coprime), giving
+m⁴ + n⁴ = u² — killed by mathlib's not_fermat_42. The magic-square
+proof for s·p²·q centers thus genuinely invokes Fermat's right
+triangle theorem. Next: formalize no_s4_sub_4t4, then the two deep
+ratio cells, then assemble no_ratio2 and the capstone.
