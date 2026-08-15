@@ -1853,3 +1853,15 @@ R₃ ∣ q²: {q⁴: ŵ = 0 ✗; q²: I² = p⁴ − 9q² > 0 vs 16p⁴ ≤ q² 
 1: I² = p⁴ − 9 between consecutive squares (needs p ≥ 3) ✗}.
 All elementary. Once formalized, the ENTIRE T-form 25-cell table is
 closed; then the 2S-mirror family and the bucket dispatcher.
+
+## Round 116 — cross_L34_L2_int machine-checked: T-form table CLOSED
+
+The σ-parametrized mirror lemma compiled (two 3-divisibility cases,
+shared 3-subcase endgame; combining-circumflex identifiers x̂/ŵ are
+rejected by Lean — use xh/wh). With it, every cell of the T-form
+cross-pair table {2R₈Y = ±Kb} ∧ {3R₈Y ± I₈X = ±Kd} has a
+machine-checked kill: L0 parity, L1/L3/L4 p-chains, L1-L2 mod-4,
+(L2,·) three lemmas, (L3/L4, L2) mirror. Next: assemble
+cross_pair_core_T (the 25-cell router with the easy cells inline),
+then the S-form mirror family (2I₈X = ±Kb ∧ 3I₈X ± R₈Y = ±Kd),
+then the (a,c)-bucket dispatcher into both cores.
