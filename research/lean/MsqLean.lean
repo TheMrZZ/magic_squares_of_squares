@@ -24,3 +24,4 @@ import MsqLean.RelationFamilyF3
 import MsqLean.RelationFamilyF4
 import MsqLean.TwinCollapse
 import MsqLean.UniformTwin
+import MsqLean.UniformPinch

@@ -883,3 +883,31 @@ entire parity+unit-side census class at (2,2), and its counterparts at
 (3,2), (3,3), (4,4), …) are dead by ONE machine-checked statement per
 shape. The 12 concrete (2,2) twin theorems are now corollaries.
 Gotcha: `x ^ 4 ^ (j+1)` parses as `x ^ (4^(j+1))` — parenthesize.
+
+## Round 57 — Exponent-UNIFORM corner-triple double-pinch (`UniformPinch.lean`)
+
+Unification: every pure double-pinch relation at (2,2) is a corner
+triple {(α−1,β), (α,β−1), (α,β)} — the four "families" F1–F4 are the
+same relative shape at anchors (2,2), (1,1), (1,2), (2,1). The common
+p^{2u}q^{2w} integer coefficient factors out of Im, so ONE theorem per
+conjugation class, with free anchor exponents, covers them all AND
+their counterparts at every exponent (a,b):
+
+- `uniform_corner_aligned` (a b : ℕ free):
+  Im(e₁p²π^{4a}χ̄^{4b+4} + e₂q²π^{4a+4}χ̄^{4b} + e₃π^{4a+4}χ̄^{4b+4}) ≠ 0.
+  π-side subtracts the p²-term of star G and strips π̄^{4a+4}, χ^{4b};
+  χ-side regroups G − star G and extracts π^{4a}χ̄^{4b+4}(e₁p² + e₃π⁴).
+- `uniform_corner_mixed` (b : ℕ free, first slot χ-unconjugated):
+  Im(e₁p²χ^{4b+4} + e₂q²π⁴χ̄^{4b} + e₃π⁴χ̄^{4b+4}) ≠ 0.
+  The mixed class only occurs at π-anchor α = 1 — for α > 1 the χ-side
+  extraction would land on a large core (χ ∣ e₃π^{4α−2} − e₁π̄^{4α−2})
+  and the pinch genuinely fails, consistent with the census.
+  Both compiled FIRST TRY on the CoreDisj toolkit.
+
+Together with `UniformTwin.lean`, every certificate class observed at
+(2,2) now has an exponent-uniform machine-checked kill theorem: corner
+triples and lone+twin shapes are formally dead at ALL two-prime
+exponents (a,b), all odd prime pairs, all representations, all signs.
+The (2,2)-specific files are instances. `Prime.dvd_of_dvd_pow` is
+total in the exponent (n = 0 gives χ ∣ 1, absurd ⇒ anything), so the
+a = 0 / b = 0 edge cases need no side conditions.
