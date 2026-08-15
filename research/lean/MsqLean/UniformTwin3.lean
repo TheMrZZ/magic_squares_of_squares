@@ -101,3 +101,65 @@ theorem uniform_twin_composite_chi
   · exact im_composite_ne_zero q r hqodd hrodd hqr C D E F hqCD hrEF h
   · obtain ⟨k, hk⟩ := hc
     exact odd_ne_zero ⟨k + e * z.re, by rw [hk]; ring⟩ h
+
+/-- A product of positive powers of two distinct split primes' quartic
+factors is never real. -/
+lemma im_prod_pow_ne_zero
+    (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (k l : ℕ) :
+    ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1))
+      * (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (l + 1))).im ≠ 0 := by
+  intro h
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  set Z : GaussianInt := ((π ^ 4) ^ (k + 1)) * ((χ ^ 4) ^ (l + 1)) with hZdef
+  have hπprime : Prime π := prime_pi p A B hpAB
+  have hπnb : ¬ π ∣ star π := pi_not_dvd_star p hpodd A B hpAB
+  have hπsχ : ¬ π ∣ star χ := by
+    have := not_dvd_other p q hpq A B C (-D) hpAB (by rw [neg_pow]; ring_nf; linarith [hqCD])
+    simpa [hχdef, Zsqrtd.star_mk] using this
+  have hy : Z = (((Z.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [← hZdef, h]
+  have hself : star Z = Z := by rw [hy, star_intCast]
+  have hZ : π ∣ Z := ⟨π ^ 3 * (π ^ 4) ^ k * (χ ^ 4) ^ (l + 1), by rw [hZdef]; ring⟩
+  have hstarZ : star Z = ((star π) ^ 4) ^ (k + 1) * ((star χ) ^ 4) ^ (l + 1) := by
+    rw [hZdef]
+    simp only [star_mul, star_pow]
+    ring
+  have hdvd : π ∣ ((star π) ^ 4) ^ (k + 1) * ((star χ) ^ 4) ^ (l + 1) := by
+    rw [← hstarZ, hself]
+    exact hZ
+  rcases hπprime.dvd_mul.mp hdvd with h1 | h1
+  · exact hπnb (hπprime.dvd_of_dvd_pow (hπprime.dvd_of_dvd_pow h1))
+  · exact hπsχ (hπprime.dvd_of_dvd_pow (hπprime.dvd_of_dvd_pow h1))
+
+/-- Composite-lone sum-twin kill: lone Z = π^{4(k+1)}χ^{4(l+1)}, twin
+pair Z·w / Z·w̄, any Gaussian w with odd Re, any odd c. -/
+theorem uniform_twin_composite_lone
+    (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (w : GaussianInt) (k l : ℕ) (c e : ℤ) (hc : Odd c) :
+    (((-c : ℤ) : GaussianInt)
+        * ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (l + 1)))
+      + ((e : ℤ) : GaussianInt)
+        * ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (l + 1)))
+        * w
+      + ((e : ℤ) : GaussianInt)
+        * ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (l + 1)))
+        * star w).im ≠ 0 := by
+  intro h0
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  have key : ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1))
+      * (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (l + 1))).im
+      * (2 * e * w.re - c) = 0 := by
+    simp only [Zsqrtd.im_mul, Zsqrtd.re_mul]
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im_prod_pow_ne_zero p q hpodd hqodd hpq A B C D hpAB hqCD k l h
+  · exact odd_ne_zero (even_sub_odd ⟨e * w.re, by ring⟩ hc) h

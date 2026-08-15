@@ -1027,3 +1027,24 @@ covered by the uniform twin machinery. The two-prime master theorems
 were already prime-count-agnostic in their opaque slot; only the
 composite-lone case needed a genuinely three-prime statement. Full
 build green, zero sorries.
+
+## Round 63 — (2,1,1) three-prime census: 76/76 covered
+
+`sym3ab_census.py` (general three-prime exponents) at (2,1,1):
+1968 relations, 76 killed unconditionally — every one a twin shape:
+
+- 26 single-flip diff-type + 8 composite-flip diff-type
+  (master_chi / uniform_twin_composite_chi).
+- 10 + 8 + 8 single-unflipped sum-type with twin powers 1,2,2
+  respecting the 2-adic rule (master_pi).
+- 8 + 8 composite-LONE sum-type (lone = π^{4k}χ^{4l} product, twin
+  part equal to the lone): new `uniform_twin_composite_lone` on
+  `im_prod_pow_ne_zero` (a product of positive quartic powers of two
+  distinct split primes is never real — star-fixedness forces
+  π ∣ π̄-or-χ̄).
+
+No corner triples and no non-twin shapes appear at (2,1,1). The
+uniform toolkit — now 2 corner + 2 master twin + 2 composite twin
+theorems + instances — covers 100% of unconditional kills at every
+exponent censused so far: (2,2), (3,2), (3,3), (4,2), (4,3), (5,2),
+(4,4) two-prime; (1,1,1), (2,1,1) three-prime.
