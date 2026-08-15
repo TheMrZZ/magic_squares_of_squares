@@ -1809,3 +1809,16 @@ q ∤ k since q ∤ X).
 Also still open: the mirror deep cell (Kb ∈ {L1,L3,L4}, Kd = L2)
 with X ≡ ±q² (mod p²), and the form-B (2S) family. Formalization
 order: easy p²-chain cells → cross_L2_L0 → cross_L2_L1 → rest.
+
+## Round 113 — all (L2, ·) cross cells machine-checked
+
+cross_L2_L0_int (factored quadratic), cross_L2_L1_int (size kill
+Y² ≥ q⁸), cross_L2_L34_int (σ-parametrized; R ∣ X → R ∣ q² →
+three associated-power kills: I²≥16 vs x̂²+I²v²=1; negative
+discriminant on 16v²+16 ≤ p⁴ ≤ (2v∓1)²; I² = p⁴−1 between
+consecutive squares). The 2T-side cross-pair family is fully
+covered: L0 (parity), L1/L3/L4 easy partners via the p²-chain, and
+now every L2 partner. Remaining for the cross-pair core: the easy
+p²-chain cells as Lean text, the 2S-form mirror family, then the
+(a,c)-bucket dispatcher; after that k=1 single-8 buckets with L2,
+router, no_four_diffs_sp2q, capstone.
