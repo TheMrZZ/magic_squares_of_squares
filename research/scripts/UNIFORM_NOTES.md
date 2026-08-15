@@ -1147,3 +1147,22 @@ flipped-part patterns (so the lone really is W or W̄) — verified
 programmatically on every twin kill at all nine pickled grids:
 0 mismatches / 830 diff-type twins checked. The 100%-coverage claims
 hold at the instance level, not just the shape level.
+
+## Round 70 — Sharpness audit of the twin layer
+
+Auditing every ALIVE lone+twin relation at the two-prime grids
+against the theorems' hypotheses:
+
+- **Violating shapes exist**: (L,T) = (2,3) and (2,5) twins occur as
+  relations and are alive — the 2-adic master rule v₂(L) ≠ 1 + v₂(T)
+  is sharp, not vacuous.
+- Every other alive twin fails a structural criterion: χ-lone with
+  SUM signs or π-lone with DIFF signs (the two collapse products then
+  involve different unit factors — Im(w^L) vs Im(z) — with no common
+  factor: these are precisely the wedge-type alive relations), or a
+  composite lone slot (the band classes).
+- Zero "SHOULD-BE-DEAD" entries: no alive relation satisfies all the
+  twin-theorem hypotheses. Together with the 100% kill coverage and
+  the orientation pass, the twin layer is EXACTLY the
+  collapse-plus-2-adic criterion — killed iff type-matching and
+  rule-satisfying.
