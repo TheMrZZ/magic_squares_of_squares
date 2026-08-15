@@ -753,3 +753,20 @@ side, so their formal closure needs the two-factor treatment: the
 Gaussian extraction yields chi | (sixth-power core) which factors as
 (small core) * (odd cubic), and the odd-cubic branch q | 2R ± p^2 must
 be handled by the parity/second-factor argument rather than a pinch.
+
+## Ground truth: the 32 pure double-pinch relations = 4 shape families
+
+sym_unit2b.py records per-relation certificates: kills = 32 relations
+by a single pure double-pinch factor + 16 (parity+unit-side) + 8
+(2 parity + unit-side).  The 32 span FOUR slot-triples:
+  F1 {(1,2),(2,1),(2,2)}  — the verified family (8 relations DONE)
+  F2 {(0,1),(1,0),(1,1)}  — strip p^2 q^2: G = e1 p^2 chi^4 + e2 q^2 pi^4
+                            + e3 pi^4 chi^{±4}
+  F3 {(0,2),(1,1),(1,2)}  — strip p^2: G = e1 p^2 chi^8 + e2 q^2 pi^4 chi^4
+                            + e3 pi^4 chi^8 (pi-shifted variant of F1)
+  F4 {(1,1),(2,0),(2,1)}  — the q-mirror of F3
+each x 2 conjugation mirrors x 4 sign variants.  Families F2-F4 need
+the same chain recipe (term divisibility via p = pi*pibar when a slot
+has no pi-power, extraction, cores, pinch); with the recipe now proven
+fast (thm3, thm4 built first-try), the full formal closure of all 32
+is a bounded programme.
