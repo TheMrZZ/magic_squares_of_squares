@@ -1674,3 +1674,13 @@ Two of the three bespoke F-residue pieces are now Lean:
 Remaining bespoke: the four finishers on top of r8_derive (per
 partner class: q⁴ = p⁸ ⇒ p ∣ q; parity; p ∣ X ⇒ p² ∣ 2q⁴), and the
 R₈ ∣ q² enumeration for A1/A3. Then the level-8 core assembly.
+
+## Round 104 — r8-derive finishers machine-checked
+
+`resid_q4_p8` (q⁴ = p⁸ forces p = q), `resid_p2_2q4` (p² ∣ 2q⁴
+impossible for odd distinct primes), `resid_pX_extract` (p ∣ X from
+X(2R − c) = M with p ∣ c, M and p ∤ R). Together with resid_r8_derive
+these close all four partner cases of the R₈Y-vs-q²I₈ branch:
+X = ±q² or ±p⁴ hit q⁴ = p⁸; the p²q²I partner is parity; the cross
+partner extracts p ∣ X and lands in p² ∣ 2q⁴. Remaining bespoke: the
+R₈ ∣ q² enumeration (A1/A3), then the level-8 core assembly.

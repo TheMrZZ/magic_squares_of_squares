@@ -392,3 +392,55 @@ lemma resid_r8_derive (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prim
         = (((⟨A, B⟩ : GaussianInt) ^ 8).im) ^ 2 := by
       rw [hm]; nlinarith [hmsq]
     nlinarith [hn8, hn4, hR8sq, hY2]
+
+/-- q⁴ = p⁸ is impossible for distinct primes. -/
+lemma resid_q4_p8 (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (h : (q : ℤ) ^ 4 = (p : ℤ) ^ 8) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hd : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    rw [h]; exact dvd_pow_self _ (by norm_num)
+  have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hd
+  have : p ∣ q := by exact_mod_cast hq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+
+/-- p² ∣ 2q⁴ is impossible for distinct odd primes. -/
+lemma resid_p2_2q4 (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (h : (p : ℤ) ^ 2 ∣ 2 * (q : ℤ) ^ 4) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hd : (p : ℤ) ∣ 2 * (q : ℤ) ^ 4 := (dvd_pow_self _ (two_ne_zero)).trans h
+  have hp2 : ¬ (p : ℤ) ∣ 2 := by
+    intro hd2
+    have hle := Int.le_of_dvd (by norm_num) hd2
+    have h3 : 3 ≤ p := by have := hp.out.two_le; omega
+    have h4 : (3 : ℤ) ≤ (p : ℤ) := by exact_mod_cast h3
+    omega
+  rcases hpP.dvd_mul.mp hd with h1 | h1
+  · exact hp2 h1
+  · have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow h1
+    have : p ∣ q := by exact_mod_cast hq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+
+/-- Extract p ∣ X from X(2R − c) = M when p ∣ c, p ∣ M, p ∤ R. -/
+lemma resid_pX_extract (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (R X c M : ℤ) (hc : (p : ℤ) ∣ c) (hM : (p : ℤ) ∣ M)
+    (hpR : ¬ (p : ℤ) ∣ R) (h : X * (2 * R - c) = M) : (p : ℤ) ∣ X := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hd : (p : ℤ) ∣ X * (2 * R) := by
+    have : X * (2 * R) = M + X * c := by linarith [h]
+    rw [this]
+    exact dvd_add hM (Dvd.dvd.mul_left hc X)
+  have hp2 : ¬ (p : ℤ) ∣ 2 := by
+    intro hd2
+    have hle := Int.le_of_dvd (by norm_num) hd2
+    have h3 : 3 ≤ p := by have := hp.out.two_le; omega
+    have : (3 : ℤ) ≤ (p : ℤ) := by exact_mod_cast h3
+    omega
+  rcases hpP.dvd_mul.mp hd with h1 | h1
+  · exact h1
+  · rcases hpP.dvd_mul.mp h1 with h2 | h2
+    · exact absurd h2 hp2
+    · exact absurd h2 hpR
