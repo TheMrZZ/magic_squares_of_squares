@@ -1543,3 +1543,17 @@ the 7-class single equations: 166 killed outright (q-div 37, p-div 97,
 factored 25, degenerate 7); 520 need the Gaussian tier — next step is
 the refined catalog with two-term-reduction awareness to size the
 true residue.
+
+## Round 95 — twoterm_p_extract: one lemma for every mixed collapse
+
+The definitive two-term kill: c₁·p^{2(t+1)}·Im z₁ = c₂·Im z₂ is
+impossible whenever π ∣ z₂, π ∤ z̄₂, and π ∤ c₂ — with z₁ COMPLETELY
+arbitrary (the star-side subtraction uses only the p-power on the lone
+term; π then must divide c₂·z̄₂). First-try compile. Since the
+statement never mentions the second prime, the q-side extraction is
+the SAME lemma applied at (q, C, D). All 72 mixed collapse types in
+the Theorem F single-equation catalog reduce to this one lemma plus
+the integer-divisibility kills; the earlier twoterm_q_gen/p_gen and
+even the Theorem E two-term trio become special cases. Remaining
+Theorem F work: the 210 three-term (a ∉ {c,d}) shapes via
+S/D-combinations, then dispatchers and assembly.

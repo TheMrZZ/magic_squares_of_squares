@@ -333,3 +333,66 @@ theorem twoterm_p_gen
   · rcases hπprime.dvd_mul.mp h1 with h2 | h2
     · exact hus h2
     · exact hws h2
+
+/-- THE definitive two-term extraction kill: if the lone side carries
+p^{2(t+1)} and the mixed value z₂ is π-divisible with π ∤ z̄₂ and
+p ∤ c₂ (as a Gaussian non-divisibility π ∤ c₂), then
+c₁·p^{2(t+1)}·Im z₁ = c₂·Im z₂ is impossible. z₁ is fully arbitrary. -/
+theorem twoterm_p_extract
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (z1 z2 : GaussianInt) (t : ℕ) (c1 c2 : ℤ)
+    (hc2 : ¬ (p : ℤ) ∣ c2)
+    (hz2 : (⟨A, B⟩ : GaussianInt) ∣ z2)
+    (hz2s : ¬ (⟨A, B⟩ : GaussianInt) ∣ star z2)
+    (h : c1 * ((p : ℤ) ^ (2 * (t + 1)) * z1.im) = c2 * z2.im) : False := by
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  have hπprime : Prime π := prime_pi p A B hpAB
+  have hππb : π * star π = ((p : ℤ) : GaussianInt) := by
+    rw [hπdef, pi_mul_star, hpAB]
+  have hPt : ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+      = (π * star π) ^ (2 * (t + 1)) := by
+    rw [hππb]; push_cast; ring
+  set G : GaussianInt := ((c2 : ℤ) : GaussianInt) * z2
+      - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * z1
+      with hGdef
+  have h0 : G.im = 0 := by
+    rw [hGdef]
+    simp only [Zsqrtd.im_sub, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_intCast,
+      Zsqrtd.im_intCast]
+    linear_combination -h
+  have hy : G = (((G.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [h0]
+  have hself : star G = G := by rw [hy, star_intCast]
+  have hstarG : star G = ((c2 : ℤ) : GaussianInt) * star z2
+      - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+        * star z1 := by
+    rw [hGdef]
+    simp only [star_sub, star_mul, star_intCast]
+    ring
+  obtain ⟨z2', hz2'⟩ := hz2
+  have hπG : π ∣ G := by
+    rw [hGdef, hz2', hPt]
+    refine dvd_sub ⟨((c2 : ℤ) : GaussianInt) * z2', by ring⟩ ?_
+    exact ⟨((c1 : ℤ) : GaussianInt) * (star π * (π * star π) ^ (2 * t + 1)) * z1, by ring⟩
+  have hπsG : π ∣ (((c2 : ℤ) : GaussianInt) * star z2
+      - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+        * star z1) := by
+    rw [← hstarG, hself]; exact hπG
+  have hrem : π ∣ (((c2 : ℤ) : GaussianInt) * star z2) := by
+    have heq : ((c2 : ℤ) : GaussianInt) * star z2
+        = (((c2 : ℤ) : GaussianInt) * star z2
+            - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+              * star z1)
+          + ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+            * star z1 := by ring
+    rw [heq]
+    refine dvd_add hπsG ?_
+    rw [hPt]
+    exact ⟨((c1 : ℤ) : GaussianInt) * (star π * (π * star π) ^ (2 * t + 1)) * star z1,
+      by ring⟩
+  rcases hπprime.dvd_mul.mp hrem with h1 | h1
+  · exact chi_not_dvd_intcast p A B hpAB c2 hc2 h1
+  · exact hz2s h1
