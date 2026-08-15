@@ -3384,4 +3384,122 @@ lemma dispatch_lone8d
     · exact hab rfl
 
 
+set_option maxHeartbeats 3200000 in
+/-- The s·p²·q assignment router: no choice of classes and signs for
+the four differences satisfies the two-equation system. -/
+lemma no_assignment_sp2q
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L2 q A B
+      ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D ∨ Ka = L5 A B C D ∨ Ka = L6 A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D ∨ Kb = L5 A B C D ∨ Kb = L6 A B C D)
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L2 q A B
+      ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D ∨ Kc = L5 A B C D ∨ Kc = L6 A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D ∨ Kd = L5 A B C D ∨ Kd = L6 A B C D)
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (had : Ka ≠ Kd)
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases split7F p q A B C D ha with haL | ha8 <;>
+    rcases split7F p q A B C D hb with hbL | hb8 <;>
+    rcases split7F p q A B C D hc with hcL | hc8 <;>
+    rcases split7F p q A B C D hd with hdL | hd8
+  · exact dispatch_lowF p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 haL hbL hcL hdL hab hac had hbc hbd hcd hE1 hE2
+  · exact dispatch_lone8d p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 hd8 haL hbL hcL hab hac hbc hE1 hE2
+  · exact dispatch_lone8c p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 hc8 haL hbL hdL hab had hbd hE1 hE2
+  · -- c, d both level-8
+    rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact hcd rfl
+    · exact dispatch_56F p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb e1 e2 e3 e4
+        he1 he2 he3 he4 haL hbL hE1 hE2
+    · exact dispatch_56F p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb e1 (-e2) e4 e3
+        he1 (by rcases he2 with rfl | rfl <;> norm_num) he4 he3 haL hbL
+        (by linarith [hE1]) (by linarith [hE2])
+    · exact hcd rfl
+  · exact dispatch_lone8b p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 hb8 haL hcL hdL hac had hcd hE1 hE2
+  · -- b, d both level-8
+    rcases hb8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact hbd rfl
+    · exact dispatch_bd8F p q hpodd hqodd hpq A B C D hpAB hqCD Ka _ Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) haL hcL hE1 hE2
+    · exact dispatch_bd8F p q hpodd hqodd hpq A B C D hpAB hqCD Ka _ Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) haL hcL hE1 hE2
+    · exact hbd rfl
+  · -- b, c both level-8
+    rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl
+    · exact hbc rfl
+    · exact dispatch_bc8F p q hpodd hqodd hpq A B C D hpAB hqCD Ka _ _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) haL hdL hE1 hE2
+    · exact dispatch_bc8F p q hpodd hqodd hpq A B C D hpAB hqCD Ka _ _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) haL hdL hE1 hE2
+    · exact hbc rfl
+  · -- b, c, d all level-8: pigeonhole
+    rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hbc rfl
+        | exact hbd rfl
+        | exact hcd rfl
+  · exact dispatch_lone8a p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 ha8 hbL hcL hdL hbc hbd hcd hE1 hE2
+  · -- a, d both level-8
+    rcases ha8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact had rfl
+    · exact dispatch_ad8F p q hpodd hqodd hpq A B C D hpAB hqCD _ Kb Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) hbL hcL hE1 hE2
+    · exact dispatch_ad8F p q hpodd hqodd hpq A B C D hpAB hqCD _ Kb Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) hbL hcL hE1 hE2
+    · exact had rfl
+  · -- a, c both level-8
+    rcases ha8 with rfl | rfl <;> rcases hc8 with rfl | rfl
+    · exact hac rfl
+    · exact dispatch_ac8F p q hpodd hqodd hpq A B C D hpAB hqCD _ Kb _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) hbL hdL hE1 hE2
+    · exact dispatch_ac8F p q hpodd hqodd hpq A B C D hpAB hqCD _ Kb _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) hbL hdL hE1 hE2
+    · exact hac rfl
+  · -- a, c, d all level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hac rfl
+        | exact had rfl
+        | exact hcd rfl
+  · -- a, b both level-8
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl
+    · exact hab rfl
+    · exact dispatch_ab56F p q hpodd hqodd hpq A B C D hpAB hqCD _ _ Kc Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) hcL hdL hE1 hE2
+    · exact dispatch_ab56F p q hpodd hqodd hpq A B C D hpAB hqCD _ _ Kc Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) hcL hdL hE1 hE2
+    · exact hab rfl
+  · -- a, b, d all level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact had rfl
+        | exact hbd rfl
+  · -- a, b, c all level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact hac rfl
+        | exact hbc rfl
+  · -- all four level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | (rcases hc8 with rfl | rfl <;>
+            first
+              | exact hac rfl
+              | exact hbc rfl)
+
+
 end FCore
