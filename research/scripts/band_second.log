@@ -1,0 +1,7 @@
+band rel 0: locus points 60, v_p census {1: 58, 2: 2}
+band rel 1: locus points 60, v_p census {1: 58, 2: 2}
+band rel 2: locus points 61, v_p census {1: 58, 2: 3}
+band rel 3: locus points 60, v_p census {1: 58, 2: 2}
+band rel 4: locus points 60, v_p census {1: 58, 2: 2}
+band rel 5: locus points 61, v_p census {1: 58, 2: 3}
+OVERALL: {1: 348, 2: 14}

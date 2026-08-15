@@ -659,3 +659,17 @@ tested point.  The identified closing step for all 18 band relations:
 a symbolic mod-p^2 unit certificate on the band parameterization
 (core = k*p substituted into T/p) — second-order but finite and
 concrete, unlike the free-form Wieferich loci of the s p^a q story.
+
+## No uniform second-order certificate: the depth regress is real
+
+band_second.py samples ~360 integer points ON the band loci (p | core
+without the reverse condition) and measures v_p of the exact relation
+value: v_p = 1 at 96% of points, but v_p = 2 at ~4% — the mod-p^2
+coefficient vanishes on a thinner sub-locus of its own.  Each valuation
+order has its own exceptional set; no bounded-valuation theorem is in
+sight by these methods.  This is the precise, empirical shape of the
+difficulty on the last 1.65% of (2,2): the same arbitrary-depth
+thinning (Fermat-quotient flavor) that guards the s p^a q order loci.
+The two-prime b=2 program therefore ends, for now, as: 98.35% proven
+impossible unconditionally + a fully-mapped residual whose closure
+requires genuinely new (depth-uniform) arithmetic input.
