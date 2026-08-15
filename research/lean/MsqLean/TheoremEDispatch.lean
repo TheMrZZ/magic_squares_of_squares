@@ -1320,5 +1320,57 @@ theorem no_magic_square_of_squares_spq_center
     s hs hs0 u v hu0 hv0 huv huv'
     x1 y1 x2 y2 x3 y3 x4 y4 hxy1 hq1 hxy2 hq2 hxy3 hq3 hxy4 hq4'
 
+/-- Public coordinate form of the assignment router, for reuse by the
+s·p²·q layer after its p²-cancellation. -/
+lemma no_assignment_spq_coord
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      ∨ Ka = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+        - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+    (hb : Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      ∨ Kb = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+        - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+    (hc : Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      ∨ Kc = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+        - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+    (hd : Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      ∨ Kd = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+        - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  have coord : ∀ K : ℤ,
+      (K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+          + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+        ∨ K = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+          - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) →
+      (K = K0 q A B ∨ K = K1 p C D ∨ K = K2 A B C D ∨ K = K3 A B C D) := by
+    intro K hK
+    rcases hK with h | h | h | h
+    · exact Or.inl h
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr (Or.inl (by rw [K2_coord]; exact h)))
+    · exact Or.inr (Or.inr (Or.inr (by rw [K3_coord]; exact h)))
+  exact no_assignment_spq p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+    he1 he2 he3 he4 (coord Ka ha) (coord Kb hb) (coord Kc hc) (coord Kd hd) hE1 hE2
+
+
 end Dispatch
 

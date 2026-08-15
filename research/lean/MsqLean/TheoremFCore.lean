@@ -5,6 +5,7 @@ I₈·X = f·K₁ ∧ R₈·Y = g·K₂ over the five level-≤4 classes.
 import Mathlib
 import MsqLean.TheoremFInt
 import MsqLean.TheoremEGauss
+import MsqLean.TheoremEDispatch
 
 open Zsqrtd
 
@@ -1158,6 +1159,51 @@ lemma dispatch_ab56F
   · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd (-e3) e4
       (by rcases he3 with rfl | rfl <;> norm_num) he4 hc hd
       (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+
+/-- E-reuse: when all four classes avoid L2 they share a factor p²;
+cancelling it reproduces exactly the s·p·q assignment system, which
+Theorem E's router kills. -/
+lemma dispatch_lowE
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  have hp2 : ((p : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hp.out.pos.ne')
+  -- peel the common p² off every class
+  have peel : ∀ K : ℤ,
+      (K = L0 p C D ∨ K = L1 p q A B ∨ K = L3 p A B C D ∨ K = L4 p A B C D) →
+      ∃ K' : ℤ, K = (p : ℤ) ^ 2 * K' ∧
+        (K' = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+          ∨ K' = (p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+          ∨ K' = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+          ∨ K' = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+            - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    rintro K (rfl | rfl | rfl | rfl)
+    · exact ⟨(p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im),
+        by unfold L0; ring, Or.inr (Or.inl rfl)⟩
+    · exact ⟨(q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im),
+        by unfold L1; ring, Or.inl rfl⟩
+    · exact ⟨_, by unfold L3; ring, Or.inr (Or.inr (Or.inl rfl))⟩
+    · exact ⟨_, by unfold L4; ring, Or.inr (Or.inr (Or.inr rfl))⟩
+  obtain ⟨Ka', hKa, ha'⟩ := peel Ka ha
+  obtain ⟨Kb', hKb, hb'⟩ := peel Kb hb
+  obtain ⟨Kc', hKc, hc'⟩ := peel Kc hc
+  obtain ⟨Kd', hKd, hd'⟩ := peel Kd hd
+  subst hKa hKb hKc hKd
+  refine no_assignment_spq_coord p q hpodd hqodd hpq A B C D hpAB hqCD
+    Ka' Kb' Kc' Kd' e1 e2 e3 e4 he1 he2 he3 he4 ha' hb' hc' hd' ?_ ?_
+  · exact mul_left_cancel₀ hp2 (by linear_combination hE1)
+  · exact mul_left_cancel₀ hp2 (by linear_combination hE2)
 
 
 end FCore
