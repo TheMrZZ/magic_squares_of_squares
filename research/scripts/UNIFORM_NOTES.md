@@ -911,3 +911,31 @@ exponents (a,b), all odd prime pairs, all representations, all signs.
 The (2,2)-specific files are instances. `Prime.dvd_of_dvd_pow` is
 total in the exponent (n = 0 gives χ ∣ 1, absurd ⇒ anything), so the
 a = 0 / b = 0 edge cases need no side conditions.
+
+## Round 58 — Higher-exponent census: uniform theorems cover 100%
+
+`symab_census.py` (general-(a,b) version of the certificate engine)
+run at (3,2) and (3,3):
+
+- (3,2): 468 relations, 86 killed unconditionally
+  (48 double-pinch + 38 parity/unit-side).
+- (3,3): 1008 relations, 132 killed unconditionally
+  (72 double-pinch + 60 parity/unit-side).
+- **Every single kill at both exponents is an instance of the uniform
+  theorems.** Corner conjugation patterns: α ≥ 2 anchors are all
+  aligned (all-equal conj ± mirrors); α = 1 anchors split
+  aligned-mirror / mixed — exactly the two proved classes, and the
+  mixed class indeed never occurs at α ≥ 2.
+- New twin shapes at higher exponent — lone (3,0) and (0,3), twin
+  power always a MULTIPLE of the lone power — prompted the final
+  generalization in `UniformTwin.lean`:
+  `uniform_twin_chi` / `uniform_twin_pi`: lone slot (0,j+1)/(j+1,0),
+  twin power (j+1)(t+1), any opaque other-prime part, any odd
+  coefficient. Kit: `im_pow4_ne_zero` (Im((π⁴)^k) ≠ 0 for all k ≥ 1,
+  via star-fixedness ⇒ π ∣ π̄; the earlier parity-based per-power
+  lemmas are subsumed).
+
+Conjecture (now with strong evidence): at every exponent (a,b), the
+unconditional symbolic layer consists EXACTLY of the corner triples
+and lone+twin multiples — i.e. the six uniform Lean theorems are the
+complete unconditional layer of the two-prime landscape.

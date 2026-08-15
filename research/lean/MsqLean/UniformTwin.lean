@@ -119,3 +119,72 @@ theorem uniform_twin_L20
   · exact odd_ne_zero (even_sub_odd
       ⟨e * (((⟨A, B⟩ : GaussianInt) ^ 4) ^ (m + 1)).re * u * w.re, by ring⟩
       (hc.mul (re4_odd' p hpodd A B hpAB))) h
+
+/-- Im((π⁴)^(k+1)) is never zero: vanishing would give
+π̄^(4k+4) = π^(4k+4), forcing π ∣ π̄. -/
+lemma im_pow4_ne_zero (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (k : ℕ) :
+    (((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)).im ≠ 0 := by
+  intro h
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  have hπprime : Prime π := prime_pi p A B hpAB
+  have hπnb : ¬ π ∣ star π := pi_not_dvd_star p hpodd A B hpAB
+  have hy : ((π ^ 4) ^ (k + 1))
+      = ((((π ^ 4) ^ (k + 1)).re : ℤ) : GaussianInt) := by
+    ext
+    · simp
+    · simp [h]
+  have hself : star ((π ^ 4) ^ (k + 1)) = (π ^ 4) ^ (k + 1) := by
+    rw [hy, star_intCast]
+  have hd : π ∣ (star π) ^ (4 * (k + 1)) := by
+    have h1 : π ∣ (π ^ 4) ^ (k + 1) :=
+      dvd_pow (dvd_pow_self π (by norm_num)) (by omega)
+    rw [← hself] at h1
+    simpa [← pow_mul, star_pow] using h1
+  exact absurd (hπprime.dvd_of_dvd_pow hd) hπnb
+
+/-- FULLY general lone+twin kill, χ-side: lone slot (0, j+1) with ANY
+twin whose χ-power is a multiple (t+1)(j+1), any Gaussian π-part z,
+any odd coefficient c. Subsumes uniform_twin_L01/L02. -/
+theorem uniform_twin_chi
+    (q : ℕ) [hq : Fact (Nat.Prime q)] (hqodd : q % 2 = 1)
+    (C D : ℤ) (hqCD : C ^ 2 + D ^ 2 = q)
+    (z : GaussianInt) (j t : ℕ) (c e : ℤ) (hc : Odd c) :
+    (((-c : ℤ) : GaussianInt) * ((⟨C, D⟩ : GaussianInt) ^ 4) ^ (j + 1)
+      + ((e : ℤ) : GaussianInt) * z * (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (j + 1)) ^ (t + 1)
+      + ((-e : ℤ) : GaussianInt) * z
+        * (star (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (j + 1))) ^ (t + 1)).im ≠ 0 := by
+  intro h0
+  obtain ⟨v, hv⟩ := im_pow_fac (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (j + 1)) t
+  rw [← star_pow] at h0
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hv] at h0
+  have key : (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (j + 1)).im * (2 * e * z.re * v - c) = 0 := by
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im_pow4_ne_zero q hqodd C D hqCD j h
+  · exact odd_ne_zero (even_sub_odd ⟨e * z.re * v, by ring⟩ hc) h
+
+/-- FULLY general lone+twin kill, π-side: lone slot (j+1, 0) with ANY
+twin whose π-power is a multiple (t+1)(j+1), any Gaussian χ-part w,
+any odd coefficient c. Subsumes uniform_twin_L10/L20 and covers the
+lone-(3,0) shape seen at exponent (3,2). -/
+theorem uniform_twin_pi
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (w : GaussianInt) (j t : ℕ) (c e : ℤ) (hc : Odd c) :
+    (((-c : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (j + 1)
+      + ((e : ℤ) : GaussianInt) * (((⟨A, B⟩ : GaussianInt) ^ 4) ^ (j + 1)) ^ (t + 1) * w
+      + ((e : ℤ) : GaussianInt) * (((⟨A, B⟩ : GaussianInt) ^ 4) ^ (j + 1)) ^ (t + 1)
+        * star w).im ≠ 0 := by
+  intro h0
+  obtain ⟨u, hu⟩ := im_pow_fac (((⟨A, B⟩ : GaussianInt) ^ 4) ^ (j + 1)) t
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hu] at h0
+  have key : (((⟨A, B⟩ : GaussianInt) ^ 4) ^ (j + 1)).im * (2 * e * u * w.re - c) = 0 := by
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im_pow4_ne_zero p hpodd A B hpAB j h
+  · exact odd_ne_zero (even_sub_odd ⟨e * u * w.re, by ring⟩ hc) h
