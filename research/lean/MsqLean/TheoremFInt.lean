@@ -307,3 +307,88 @@ lemma resid_cross_product (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1
     · exact hp2 h'
     · exact hpR h'
   · exact hpR8 h
+
+/-- The R₈-ratio derivation: from R₈Y = g·q²·I₈, coprimality forces
+Y = σ·I₈ and R₈ = σg·q², whence X² = 2q⁴ − p⁸. -/
+lemma resid_r8_derive (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (g : ℤ) (hg : g = 1 ∨ g = -1)
+    (h2 : (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        = g * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)) :
+    ∃ σ : ℤ, (σ = 1 ∨ σ = -1)
+      ∧ (((⟨C, D⟩ : GaussianInt) ^ 4).im) = σ * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+      ∧ (((⟨A, B⟩ : GaussianInt) ^ 8).re) = σ * g * (q : ℤ) ^ 2
+      ∧ (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 = 2 * (q : ℤ) ^ 4 - (p : ℤ) ^ 8 := by
+  have hI8 : (((⟨A, B⟩ : GaussianInt) ^ 8).im) ≠ 0 := im8_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hcop : IsCoprime (((⟨A, B⟩ : GaussianInt) ^ 8).re) (((⟨A, B⟩ : GaussianInt) ^ 8).im) :=
+    coprime_re8_im8 p hpodd A B hpAB
+  have hqY : ¬ (q : ℤ) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) :=
+    (p_not_dvd_re4_im4 q hqodd C D hqCD).2
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  -- I₈ ∣ Y
+  have hI8Y : (((⟨A, B⟩ : GaussianInt) ^ 8).im) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hd : (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) * (((⟨A, B⟩ : GaussianInt) ^ 8).re) :=
+      ⟨g * (q : ℤ) ^ 2, by linear_combination h2⟩
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  -- Y ∣ I₈
+  have hYI8 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ∣ (((⟨A, B⟩ : GaussianInt) ^ 8).im) := by
+    have hd : (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∣ (q : ℤ) ^ 2 * (g * (((⟨A, B⟩ : GaussianInt) ^ 8).im)) :=
+      ⟨(((⟨A, B⟩ : GaussianInt) ^ 8).re), by linear_combination -h2⟩
+    have hcq : IsCoprime ((q : ℤ) ^ 2) (((⟨C, D⟩ : GaussianInt) ^ 4).im) :=
+      ((hqP.coprime_iff_not_dvd).mpr hqY).pow_left
+    have := (hcq.symm).dvd_of_dvd_mul_left hd
+    rcases hg with rfl | rfl
+    · simpa using this
+    · have h' := this
+      rw [show (-1 : ℤ) * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        = -((((⟨A, B⟩ : GaussianInt) ^ 8).im)) from by ring] at h'
+      exact (dvd_neg).mp h'
+  obtain ⟨m, hm⟩ := hI8Y
+  obtain ⟨k, hk⟩ := hYI8
+  have hmk : m * k = 1 := by
+    have h0 : (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (m * k - 1) = 0 := by
+      have : (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+          = (((⟨A, B⟩ : GaussianInt) ^ 8).im) * m * k := by
+        rw [← hm]; linarith [hk]
+      linarith [this]
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI8
+    · linarith
+  have hm1 : m = 1 ∨ m = -1 := Int.isUnit_iff.mp (isUnit_of_dvd_one ⟨k, hmk.symm⟩)
+  refine ⟨m, hm1, by rw [hm]; ring, ?_, ?_⟩
+  · -- R₈ = m·g·q² by cancelling I₈ in h2
+    have h0 : (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        * (m * (((⟨A, B⟩ : GaussianInt) ^ 8).re) - g * (q : ℤ) ^ 2) = 0 := by
+      have h2' := h2
+      rw [hm] at h2'
+      linear_combination h2'
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI8
+    · have hmsq : m * m = 1 := by rcases hm1 with rfl | rfl <;> norm_num
+      linear_combination m * h
+        - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * hmsq
+  · -- X² = 2q⁴ − p⁸
+    have hn8 := norm8_coord p A B hpAB
+    have hn4 := norm4_coord q C D hqCD
+    have hmsq : m * m = 1 := by rcases hm1 with rfl | rfl <;> norm_num
+    have hgsq : g * g = 1 := by rcases hg with rfl | rfl <;> norm_num
+    -- R₈² = q⁴ and Y² = I₈²
+    have hR8sq : (((⟨A, B⟩ : GaussianInt) ^ 8).re) ^ 2 = (q : ℤ) ^ 4 := by
+      have h0 : (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+          * (m * (((⟨A, B⟩ : GaussianInt) ^ 8).re) - g * (q : ℤ) ^ 2) = 0 := by
+        have h2' := h2
+        rw [hm] at h2'
+        linear_combination h2'
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI8
+      · linear_combination (m * (((⟨A, B⟩ : GaussianInt) ^ 8).re) + g * (q : ℤ) ^ 2) * h
+          - (((⟨A, B⟩ : GaussianInt) ^ 8).re) ^ 2 * hmsq + (q : ℤ) ^ 4 * hgsq
+    have hY2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2
+        = (((⟨A, B⟩ : GaussianInt) ^ 8).im) ^ 2 := by
+      rw [hm]; nlinarith [hmsq]
+    nlinarith [hn8, hn4, hR8sq, hY2]

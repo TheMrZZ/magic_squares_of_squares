@@ -1660,3 +1660,17 @@ Complete F-residue branch inventory, all designed:
 - R₈ ∣ q² enumeration (A1/A3) — to Lean
 - product-mod-p (A4) — to Lean (short)
 Then mixed_pair_core_8, twin-split wrappers, router, assembly.
+
+## Round 103 — resid_cross_product + resid_r8_derive machine-checked
+
+Two of the three bespoke F-residue pieces are now Lean:
+- `resid_cross_product` (A4): the two cross equations multiply,
+  I·X·Y cancels, and mod p only 2R·R₈ survives. First-try compile.
+- `resid_r8_derive`: from R₈Y = g·q²I₈, coprimality (I₈ ⊥ R₈ via
+  coprime_re8_im8, Y ⊥ q) forces Y = σI₈, R₈ = σg·q², and
+  X² = 2q⁴ − p⁸. Nonlinear steps (multiplying hypotheses by unit
+  signs, squaring) handled by explicit linear_combination with the
+  unit-square facts — nlinarith consistently fails on these.
+Remaining bespoke: the four finishers on top of r8_derive (per
+partner class: q⁴ = p⁸ ⇒ p ∣ q; parity; p ∣ X ⇒ p² ∣ 2q⁴), and the
+R₈ ∣ q² enumeration for A1/A3. Then the level-8 core assembly.
