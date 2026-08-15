@@ -1,0 +1,604 @@
+3-level ('m1p', 'm2p', 'm3p', 'x1'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,12 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,21 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 12,21 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 12,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 21,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+3-level ('m1p', 'm3p', 'x1', 'x2'): HAS UNRESOLVED
+   L0: 29 groups, feasible tie-pairs: 6
+     groups 5,13 cancel EXACTLY (g -1+1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 17,26 cancel EXACTLY (g 1-1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,23 tie, coeff sum 6 != 0 -> layer unit -> closed
+     UNRESOLVED tie 5,19 coeffs -1,1 both=False
+     groups 5,28 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 13,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 13,28 coeffs 1,-1 both=False
+     groups 19,28 cancel EXACTLY (g 1-1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 5,13 cancel EXACTLY (g -1+1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,23 tie, coeff sum 6 != 0 -> layer unit -> closed
+3-level ('m1p', 'm2p', 'm3p', 'x2'): HAS UNRESOLVED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,9 cancel EXACTLY (g -1+1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 17,28 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,13 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 13,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 13,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+     UNRESOLVED tie 2,19 coeffs -1,1 both=False
+     groups 2,30 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 9,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 9,30 coeffs 1,-1 both=False
+     groups 19,30 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 2,9 cancel EXACTLY (g -1+1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,13 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 13,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 13,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+3-level ('m1m', 'm2m', 'm3m', 'x1'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,12 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,21 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 12,21 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 12,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 21,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+3-level ('m1m', 'm3m', 'x1', 'x2'): HAS UNRESOLVED
+   L0: 29 groups, feasible tie-pairs: 6
+     groups 5,13 cancel EXACTLY (g -1+1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 17,26 cancel EXACTLY (g 1-1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,23 tie, coeff sum 6 != 0 -> layer unit -> closed
+     UNRESOLVED tie 5,19 coeffs -1,1 both=False
+     groups 5,28 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 13,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 13,28 coeffs 1,-1 both=False
+     groups 19,28 cancel EXACTLY (g 1-1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 5,13 cancel EXACTLY (g -1+1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,23 tie, coeff sum 6 != 0 -> layer unit -> closed
+3-level ('m1m', 'm2m', 'm3m', 'x2'): HAS UNRESOLVED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,9 cancel EXACTLY (g -1+1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 17,28 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,13 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 13,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 13,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+     UNRESOLVED tie 2,19 coeffs -1,1 both=False
+     groups 2,30 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 9,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 9,30 coeffs 1,-1 both=False
+     groups 19,30 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 2,9 cancel EXACTLY (g -1+1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,13 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 13,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 13,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+3-level ('m2p', 'm3p', 'x1', 'y'): HAS UNRESOLVED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 3,5 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 18,28 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 2,3 cancel EXACTLY (g 2-2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 15,24 cancel EXACTLY (g 2-2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs 2,-2 both=False
+             groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs -2,2 both=False
+             groups 11,24 tie, coeff sum -4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+         groups 2,17 tie, coeff sum 4 != 0 -> layer unit -> closed
+         UNRESOLVED tie 2,26 coeffs 2,-2 both=False
+         UNRESOLVED tie 3,17 coeffs -2,2 both=False
+         groups 3,26 tie, coeff sum -4 != 0 -> layer unit -> closed
+         groups 17,26 cancel EXACTLY (g 2-2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 2,3 cancel EXACTLY (g 2-2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs 2,-2 both=False
+             groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs -2,2 both=False
+             groups 11,24 tie, coeff sum -4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+     groups 3,20 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 3,30 coeffs 1,-1 both=False
+     UNRESOLVED tie 5,20 coeffs -1,1 both=False
+     groups 5,30 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 20,30 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 3,5 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 2,3 cancel EXACTLY (g 2-2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 15,24 cancel EXACTLY (g 2-2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs 2,-2 both=False
+             groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs -2,2 both=False
+             groups 11,24 tie, coeff sum -4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+         groups 2,17 tie, coeff sum 4 != 0 -> layer unit -> closed
+         UNRESOLVED tie 2,26 coeffs 2,-2 both=False
+         UNRESOLVED tie 3,17 coeffs -2,2 both=False
+         groups 3,26 tie, coeff sum -4 != 0 -> layer unit -> closed
+         groups 17,26 cancel EXACTLY (g 2-2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 2,3 cancel EXACTLY (g 2-2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs 2,-2 both=False
+             groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs -2,2 both=False
+             groups 11,24 tie, coeff sum -4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g 2-2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g 2-2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+3-level ('m2m', 'm3m', 'x1', 'y'): HAS UNRESOLVED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 3,5 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 18,28 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 2,3 cancel EXACTLY (g -2+2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 15,24 cancel EXACTLY (g -2+2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum -4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs -2,2 both=False
+             groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs 2,-2 both=False
+             groups 11,24 tie, coeff sum 4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 2,17 tie, coeff sum -4 != 0 -> layer unit -> closed
+         UNRESOLVED tie 2,26 coeffs -2,2 both=False
+         UNRESOLVED tie 3,17 coeffs 2,-2 both=False
+         groups 3,26 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 17,26 cancel EXACTLY (g -2+2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 2,3 cancel EXACTLY (g -2+2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum -4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs -2,2 both=False
+             groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs 2,-2 both=False
+             groups 11,24 tie, coeff sum 4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 3,20 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 3,30 coeffs 1,-1 both=False
+     UNRESOLVED tie 5,20 coeffs -1,1 both=False
+     groups 5,30 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 20,30 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 3,5 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 2,3 cancel EXACTLY (g -2+2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 15,24 cancel EXACTLY (g -2+2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum -4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs -2,2 both=False
+             groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs 2,-2 both=False
+             groups 11,24 tie, coeff sum 4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 2,17 tie, coeff sum -4 != 0 -> layer unit -> closed
+         UNRESOLVED tie 2,26 coeffs -2,2 both=False
+         UNRESOLVED tie 3,17 coeffs 2,-2 both=False
+         groups 3,26 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 17,26 cancel EXACTLY (g -2+2); recurse
+         L3: 27 groups, feasible tie-pairs: 1
+           groups 2,3 cancel EXACTLY (g -2+2); recurse
+           L4: 25 groups, feasible tie-pairs: 15
+             groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 1,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 1,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 9,11 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 1,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 12,18 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 12,22 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 18,22 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+             groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 9,20 tie, coeff sum -4 != 0 -> layer unit -> closed
+             UNRESOLVED tie 9,24 coeffs -2,2 both=False
+             groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+             UNRESOLVED tie 11,20 coeffs 2,-2 both=False
+             groups 11,24 tie, coeff sum 4 != 0 -> layer unit -> closed
+             groups 14,20 tie, coeff sum -1 != 0 -> layer unit -> closed
+             groups 14,24 tie, coeff sum 3 != 0 -> layer unit -> closed
+             groups 20,24 cancel EXACTLY (g -2+2); recurse
+             L5: 23 groups, feasible tie-pairs: 6
+               groups 1,9 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 1,11 tie, coeff sum 3 != 0 -> layer unit -> closed
+               groups 1,14 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,11 cancel EXACTLY (g -2+2); recurse
+               L6: 21 groups, feasible tie-pairs: 1
+                 groups 1,12 tie, coeff sum 2 != 0 -> layer unit -> closed
+               groups 9,14 tie, coeff sum -1 != 0 -> layer unit -> closed
+               groups 11,14 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1p', 'm2p', 'm4p', 'x3'): HAS UNRESOLVED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,9 cancel EXACTLY (g -1+1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 17,28 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,12 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 12,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 12,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+     UNRESOLVED tie 2,19 coeffs -1,1 both=False
+     groups 2,30 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 9,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 9,30 coeffs 1,-1 both=False
+     groups 19,30 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 2,9 cancel EXACTLY (g -1+1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,12 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 12,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 12,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1p', 'm3p', 'm4p', 'x2'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,19 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 9,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 9,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 19,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1p', 'm3m', 'm4m', 'x2'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,4 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 2,32 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 4,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 4,32 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 30,32 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1p', 'm4p', 'x2', 'x3'): HAS UNRESOLVED
+   L0: 29 groups, feasible tie-pairs: 6
+     groups 5,9 cancel EXACTLY (g -1+1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 14,26 cancel EXACTLY (g 1-1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,24 tie, coeff sum 6 != 0 -> layer unit -> closed
+     UNRESOLVED tie 5,16 coeffs -1,1 both=False
+     groups 5,28 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 9,16 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 9,28 coeffs 1,-1 both=False
+     groups 16,28 cancel EXACTLY (g 1-1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 5,9 cancel EXACTLY (g -1+1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,24 tie, coeff sum 6 != 0 -> layer unit -> closed
+4-level ('m1m', 'm2m', 'm4m', 'x3'): HAS UNRESOLVED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,9 cancel EXACTLY (g -1+1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 17,28 cancel EXACTLY (g 1-1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,12 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 12,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 12,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+     UNRESOLVED tie 2,19 coeffs -1,1 both=False
+     groups 2,30 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 9,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 9,30 coeffs 1,-1 both=False
+     groups 19,30 cancel EXACTLY (g 1-1); recurse
+     L1: 31 groups, feasible tie-pairs: 1
+       groups 2,9 cancel EXACTLY (g -1+1); recurse
+       L2: 29 groups, feasible tie-pairs: 6
+         groups 4,12 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,20 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 4,28 tie, coeff sum 2 != 0 -> layer unit -> closed
+         groups 12,20 tie, coeff sum 4 != 0 -> layer unit -> closed
+         groups 12,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+         groups 20,28 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1m', 'm3p', 'm4p', 'x2'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,4 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 2,32 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 4,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 4,32 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 30,32 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1m', 'm3m', 'm4m', 'x2'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,9 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,19 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 9,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 9,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 19,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m1m', 'm4m', 'x2', 'x3'): HAS UNRESOLVED
+   L0: 29 groups, feasible tie-pairs: 6
+     groups 5,9 cancel EXACTLY (g -1+1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 14,26 cancel EXACTLY (g 1-1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,24 tie, coeff sum 6 != 0 -> layer unit -> closed
+     UNRESOLVED tie 5,16 coeffs -1,1 both=False
+     groups 5,28 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 9,16 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 9,28 coeffs 1,-1 both=False
+     groups 16,28 cancel EXACTLY (g 1-1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 5,9 cancel EXACTLY (g -1+1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,24 tie, coeff sum 6 != 0 -> layer unit -> closed
+4-level ('m2p', 'm3p', 'm4p', 'x1'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,16 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,21 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 16,21 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 16,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 21,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m2p', 'm4p', 'x1', 'x3'): HAS UNRESOLVED
+   L0: 29 groups, feasible tie-pairs: 6
+     groups 7,18 cancel EXACTLY (g -1+1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 17,26 cancel EXACTLY (g 1-1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,22 tie, coeff sum 6 != 0 -> layer unit -> closed
+     UNRESOLVED tie 7,19 coeffs -1,1 both=False
+     groups 7,28 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 18,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 18,28 coeffs 1,-1 both=False
+     groups 19,28 cancel EXACTLY (g 1-1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 7,18 cancel EXACTLY (g -1+1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,22 tie, coeff sum 6 != 0 -> layer unit -> closed
+4-level ('m2m', 'm3m', 'm4m', 'x1'): FULLY CLOSED
+   L0: 33 groups, feasible tie-pairs: 6
+     groups 2,16 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,21 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 2,30 tie, coeff sum 4 != 0 -> layer unit -> closed
+     groups 16,21 tie, coeff sum 2 != 0 -> layer unit -> closed
+     groups 16,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+     groups 21,30 tie, coeff sum 3 != 0 -> layer unit -> closed
+4-level ('m2m', 'm4m', 'x1', 'x3'): HAS UNRESOLVED
+   L0: 29 groups, feasible tie-pairs: 6
+     groups 7,18 cancel EXACTLY (g -1+1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 17,26 cancel EXACTLY (g 1-1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,22 tie, coeff sum 6 != 0 -> layer unit -> closed
+     UNRESOLVED tie 7,19 coeffs -1,1 both=False
+     groups 7,28 tie, coeff sum -2 != 0 -> layer unit -> closed
+     groups 18,19 tie, coeff sum 2 != 0 -> layer unit -> closed
+     UNRESOLVED tie 18,28 coeffs 1,-1 both=False
+     groups 19,28 cancel EXACTLY (g 1-1); recurse
+     L1: 27 groups, feasible tie-pairs: 1
+       groups 7,18 cancel EXACTLY (g -1+1); recurse
+       L2: 25 groups, feasible tie-pairs: 1
+         groups 4,22 tie, coeff sum 6 != 0 -> layer unit -> closed

@@ -322,3 +322,29 @@ minimal-set LP restricted to the hyperplane.  Unit-leading survivors
 at level 2 for all 12 shapes would close levels 3-4 completely.
 The measured even escape depths (2..20) are the layer gaps to the
 first surviving level-2 group, linear in the orbit indices.
+
+## The recursion tree: complete closure structure of levels 3-4
+
+chi2_recurse2.py runs the full self-similar leading analysis: at each
+level, enumerate (exact simplex + float prefilter) all feasible minimal
+tie-pairs of value forms; unit-coefficient singletons and nonzero-sum
+ties close their regions; exactly-cancelling pairs (both coordinates
+tied, coefficients summing to zero) are deleted and the analysis recurses
+on the sub-locus.  The recursion terminates by dimension exhaustion
+(each level adds an independent equality; max depth observed 2).
+
+RESULT: the 8 shapes with the (1,2) leading pair are FULLY CLOSED by
+the tree alone — impossible for all p >= 5, all orbit indices, all q,
+with every branch ending in a unit layer.  The 12 cancelling shapes
+close everywhere EXCEPT on ~19 distinct explicit ORDER LOCI (48 tie
+instances): pairs with opposite coefficients (+-1 or +-2) tying in ONE
+coordinate with distinct exponents b1 != b2.  There the layer sum is
+gamma(t^{b1} - t^{b2}), zero iff ord_p(2A) | (b1 - b2); when it divides,
+v_pi(c) deepens by exactly v_pi(pibar^{Db} - 1) — a Fermat-quotient /
+Wieferich-type quantity.  Survival would need this deepening to
+outrun every remaining layer: an explicit, pointwise-checkable
+condition, refuted at every grid point by the exact censuses
+(c != 0 at all 1,806 double-vanishing points; no chi-square roots in
+3.2M checks).  This is the exact, final characterization of the
+uniform s p^a q frontier at 3 and 4 levels: finitely many
+Wieferich-type loci per shape, everything else proven impossible.

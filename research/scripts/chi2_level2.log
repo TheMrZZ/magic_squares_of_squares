@@ -1,0 +1,20 @@
+3-level ('m1p', 'm2p', 'm3p', 'x1'): (1,2)-shape, already closed
+3-level ('m1p', 'm3p', 'x1', 'x2'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+3-level ('m1p', 'm2p', 'm3p', 'x2'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+3-level ('m1m', 'm2m', 'm3m', 'x1'): (1,2)-shape, already closed
+3-level ('m1m', 'm3m', 'x1', 'x2'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+3-level ('m1m', 'm2m', 'm3m', 'x2'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+3-level ('m2p', 'm3p', 'x1', 'y'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+3-level ('m2m', 'm3m', 'x1', 'y'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+4-level ('m1p', 'm2p', 'm4p', 'x3'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+4-level ('m1p', 'm3p', 'm4p', 'x2'): (1,2)-shape, already closed
+4-level ('m1p', 'm3m', 'm4m', 'x2'): (1,2)-shape, already closed
+4-level ('m1p', 'm4p', 'x2', 'x3'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+4-level ('m1m', 'm2m', 'm4m', 'x3'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+4-level ('m1m', 'm3p', 'm4p', 'x2'): (1,2)-shape, already closed
+4-level ('m1m', 'm3m', 'm4m', 'x2'): (1,2)-shape, already closed
+4-level ('m1m', 'm4m', 'x2', 'x3'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+4-level ('m2p', 'm3p', 'm4p', 'x1'): (1,2)-shape, already closed
+4-level ('m2p', 'm4p', 'x1', 'x3'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
+4-level ('m2m', 'm3m', 'm4m', 'x1'): (1,2)-shape, already closed
+4-level ('m2m', 'm4m', 'x1', 'x3'): level-2 feasible minimal singles: 2; coeffs [-1, 1]
