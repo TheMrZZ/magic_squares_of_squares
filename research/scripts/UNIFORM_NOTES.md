@@ -1994,3 +1994,25 @@ deepest yet: seven D-classes, two 25-cell cross-pair cores, a
 49-cell ratio layer, and a genuine invocation of Fermat's right
 triangle theorem (mathlib not_fermat_42) through the descent
 u⁴ − 4v⁴ = w². Deliverables (README/paper/artifact/memory) next.
+
+## Round 125 — Theorem G (s·p³·q) scoped: the ladder telescopes
+
+D(s·p³·q) has exactly TEN classes (probe g_class_probe.py, exact
+match at 4 prime pairs): M0..M6 = p² · (the seven F-classes), plus
+three new level-12 classes M7 = q²·I₁₂, M8/M9 = Im(π¹²χ^{±4}).
+Architectural transfer from F is 1:1:
+- level-12-free bucket: cancel p², REUSE no_assignment_sp2q verbatim
+  (as F reused E — the ladder telescopes).
+- Z-classes (v_p = 0) = {M7, M8, M9} play exactly the {L2, L5, L6}
+  roles: same 16-bucket router, same extraction kills (π¹²-variants
+  of the twoterm instances), same χ-valuation ratio kill.
+- ratio layer: H×H cells cancel p² → F's no_ratio2 verbatim; Z×Z
+  deep cell M8 = ±2M9 runs the level-12 chains into
+  q⁴ − p¹² = 8T², i.e. descent_norm4' with b := p³. Fermat again.
+- Main new work: the two 25-cell cross-pair cores at level 12
+  (R₁₂ = R₄(R₄²−3I₄²), I₁₂ = I₄(3R₄²−I₄²) — different inner
+  factorizations than I₈ = 2R₄I₄, so the bespoke cells need
+  re-derivation). Estimated as the bulk of the arc.
+Plan: rep_structure_sp3q → M-class defs + level-12 fact layer
+(re12/im12 formulas, parities, p∤, nonzero) → cores → dispatchers →
+router → ratio wrapper → capstone.
