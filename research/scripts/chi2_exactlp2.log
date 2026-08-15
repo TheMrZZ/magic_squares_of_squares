@@ -1,0 +1,22 @@
+exact FM re-certification:
+3-level ('m1p', 'm2p', 'm3p', 'x1'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+3-level ('m1p', 'm3p', 'x1', 'x2'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+3-level ('m1p', 'm2p', 'm3p', 'x2'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+3-level ('m1m', 'm2m', 'm3m', 'x1'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+3-level ('m1m', 'm3m', 'x1', 'x2'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+3-level ('m1m', 'm2m', 'm3m', 'x2'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+3-level ('m2p', 'm3p', 'x1', 'y'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+3-level ('m2m', 'm3m', 'x1', 'y'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+4-level ('m1p', 'm2p', 'm4p', 'x3'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+4-level ('m1p', 'm3p', 'm4p', 'x2'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+4-level ('m1p', 'm3m', 'm4m', 'x2'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+4-level ('m1p', 'm4p', 'x2', 'x3'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+4-level ('m1m', 'm2m', 'm4m', 'x3'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+4-level ('m1m', 'm3p', 'm4p', 'x2'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+4-level ('m1m', 'm3m', 'm4m', 'x2'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+4-level ('m1m', 'm4m', 'x2', 'x3'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+4-level ('m2p', 'm3p', 'm4p', 'x1'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+4-level ('m2p', 'm4p', 'x1', 'x3'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+4-level ('m2m', 'm3m', 'm4m', 'x1'): exact pairs=1 coeffs=[(1, 2)] triples=0 OK
+4-level ('m2m', 'm4m', 'x1', 'x3'): exact pairs=1 coeffs=[(-1, 1)] triples=0 OK
+ALL EXACT-CERTIFIED

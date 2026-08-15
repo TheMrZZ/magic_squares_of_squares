@@ -296,3 +296,13 @@ makes the minimal PIBAR-layer sum to (gamma1+gamma2) * t^e mod pi:
 Status: the 3/4-level uniform frontier is now 12 shapes x 1 hyperplane
 each, LTE-governed.  (LP feasibility currently float-verified via HiGHS;
 exact rational re-certification is a mechanical follow-up.)
+
+## Exact rational certification of the tie structure
+
+chi2_exactlp2.py re-proves the entire tie-structure dichotomy with an
+exact phase-1 simplex over Fractions (no floating point anywhere):
+for every one of the 20 deep shapes, EXACTLY one feasible leading pair,
+ZERO feasible triples, coefficient pairs identical to the float run
+((1,2) for the 8 unconditionally-closed shapes, (-1,1) for the 12
+hyperplane-locus shapes).  ALL EXACT-CERTIFIED.  The 8-shape
+unconditional closure is now fully rigorous at the certificate level.
