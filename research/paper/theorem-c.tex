@@ -600,6 +600,37 @@ quadratic factors as $(q^2-p^2)(q^2-2p^2)$) — kills all $1344$
 sign-and-class leaves.  Together with Theorem~C this makes the
 formally verified impossibility cover all center roots $s\,p^a$ and
 $s\,p\,q$.
+
+The same program has now been carried one level deeper:
+\textbf{Theorem~F is fully formal} --- no magic square of squares has
+center entry $(s\,p^2 q)^2$
+(\texttt{no\_magic\_square\_of\_squares\_sp2q\_center}, zero
+sorries).  Here the $D$-set splits into \emph{seven} class magnitudes
+$\{p^4\im\chi^4,\; p^2q^2\im\pi^4,\; q^2\im\pi^8,\;
+p^2\im(\pi^4\chi^4),\; p^2\im(\pi^4\bar\chi^4),\;
+\im(\pi^8\chi^4),\; \im(\pi^8\bar\chi^4)\}$, and the assignment
+analysis routes through sixteen buckets keyed by the number of
+level-eight slots: the $L_2$-free all-low bucket cancels a common
+$p^2$ and \emph{reuses Theorem~E verbatim}; lone level-eight and
+$L_2$ slots die by a $p^2$-extraction tier ($\pi \mid z$,
+$\pi \nmid \bar z$ forces $p \nmid \im z$); and the six
+two-level-eight buckets reduce to two $25$-cell cross-pair cores
+whose hardest cells include a valuation argument ending in
+$p^4 \mid 5R^4$ and coprime cancellation chains ending in factored
+quadratics such as $(p^4-q^2)(p^4-2q^2)$.  A new structural
+ingredient is a \emph{ratio layer}: the pairwise distinctness of the
+four assigned class values reduces (through the branch $v = -2u$) to
+showing that no class value is twice another, a $49$-cell analysis
+whose two deep cells --- $\im(\pi^4\chi^4) = \pm 2\im(\pi^4\bar\chi^4)$
+and its level-eight analogue --- factor a $3$ through coprime chains
+and land on the norm systems $a^4 - b^4 = 8T^2$, i.e.\ the Fermat
+descent equation $u^4 - 4v^4 = w^2$.  The formal proof resolves it by
+reduction to \texttt{not\_fermat\_42}: \emph{the impossibility of a
+magic square of squares with center root $s\,p^2q$ thus rests, in
+part, on Fermat's right triangle theorem}.  The verified frontier now
+covers all center roots $s\,p^a$, $s\,p\,q$, and $s\,p^2q$ ---
+in particular every center that any Bremner-type near-miss square has
+ever exhibited.
 At the mixed exponent $(2,1,1)$ ($1968$ relations, $76$ killed) two
 further composite phenomena appear and are absorbed: composite-lone
 shapes (lone slot $\pi^{4k}\chi^{4l}$ with twin part equal to the
