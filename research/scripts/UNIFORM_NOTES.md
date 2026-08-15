@@ -2092,3 +2092,30 @@ w(2geq²R₁₂ − w(R₁₂²+9I₁₂²)) = 8q⁴ (coefficient mismatch 1 vs 
 8q⁴ remainder, no factoring). The seven S-form (p²Lᵢ, M7) cells need
 per-class structure. i=0 sketch: 2X = fp⁶w + norm → w''²(p¹²+4I₁₂²) = q⁴,
 a Q² = R₁₂² + 5I₁₂² locus. Next.
+
+## Round 131 (2026-08-16)
+
+**All seven S-form (p²-row, M7) cells done** — the M7 row/column is closed in
+BOTH cross-pair cores:
+
+- M0: Y = I₁₂w + 2X = fp⁶w; squaring both relations eliminates q, leaving
+  (2R₁₂+cp⁶)(R₁₂+cp⁶) = 0 (parity / I₁₂=0). `cross12S_L0_M7`
+- M1: cancel I₄ → 2(3R₄²−I₄²)X = fp⁴q², even = odd. Only needs eq1.
+  `cross12S_L1_M7`
+- M2: cancel 2I₄ → JX = fp²q²R₄; R₄∣q² (eq2) + J∣q²; J=±q² dies by size,
+  rest feeds M7_J_endgame (first cross-form reuse). `cross12S_L2_M7`
+- M3..M6: one shared core `sform_M7_J_core` — eq1 forces J∣X (strip units,
+  p-powers, 2, R₄ per class), then J²(x̂²+I₄²w²) = q⁴ classifies J:
+  * J unit → 4R₄²−p⁴ = ±1, dead mod 8 (R₄²≡1, p⁴≡1 mod 8 witnesses + omega);
+  * q∣J → eq2 gives q∣X → q∣R₁₂w → q∤R₁₂ (norm p¹²) → q∣w →
+    Y² = I₄²J²w² ≥ 4q⁴ > q⁴ against the norm. No interval_cases needed:
+    split on i = 0 vs i ≥ 1 from dvd_prime_pow.
+  Wrappers: `cross12S_L34_M7`, `cross12S_L56_M7`.
+
+Key trick vs the T-side: S-form cells all go through Y = I₁₂w (M7-side) and
+then differ only in how eq1 cancels I₄ — the J = 3R₄²−I₄² = 4R₄²−p⁴
+identity does the heavy lifting.
+
+Remaining for the two G cores: assemble the 8×8 routers (all mixed and lone
+cells now exist), then pair/lone dispatchers, 16-bucket router, ratio layer,
+four-diffs, capstone.
