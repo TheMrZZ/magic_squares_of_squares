@@ -618,3 +618,18 @@ factor-level certificates fire independently).  The (2,2) frontier is
 confirmed stable at 82 relations / 1,572 leaves (1.65% of all leaves):
 18 Pell-band, 64 exponent->=2 wedge relations.  This appears to be the
 plateau for first-order elementary methods on (2,2).
+
+## The 18 Pell-band relations = 9 coupled quadratic-form systems
+
+sym_bands.py: every band relation's core pair is one of exactly three
+classical binary quadratic forms per side —
+  disc 8:  C^2 ± 2CD - D^2
+  disc 12: C^2 ± 4CD + D^2  and  3C^2 - D^2 / C^2 - 3D^2
+— giving 9 distinct coupled systems.  Inside the constant band the
+survival condition reads: p = k * (disc-8 or disc-12 form in (C,D))
+with C^2 + D^2 = q, and simultaneously q = l * (form in (A,B)) with
+A^2 + B^2 = p, |k|,|l| <= 3.  For k = l = 1 this forces the classical
+congruences p ≡ ±1 (mod 8) resp. (mod 12) and symmetrically for q:
+the (2,2) frontier's band component is now a finite list of explicit
+simultaneous-representation Diophantine systems — the precise
+arithmetic objects whose emptiness (or not) decides those relations.
