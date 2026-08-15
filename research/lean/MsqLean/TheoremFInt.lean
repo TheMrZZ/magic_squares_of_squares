@@ -444,3 +444,88 @@ lemma resid_pX_extract (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
   · rcases hpP.dvd_mul.mp h1 with h2 | h2
     · exact absurd h2 hp2
     · exact absurd h2 hpR
+
+/-- The cross-with-p²q²I kill: I₈X = f·p²(RY + εIX) together with
+R₈Y = g·p²q²·I forces p ∣ X and p ∣ Y, hence p² ∣ q⁴. -/
+lemma resid_cross_p2q2 (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f g e : ℤ)
+    (h1 : 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      = f * ((p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re)
+          * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        + e * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)))))
+    (h2 : (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        = g * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im))) : False := by
+  set R := (((⟨A, B⟩ : GaussianInt) ^ 4).re)
+  set I := (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+  set X := (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+  set Y := (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+  have hI0 : I ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have hRI := coprime_re4_im4 p hpodd A B hpAB
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_re4_im4 p hpodd A B hpAB
+  obtain ⟨hpR8, _⟩ := p_not_dvd_re8_im8 p hpodd A B hpAB
+  have hR8c : (((⟨A, B⟩ : GaussianInt) ^ 8).re) = R ^ 2 - I ^ 2 := re8_eq A B
+  rw [hR8c] at h2 hpR8
+  -- I ∣ Y via I ⊥ (R² − I²)
+  have hIR8 : IsCoprime I (R ^ 2 - I ^ 2) := by
+    have h1' : IsCoprime I R := hRI.symm
+    have h2' : IsCoprime I (R ^ 2) := h1'.pow_right
+    have : R ^ 2 - I ^ 2 = R ^ 2 + I * (-I) := by ring
+    rw [this]
+    exact h2'.add_mul_left_right (-I)
+  have hIY : I ∣ Y := by
+    have hd : I ∣ Y * (R ^ 2 - I ^ 2) := ⟨g * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2), by
+      linear_combination h2⟩
+    exact (hIR8).dvd_of_dvd_mul_right hd
+  obtain ⟨m, hm⟩ := hIY
+  -- cancel I in both equations
+  have hcancel : ∀ t : ℤ, I * t = 0 → t = 0 := fun t ht => by
+    rcases mul_eq_zero.mp ht with h | h
+    · exact absurd h hI0
+    · exact h
+  have hii : (R ^ 2 - I ^ 2) * m = g * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 := by
+    have h0 := hcancel ((R ^ 2 - I ^ 2) * m - g * (p : ℤ) ^ 2 * (q : ℤ) ^ 2) (by
+      have h2' := h2
+      rw [hm] at h2'
+      linear_combination h2')
+    linarith
+  have hi : X * (2 * R - e * f * (p : ℤ) ^ 2) = f * (p : ℤ) ^ 2 * R * m := by
+    have h0 := hcancel (X * (2 * R - e * f * (p : ℤ) ^ 2) - f * (p : ℤ) ^ 2 * R * m) (by
+      have h1' := h1
+      rw [hm] at h1'
+      linear_combination h1')
+    linarith
+  -- p² ∣ m from hii
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hcopP : IsCoprime ((p : ℤ) ^ 2) (R ^ 2 - I ^ 2) :=
+    ((hpP.coprime_iff_not_dvd).mpr hpR8).pow_left
+  have hp2m : (p : ℤ) ^ 2 ∣ m := by
+    have hd : (p : ℤ) ^ 2 ∣ (R ^ 2 - I ^ 2) * m := ⟨g * (q : ℤ) ^ 2, by
+      linear_combination hii⟩
+    exact hcopP.dvd_of_dvd_mul_left hd
+  -- p ∣ Y and p ∣ X
+  have hpY : (p : ℤ) ∣ Y := by
+    rw [hm]
+    exact Dvd.dvd.mul_left ((dvd_pow_self _ two_ne_zero).trans hp2m) I
+  have hpX : (p : ℤ) ∣ X :=
+    resid_pX_extract p hpodd R X (e * f * (p : ℤ) ^ 2)
+      (f * (p : ℤ) ^ 2 * R * m)
+      (Dvd.dvd.mul_left (dvd_pow_self _ two_ne_zero) _)
+      (by
+        have : (p : ℤ) ∣ (p : ℤ) ^ 2 := dvd_pow_self _ two_ne_zero
+        exact Dvd.dvd.mul_right (Dvd.dvd.mul_right (this.mul_left f) R) m)
+      hpR hi
+  -- p² ∣ q⁴
+  have hn4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hq4 : (p : ℤ) ^ 2 ∣ (q : ℤ) ^ 4 := by
+    rw [← hn4]
+    obtain ⟨x', hx'⟩ := hpX
+    obtain ⟨y', hy'⟩ := hpY
+    exact ⟨x' ^ 2 + y' ^ 2, by rw [hx', hy']; ring⟩
+  have hd : (p : ℤ) ∣ (q : ℤ) ^ 4 := (dvd_pow_self _ two_ne_zero).trans hq4
+  have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hd
+  have : p ∣ q := by exact_mod_cast hq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)

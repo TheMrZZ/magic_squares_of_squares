@@ -1684,3 +1684,14 @@ these close all four partner cases of the R₈Y-vs-q²I₈ branch:
 X = ±q² or ±p⁴ hit q⁴ = p⁸; the p²q²I partner is parity; the cross
 partner extracts p ∣ X and lands in p² ∣ 2q⁴. Remaining bespoke: the
 R₈ ∣ q² enumeration (A1/A3), then the level-8 core assembly.
+
+## Round 105 — resid_cross_p2q2: A3 killed WITHOUT enumeration
+
+Re-derivation collapsed A3 entirely: I ∣ Y (via I ⊥ R²−I², built
+from I ⊥ R with IsCoprime.pow_right + add_mul_left_right), cancel I
+in both equations, p ∤ R₈ forces p² ∣ m, giving p ∣ Y and (via
+resid_pX_extract on the partner) p ∣ X — so p² ∣ X² + Y² = q⁴,
+contradiction. The Round-101 R₈ ∣ q² enumeration is unnecessary.
+ALL bespoke F-residue branch lemmas are now machine-checked:
+cross-product (A4), r8-derive + finishers (A1-family), cross-p2q2
+(A3). Next: assemble mixed_pair_core_8 and the twin-split wrappers.
