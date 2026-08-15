@@ -1286,3 +1286,25 @@ Working the assignment systems by hand with numeric guidance:
 
 Next: mechanical certificate catalog over all systems, then the Lean
 case tree.
+
+## Round 78 — Theorem E certificate catalog complete (design level)
+
+Mechanical certificate search over all 512+ assignment leaves:
+
+- 32 die on the first equation alone (16 q-div/p-div, 16 factored
+  unit×pinch);
+- 64 more die by the binomial PRODUCT trick (multiply the sum- and
+  difference-derived binomials; the product is unit×unit×odd, dead by
+  parity);
+- the remaining 368 leaves (≈50 (pair,a,b) shapes) reduce to 2/3-term
+  GAUSSIAN relations with coefficients in {±1, ±2, ±3} — e.g.
+  ({q²I, mixed}, a = mixed) collapses to c′·Im(π⁴χ⁴) = q²·Im(π⁴),
+  c′ ∈ {±1,±3}, killed by the standard regrouping: χ divides every
+  term of G − Ḡ except c′π̄⁴χ̄⁴, and χ ∤ 3 because q ≡ 1 (mod 4).
+  Coefficient coprimality (χ ∤ 2, χ ∤ 3) replaces the odd-c hypothesis
+  of the uniform twin theorems.
+
+All three certificate tiers are elementary Lean material. Remaining
+work: implement the integer-certificate kernel (parity, mod-4 grid,
+q²∤, pinch, product), the small-coefficient Gaussian chains, and the
+generated 512-leaf dispatch.
