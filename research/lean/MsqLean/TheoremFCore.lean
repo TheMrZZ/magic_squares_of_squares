@@ -360,4 +360,54 @@ lemma mixed_pair_core_8
         hI0 hX0 hY0 hpR hpR8 (-f) (-g) (-1) (-1)
         (by linear_combination hIX) (by linear_combination hRY)
 
+private def L5 (A B C D : ℤ) : ℤ :=
+  (((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im
+private def L6 (A B C D : ℤ) : ℤ :=
+  (((⟨A, B⟩ : GaussianInt) ^ 8) * (star (⟨C, D⟩ : GaussianInt)) ^ 4).im
+
+private lemma L5_coord (A B C D : ℤ) :
+    L5 A B C D = (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+  unfold L5
+  simp [Zsqrtd.im_mul]
+private lemma L6_coord (A B C D : ℤ) :
+    L6 A B C D = (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+  unfold L6
+  simp only [Zsqrtd.im_mul, ← star_pow, Zsqrtd.re_star, Zsqrtd.im_star]
+  ring
+
+set_option maxHeartbeats 800000 in
+/-- The {L5, L6} pair dispatcher: twin-split into the level-8 core. -/
+lemma dispatch_56F
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = L0 p C D ∨ Ka = L1 p q A B ∨ Ka = L2 q A B
+      ∨ Ka = L3 p A B C D ∨ Ka = L4 p A B C D)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hE1 : e3 * L5 A B C D + e4 * L6 A B C D = 2 * e1 * Ka)
+    (hE2 : e3 * L5 A B C D - e4 * L6 A B C D = 2 * e2 * Kb) : False := by
+  rw [L5_coord, L6_coord] at hE1 hE2
+  rcases he3 with rfl | rfl <;> rcases he4 with rfl | rfl
+  · -- e3 = e4 = 1: I₈X = e1·Ka, R₈Y = e2·Kb
+    exact mixed_pair_core_8 p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb e1 e2 he1 he2 ha hb
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- e3 = 1, e4 = -1: R₈Y = e1·Ka, I₈X = e2·Kb
+    exact mixed_pair_core_8 p q hpodd hqodd hpq A B C D hpAB hqCD Kb Ka e2 e1 he2 he1 hb ha
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- e3 = -1, e4 = 1: R₈Y = −e1·Ka, I₈X = −e2·Kb
+    exact mixed_pair_core_8 p q hpodd hqodd hpq A B C D hpAB hqCD Kb Ka (-e2) (-e1)
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he1 with rfl | rfl <;> norm_num) hb ha
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- e3 = e4 = -1
+    exact mixed_pair_core_8 p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb (-e1) (-e2)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he2 with rfl | rfl <;> norm_num) ha hb
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
 end FCore

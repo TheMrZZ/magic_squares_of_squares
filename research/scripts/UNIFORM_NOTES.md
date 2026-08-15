@@ -1723,3 +1723,13 @@ c = f·p² with negated M (NOT c = −f·p²), and the L4-side of
 cross_product needs (−g, −1). Remaining F: the per-bucket twin-split
 wrappers (S/D-massage into the core), extraction-tier wrappers, the
 E-reuse wrapper, and the full router/assembly.
+
+## Round 108 — dispatch_56F (first F pair-dispatcher)
+
+L5/L6 class defs + coordinate lemmas + the {5,6}-pair wrapper:
+four sign-splits into mixed_pair_core_8, first-try compile.
+Analysis note: buckets where u, v are the level-8 classes produce
+coefficient-2 systems (2I₈X = ±Vc ∧ 2R₈Y = ±Vd) — most cells kill
+even faster (2X = ±q² parity), but the p⁴Y-cell feeds ratio-P with
+I := I₈ directly, and the q²I₈-cell needs a factor-2 r8-derive
+variant. Next: that coefficient-2 core, then the mixed-cd buckets.
