@@ -978,3 +978,27 @@ complete unconditional layer of the two-prime landscape.
 - The uniform layer now has 10 theorems (2 corner + 8 twin) covering
   100% of unconditional kills at all six tested exponents:
   (2,2), (3,2), (3,3), (4,2), (4,3), (5,2), (4,4).
+
+## Round 61 — The MASTER twin theorems (2-adic rule formalized)
+
+`uniform_twin_master_pi` / `uniform_twin_master_chi`: lone power
+2^s(2m+1), twin power 2^{s'}(2m'+1), any opaque other-prime part with
+odd Re, any odd coefficient and sign — the relation value has nonzero
+Im whenever **s ≠ s' + 1**, i.e. v₂(lone) ≠ v₂(2·twin). This is the
+exact 2-adic master rule as a single machine-checked statement per
+side (compiled FIRST TRY; full build green, zero sorries).
+
+- Kit: `im_pow_two_adic` — Im(z^{2^s(2m+1)}) = Im(z)·2^s·(odd), by
+  induction on s over the doubling identity Im(z^{2k}) = 2Re(z^k)Im(z^k),
+  with `pow_parity` supplying odd Re at every level.
+- Proof splits on which side of s' + 1 the lone valuation falls:
+  s ≤ s' factors 2^s and leaves even − odd; s ≥ s' + 2 factors
+  2^{s'+1} and leaves odd − even.
+- All eight earlier twin theorems are corollaries; they remain in the
+  library as convenient instances.
+
+The uniform layer is now: 2 corner theorems + 2 master twin theorems
+(+ 8 instance forms), covering 100% of unconditional symbolic kills at
+every exponent tested, with the twin coverage now provably exact — a
+lone+twin relation escapes iff v₂(L) = 1 + v₂(T), and no such
+relation occurs in any census.

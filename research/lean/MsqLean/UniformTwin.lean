@@ -354,3 +354,128 @@ theorem uniform_twin_chi_fourlone
     obtain ⟨ω, hω⟩ := hz
     exact odd_ne_zero ⟨4 * ε * ω * k + 2 * ε * ω + 2 * ε * k + 2 * ω * k
       + ε + ω + k - c * u, by rw [hε, hk, hω]; ring⟩ h
+
+/-- 2-adic structure of Im(z^k): writing k = 2^s(2m+1),
+Im(z^k) = Im(z)·2^s·(odd). -/
+lemma im_pow_two_adic (z : GaussianInt) (hR : Odd z.re) (hI : Even z.im)
+    (s m : ℕ) :
+    ∃ u : ℤ, (z ^ (2 ^ s * (2 * m + 1))).im = z.im * (2 ^ s * u) ∧ Odd u := by
+  induction s with
+  | zero =>
+    obtain ⟨u, hu, ho⟩ := im_pow_odd z hR hI m
+    exact ⟨u, by rw [pow_zero, one_mul, hu]; ring, ho⟩
+  | succ n ih =>
+    obtain ⟨u, hu, ho⟩ := ih
+    refine ⟨(z ^ (2 ^ n * (2 * m + 1))).re * u, ?_, ?_⟩
+    · have hpow : z ^ (2 ^ (n + 1) * (2 * m + 1))
+          = (z ^ (2 ^ n * (2 * m + 1))) ^ 2 := by
+        rw [← pow_mul]
+        congr 1
+        ring
+      rw [hpow, sq_im, hu]
+      ring
+    · exact (re_pow_odd z hR hI _).mul ho
+
+/-- MASTER twin theorem, π-side: lone power 2^s(2m+1), twin power
+2^{s'}(2m'+1). The collapse kills whenever s ≠ s' + 1 — the 2-adic
+rule organizing every observed lone+twin relation. -/
+theorem uniform_twin_master_pi
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (w : GaussianInt) (s m s' m' : ℕ) (c e : ℤ)
+    (hc : Odd c) (he : Odd e) (hw : Odd w.re) (hs : s ≠ s' + 1) :
+    (((-c : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (2 ^ s * (2 * m + 1))
+      + ((e : ℤ) : GaussianInt)
+        * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (2 ^ s' * (2 * m' + 1)) * w
+      + ((e : ℤ) : GaussianInt)
+        * ((⟨A, B⟩ : GaussianInt) ^ 4) ^ (2 ^ s' * (2 * m' + 1))
+        * star w).im ≠ 0 := by
+  intro h0
+  have hz4R := re4_odd' p hpodd A B hpAB
+  have hz4I := im4_even A B
+  obtain ⟨u, hu, hou⟩ := im_pow_two_adic ((⟨A, B⟩ : GaussianInt) ^ 4) hz4R hz4I s m
+  obtain ⟨u', hu', hou'⟩ := im_pow_two_adic ((⟨A, B⟩ : GaussianInt) ^ 4) hz4R hz4I s' m'
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hu, hu'] at h0
+  have key : ((⟨A, B⟩ : GaussianInt) ^ 4).im
+      * (2 * e * ((2 : ℤ) ^ s' * u') * w.re - c * ((2 : ℤ) ^ s * u)) = 0 := by
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im4_ne_zero p hpodd A B hpAB h
+  · rcases Nat.lt_or_ge s (s' + 1) with hlt | hge
+    · -- s ≤ s': factor 2^s, inner = even − odd
+      obtain ⟨d, hd⟩ : ∃ d, s' = s + d := ⟨s' - s, by omega⟩
+      rw [hd, pow_add] at h
+      have hfac : (2 : ℤ) ^ s
+          * (2 * (2 : ℤ) ^ d * e * u' * w.re - c * u) = 0 := by
+        linear_combination h
+      rcases mul_eq_zero.mp hfac with h2 | h2
+      · exact pow_ne_zero s (by norm_num) h2
+      · exact odd_ne_zero (even_sub_odd ⟨(2 : ℤ) ^ d * e * u' * w.re, by ring⟩
+          (hc.mul hou)) h2
+    · -- s ≥ s' + 2: factor 2^{s'+1}, inner = odd − even
+      have hgt : s' + 2 ≤ s := by omega
+      obtain ⟨d, hd⟩ : ∃ d, s = s' + 1 + (d + 1) := ⟨s - s' - 2, by omega⟩
+      rw [hd, pow_add, pow_add] at h
+      have hfac : ((2 : ℤ) ^ s' * 2)
+          * (e * u' * w.re - (2 : ℤ) ^ d * 2 * c * u) = 0 := by
+        linear_combination h
+      rcases mul_eq_zero.mp hfac with h2 | h2
+      · rcases mul_eq_zero.mp h2 with h3 | h3
+        · exact pow_ne_zero s' (by norm_num) h3
+        · norm_num at h3
+      · refine odd_ne_zero ?_ h2
+        have h1 : Odd (e * u' * w.re) := (he.mul hou').mul hw
+        obtain ⟨k, hk⟩ := h1
+        exact ⟨k - (2 : ℤ) ^ d * c * u, by rw [hk]; ring⟩
+
+/-- MASTER twin theorem, χ-side mirror. -/
+theorem uniform_twin_master_chi
+    (q : ℕ) [hq : Fact (Nat.Prime q)] (hqodd : q % 2 = 1)
+    (C D : ℤ) (hqCD : C ^ 2 + D ^ 2 = q)
+    (z : GaussianInt) (s m s' m' : ℕ) (c e : ℤ)
+    (hc : Odd c) (he : Odd e) (hz : Odd z.re) (hs : s ≠ s' + 1) :
+    (((-c : ℤ) : GaussianInt) * ((⟨C, D⟩ : GaussianInt) ^ 4) ^ (2 ^ s * (2 * m + 1))
+      + ((e : ℤ) : GaussianInt) * z
+        * ((⟨C, D⟩ : GaussianInt) ^ 4) ^ (2 ^ s' * (2 * m' + 1))
+      + ((-e : ℤ) : GaussianInt) * z
+        * (star ((⟨C, D⟩ : GaussianInt) ^ 4)) ^ (2 ^ s' * (2 * m' + 1))).im ≠ 0 := by
+  intro h0
+  have hz4R := re4_odd' q hqodd C D hqCD
+  have hz4I := im4_even C D
+  obtain ⟨u, hu, hou⟩ := im_pow_two_adic ((⟨C, D⟩ : GaussianInt) ^ 4) hz4R hz4I s m
+  obtain ⟨u', hu', hou'⟩ := im_pow_two_adic ((⟨C, D⟩ : GaussianInt) ^ 4) hz4R hz4I s' m'
+  rw [← star_pow] at h0
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hu, hu'] at h0
+  have key : ((⟨C, D⟩ : GaussianInt) ^ 4).im
+      * (2 * e * z.re * ((2 : ℤ) ^ s' * u') - c * ((2 : ℤ) ^ s * u)) = 0 := by
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im4_ne_zero q hqodd C D hqCD h
+  · rcases Nat.lt_or_ge s (s' + 1) with hlt | hge
+    · obtain ⟨d, hd⟩ : ∃ d, s' = s + d := ⟨s' - s, by omega⟩
+      rw [hd, pow_add] at h
+      have hfac : (2 : ℤ) ^ s
+          * (2 * (2 : ℤ) ^ d * e * z.re * u' - c * u) = 0 := by
+        linear_combination h
+      rcases mul_eq_zero.mp hfac with h2 | h2
+      · exact pow_ne_zero s (by norm_num) h2
+      · exact odd_ne_zero (even_sub_odd ⟨(2 : ℤ) ^ d * e * z.re * u', by ring⟩
+          (hc.mul hou)) h2
+    · have hgt : s' + 2 ≤ s := by omega
+      obtain ⟨d, hd⟩ : ∃ d, s = s' + 1 + (d + 1) := ⟨s - s' - 2, by omega⟩
+      rw [hd, pow_add, pow_add] at h
+      have hfac : ((2 : ℤ) ^ s' * 2)
+          * (e * z.re * u' - (2 : ℤ) ^ d * 2 * c * u) = 0 := by
+        linear_combination h
+      rcases mul_eq_zero.mp hfac with h2 | h2
+      · rcases mul_eq_zero.mp h2 with h3 | h3
+        · exact pow_ne_zero s' (by norm_num) h3
+        · norm_num at h3
+      · refine odd_ne_zero ?_ h2
+        have h1 : Odd (e * z.re * u') := (he.mul hz).mul hou'
+        obtain ⟨k, hk⟩ := h1
+        exact ⟨k - (2 : ℤ) ^ d * c * u, by rw [hk]; ring⟩
