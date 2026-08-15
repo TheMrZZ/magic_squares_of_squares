@@ -2101,4 +2101,76 @@ lemma cross_pair_core_S12
     · exact cross12S_L56_M7 p q hpodd hqodd hpq A B C D hpAB hqCD (-f) g e (-1) hnf hg he (Or.inr rfl) (by linear_combination h1) h2
   · -- Kb = M7
     exact cross12S_M7row p q hpodd hqodd A B C D hpAB hqCD f hf h1
+/-- Mixed-pair global kill: I₁₂X = f·M2 is even = odd after cancelling I₄. -/
+private lemma mixed12_c1_M2
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (hIX : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) = f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)))) : False := by
+  have hI40 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have him12 := im12_eq A B
+  have him8 := im8_eq A B
+  have h0 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) * ((3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      - f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))))) = 0 := by
+    linear_combination hIX - (((⟨C, D⟩ : GaussianInt) ^ 4).re) * him12 + f * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * him8
+  have hkey : (3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      = f * ((p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re)))) := by
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI40
+    · linarith
+  obtain ⟨r, hr⟩ := re4_odd' p hpodd A B hpAB
+  obtain ⟨k, hk⟩ := im4_even A B
+  obtain ⟨x, hx⟩ := re4_odd' q hqodd C D hqCD
+  obtain ⟨m, hm⟩ := ((odd_cast p hpodd).pow (n := 2)).mul ((odd_cast q hqodd).pow (n := 2))
+  have hodd : Odd ((3 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) :=
+    ⟨(6 * r ^ 2 + 6 * r - 2 * k ^ 2 + 1) * (2 * x + 1) + x,
+      by rw [hr, hk, hx]; ring⟩
+  obtain ⟨t, ht⟩ := hodd
+  rw [ht] at hkey
+  have hm' : (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re))) = 2 * ((2 * m + 1) * (2 * r + 1)) := by
+    linear_combination 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) * hm + 2 * (2 * m + 1) * hr
+  rw [hm'] at hkey
+  generalize (2 * m + 1) * (2 * r + 1) = N at hkey
+  rcases hf with rfl | rfl <;> omega
+
+/-- Mixed-pair global kill: I₁₂X = f·M7 pinches X = ±q², so Y = 0. -/
+private lemma mixed12_c1_M7
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (hIX : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) = f * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))) : False := by
+  have hI120 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ≠ 0 := im12_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hq4c : (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 + (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hX : (((⟨C, D⟩ : GaussianInt) ^ 4).re) = f * (q : ℤ) ^ 2 := by
+    have h0 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re) - f * (q : ℤ) ^ 2) = 0 := by linear_combination hIX
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI120
+    · linarith
+  have hf2 : f ^ 2 = 1 := by rcases hf with rfl | rfl <;> norm_num
+  have hXsq : (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 = (q : ℤ) ^ 4 := by
+    rw [hX]; linear_combination (q : ℤ) ^ 4 * hf2
+  have hY2 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = 0 := by linarith
+  exact hY0 (pow_eq_zero_iff two_ne_zero |>.mp hY2)
+
+/-- Mixed-pair global kill: R₁₂Y = g·M0 pinches R₁₂ = ±p⁶, so I₁₂ = 0. -/
+private lemma mixed12_c2_M0
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (g : ℤ) (hg : g = 1 ∨ g = -1)
+    (hRY : (((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) = g * ((p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) : False := by
+  have hI120 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ≠ 0 := im12_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hp12c : (((⟨A, B⟩ : GaussianInt) ^ 12).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 = (p : ℤ) ^ 12 := norm12_coord p A B hpAB
+  have hR : (((⟨A, B⟩ : GaussianInt) ^ 12).re) = g * (p : ℤ) ^ 6 := by
+    have h0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) - g * (p : ℤ) ^ 6) = 0 := by linear_combination hRY
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hY0
+    · linarith
+  have hg2 : g ^ 2 = 1 := by rcases hg with rfl | rfl <;> norm_num
+  have hRsq : (((⟨A, B⟩ : GaussianInt) ^ 12).re) ^ 2 = (p : ℤ) ^ 12 := by
+    rw [hR]; linear_combination (p : ℤ) ^ 12 * hg2
+  have hI2 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 = 0 := by linarith
+  exact hI120 (pow_eq_zero_iff two_ne_zero |>.mp hI2)
+
 end GCore
