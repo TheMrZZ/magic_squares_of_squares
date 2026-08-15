@@ -131,3 +131,17 @@ balanced-zeta locus leaves, for which the chi-adic constraint applies:
 chi^4 = Q N / D with N,D chi-free integers forces chi^2 | N — only
 finitely many q per (p, j, Delta), each an exact finite check.  Uniformity
 of that last class is the remaining question for 3+ levels.
+
+## 3-level merged sweep COMPLETE; the eight deep shapes
+
+36,288 leaves: 34,720 dead (ZERO 6,144 + IMB 13,440 + RESID 12,640 +
+SING 2,496 = 95.7%). The 1,568 residual leaves collapse to EIGHT element-set
+shapes, all same-orientation interior triples across three levels plus axis
+elements (e.g. {m1p, m2p, m3p, x1}). For each, N*conj(D) is factored
+explicitly (fail8_analysis.py): a bare pi-bar power, balanced imaginary
+factors, and mixed brackets with EVEN pi/pi-bar valuation differences —
+precisely why the imbalance theorem cannot reach them. Survival requires
+N*conj(D) = ± real * (Gaussian square): the chi-square criterion, a
+pointwise-decidable Diophantine condition (candidate q determined by the
+factorization). These eight shapes are the true 3-level frontier of
+Theorem H, one layer deeper than the 2-level special-value loci.
