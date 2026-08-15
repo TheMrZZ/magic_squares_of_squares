@@ -3697,4 +3697,134 @@ lemma ratio_L2_L5_kill
     · exact pi_not_dvd_star q hqodd C D hqCD (hχprime.dvd_of_dvd_pow h2)
 
 
+set_option maxHeartbeats 1600000 in
+/-- The Fermat-descent equation of the deep ratio cells:
+u⁴ − 4v⁴ = w² is impossible for odd u coprime to v ≠ 0.
+Reduces to mathlib's `not_fermat_42`. -/
+lemma no_s4_sub_4t4 (u v w : ℤ) (hv : v ≠ 0) (hodd : u % 2 = 1)
+    (hcop : IsCoprime u v)
+    (h : u ^ 4 - 4 * v ^ 4 = w ^ 2) : False := by
+  have huodd : Odd u := Int.odd_iff.mpr hodd
+  have hu0 : u ≠ 0 := by rintro rfl; simp at hodd
+  have hu4odd : Odd (u ^ 4) := huodd.pow
+  have hwodd : Odd w := by
+    rcases Int.even_or_odd w with he | ho
+    · exfalso
+      obtain ⟨t, ht⟩ := he
+      obtain ⟨c, hc⟩ := hu4odd
+      have hM : 2 * c + 1 = 4 * (v ^ 4) + 4 * t ^ 2 := by
+        subst ht
+        nlinarith [h, hc]
+      generalize hV : v ^ 4 = V at hM
+      generalize hT : t ^ 2 = T at hM
+      omega
+    · exact ho
+  have hu2odd : Odd (u ^ 2) := huodd.pow
+  obtain ⟨cu, hcu⟩ := hu2odd
+  obtain ⟨cw, hcw⟩ := hwodd
+  set α : ℤ := cu - cw with hαdef
+  set β : ℤ := cu + cw + 1 with hβdef
+  have hsum : α + β = u ^ 2 := by rw [hαdef, hβdef, hcu]; ring
+  have hdiff : β - α = w := by rw [hαdef, hβdef, hcw]; ring
+  have hαβ : α * β = v ^ 4 := by
+    have hid : (α + β) ^ 2 - (β - α) ^ 2 = 4 * (α * β) := by ring
+    rw [hsum, hdiff] at hid
+    linarith [h, hid]
+  have hv4pos : (0 : ℤ) < v ^ 4 := by positivity
+  have hcopαβ : IsCoprime α β := by
+    rw [Int.isCoprime_iff_gcd_eq_one]
+    by_contra hg
+    obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hg
+    have hgα : ((Int.gcd α β : ℕ) : ℤ) ∣ α := Int.gcd_dvd_left α β
+    have hgβ : ((Int.gcd α β : ℕ) : ℤ) ∣ β := Int.gcd_dvd_right α β
+    have hrα : (r : ℤ) ∣ α := (Int.natCast_dvd_natCast.mpr hrdvd).trans hgα
+    have hrβ : (r : ℤ) ∣ β := (Int.natCast_dvd_natCast.mpr hrdvd).trans hgβ
+    have hrP : Prime (r : ℤ) := by
+      rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+    have hru : (r : ℤ) ∣ u := by
+      have h2 : (r : ℤ) ∣ u ^ 2 := hsum ▸ dvd_add hrα hrβ
+      exact hrP.dvd_of_dvd_pow h2
+    have hrv : (r : ℤ) ∣ v := by
+      have h4 : (r : ℤ) ∣ v ^ 4 := hαβ ▸ hrα.mul_right β
+      exact hrP.dvd_of_dvd_pow h4
+    exact hrP.not_unit (hcop.isUnit_of_dvd' hru hrv)
+  have hαpos : 0 < α ∧ 0 < β := by
+    rcases lt_trichotomy α 0 with hn | hz | hp
+    · rcases lt_trichotomy β 0 with hn' | hz' | hp'
+      · exfalso
+        have : 0 < α + β → False := by intro; linarith
+        have hu2pos : (0 : ℤ) < u ^ 2 := by positivity
+        exact this (hsum ▸ hu2pos)
+      · exfalso; rw [hz', mul_zero] at hαβ; exact absurd hαβ.symm (by positivity)
+      · exfalso; nlinarith [hαβ, hv4pos]
+    · exfalso; rw [hz, zero_mul] at hαβ; exact absurd hαβ.symm (by positivity)
+    · constructor
+      · exact hp
+      · rcases lt_trichotomy β 0 with hn' | hz' | hp'
+        · exfalso; nlinarith [hαβ, hv4pos]
+        · exfalso; rw [hz', mul_zero] at hαβ; exact absurd hαβ.symm (by positivity)
+        · exact hp'
+  obtain ⟨hα0, hβ0⟩ := hαpos
+  -- first square extraction
+  have hαβsq : α * β = (v ^ 2) ^ 2 := by rw [hαβ]; ring
+  obtain ⟨r, hr⟩ := Int.sq_of_isCoprime hcopαβ hαβsq
+  obtain ⟨s, hs⟩ := Int.sq_of_isCoprime hcopαβ.symm (by rwa [mul_comm] at hαβsq)
+  have hrα : α = r ^ 2 := by
+    rcases hr with h' | h'
+    · exact h'
+    · exfalso; nlinarith [hα0, sq_nonneg r]
+  have hsβ : β = s ^ 2 := by
+    rcases hs with h' | h'
+    · exact h'
+    · exfalso; nlinarith [hβ0, sq_nonneg s]
+  -- rs = ±v², second extraction
+  have hrs2 : (r * s) ^ 2 = (v ^ 2) ^ 2 := by
+    have : (r * s) ^ 2 = α * β := by rw [hrα, hsβ]; ring
+    rw [this, hαβsq]
+  have hrs : r * s = v ^ 2 ∨ r * s = -(v ^ 2) := by
+    have hfac : (r * s - v ^ 2) * (r * s + v ^ 2) = 0 := by linear_combination hrs2
+    rcases mul_eq_zero.mp hfac with h' | h'
+    · exact Or.inl (by linarith)
+    · exact Or.inr (by linarith)
+  have hcoprs : IsCoprime r s := by
+    have h1 : IsCoprime (r ^ 2) (s ^ 2) := by rwa [hrα, hsβ] at hcopαβ
+    have h2 : IsCoprime r (s ^ 2) := h1.of_isCoprime_of_dvd_left ⟨r, by ring⟩
+    exact h2.of_isCoprime_of_dvd_right ⟨s, by ring⟩
+  have hrfour : ∃ m : ℤ, α = m ^ 4 := by
+    rcases hrs with h' | h'
+    · obtain ⟨m, hm⟩ := Int.sq_of_isCoprime hcoprs h'
+      rcases hm with hm | hm
+      · exact ⟨m, by rw [hrα, hm]; ring⟩
+      · exact ⟨m, by rw [hrα, hm]; ring⟩
+    · have h'' : (-r) * s = v ^ 2 := by linarith
+      obtain ⟨m, hm⟩ := Int.sq_of_isCoprime (hcoprs.neg_left) h''
+      rcases hm with hm | hm
+      · exact ⟨m, by rw [hrα, show r = -(m ^ 2) from by linarith]; ring⟩
+      · exact ⟨m, by rw [hrα, show r = m ^ 2 from by linarith]; ring⟩
+  have hsfour : ∃ n : ℤ, β = n ^ 4 := by
+    rcases hrs with h' | h'
+    · have h'' : s * r = v ^ 2 := by linarith [h']
+      obtain ⟨n, hn⟩ := Int.sq_of_isCoprime hcoprs.symm h''
+      rcases hn with hn | hn
+      · exact ⟨n, by rw [hsβ, hn]; ring⟩
+      · exact ⟨n, by rw [hsβ, hn]; ring⟩
+    · have h'' : (-s) * r = v ^ 2 := by linarith [h']
+      obtain ⟨n, hn⟩ := Int.sq_of_isCoprime (hcoprs.symm.neg_left) h''
+      rcases hn with hn | hn
+      · exact ⟨n, by rw [hsβ, show s = -(n ^ 2) from by linarith]; ring⟩
+      · exact ⟨n, by rw [hsβ, show s = n ^ 2 from by linarith]; ring⟩
+  obtain ⟨m, hmα⟩ := hrfour
+  obtain ⟨n, hnβ⟩ := hsfour
+  have hm0 : m ≠ 0 := by
+    rintro rfl
+    simp at hmα
+    linarith [hα0, hmα]
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    simp at hnβ
+    linarith [hβ0, hnβ]
+  exact not_fermat_42 hm0 hn0 (show m ^ 4 + n ^ 4 = u ^ 2 from by
+    rw [← hmα, ← hnβ]; exact hsum)
+
+
 end FCore
