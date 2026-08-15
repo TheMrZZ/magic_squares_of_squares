@@ -586,10 +586,26 @@ At the mixed exponent $(2,1,1)$ ($1968$ relations, $76$ killed) two
 further composite phenomena appear and are absorbed: composite-lone
 shapes (lone slot $\pi^{4k}\chi^{4l}$ with twin part equal to the
 lone) rest on the fact that a product of positive quartic powers of
-distinct split primes is never real.  The toolkit — two corner, two
-master-twin and two composite-twin theorems — covers every
-unconditional kill at all nine exponent grids censused across two and
-three primes.
+distinct split primes is never real.  The toolkit — corner, master-twin and composite-twin
+theorems — covers every unconditional kill at all eleven exponent
+grids censused across two and three primes.
+
+Indeed the formal layer now \emph{exceeds} the census engine.  At
+$(2,2,1)$ the engine leaves $6208$ relations alive, but $264$ of them
+are corner triples with a constant spectator factor of the third
+prime: $80$ have spectator power zero (the relation is $p^4$ times a
+two-prime corner, dead by the plain corner theorems), and $184$
+aligned-class relations carry $\psi^{4\gamma}$ spectators, killed by a
+spectator generalization (\texttt{uniform\_corner\_aligned\_spec})
+whose extraction chains stay clean because the aligned remainders
+group entirely on one side of the conjugation.  The engine misses
+these because its per-prime certificate test cannot certify a
+two-prime pinch in the presence of a spectator.  Notably, the
+attempted mixed-class spectator theorem \emph{failed in Lean} for a
+real reason: the mixed $\chi$-side core $e_3\pi^2 W - e_1\bar\pi^2\bar W$
+mixes $W$ with $\bar W$ and is no longer small, so those seventy-two
+relations are genuinely uncertified — the aligned/mixed asymmetry
+(robust versus fragile) is a theorem-level phenomenon, not an artifact.
 
 The residual band relations were probed to second order: on several
 hundred integer points of the band loci the relation values carry
