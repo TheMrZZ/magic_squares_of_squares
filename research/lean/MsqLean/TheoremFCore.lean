@@ -1111,4 +1111,53 @@ lemma mixed_pair_core_8_two
       have hnat : p ∣ q := by exact_mod_cast hq'
       exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
 
+set_option maxHeartbeats 800000 in
+/-- The {L5, L6} pair on the (a, b) side: sum/difference turns the
+system into the coefficient-2 level-8 core. -/
+lemma dispatch_ab56F
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hab : (Ka = L5 A B C D ∧ Kb = L6 A B C D) ∨ (Ka = L6 A B C D ∧ Kb = L5 A B C D))
+    (hc : Kc = L0 p C D ∨ Kc = L1 p q A B ∨ Kc = L2 q A B
+      ∨ Kc = L3 p A B C D ∨ Kc = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  -- sum: e3·Kc = e1·Ka + e2·Kb ; diff: e4·Kd = e1·Ka − e2·Kb
+  rcases hab with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [L5_coord, L6_coord] at hE1 hE2 <;>
+    rcases he1 with rfl | rfl <;> rcases he2 with rfl | rfl
+  -- (a,b) = (L5,L6):
+  -- e1=e2: Ka+Kb collapses to 2·I₈X, Ka−Kb to 2·R₈Y (up to sign)
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd e3 e4 he3 he4 hc hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kd Kc e4 e3 he4 he3 hd hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kd Kc (-e4) (-e3)
+      (by rcases he4 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) hd hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd (-e3) (-e4)
+      (by rcases he3 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) hc hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  -- (a,b) = (L6,L5): mirrored
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd e3 (-e4) he3
+      (by rcases he4 with rfl | rfl <;> norm_num) hc hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kd Kc e4 (-e3) he4
+      (by rcases he3 with rfl | rfl <;> norm_num) hd hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kd Kc (-e4) e3
+      (by rcases he4 with rfl | rfl <;> norm_num) he3 hd hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_pair_core_8_two p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd (-e3) e4
+      (by rcases he3 with rfl | rfl <;> norm_num) he4 hc hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+
 end FCore
