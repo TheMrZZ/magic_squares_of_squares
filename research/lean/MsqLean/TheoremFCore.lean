@@ -2196,4 +2196,279 @@ lemma cross_pair_core_T_int
     · exact hkill hY2 ⟨I * X - R * Y, by ring⟩
 
 
+set_option maxHeartbeats 3200000 in
+/-- S-form chain for Kb ∈ {L3, L4} (σ = ±1): p² ∣ X, then
+X = p²Rx̂, Y = σIx̂(4fR − p²), and the odd factor
+W = 6p²R² + eσR₈(4fR − p²) kills every partner class. -/
+lemma s34_chain_S
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (R I X Y Kd f g e σ : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hσ : σ = 1 ∨ σ = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hpR : ¬ (p : ℤ) ∣ R) (hpI : ¬ (p : ℤ) ∣ I)
+    (hpR8 : ¬ (p : ℤ) ∣ (R ^ 2 - I ^ 2))
+    (hqY : ¬ (q : ℤ) ∣ Y)
+    (hI0 : I ≠ 0) (hR0 : R ≠ 0)
+    (hRodd : Odd R) (hI4 : (4 : ℤ) ∣ I)
+    (hcop : IsCoprime R I)
+    (hd : Kd = (p : ℤ) ^ 4 * Y ∨ Kd = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I
+      ∨ Kd = (q : ℤ) ^ 2 * (2 * R * I)
+      ∨ Kd = (p : ℤ) ^ 2 * (R * Y + I * X) ∨ Kd = (p : ℤ) ^ 2 * (I * X - R * Y))
+    (h1 : 2 * ((2 * R * I) * X) = f * ((p : ℤ) ^ 2 * (σ * (R * Y) + I * X)))
+    (h2 : 3 * ((2 * R * I) * X) + e * ((R ^ 2 - I ^ 2) * Y) = g * Kd) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hp20 : ((p : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hp.out.pos.ne')
+  have hoddp2 : Odd ((p : ℤ) ^ 2) := (odd_cast p hpodd).pow
+  have hoddp4 : Odd ((p : ℤ) ^ 4) := (odd_cast p hpodd).pow
+  have hoddq2 : Odd ((q : ℤ) ^ 2) := (odd_cast q hqodd).pow
+  have hR8odd : Odd (R ^ 2 - I ^ 2) := by
+    obtain ⟨r, hr⟩ := hRodd
+    obtain ⟨t, ht⟩ := hI4
+    exact ⟨2 * r ^ 2 + 2 * r - 8 * t ^ 2, by rw [hr, ht]; ring⟩
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hcR : IsCoprime ((p : ℤ)) R := (hpP.coprime_iff_not_dvd).mpr hpR
+  have hcI : IsCoprime ((p : ℤ)) I := (hpP.coprime_iff_not_dvd).mpr hpI
+  have hc4RI : IsCoprime ((p : ℤ) ^ 2) (2 * (2 * R * I)) :=
+    (hc2.mul_right ((hc2.mul_right hcR).mul_right hcI)).pow_left
+  -- p² ∣ X
+  have hp2X : (p : ℤ) ^ 2 ∣ X := by
+    refine hc4RI.dvd_of_dvd_mul_right ?_
+    exact ⟨f * (σ * (R * Y) + I * X), by linear_combination h1⟩
+  obtain ⟨x, hx⟩ := hp2X
+  subst hx
+  have hcancel : 4 * (R * (I * x)) = f * (σ * (R * Y) + I * ((p : ℤ) ^ 2 * x)) := by
+    have h0 : (p : ℤ) ^ 2 * (4 * (R * (I * x))
+        - f * (σ * (R * Y) + I * ((p : ℤ) ^ 2 * x))) = 0 := by
+      linear_combination h1
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hp20
+    · linarith
+  have hRYrel : R * Y = σ * (I * (x * (4 * f * R - (p : ℤ) ^ 2))) := by
+    rcases hf with rfl | rfl <;> rcases hσ with rfl | rfl <;>
+      first
+        | linear_combination hcancel
+        | linear_combination -hcancel
+  have hIY : I ∣ Y := by
+    refine hcop.symm.dvd_of_dvd_mul_right ?_
+    exact ⟨σ * (x * (4 * f * R - (p : ℤ) ^ 2)), by linear_combination hRYrel⟩
+  obtain ⟨w, hw⟩ := hIY
+  subst hw
+  have hRw : R * w = σ * (x * (4 * f * R - (p : ℤ) ^ 2)) := by
+    have h0 : I * (R * w - σ * (x * (4 * f * R - (p : ℤ) ^ 2))) = 0 := by
+      linear_combination hRYrel
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  have hRx : R ∣ x := by
+    have hd0 : R ∣ σ * ((p : ℤ) ^ 2 * x) :=
+      ⟨4 * f * σ * x - w, by linear_combination hRw⟩
+    have hd1 : R ∣ (p : ℤ) ^ 2 * x := by
+      rcases hσ with rfl | rfl
+      · simpa using hd0
+      · exact dvd_neg.mp (by simpa using hd0)
+    have hcRp2 : IsCoprime R ((p : ℤ) ^ 2) := hcR.symm.pow_right
+    exact hcRp2.dvd_of_dvd_mul_left hd1
+  obtain ⟨xh, hxh⟩ := hRx
+  subst hxh
+  have hwrel : w = σ * (xh * (4 * f * R - (p : ℤ) ^ 2)) := by
+    have h0 : R * (w - σ * (xh * (4 * f * R - (p : ℤ) ^ 2))) = 0 := by
+      linear_combination hRw
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hR0
+    · linarith
+  have hxh0 : xh ≠ 0 := by
+    rintro rfl
+    have hqY4 : (q : ℤ) ∣ (I * w) ^ 2 := ⟨(q : ℤ) ^ 3, by linarith [hq4]⟩
+    exact hqY (hqP.dvd_of_dvd_pow hqY4)
+  have hIxh : I * xh ≠ 0 := mul_ne_zero hI0 hxh0
+  have hodd2 : Odd (4 * f * R - (p : ℤ) ^ 2) := by
+    obtain ⟨c, hc⟩ := hoddp2
+    exact ⟨2 * f * R - c - 1, by rw [hc]; ring⟩
+  have hoddprod : Odd ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)) :=
+    hR8odd.mul hodd2
+  have heven6 : Even (6 * (p : ℤ) ^ 2 * R ^ 2) := ⟨3 * (p : ℤ) ^ 2 * R ^ 2, by ring⟩
+  have hWodd : Odd (6 * (p : ℤ) ^ 2 * R ^ 2
+      + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2))) := by
+    rcases he with rfl | rfl <;> rcases hσ with rfl | rfl <;>
+      refine heven6.add_odd ?_ <;>
+      first
+        | simpa using hoddprod
+        | simpa using (Int.odd_neg).mpr hoddprod
+  have hIW : I * (xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+      + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))) = g * Kd := by
+    linear_combination h2 - e * (R ^ 2 - I ^ 2) * I * hwrel
+  rcases hd with rfl | rfl | rfl | rfl | rfl
+  · -- Kd = L0
+    have hWeq : xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+        = g * σ * (p : ℤ) ^ 4 * (xh * (4 * f * R - (p : ℤ) ^ 2)) := by
+      have h0 : I * (xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+          + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+          - g * σ * (p : ℤ) ^ 4 * (xh * (4 * f * R - (p : ℤ) ^ 2))) = 0 := by
+        linear_combination hIW + g * (p : ℤ) ^ 4 * I * hwrel
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI0
+      · linarith
+    have hW1 : 6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2))
+        = g * σ * (p : ℤ) ^ 4 * (4 * f * R - (p : ℤ) ^ 2) := by
+      have h0 : xh * ((6 * (p : ℤ) ^ 2 * R ^ 2
+          + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+          - g * σ * (p : ℤ) ^ 4 * (4 * f * R - (p : ℤ) ^ 2)) = 0 := by
+        linear_combination hWeq
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hxh0
+      · linarith
+    have hdvd : (p : ℤ) ^ 2 ∣ e * σ * (4 * f * (R * (R ^ 2 - I ^ 2))) :=
+      ⟨g * σ * (p : ℤ) ^ 2 * (4 * f * R) - g * σ * (p : ℤ) ^ 4 - 6 * R ^ 2
+        + e * σ * (R ^ 2 - I ^ 2), by linear_combination hW1⟩
+    have hdvd2 : (p : ℤ) ^ 2 ∣ 4 * (R * (R ^ 2 - I ^ 2)) := by
+      rcases he with rfl | rfl <;> rcases hσ with rfl | rfl <;> rcases hf with rfl | rfl <;>
+        first
+          | simpa using hdvd
+          | exact dvd_neg.mp (by simpa using hdvd)
+    have hp1 : (p : ℤ) ∣ 4 * (R * (R ^ 2 - I ^ 2)) :=
+      dvd_trans ⟨(p : ℤ), by ring⟩ hdvd2
+    rcases hpP.dvd_mul.mp hp1 with h4 | hRR8
+    · have h4' : p ∣ 4 := by exact_mod_cast h4
+      have := Nat.le_of_dvd (by norm_num) h4'
+      have := hp.out.two_le
+      interval_cases p <;> omega
+    · rcases hpP.dvd_mul.mp hRR8 with h | h
+      · exact hpR h
+      · exact hpR8 h
+  · -- Kd = L1
+    have hxW : xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+        = g * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2) := by
+      have h0 : I * (xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+          + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+          - g * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2)) = 0 := by
+        linear_combination hIW
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI0
+      · linarith
+    have hkey4 : 4 * (e * (f * (σ * (xh * (R * (R ^ 2 - I ^ 2))))))
+        = (p : ℤ) ^ 2 * (g * (q : ℤ) ^ 2 - 6 * R ^ 2 * xh
+          + e * σ * (xh * (R ^ 2 - I ^ 2))) := by
+      linear_combination hxW
+    have hdvdT : (p : ℤ) ^ 2 ∣ xh * (R * (R ^ 2 - I ^ 2)) := by
+      have hd4 : (p : ℤ) ^ 2 ∣ 4 * (e * (f * (σ * (xh * (R * (R ^ 2 - I ^ 2)))))) :=
+        ⟨g * (q : ℤ) ^ 2 - 6 * R ^ 2 * xh + e * σ * (xh * (R ^ 2 - I ^ 2)), hkey4⟩
+      have hd4' : (p : ℤ) ^ 2 ∣ 4 * (xh * (R * (R ^ 2 - I ^ 2))) := by
+        rcases he with rfl | rfl <;> rcases hf with rfl | rfl <;>
+          rcases hσ with rfl | rfl <;>
+          first
+            | simpa using hd4
+            | exact dvd_neg.mp (by simpa using hd4)
+      have h4c : IsCoprime ((p : ℤ) ^ 2) (4 : ℤ) := by
+        have h44 : (4 : ℤ) = 2 * 2 := by norm_num
+        rw [h44]; exact (hc2.mul_right hc2).pow_left
+      exact h4c.dvd_of_dvd_mul_right (by rwa [mul_comm] at hd4')
+    have hp2xh : (p : ℤ) ^ 2 ∣ xh := by
+      have hcRR8 : IsCoprime ((p : ℤ) ^ 2) (R * (R ^ 2 - I ^ 2)) :=
+        (hcR.mul_right ((hpP.coprime_iff_not_dvd).mpr hpR8)).pow_left
+      exact hcRR8.dvd_of_dvd_mul_right hdvdT
+    obtain ⟨xt, hxt⟩ := hp2xh
+    subst hxt
+    have hw2 : w ^ 2 = (p : ℤ) ^ 4 * (xt ^ 2 * (4 * f * R - (p : ℤ) ^ 2) ^ 2) := by
+      rcases hσ with rfl | rfl <;> rw [hwrel] <;> ring
+    have hq4d : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+      refine ⟨(p : ℤ) ^ 3 * ((p : ℤ) ^ 4 * R ^ 2 * xt ^ 2
+        + I ^ 2 * (xt ^ 2 * (4 * f * R - (p : ℤ) ^ 2) ^ 2)), ?_⟩
+      linear_combination -hq4 + I ^ 2 * hw2
+    have hpq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4d
+    have : p ∣ q := by exact_mod_cast hpq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+  · -- Kd = L2
+    have hxW : xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+        = 2 * (g * ((q : ℤ) ^ 2 * R)) := by
+      have h0 : I * (xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+          + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+          - 2 * (g * ((q : ℤ) ^ 2 * R))) = 0 := by
+        linear_combination hIW
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hI0
+      · linarith
+    have hnorm : xh ^ 2 * ((p : ℤ) ^ 4 * R ^ 2
+        + I ^ 2 * (4 * f * R - (p : ℤ) ^ 2) ^ 2) = (q : ℤ) ^ 4 := by
+      have hw2 : w ^ 2 = xh ^ 2 * (4 * f * R - (p : ℤ) ^ 2) ^ 2 := by
+        rcases hσ with rfl | rfl <;> rw [hwrel] <;> ring
+      linear_combination hq4 - I ^ 2 * hw2
+    have hxhq2 : xh ∣ (q : ℤ) ^ 2 := by
+      have hsq : xh ^ 2 ∣ ((q : ℤ) ^ 2) ^ 2 :=
+        ⟨(p : ℤ) ^ 4 * R ^ 2 + I ^ 2 * (4 * f * R - (p : ℤ) ^ 2) ^ 2,
+          by linear_combination -hnorm⟩
+      exact (Int.pow_dvd_pow_iff two_ne_zero).mp hsq
+    have hxhodd : Odd xh := by
+      rcases Int.even_or_odd xh with hev | hodd
+      · exfalso
+        obtain ⟨d, hdq⟩ := hxhq2
+        have hevq : Even ((q : ℤ) ^ 2) := by
+          rw [hdq]; exact hev.mul_right d
+        obtain ⟨a, ha⟩ := hevq
+        obtain ⟨b, hb⟩ := hoddq2
+        omega
+      · exact hodd
+    have hOddL : Odd (xh * (6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))) :=
+      hxhodd.mul hWodd
+    rw [hxW] at hOddL
+    obtain ⟨a, ha⟩ := hOddL
+    generalize hM : g * ((q : ℤ) ^ 2 * R) = M at ha
+    omega
+  · -- Kd = L3
+    have hWeq : 6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2))
+        = g * ((p : ℤ) ^ 2 * R) * (σ * (4 * f * R - (p : ℤ) ^ 2) + (p : ℤ) ^ 2) := by
+      have h0 : (I * xh) * ((6 * (p : ℤ) ^ 2 * R ^ 2
+          + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+          - g * ((p : ℤ) ^ 2 * R) * (σ * (4 * f * R - (p : ℤ) ^ 2) + (p : ℤ) ^ 2)) = 0 := by
+        linear_combination hIW + g * (p : ℤ) ^ 2 * R * I * hwrel
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hIxh
+      · linarith
+    have hEv : Even (g * ((p : ℤ) ^ 2 * R) * (σ * (4 * f * R - (p : ℤ) ^ 2) + (p : ℤ) ^ 2)) := by
+      rcases hσ with rfl | rfl
+      · exact ⟨g * ((p : ℤ) ^ 2 * R) * (2 * f * R), by ring⟩
+      · exact ⟨g * ((p : ℤ) ^ 2 * R) * ((p : ℤ) ^ 2 - 2 * f * R), by ring⟩
+    obtain ⟨u, hu⟩ := hEv
+    obtain ⟨v, hv⟩ := hWodd
+    rw [hWeq] at hv
+    generalize hM : g * ((p : ℤ) ^ 2 * R) * (σ * (4 * f * R - (p : ℤ) ^ 2) + (p : ℤ) ^ 2) = M at hu hv
+    omega
+  · -- Kd = L4
+    have hWeq : 6 * (p : ℤ) ^ 2 * R ^ 2
+        + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2))
+        = g * ((p : ℤ) ^ 2 * R) * ((p : ℤ) ^ 2 - σ * (4 * f * R - (p : ℤ) ^ 2)) := by
+      have h0 : (I * xh) * ((6 * (p : ℤ) ^ 2 * R ^ 2
+          + e * σ * ((R ^ 2 - I ^ 2) * (4 * f * R - (p : ℤ) ^ 2)))
+          - g * ((p : ℤ) ^ 2 * R) * ((p : ℤ) ^ 2 - σ * (4 * f * R - (p : ℤ) ^ 2))) = 0 := by
+        linear_combination hIW - g * (p : ℤ) ^ 2 * R * I * hwrel
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hIxh
+      · linarith
+    have hEv : Even (g * ((p : ℤ) ^ 2 * R) * ((p : ℤ) ^ 2 - σ * (4 * f * R - (p : ℤ) ^ 2))) := by
+      rcases hσ with rfl | rfl
+      · exact ⟨g * ((p : ℤ) ^ 2 * R) * ((p : ℤ) ^ 2 - 2 * f * R), by ring⟩
+      · exact ⟨g * ((p : ℤ) ^ 2 * R) * (2 * f * R), by ring⟩
+    obtain ⟨u, hu⟩ := hEv
+    obtain ⟨v, hv⟩ := hWodd
+    rw [hWeq] at hv
+    generalize hM : g * ((p : ℤ) ^ 2 * R) * ((p : ℤ) ^ 2 - σ * (4 * f * R - (p : ℤ) ^ 2)) = M at hu hv
+    omega
+
+
 end FCore
