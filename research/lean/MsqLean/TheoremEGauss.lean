@@ -200,3 +200,136 @@ theorem twoterm_qI_pY
       have : q ∣ p := by exact_mod_cast hqp
       exact hpq ((Nat.prime_dvd_prime_iff_eq hq.out hp.out).mp this).symm
     · exact (p_not_dvd_re4_im4 q hqodd C D hqCD).2 h2
+
+/-- Generalized two-term kill, χ-regroup side: for ANY Gaussian z with
+χ ∤ z̄, the relation c₁·q^{2(t+1)}·Im z = c₂·Im(z·χ⁴) is impossible
+when q ∤ c₂. Subsumes the π⁴ version and covers all π-power classes. -/
+theorem twoterm_q_gen
+    (q : ℕ) [hq : Fact (Nat.Prime q)] (hqodd : q % 2 = 1)
+    (C D : ℤ) (hqCD : C ^ 2 + D ^ 2 = q)
+    (z : GaussianInt) (t : ℕ) (c1 c2 : ℤ) (hc2 : ¬ (q : ℤ) ∣ c2)
+    (hzs : ¬ (⟨C, D⟩ : GaussianInt) ∣ star z)
+    (h : c1 * ((q : ℤ) ^ (2 * (t + 1)) * z.im)
+       = c2 * ((z * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)) : False := by
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  have hχprime : Prime χ := prime_pi q C D hqCD
+  have hχnb : ¬ χ ∣ star χ := pi_not_dvd_star q hqodd C D hqCD
+  have hχχb : χ * star χ = ((q : ℤ) : GaussianInt) := by
+    rw [hχdef, pi_mul_star, hqCD]
+  have hQt : ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+      = (χ * star χ) ^ (2 * (t + 1)) := by
+    rw [hχχb]; push_cast; ring
+  set G : GaussianInt := ((c2 : ℤ) : GaussianInt) * (z * χ ^ 4)
+      - ((c1 : ℤ) : GaussianInt) * ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * z
+      with hGdef
+  have h0 : G.im = 0 := by
+    rw [hGdef]
+    simp only [Zsqrtd.im_sub, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_intCast,
+      Zsqrtd.im_intCast]
+    have h' := h
+    simp only [Zsqrtd.im_mul, Zsqrtd.re_mul] at h'
+    linear_combination -h'
+  have hy : G = (((G.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [h0]
+  have hself : star G = G := by rw [hy, star_intCast]
+  have hstarG : star G = ((c2 : ℤ) : GaussianInt) * (star z * (star χ) ^ 4)
+      - ((c1 : ℤ) : GaussianInt) * ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+        * star z := by
+    rw [hGdef]
+    simp only [star_sub, star_mul, star_pow, star_intCast]
+    ring
+  have hGsG : χ ∣ (G - star G) := by
+    rw [hself, sub_self]; exact dvd_zero χ
+  have hDpart : χ ∣ (((c2 : ℤ) : GaussianInt) * (z * χ ^ 4)
+      - ((c1 : ℤ) : GaussianInt) * ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * z
+      + ((c1 : ℤ) : GaussianInt) * ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+        * star z) := by
+    rw [hQt]
+    refine dvd_add (dvd_sub ⟨((c2 : ℤ) : GaussianInt) * (z * χ ^ 3), by ring⟩ ?_) ?_
+    · exact ⟨((c1 : ℤ) : GaussianInt) * (star χ * (χ * star χ) ^ (2 * t + 1)) * z, by ring⟩
+    · exact ⟨((c1 : ℤ) : GaussianInt) * (star χ * (χ * star χ) ^ (2 * t + 1)) * star z,
+        by ring⟩
+  have hrem : χ ∣ (((c2 : ℤ) : GaussianInt) * (star z * (star χ) ^ 4)) := by
+    have heq : ((c2 : ℤ) : GaussianInt) * (star z * (star χ) ^ 4)
+        = (((c2 : ℤ) : GaussianInt) * (z * χ ^ 4)
+            - ((c1 : ℤ) : GaussianInt) * ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * z
+            + ((c1 : ℤ) : GaussianInt) * ((((q : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+              * star z)
+          - (G - star G) := by
+      rw [hGdef, hstarG]; ring
+    rw [heq]
+    exact dvd_sub hDpart hGsG
+  rcases hχprime.dvd_mul.mp hrem with h1 | h1
+  · exact chi_not_dvd_intcast q C D hqCD c2 hc2 h1
+  · rcases hχprime.dvd_mul.mp h1 with h2 | h2
+    · exact hzs h2
+    · exact hχnb (hχprime.dvd_of_dvd_pow h2)
+
+/-- Generalized two-term kill, π-regroup side: for a π-divisible u with
+π ∤ ū and any w with π ∤ w̄, the relation
+c₁·p^{2(t+1)}·Im w = c₂·Im(u·w) is impossible when p ∤ c₂. -/
+theorem twoterm_p_gen
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (u w : GaussianInt) (t : ℕ) (c1 c2 : ℤ) (hc2 : ¬ (p : ℤ) ∣ c2)
+    (hu : (⟨A, B⟩ : GaussianInt) ∣ u)
+    (hus : ¬ (⟨A, B⟩ : GaussianInt) ∣ star u)
+    (hws : ¬ (⟨A, B⟩ : GaussianInt) ∣ star w)
+    (h : c1 * ((p : ℤ) ^ (2 * (t + 1)) * w.im) = c2 * ((u * w).im)) : False := by
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  have hπprime : Prime π := prime_pi p A B hpAB
+  have hππb : π * star π = ((p : ℤ) : GaussianInt) := by
+    rw [hπdef, pi_mul_star, hpAB]
+  have hPt : ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+      = (π * star π) ^ (2 * (t + 1)) := by
+    rw [hππb]; push_cast; ring
+  set G : GaussianInt := ((c2 : ℤ) : GaussianInt) * (u * w)
+      - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * w
+      with hGdef
+  have h0 : G.im = 0 := by
+    rw [hGdef]
+    simp only [Zsqrtd.im_sub, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_intCast,
+      Zsqrtd.im_intCast]
+    have h' := h
+    simp only [Zsqrtd.im_mul, Zsqrtd.re_mul] at h'
+    linear_combination -h'
+  have hy : G = (((G.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [h0]
+  have hself : star G = G := by rw [hy, star_intCast]
+  have hstarG : star G = ((c2 : ℤ) : GaussianInt) * (star u * star w)
+      - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+        * star w := by
+    rw [hGdef]
+    simp only [star_sub, star_mul, star_pow, star_intCast]
+    ring
+  have hGsG : π ∣ (G - star G) := by
+    rw [hself, sub_self]; exact dvd_zero π
+  obtain ⟨u', hu'⟩ := hu
+  have hDpart : π ∣ (((c2 : ℤ) : GaussianInt) * (u * w)
+      - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * w
+      + ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+        * star w) := by
+    rw [hPt, hu']
+    refine dvd_add (dvd_sub ⟨((c2 : ℤ) : GaussianInt) * (u' * w), by ring⟩ ?_) ?_
+    · exact ⟨((c1 : ℤ) : GaussianInt) * (star π * (π * star π) ^ (2 * t + 1)) * w, by ring⟩
+    · exact ⟨((c1 : ℤ) : GaussianInt) * (star π * (π * star π) ^ (2 * t + 1)) * star w,
+        by ring⟩
+  have hrem : π ∣ (((c2 : ℤ) : GaussianInt) * (star u * star w)) := by
+    have heq : ((c2 : ℤ) : GaussianInt) * (star u * star w)
+        = (((c2 : ℤ) : GaussianInt) * (u * w)
+            - ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt) * w
+            + ((c1 : ℤ) : GaussianInt) * ((((p : ℤ) ^ (2 * (t + 1)) : ℤ)) : GaussianInt)
+              * star w)
+          - (G - star G) := by
+      rw [hGdef, hstarG]; ring
+    rw [heq]
+    exact dvd_sub hDpart hGsG
+  rcases hπprime.dvd_mul.mp hrem with h1 | h1
+  · exact chi_not_dvd_intcast p A B hpAB c2 hc2 h1
+  · rcases hπprime.dvd_mul.mp h1 with h2 | h2
+    · exact hus h2
+    · exact hws h2

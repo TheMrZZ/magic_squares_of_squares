@@ -1531,3 +1531,15 @@ generalize the two-term Gaussian kills to an OPAQUE π-part (the
 χ-side regroup only needs χ ∤ star z, dischargeable for π⁴ and π⁸),
 then run the mechanical certificate classifier over the 7-class
 equations and size the residue tiers.
+
+## Round 94 — Generalized two-term kills for Theorem F
+
+`twoterm_q_gen` and `twoterm_p_gen` (both first-try compiles): the
+two-term Gaussian kill with OPAQUE parts — any z with χ ∤ z̄ against
+c₁·q^{2(t+1)}·Im z = c₂·Im(z·χ⁴), and the π-side mirror with both u
+(π ∣ u, π ∤ ū) and w opaque. These subsume the Theorem E versions and
+cover every π⁸-level F-class collapse. Integer-certificate pass on
+the 7-class single equations: 166 killed outright (q-div 37, p-div 97,
+factored 25, degenerate 7); 520 need the Gaussian tier — next step is
+the refined catalog with two-term-reduction awareness to size the
+true residue.
