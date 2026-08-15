@@ -2119,3 +2119,27 @@ identity does the heavy lifting.
 Remaining for the two G cores: assemble the 8×8 routers (all mixed and lone
 cells now exist), then pair/lone dispatchers, 16-bucket router, ratio layer,
 four-diffs, capstone.
+
+## Round 132 (2026-08-16) — mixed-pair core plan (M8/M9 machinery)
+
+G's mixed-pair core (I₁₂X = f·Kc1 ∧ R₁₂Y = g·Kc2, Kc1/Kc2 ∈ M0..M7,
+invoked when M8/M9 occupy paired slots) — global single-equation kills:
+
+1. Kc1 = M2: cancel I₄ → (3R₄²−I₄²)X = 2fp²q²R₄, odd = even. SHIPPED.
+2. Kc1 = M7: pinch X = ±q² → Y = 0. SHIPPED.
+3. Kc2 = M0: pinch R₁₂ = ±p⁶ → I₁₂ = 0. SHIPPED.
+4. Kc1 = M1 (TODO): cancel I₄ → JX = fp⁴q² → J∣q², J = 4R₄²−p⁴ ≡ 3 (mod 4):
+   * J = +q, +q²: q ≡ 1 mod 4 → sign dead.
+   * J unit: 4R₄²−p⁴ = ±1 → mod-8/consecutive-squares dead.
+   * J = −q: q = p⁴−4R₄² < p⁴, but X = −fp⁴q needs X² = p⁸q² ≤ q⁴ → q ≥ p⁴. Size.
+   * J = −q²: X = −fp⁴, X² = p⁸ ≤ q⁴ → q² ≥ p⁴ but q² = p⁴−4R₄² < p⁴. Size.
+5. Kc2 = M7 (TODO): J∣Y then I₄∣ → R₄J'y'' = gq², J' = 4R₄²−3p⁴ ≡ 1 (mod 4):
+   * J' = −q^b: sign dead. J' = 1: 4I₄² = p⁴−1 consecutive squares dead.
+   * J' = q, R₄ = ±1: I₄² = p⁴−1 dead. J' = q, R₄ = ±q: q ∣ 3p⁴ → q = 3 dead.
+   * J' = q²: R₄ = ±1 → I₄² = p⁴−1 dead.
+
+Remaining pair grid: Kc1 ∈ {M0,M3,M4,M5,M6} × Kc2 ∈ {M1..M6} = 30 cells,
+the G-analog of F's 12 resid-cells (F: resid_cross_p2q2 / resid_r8_derive /
+resid_cross_product / bespoke pX-pY extractions). Level-12 reductions to
+level 4: I₁₂ = I₄J, R₁₂ = R₄J', J = 4R₄²−p⁴, J' = 4R₄²−3p⁴, J ⊥ J'
+(gcd ∣ 8I₄², both odd, both ⊥ I₄).
