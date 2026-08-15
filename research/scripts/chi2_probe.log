@@ -1,0 +1,83 @@
+20 shapes built
+shape ('m1p', 'm2p', 'm3p', 'x1') (nlev=3) done; checked so far 57792
+shape ('m1p', 'm3p', 'x1', 'x2') (nlev=3) done; checked so far 115584
+shape ('m1p', 'm2p', 'm3p', 'x2') (nlev=3) done; checked so far 173376
+shape ('m1m', 'm2m', 'm3m', 'x1') (nlev=3) done; checked so far 231168
+shape ('m1m', 'm3m', 'x1', 'x2') (nlev=3) done; checked so far 288960
+shape ('m1m', 'm2m', 'm3m', 'x2') (nlev=3) done; checked so far 346752
+shape ('m2p', 'm3p', 'x1', 'y') (nlev=3) done; checked so far 404544
+shape ('m2m', 'm3m', 'x1', 'y') (nlev=3) done; checked so far 462336
+shape ('m1p', 'm2p', 'm4p', 'x3') (nlev=4) done; checked so far 693504
+shape ('m1p', 'm3p', 'm4p', 'x2') (nlev=4) done; checked so far 924672
+shape ('m1p', 'm3m', 'm4m', 'x2') (nlev=4) done; checked so far 1155840
+shape ('m1p', 'm4p', 'x2', 'x3') (nlev=4) done; checked so far 1387008
+shape ('m1m', 'm2m', 'm4m', 'x3') (nlev=4) done; checked so far 1618176
+shape ('m1m', 'm3p', 'm4p', 'x2') (nlev=4) done; checked so far 1849344
+shape ('m1m', 'm3m', 'm4m', 'x2') (nlev=4) done; checked so far 2080512
+shape ('m1m', 'm4m', 'x2', 'x3') (nlev=4) done; checked so far 2311680
+shape ('m2p', 'm3p', 'm4p', 'x1') (nlev=4) done; checked so far 2542848
+shape ('m2p', 'm4p', 'x1', 'x3') (nlev=4) done; checked so far 2774016
+shape ('m2m', 'm3m', 'm4m', 'x1') (nlev=4) done; checked so far 3005184
+shape ('m2m', 'm4m', 'x1', 'x3') (nlev=4) done; checked so far 3236352
+TOTAL checks: 3236352; survivors: 0
+20 shapes
+3-level ('m1p', 'm2p', 'm3p', 'x1'): 2 sign patterns:
+   [330] ((2, 1),)
+   [118] ((2, -1),)
+3-level ('m1p', 'm3p', 'x1', 'x2'): 2 sign patterns:
+   [346] ((2, 1),)
+   [102] ((2, -1),)
+3-level ('m1p', 'm2p', 'm3p', 'x2'): 2 sign patterns:
+   [290] ((2, -1),)
+   [158] ((2, 1),)
+3-level ('m1m', 'm2m', 'm3m', 'x1'): 2 sign patterns:
+   [330] ((2, 1),)
+   [118] ((2, -1),)
+3-level ('m1m', 'm3m', 'x1', 'x2'): 2 sign patterns:
+   [346] ((2, 1),)
+   [102] ((2, -1),)
+3-level ('m1m', 'm2m', 'm3m', 'x2'): 2 sign patterns:
+   [290] ((2, -1),)
+   [158] ((2, 1),)
+3-level ('m2p', 'm3p', 'x1', 'y'): 2 sign patterns:
+   [318] ((2, 1),)
+   [130] ((2, -1),)
+3-level ('m2m', 'm3m', 'x1', 'y'): 2 sign patterns:
+   [317] ((2, 1),)
+   [131] ((2, -1),)
+4-level ('m1p', 'm2p', 'm4p', 'x3'): 2 sign patterns:
+   [1273] ((2, -1),)
+   [519] ((2, 1),)
+4-level ('m1p', 'm3p', 'm4p', 'x2'): 2 sign patterns:
+   [1292] ((2, 1),)
+   [500] ((2, -1),)
+4-level ('m1p', 'm3m', 'm4m', 'x2'): 2 sign patterns:
+   [1300] ((2, 1),)
+   [492] ((2, -1),)
+4-level ('m1p', 'm4p', 'x2', 'x3'): 2 sign patterns:
+   [1438] ((2, 1),)
+   [354] ((2, -1),)
+4-level ('m1m', 'm2m', 'm4m', 'x3'): 2 sign patterns:
+   [1273] ((2, -1),)
+   [519] ((2, 1),)
+4-level ('m1m', 'm3p', 'm4p', 'x2'): 2 sign patterns:
+   [1300] ((2, 1),)
+   [492] ((2, -1),)
+4-level ('m1m', 'm3m', 'm4m', 'x2'): 2 sign patterns:
+   [1292] ((2, 1),)
+   [500] ((2, -1),)
+4-level ('m1m', 'm4m', 'x2', 'x3'): 2 sign patterns:
+   [1438] ((2, 1),)
+   [354] ((2, -1),)
+4-level ('m2p', 'm3p', 'm4p', 'x1'): 2 sign patterns:
+   [1320] ((2, 1),)
+   [472] ((2, -1),)
+4-level ('m2p', 'm4p', 'x1', 'x3'): 2 sign patterns:
+   [1407] ((2, 1),)
+   [385] ((2, -1),)
+4-level ('m2m', 'm3m', 'm4m', 'x1'): 2 sign patterns:
+   [1320] ((2, 1),)
+   [472] ((2, -1),)
+4-level ('m2m', 'm4m', 'x1', 'x3'): 2 sign patterns:
+   [1407] ((2, 1),)
+   [385] ((2, -1),)

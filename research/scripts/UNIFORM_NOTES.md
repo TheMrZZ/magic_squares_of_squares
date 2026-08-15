@@ -184,3 +184,36 @@ matching the unconditional 1- and 2-level closure.  Remaining gap for
 a fully uniform Theorem H: prove |Nz|^2 - Q^2 |Dz|^2 != 0 uniformly
 (the polynomial identity route: both sides have distinct leading
 behavior in the dominant orbit weight — candidate next argument).
+
+## Q-collapse and the leading-pair theorem (deep shapes, levels 3-4)
+
+Structural collapse (chi2_qdeg.py, symbolic, all 20 shapes): Nz has
+Q-degree EXACTLY {1} and Dz exactly {0}.  Writing Nz = Q*A, the whole
+chi-square survival condition loses q entirely:
+
+  |chi^4| = Q^2 |A|/|D| = q^4  <=>  c := |A|^2 - |D|^2 = 0,
+
+ONE integer orbit-algebra identity per shape, independent of q.  (This
+also explains the sweep's zero norm-roots: F(Q) = c*Q^2 with c != 0 on
+the whole grid.)
+
+Leading-pair theorem (chi2_pairlead.py, verified for all 20 shapes and
+all strong-separation orderings — 6 per 3-level, 24 per 4-level shape):
+c is real, so its monomial valuation groups pair off conjugately
+((P,B) <-> (B,P) under pi <-> pibar).  In EVERY strongly-separated
+regime the minimal-valuation set is EXACTLY ONE conjugate pair whose
+coefficient gamma is REAL and in {±1, ±2} — a unit for every odd p.
+The pair sums to 2*gamma*p^a*Re(pibar^{4M}) with v_p(Re(pibar^{4M})) = 0
+(pi does not divide pibar^{4M}: the bridge-lemma mechanism), hence
+v_p(c) = a exactly, strictly below every remaining group.  Therefore:
+
+  THEOREM (off-hyperplane death): for every deep shape, every p >= 5,
+  and every orbit index tuple j avoiding a finite explicit union of
+  valuation-tie hyperplanes {W.j = W'.j}, the leaf is impossible.
+
+The 3/4-level frontier is now reduced to lattice points ON the tie
+hyperplanes, where >= 2 valuation groups share the minimum and the
+leading sum becomes a phase polynomial (residues are powers of a single
+t = (2B)^4 mod p) — vanishing forces bounded multiplicative order of t,
+a finite per-p condition.  Next: enumerate the hyperplane arrangement
+and run the tie (second-order) analysis.

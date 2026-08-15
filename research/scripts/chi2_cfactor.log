@@ -1,0 +1,60 @@
+3-level ('m1p', 'm2p', 'm3p', 'x1'):
+  c factored: -4*N2v**4*N3v**2*Z1**2 + 8*N2v**4*N3v**2*Z1*Z1b - 4*N2v**4*N3v**2*Z1b**2 + 2*N2v**3*N3v**2*Z1**2*Z2 + 2*N2v**3*N3v**2*Z1**2*Z2b - 4*N2v**3*N3v**2*Z1*Z1b*Z2 - 4*N2v**3*N3v**2*Z1*Z1b*Z2b + 2*N2v**3*N3v**2*Z1b**2*Z2 + 2*N2v**3*N3v**2*Z1b**2*Z2b + 2*N2v**3*N3v*Z1**2*Z2*Z3 + 2*N2v**3*N3v*Z1**2*Z2b*Z3b - 4*N2v**3*N3v*Z1*Z1b*Z2*Z3 - 4*N2v**3*N3v*Z1*Z1b*Z2b*Z3b + 2*N2v**3*N3v*Z1b**2*Z2*Z3 + 2*N2v**3*N3v*Z
+
+3-level ('m1p', 'm3p', 'x1', 'x2'):
+  c factored: -4*N2v**4*N3v**2*Z1**2 + 8*N2v**4*N3v**2*Z1*Z1b - 4*N2v**4*N3v**2*Z1b**2 + 4*N2v**3*N3v**2*Z1**2*Z2 - 4*N2v**3*N3v**2*Z1*Z1b*Z2 - 4*N2v**3*N3v**2*Z1*Z1b*Z2b + 4*N2v**3*N3v**2*Z1b**2*Z2b - 2*N2v**3*N3v*Z1**2*Z2*Z3 - 2*N2v**3*N3v*Z1**2*Z2b*Z3b + 4*N2v**3*N3v*Z1*Z1b*Z2*Z3 + 4*N2v**3*N3v*Z1*Z1b*Z2b*Z3b - 2*N2v**3*N3v*Z1b**2*Z2*Z3 - 2*N2v**3*N3v*Z1b**2*Z2b*Z3b - N2v**2*N3v**2*Z1**2*Z2**2 + 2*N2v**2*N3v
+
+3-level ('m1p', 'm2p', 'm3p', 'x2'):
+  c factored: -N2v**2*N3v**2*Z1**2*Z2**2 + 4*N2v**2*N3v**2*Z1*Z1b*Z2**2 - 6*N2v**2*N3v**2*Z1*Z1b*Z2*Z2b + 4*N2v**2*N3v**2*Z1*Z1b*Z2b**2 - N2v**2*N3v**2*Z1b**2*Z2b**2 - 4*N2v**2*N3v*Z1*Z1b*Z2**2*Z3 + 4*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3 + 4*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3b - 4*N2v**2*N3v*Z1*Z1b*Z2b**2*Z3b + N2v**2*Z1*Z1b*Z2**2*Z3**2 - 2*N2v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b + N2v**2*Z1*Z1b*Z2b**2*Z3b**2 + N2v*N3v**2*Z1**2*Z2**3 + N2
+
+3-level ('m1m', 'm2m', 'm3m', 'x1'):
+  c factored: -4*N2v**4*N3v**2*Z1**2 + 8*N2v**4*N3v**2*Z1*Z1b - 4*N2v**4*N3v**2*Z1b**2 + 2*N2v**3*N3v**2*Z1**2*Z2 + 2*N2v**3*N3v**2*Z1**2*Z2b - 4*N2v**3*N3v**2*Z1*Z1b*Z2 - 4*N2v**3*N3v**2*Z1*Z1b*Z2b + 2*N2v**3*N3v**2*Z1b**2*Z2 + 2*N2v**3*N3v**2*Z1b**2*Z2b + 2*N2v**3*N3v*Z1**2*Z2*Z3 + 2*N2v**3*N3v*Z1**2*Z2b*Z3b - 4*N2v**3*N3v*Z1*Z1b*Z2*Z3 - 4*N2v**3*N3v*Z1*Z1b*Z2b*Z3b + 2*N2v**3*N3v*Z1b**2*Z2*Z3 + 2*N2v**3*N3v*Z
+
+3-level ('m1m', 'm3m', 'x1', 'x2'):
+  c factored: -4*N2v**4*N3v**2*Z1**2 + 8*N2v**4*N3v**2*Z1*Z1b - 4*N2v**4*N3v**2*Z1b**2 + 4*N2v**3*N3v**2*Z1**2*Z2 - 4*N2v**3*N3v**2*Z1*Z1b*Z2 - 4*N2v**3*N3v**2*Z1*Z1b*Z2b + 4*N2v**3*N3v**2*Z1b**2*Z2b - 2*N2v**3*N3v*Z1**2*Z2*Z3 - 2*N2v**3*N3v*Z1**2*Z2b*Z3b + 4*N2v**3*N3v*Z1*Z1b*Z2*Z3 + 4*N2v**3*N3v*Z1*Z1b*Z2b*Z3b - 2*N2v**3*N3v*Z1b**2*Z2*Z3 - 2*N2v**3*N3v*Z1b**2*Z2b*Z3b - N2v**2*N3v**2*Z1**2*Z2**2 + 2*N2v**2*N3v
+
+3-level ('m1m', 'm2m', 'm3m', 'x2'):
+  c factored: -N2v**2*N3v**2*Z1**2*Z2**2 + 4*N2v**2*N3v**2*Z1*Z1b*Z2**2 - 6*N2v**2*N3v**2*Z1*Z1b*Z2*Z2b + 4*N2v**2*N3v**2*Z1*Z1b*Z2b**2 - N2v**2*N3v**2*Z1b**2*Z2b**2 - 4*N2v**2*N3v*Z1*Z1b*Z2**2*Z3 + 4*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3 + 4*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3b - 4*N2v**2*N3v*Z1*Z1b*Z2b**2*Z3b + N2v**2*Z1*Z1b*Z2**2*Z3**2 - 2*N2v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b + N2v**2*Z1*Z1b*Z2b**2*Z3b**2 + N2v*N3v**2*Z1**2*Z2**3 + N2
+
+3-level ('m2p', 'm3p', 'x1', 'y'):
+  c factored: -N1v**2*N2v**4*N3v**2*Z1**2 + 2*N1v**2*N2v**4*N3v**2*Z1*Z1b - N1v**2*N2v**4*N3v**2*Z1b**2 + N1v**2*N2v**2*N3v**2*Z1**2*Z2**2 - 2*N1v**2*N2v**2*N3v**2*Z1*Z1b*Z2*Z2b + N1v**2*N2v**2*N3v**2*Z1b**2*Z2b**2 + 2*N1v**2*N2v**2*N3v*Z1**2*Z2**2*Z3 - 2*N1v**2*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3 - 2*N1v**2*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3b + 2*N1v**2*N2v**2*N3v*Z1b**2*Z2b**2*Z3b + N1v**2*N2v**2*Z1**2*Z2**2*Z3**2 - 2*N1v**
+
+3-level ('m2m', 'm3m', 'x1', 'y'):
+  c factored: -N1v**2*N2v**4*N3v**2*Z1**2 + 2*N1v**2*N2v**4*N3v**2*Z1*Z1b - N1v**2*N2v**4*N3v**2*Z1b**2 + N1v**2*N2v**2*N3v**2*Z1**2*Z2**2 - 2*N1v**2*N2v**2*N3v**2*Z1*Z1b*Z2*Z2b + N1v**2*N2v**2*N3v**2*Z1b**2*Z2b**2 - 2*N1v**2*N2v**2*N3v*Z1**2*Z2**2*Z3 + 2*N1v**2*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3 + 2*N1v**2*N2v**2*N3v*Z1*Z1b*Z2*Z2b*Z3b - 2*N1v**2*N2v**2*N3v*Z1b**2*Z2b**2*Z3b + N1v**2*N2v**2*Z1**2*Z2**2*Z3**2 - 2*N1v**
+
+4-level ('m1p', 'm2p', 'm4p', 'x3'):
+  c factored: 4*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2**2 - 8*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2*Z2b + 4*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2b**2 - 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2**2*Z3*Z4 + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2*Z2b*Z3*Z4 + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2*Z2b*Z3b*Z4b - 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2b**2*Z3b*Z4b - N2v**2*N3v**2*N4v**2*Z1**2*Z2**2*Z3**2 + 2*N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b - N2v**2*N3v**2*N4v**2*Z1b**
+
+4-level ('m1p', 'm3p', 'm4p', 'x2'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2*Z2**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2*Z2b - 4*N2v**2*N3v**4*N4v**2*Z1b**2*Z2b**2 + N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2**2*Z3**2 - 2*N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b + N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2b**2*Z3b**2 - 2*N2v**2*N3v**2*N4v*Z1*Z1b*Z2**2*Z3**2*Z4 + 2*N2v**2*N3v**2*N4v*Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4 + 2*N2v**2*N3v**2*N4v*Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4b - 2*N2v**2*N3v**2
+
+4-level ('m1p', 'm3m', 'm4m', 'x2'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**3*Z1b*Z2**2 + 8*N2v**2*N3v**4*N4v**2*Z1**2*Z1b**2*Z2*Z2b - 4*N2v**2*N3v**4*N4v**2*Z1*Z1b**3*Z2b**2 + N2v**2*N3v**2*N4v**2*Z1**4*Z2**2*Z3**2 - 2*N2v**2*N3v**2*N4v**2*Z1**2*Z1b**2*Z2*Z2b*Z3*Z3b + N2v**2*N3v**2*N4v**2*Z1b**4*Z2b**2*Z3b**2 + 2*N2v**2*N3v**2*N4v*Z1**4*Z2**2*Z3**2*Z4 - 2*N2v**2*N3v**2*N4v*Z1**2*Z1b**2*Z2*Z2b*Z3*Z3b*Z4 - 2*N2v**2*N3v**2*N4v*Z1**2*Z1b**2*Z2*Z2b
+
+4-level ('m1p', 'm4p', 'x2', 'x3'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2*Z2**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2*Z2b - 4*N2v**2*N3v**4*N4v**2*Z1b**2*Z2b**2 + 4*N2v**2*N3v**3*N4v**2*Z1**2*Z2**2*Z3 - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z2*Z2b*Z3 - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z2*Z2b*Z3b + 4*N2v**2*N3v**3*N4v**2*Z1b**2*Z2b**2*Z3b - N2v**2*N3v**2*N4v**2*Z1**2*Z2**2*Z3**2 + 2*N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b - N2v**2*N3v**2*N4v**2*Z1b**2*Z
+
+4-level ('m1m', 'm2m', 'm4m', 'x3'):
+  c factored: 4*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2**2 - 8*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2*Z2b + 4*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2b**2 - 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2**2*Z3*Z4 + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2*Z2b*Z3*Z4 + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2*Z2b*Z3b*Z4b - 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z2b**2*Z3b*Z4b - N2v**2*N3v**2*N4v**2*Z1**2*Z2**2*Z3**2 + 2*N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b - N2v**2*N3v**2*N4v**2*Z1b**
+
+4-level ('m1m', 'm3p', 'm4p', 'x2'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**3*Z1b*Z2**2 + 8*N2v**2*N3v**4*N4v**2*Z1**2*Z1b**2*Z2*Z2b - 4*N2v**2*N3v**4*N4v**2*Z1*Z1b**3*Z2b**2 + N2v**2*N3v**2*N4v**2*Z1**4*Z2**2*Z3**2 - 2*N2v**2*N3v**2*N4v**2*Z1**2*Z1b**2*Z2*Z2b*Z3*Z3b + N2v**2*N3v**2*N4v**2*Z1b**4*Z2b**2*Z3b**2 + 2*N2v**2*N3v**2*N4v*Z1**4*Z2**2*Z3**2*Z4 - 2*N2v**2*N3v**2*N4v*Z1**2*Z1b**2*Z2*Z2b*Z3*Z3b*Z4 - 2*N2v**2*N3v**2*N4v*Z1**2*Z1b**2*Z2*Z2b
+
+4-level ('m1m', 'm3m', 'm4m', 'x2'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2*Z2**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2*Z2b - 4*N2v**2*N3v**4*N4v**2*Z1b**2*Z2b**2 + N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2**2*Z3**2 - 2*N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b + N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2b**2*Z3b**2 - 2*N2v**2*N3v**2*N4v*Z1*Z1b*Z2**2*Z3**2*Z4 + 2*N2v**2*N3v**2*N4v*Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4 + 2*N2v**2*N3v**2*N4v*Z1*Z1b*Z2*Z2b*Z3*Z3b*Z4b - 2*N2v**2*N3v**2
+
+4-level ('m1m', 'm4m', 'x2', 'x3'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2*Z2**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b*Z2*Z2b - 4*N2v**2*N3v**4*N4v**2*Z1b**2*Z2b**2 + 4*N2v**2*N3v**3*N4v**2*Z1**2*Z2**2*Z3 - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z2*Z2b*Z3 - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z2*Z2b*Z3b + 4*N2v**2*N3v**3*N4v**2*Z1b**2*Z2b**2*Z3b - N2v**2*N3v**2*N4v**2*Z1**2*Z2**2*Z3**2 + 2*N2v**2*N3v**2*N4v**2*Z1*Z1b*Z2*Z2b*Z3*Z3b - N2v**2*N3v**2*N4v**2*Z1b**2*Z
+
+4-level ('m2p', 'm3p', 'm4p', 'x1'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b - 4*N2v**2*N3v**4*N4v**2*Z1b**2 + 2*N2v**2*N3v**3*N4v**2*Z1**2*Z3 + 2*N2v**2*N3v**3*N4v**2*Z1**2*Z3b - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z3 - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z3b + 2*N2v**2*N3v**3*N4v**2*Z1b**2*Z3 + 2*N2v**2*N3v**3*N4v**2*Z1b**2*Z3b + 2*N2v**2*N3v**3*N4v*Z1**2*Z3*Z4 + 2*N2v**2*N3v**3*N4v*Z1**2*Z3b*Z4b - 4*N2v**2*N3v**3*N4v*Z1*
+
+4-level ('m2p', 'm4p', 'x1', 'x3'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b - 4*N2v**2*N3v**4*N4v**2*Z1b**2 - 2*N2v**2*N3v**3*N4v*Z1**2*Z3*Z4 - 2*N2v**2*N3v**3*N4v*Z1**2*Z3b*Z4b + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z3*Z4 + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z3b*Z4b - 2*N2v**2*N3v**3*N4v*Z1b**2*Z3*Z4 - 2*N2v**2*N3v**3*N4v*Z1b**2*Z3b*Z4b - N2v**2*N3v**2*Z1**2*Z3*Z3b*Z4*Z4b + 2*N2v**2*N3v**2*Z1*Z1b*Z3*Z3b*Z4*Z4b - N2v**2*N3v**2*Z
+
+4-level ('m2m', 'm3m', 'm4m', 'x1'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b - 4*N2v**2*N3v**4*N4v**2*Z1b**2 + 2*N2v**2*N3v**3*N4v**2*Z1**2*Z3 + 2*N2v**2*N3v**3*N4v**2*Z1**2*Z3b - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z3 - 4*N2v**2*N3v**3*N4v**2*Z1*Z1b*Z3b + 2*N2v**2*N3v**3*N4v**2*Z1b**2*Z3 + 2*N2v**2*N3v**3*N4v**2*Z1b**2*Z3b + 2*N2v**2*N3v**3*N4v*Z1**2*Z3*Z4 + 2*N2v**2*N3v**3*N4v*Z1**2*Z3b*Z4b - 4*N2v**2*N3v**3*N4v*Z1*
+
+4-level ('m2m', 'm4m', 'x1', 'x3'):
+  c factored: -4*N2v**2*N3v**4*N4v**2*Z1**2 + 8*N2v**2*N3v**4*N4v**2*Z1*Z1b - 4*N2v**2*N3v**4*N4v**2*Z1b**2 - 2*N2v**2*N3v**3*N4v*Z1**2*Z3*Z4 - 2*N2v**2*N3v**3*N4v*Z1**2*Z3b*Z4b + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z3*Z4 + 4*N2v**2*N3v**3*N4v*Z1*Z1b*Z3b*Z4b - 2*N2v**2*N3v**3*N4v*Z1b**2*Z3*Z4 - 2*N2v**2*N3v**3*N4v*Z1b**2*Z3b*Z4b - N2v**2*N3v**2*Z1**2*Z3*Z3b*Z4*Z4b + 2*N2v**2*N3v**2*Z1*Z1b*Z3*Z3b*Z4*Z4b - N2v**2*N3v**2*Z
+
