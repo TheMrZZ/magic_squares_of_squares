@@ -1613,3 +1613,19 @@ dead. A genuinely joint, cross-level certificate: condition-from-one-
 equation + ratio-from-the-other + a mod-p finisher through the norm
 identity. The remaining 41 class-sets need a systematic catalog of
 such strategies before further Lean — next step.
+
+## Round 100 — F residue reduces to a level-8 mixed core
+
+The 61 residual buckets all twin-split (via S ± D) into paired
+two-term equations I₈·X = f·K and R₈·Y = g·K′ over partner classes —
+the exact structure of Theorem E's mixed_pair_core one level up.
+Branch inventory:
+- I₈X vs q²I₈: X = ±q² pinch. I₈X vs p²q²I: cancel I ⇒ 2RX = ±p²q²,
+  even ≠ odd. R₈Y vs p⁴Y: R₈ = ±p⁴ ⇒ I₈ = 0. All immediate.
+- I₈X vs p⁴Y: the P-ratio system (resid_ratio_core_P, P = p⁴) with
+  the partner equation.
+- R₈Y vs q²I₈: the Round-99 ratio (Y = ±I₈, q² = ±R₈, X² = R⁴−6R²I²+I⁴).
+- Remaining bespoke: I₈X / R₈Y against p²(RY ± IX) — the cross-level
+  couplings (p ∣ X conditions + mod-p finishers through R² ≡ −I²),
+  and R₈Y vs p²q²I. Roughly 4–6 joint lemmas to design, then a
+  generated mixed_pair_core_8 and the F dispatchers.
