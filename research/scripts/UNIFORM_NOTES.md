@@ -1395,3 +1395,19 @@ With the actual leaf coefficients (|c′| = 3, |c″| = 1 — from
 
 All T2 branches verified; `resid_ratio` (~150 lines) is the last
 residue lemma before the dispatcher.
+
+## Round 85 — resid_ratio_core DONE: all Theorem E residue lemmas proven
+
+`resid_ratio_core` machine-checked (zero sorries): the T2 joint system
+p²Y = 2IX ∧ a·q²I = 3b·IX − RY (a, b = ±1) is impossible. Structure:
+coprimality gives I ∣ Y ∣ 2I; k·m = 2 forces Y ∈ {±I, ±2I};
+Y = ±I dies by `resid_p2_even`; Y = ±2I forces X = ±p²,
+2R = ±(3b·p² ∓ a·q²), and the norm identities give
+4R² = 5p⁴ − q⁴, whence q⁴ ∓ 3(ab)p²q² + 2p⁴ = 0 —
+killed by `resid_quad_factored` ((q²−p²)(q²−2p²) = 0 vs q ≠ p and
+parity) or `resid_quad_pos` (positivity).
+Debug notes: linear_combination-vs-linarith atom normalization;
+a SIGN ERROR in the k = −2 branch (2R = +(3bp²+aq²)) was caught by
+Lean, not by inspection — second such catch this session.
+The residue tier is complete: parity, product, size, pinch-product,
+ratio. Next: the generated 1344-leaf dispatcher + assembly.

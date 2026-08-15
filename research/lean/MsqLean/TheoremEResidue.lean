@@ -77,3 +77,144 @@ lemma resid_pinch_product (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
   · have he12 : e1 * e2 = 1 ∨ e1 * e2 = -1 := by
       rcases he1 with rfl | rfl <;> rcases he2 with rfl | rfl <;> norm_num
     exact resid_size p q R X (e1 * e2) he12 hRb hXb hp0 hq0 (by linarith)
+
+
+/-- Parity finisher: p² = 2M is impossible for odd p. -/
+lemma resid_p2_even (p : ℕ) (hpodd : p % 2 = 1) (M : ℤ)
+    (h : (p : ℤ) ^ 2 = 2 * M) : False := by
+  obtain ⟨k, hk⟩ := odd_p2 p hpodd
+  omega
+
+/-- Quadratic finisher A: q⁴ − 3p²q² + 2p⁴ = 0 is impossible for
+distinct odd primes (factors as (q²−p²)(q²−2p²)). -/
+lemma resid_quad_factored (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpq : p ≠ q) (hp0 : 0 < (p : ℤ)) (hq0 : 0 < (q : ℤ))
+    (h : (q : ℤ) ^ 4 - 3 * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 + 2 * (p : ℤ) ^ 4 = 0) : False := by
+  have hfac : ((q : ℤ) ^ 2 - (p : ℤ) ^ 2) * ((q : ℤ) ^ 2 - 2 * (p : ℤ) ^ 2) = 0 := by
+    linear_combination h
+  rcases mul_eq_zero.mp hfac with h1 | h1
+  · have hfac2 : ((q : ℤ) - p) * ((q : ℤ) + p) = 0 := by linear_combination h1
+    rcases mul_eq_zero.mp hfac2 with h2 | h2
+    · have hqp : (q : ℤ) = (p : ℤ) := by linarith
+      have : q = p := by exact_mod_cast hqp
+      exact hpq this.symm
+    · linarith
+  · obtain ⟨k, hk⟩ := odd_p2 q hqodd
+    have : (q : ℤ) ^ 2 = 2 * (p : ℤ) ^ 2 := by linarith
+    omega
+/-- Quadratic finisher B: q⁴ + 3p²q² + 2p⁴ = 0 is impossible (positivity). -/
+lemma resid_quad_pos (p q : ℕ) (hp0 : 0 < (p : ℤ)) (hq0 : 0 < (q : ℤ))
+    (h : (q : ℤ) ^ 4 + 3 * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 + 2 * (p : ℤ) ^ 4 = 0) : False := by
+  nlinarith [pow_pos hp0 4, pow_pos hq0 4, pow_pos hp0 2, pow_pos hq0 2,
+    mul_pos (pow_pos hp0 2) (pow_pos hq0 2)]
+
+/-- The T2 ratio kill, sign-normalized: p²Y = 2IX together with
+ε₁q²I = 3ε₂IX − RY is impossible. -/
+lemma resid_ratio_core (p q : ℕ) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpq : p ≠ q) (hp0 : 0 < (p : ℤ)) (hq0 : 0 < (q : ℤ))
+    (R I X Y : ℤ) (hI : I ≠ 0) (hY : Y ≠ 0)
+    (hRI : IsCoprime R I) (hXY : IsCoprime X Y)
+    (hpn : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4) (hqn : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (a b : ℤ) (ha : a = 1 ∨ a = -1) (hb : b = 1 ∨ b = -1)
+    (hiii : (p : ℤ) ^ 2 * Y = 2 * I * X)
+    (hii : a * (q : ℤ) ^ 2 * I = 3 * b * I * X - R * Y) : False := by
+  have hcancel : ∀ t : ℤ, I * t = 0 → t = 0 := fun t ht => by
+    rcases mul_eq_zero.mp ht with h | h
+    · exact absurd h hI
+    · exact h
+  have hY2I : Y ∣ 2 * I := by
+    have hd : Y ∣ (2 * I) * X := ⟨(p : ℤ) ^ 2, by linarith [hiii]⟩
+    exact (hXY.symm).dvd_of_dvd_mul_right hd
+  have hIY : I ∣ Y := by
+    have hd : I ∣ Y * R := ⟨3 * b * X - a * (q : ℤ) ^ 2, by linarith [hii]⟩
+    exact (hRI.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨k, hk⟩ := hIY
+  obtain ⟨m, hm⟩ := hY2I
+  have hkm : k * m = 2 := by
+    have h0 : I * (k * m - 2) = 0 := by
+      have h1 : 2 * I = I * k * m := by rw [← hk]; linarith [hm]
+      linarith [h1]
+    linarith [hcancel _ h0]
+  have hk0 : k ≠ 0 := by
+    rintro rfl
+    rw [mul_zero] at hk
+    exact hY hk
+  have hk2 : k ∣ 2 := ⟨m, hkm.symm⟩
+  have hkabs : k.natAbs ∣ 2 := by
+    have h2 : k.natAbs ∣ (2 : ℤ).natAbs := Int.natAbs_dvd_natAbs.mpr hk2
+    simpa using h2
+  have hkb : k.natAbs ≤ 2 := Nat.le_of_dvd (by norm_num) hkabs
+  have hkr : k = 1 ∨ k = -1 ∨ k = 2 ∨ k = -2 := by omega
+  rcases hkr with rfl | rfl | rfl | rfl
+  · -- Y = I
+    have hYI : Y = I := by rw [hk]; ring
+    rw [hYI] at hiii
+    have h2 := hcancel _ (by linarith [hiii] : I * ((p : ℤ) ^ 2 - 2 * X) = 0)
+    exact resid_p2_even p hpodd X (by linarith)
+  · -- Y = -I
+    have hYI : Y = -I := by rw [hk]; ring
+    rw [hYI] at hiii
+    have h2 := hcancel _ (by linarith [hiii] : I * ((p : ℤ) ^ 2 + 2 * X) = 0)
+    exact resid_p2_even p hpodd (-X) (by linarith)
+  · -- Y = 2I: X = p², quadratic finisher
+    have hY2 : Y = 2 * I := by rw [hk]; ring
+    rw [hY2] at hiii hii hqn
+    have hX : X = (p : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linarith [hiii] : I * (2 * (p : ℤ) ^ 2 - 2 * X) = 0)
+      linarith
+    rw [hX] at hii hqn
+    have hR : 2 * R = 3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linarith [hii] :
+        I * (a * (q : ℤ) ^ 2 - 3 * b * (p : ℤ) ^ 2 + 2 * R) = 0)
+      linarith
+    have hI2 : 4 * I ^ 2 = (q : ℤ) ^ 4 - (p : ℤ) ^ 4 := by nlinarith [hqn]
+    have hR2 : 4 * R ^ 2 = 5 * (p : ℤ) ^ 4 - (q : ℤ) ^ 4 := by nlinarith [hpn, hI2]
+    have hasq : a * a = 1 := by rcases ha with rfl | rfl <;> norm_num
+    have hbsq : b * b = 1 := by rcases hb with rfl | rfl <;> norm_num
+    have hw : a * b = 1 ∨ a * b = -1 := by
+      rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> norm_num
+    have hkey : (q : ℤ) ^ 4 - 3 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2
+        + 2 * (p : ℤ) ^ 4 = 0 := by
+      have hsq : (2 * R) ^ 2 = (3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2) ^ 2 := by
+        rw [hR]
+      have hexp : (3 * b * (p : ℤ) ^ 2 - a * (q : ℤ) ^ 2) ^ 2
+          = 9 * (p : ℤ) ^ 4 - 6 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 + (q : ℤ) ^ 4 := by
+        linear_combination 9 * (p : ℤ) ^ 4 * hbsq + (q : ℤ) ^ 4 * hasq
+      have hRR : (2 * R) ^ 2 = 4 * (R ^ 2) := by ring
+      linarith [hsq, hexp, hR2, hRR]
+    rcases hw with hw | hw
+    · rw [hw] at hkey
+      exact resid_quad_factored p q hpodd hqodd hpq hp0 hq0 (by linarith [hkey])
+    · rw [hw] at hkey
+      exact resid_quad_pos p q hp0 hq0 (by linarith [hkey])
+  · -- Y = -2I: X = -p², symmetric
+    have hY2 : Y = -(2 * I) := by rw [hk]; ring
+    rw [hY2] at hiii hii hqn
+    have hX : X = -(p : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linarith [hiii] : I * (2 * (p : ℤ) ^ 2 + 2 * X) = 0)
+      linarith
+    rw [hX] at hii hqn
+    have hR : 2 * R = 3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linear_combination hii :
+        I * (a * (q : ℤ) ^ 2 + 3 * b * (p : ℤ) ^ 2 - 2 * R) = 0)
+      linarith
+    have hI2 : 4 * I ^ 2 = (q : ℤ) ^ 4 - (p : ℤ) ^ 4 := by nlinarith [hqn]
+    have hR2 : 4 * R ^ 2 = 5 * (p : ℤ) ^ 4 - (q : ℤ) ^ 4 := by nlinarith [hpn, hI2]
+    have hasq : a * a = 1 := by rcases ha with rfl | rfl <;> norm_num
+    have hbsq : b * b = 1 := by rcases hb with rfl | rfl <;> norm_num
+    have hw : a * b = 1 ∨ a * b = -1 := by
+      rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> norm_num
+    have hkey : (q : ℤ) ^ 4 + 3 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2
+        + 2 * (p : ℤ) ^ 4 = 0 := by
+      have hsq : (2 * R) ^ 2 = (3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2) ^ 2 := by
+        rw [hR]
+      have hexp : (3 * b * (p : ℤ) ^ 2 + a * (q : ℤ) ^ 2) ^ 2
+          = 9 * (p : ℤ) ^ 4 + 6 * (a * b) * (p : ℤ) ^ 2 * (q : ℤ) ^ 2 + (q : ℤ) ^ 4 := by
+        linear_combination 9 * (p : ℤ) ^ 4 * hbsq + (q : ℤ) ^ 4 * hasq
+      have hRR : (2 * R) ^ 2 = 4 * (R ^ 2) := by ring
+      linarith [hsq, hexp, hR2, hRR]
+    rcases hw with hw | hw
+    · rw [hw] at hkey
+      exact resid_quad_pos p q hp0 hq0 (by linarith [hkey])
+    · rw [hw] at hkey
+      exact resid_quad_factored p q hpodd hqodd hpq hp0 hq0 (by linarith [hkey])
