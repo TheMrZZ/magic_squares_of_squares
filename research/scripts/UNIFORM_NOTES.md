@@ -1376,3 +1376,22 @@ Gaussian route is genuinely insufficient here (the p-side pinch closes
 p > 2q, the χ-side only q > 9p²; the middle band needs the partner
 equation) — matching the census's earlier finding that these leaves
 are not certified by any single-relation argument.
+
+## Round 84 — T2 fully verified: the ratio branches factor cleanly
+
+With the actual leaf coefficients (|c′| = 3, |c″| = 1 — from
+(c′,c″) = (3e₁, −e₁) after substitution), the T2 tree is:
+
+- I ∣ Y ∧ Y ∣ 2I (from coprimality against (ii),(iii)) ⇒ Y = ±I or
+  Y = ±2I only (k·m = 2 divisor pairs — no thirds, since |c″| = 1).
+- Y = ±I ⇒ p² = ±2X: parity kill.
+- Y = ±2I ⇒ X = ±p², and equating R² from (ii) with R² = p⁴ − I²
+  gives (q² ∓ 3p²)² = 5p⁴ − q⁴, which either exceeds by size
+  ((q²+3p²)² ≥ 9p⁴ > 5p⁴) or FACTORS as (q²−p²)(q²−2p²) = 0 —
+  killed by q ≠ p and by parity (q² = 2p²).
+- Sibling rows ({0,2} with (1,1)/(3,3)) die by sum/diff two-term
+  reductions into the existing lemmas; ({2,3},(0,0)/(1,1)) die by
+  pinch_sq via their partner equation.
+
+All T2 branches verified; `resid_ratio` (~150 lines) is the last
+residue lemma before the dispatcher.
