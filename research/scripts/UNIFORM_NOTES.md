@@ -490,3 +490,28 @@ p, q, r < 300, for any s.
 h211_engine150.py: 616,089,600 checks over all ordered triples of
 distinct primes = 1 mod 4 below 150: ZERO satisfiable.  No magic
 square of squares has center root s p^2 q r with p, q, r < 150.
+
+## Symbolic closure of (2,2) residual relations: 98/216 unconditional
+
+Pivot from range sweeps to unconditional closure (sym_close.py,
+sym_pinch.py, sym_linear.py).  Expanding each of the 216 residual
+relations exactly in (R,I,X,Y):
+ - 24 die by PARITY (the factored relation contains a factor that is
+   always odd: R, X odd; I, Y = 0 mod 4; p, q odd).
+ - Two-sided first-order residues: mod pi only the pibar^8-terms of
+   Gbar survive, giving F == unit * gq(chi) mod pi; symmetrically
+   F == unit * hp(pi) mod chi.  Re-expressing gq in (v,vb) = (chi^2,
+   chibar^2) and hp in (u,ub) = (pi^2, pibar^2) and factoring:
+   74 relations have BOTH residues nonzero with every non-unit factor
+   of total degree <= 2 — i.e. size <= c*q resp. c*p (LINEAR).  The
+   TWO-SIDED LINEAR PINCH closes them unconditionally: wlog p > q
+   forces p | (factor of size < c*q), so the factor vanishes, which
+   forces Re(chi^2) = 0 or Im(chi^2) = 0-type degeneracies impossible
+   for an odd prime (q = C^2 or q = 2C^2); small-constant cases lie
+   inside the already-swept p,q < 1000 range.
+ - TOTAL: 98/216 relations now closed unconditionally.
+ - Remaining 118: 44+44 with one residue identically zero (need
+   mod-pi^2 second order), 16 with both zero (deep), and deg-4
+   (q^2-size) wedge factors in 38.
+Residue degree census: 74 lin-lin closable; (ZERO,max1) 32x2;
+(max2,max2) 20; (max4,*) 38; (ZERO,ZERO) 16.

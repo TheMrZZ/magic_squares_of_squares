@@ -1,0 +1,15 @@
+distinct relations: 216
+identically-zero flagged: 0
+factor-killed (all factors nonzero atoms): 24
+survivors: 192
+distinct surviving non-atom factor shapes: 192
+1 ('I*X + I*q**2 - R*Y + Y*p**2',)
+1 ('-I*X + I*q**2 + R*Y + Y*p**2',)
+1 ('I*X + I*q**2 + R*Y + Y*p**2',)
+1 ('-I*X + I*q**2 - R*Y + Y*p**2',)
+1 ('I*X - I*q**2 - R*Y + Y*p**2',)
+1 ('-I*X - I*q**2 + R*Y + Y*p**2',)
+1 ('I*X - I*q**2 + R*Y + Y*p**2',)
+1 ('-I*X - I*q**2 - R*Y + Y*p**2',)
+1 ('2*I*X + Y*p**2',)
+1 ('-2*I*X + Y*p**2',)
