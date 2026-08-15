@@ -251,3 +251,20 @@ the thin set uniformly; the degenerate sub-polynomial at small-order t
 needs its own leading-pair analysis (expected self-similar, one level
 down).  Even so, c != 0 at every grid point — the empirical record
 remains unbroken across 3.2M+ direct checks and all structured probes.
+
+## All degeneration points are TRIVIAL: no mod-p accidents
+
+Classification of the 1,806 double-vanishing points (chi2_orderclass.py):
+at EVERY one, the phase-sum vanishing is trivial — the integer gamma-sums
+cancel per congruence class of exponents mod d = ord(2A mod p), on both
+the pi and pibar sides.  Zero genuine mod-p accidents.  Order
+distribution is uniform (86 points per participating order).  Hence the
+escape set is a FINITE UNION OF COMBINATORIAL CANCELLATION PATTERNS,
+independent of p: congruence families in the orbit indices j paired with
+primes whose t-order matches.  On such a family the minimal layer
+vanishes identically as integers, so c's leading part moves to the next
+valuation layer with an exact combinatorial quotient — the recursion is
+now well-defined (self-similar leading-pair analysis at level 2).  If
+level-2 leading groups are again unique unit conjugate pairs for every
+pattern, escape requires a second independent cancellation; termination
+of this recursion = full uniform closure of levels 3-4.
