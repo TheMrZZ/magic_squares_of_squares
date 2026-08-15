@@ -1411,3 +1411,19 @@ a SIGN ERROR in the k = −2 branch (2R = +(3bp²+aq²)) was caught by
 Lean, not by inspection — second such catch this session.
 The residue tier is complete: parity, product, size, pinch-product,
 ratio. Next: the generated 1344-leaf dispatcher + assembly.
+
+## Round 86 — Theorem E dispatcher: dispatch_01 prototype compiles
+
+`MsqLean/TheoremEDispatch.lean`: K0–K3 class abbreviations with
+coordinate lemmas, and `dispatch_01` — the complete kill of every
+assignment whose {u+v, u−v} classes are {q²·Im π⁴, p²·Im χ⁴}, with
+the u/v classes disjunctive and every sign symbolic. 16 class
+sub-cases: pure classes via `twoterm_qI_pY` (with sign-expression
+coefficients bounded by useful_not_dvd_small), mixed-equal via
+degenerate sum/diff (I or Y forced to 0), mixed-distinct via
+`resid_even_odd` (aligned) or `resid_product` (anti-aligned).
+Sign-orientation bookkeeping: linear_combination needs +h when the
+target coefficient sits on the same side as the hypothesis's, −h
+otherwise — recorded per collapse type for the generator.
+Five pair-dispatchers remain (02, 03, 12, 13, 23), then the 4×4 outer
+case split and assembly.
