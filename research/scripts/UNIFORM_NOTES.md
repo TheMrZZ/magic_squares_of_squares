@@ -438,3 +438,12 @@ center root s p q r with p, q, r < 120, for any s.  The "positive-
 dimensional wall" applied to the solved-form approach; the raw-relation
 grading bypasses it entirely — the same doubly/triply-balanced
 characterization governs every number of primes.
+
+## Grading lemma machine-checked
+
+MsqLean/GradingLemma.lean (`im_pipow_mul_not_dvd`, zero sorries):
+for p = a^2 + b^2 prime, k >= 1, and any Gaussian W with p coprime to
+N(W): p never divides Im((a+bi)^k * W).  This is the exact statement
+powering every lone-minimal-layer kill in the two- and three-prime
+engines; the computational range theorems now rest on a formally
+verified core lemma.
