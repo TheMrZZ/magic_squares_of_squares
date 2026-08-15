@@ -582,6 +582,24 @@ short additional theorem resting on the fact that $W$ is never real
 (star-fixedness would force $\bar\chi \mid \chi^4\bar\psi^4$,
 impossible for distinct split primes).  The entire unconditional layer
 at $(1,1,1)$ is thus machine-checked by the same uniform toolkit.
+
+Beyond the relation layer, the assignment-level Theorem~E is now fully
+formal: \textbf{no magic square of squares has center entry
+$(s\,p\,q)^2$} for distinct primes $p, q \equiv 1 \pmod 4$ and rigid
+cofactor $s$ (\texttt{no\_magic\_square\_of\_squares\_spq\_center},
+zero sorries).  The proof pipeline: the machine-checked reduction
+produces four differences $u, v, u{+}v, u{-}v$ in the $D$-set; an
+eighteen-case Gaussian classification identifies every $D$-value as
+$\pm s^2 K$ with $K$ one of four class magnitudes
+$\{q^2\im\pi^4,\; p^2\im\chi^4,\; \im(\pi^4\chi^4),\;
+\im(\pi^4\bar\chi^4)\}$; and a complete assignment analysis — six
+pair-dispatchers over three certificate tiers (two-term Gaussian
+regroupings with small odd coefficients, integer parity/product/size
+residues, and a coprimality-driven ratio system whose terminal
+quadratic factors as $(q^2-p^2)(q^2-2p^2)$) — kills all $1344$
+sign-and-class leaves.  Together with Theorem~C this makes the
+formally verified impossibility cover all center roots $s\,p^a$ and
+$s\,p\,q$.
 At the mixed exponent $(2,1,1)$ ($1968$ relations, $76$ killed) two
 further composite phenomena appear and are absorbed: composite-lone
 shapes (lone slot $\pi^{4k}\chi^{4l}$ with twin part equal to the
