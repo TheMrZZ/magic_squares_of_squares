@@ -1695,3 +1695,18 @@ contradiction. The Round-101 R₈ ∣ q² enumeration is unnecessary.
 ALL bespoke F-residue branch lemmas are now machine-checked:
 cross-product (A4), r8-derive + finishers (A1-family), cross-p2q2
 (A3). Next: assemble mixed_pair_core_8 and the twin-split wrappers.
+
+## Round 106 — mixed_pair_core_8 cell table
+
+The {5,6}-twin-split core (I₈X = f·K₁ ∧ R₈Y = g·K₂, K's over the five
+level-≤4 classes) dispatches as:
+- I₈X vs q²I₈: X = ±q² pinch. I₈X vs p²q²I: 2RX = ±p²q² parity.
+- R₈Y vs p⁴Y: R₈ = ±p⁴ ⇒ I₈ = 0.
+- R₈Y vs q²I₈: resid_r8_derive + per-partner finishers
+  (q⁴ = p⁸ / parity / pX_extract + p²∣2q⁴).
+- R₈Y vs p²q²I: cross_p2q2-skeleton (p²∣m ⇒ p∣X,Y ⇒ p²∣q⁴), with a
+  simpler (i)-variant when K₁ = p⁴Y (2RX = fp⁴m directly).
+- both cross (K₁, K₂ ∈ {p²M₂, p²M₃}): resid_cross_product.
+- I₈X vs p⁴Y with R₈Y-partner: covered by the K₂-side kills above
+  (every K₂ has one).
+All 25 cells covered; two thin lemma variants to add during assembly.
