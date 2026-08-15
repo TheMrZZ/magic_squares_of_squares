@@ -1894,3 +1894,17 @@ with `have` first. Remaining for the (a,c)-bucket: the Gaussian-level
 wrappers (instantiate R,I,X,Y := re4/im4 with fact lemmas incl.
 4 ∣ im4) and the dispatcher splitting {a,c} = {L5,L6} systems into
 the T/S cores; then k=1 buckets, router, capstone.
+
+## Round 119 — all four cross-position dispatchers + router plan
+
+dispatch_ac8F/ad8F/bc8F/bd8F all compiled first try (32 sign
+branches into the T/S cores). Full router plan settled: take SIX
+pairwise value-distinctness hypotheses from the capstone (repeated
+classes force u = ±v among the diffs). Then: k=0 buckets → L2-slot
+present dies by p2_not_dvd_I8 through whichever equation avoids the
+8-free slot, else dispatch_lowE; k=1 → the 8-free equation kills L2
+cells, else the doubled-8 relation dies by p2_not_dvd_L5/L6; k=2 →
+the six pair dispatchers (ab56F, 56F, ac, ad, bc, bd); k≥3 →
+pigeonhole + distinctness. Remaining: helperA (one-L2 low relation),
+helperB (lone-8 vs two lows), the 16-bucket router, rep_structure
+hookup, no_four_diffs_sp2q, capstone.
