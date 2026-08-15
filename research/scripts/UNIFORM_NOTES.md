@@ -1972,3 +1972,13 @@ m⁴ + n⁴ = u² — killed by mathlib's not_fermat_42. The magic-square
 proof for s·p²·q centers thus genuinely invokes Fermat's right
 triangle theorem. Next: formalize no_s4_sub_4t4, then the two deep
 ratio cells, then assemble no_ratio2 and the capstone.
+
+## Round 123 — both deep ratio cells machine-checked
+
+descent_norm4' (coprime version, for composite a = p²),
+ratio_K2_K3_kill (level 4) and ratio_L5_L6_kill (level 8, with the
+q⁴-vs-p⁸ norm systems) all compile. Every piece of hard mathematics
+in the ratio layer is done. Remaining: assemble no_ratio2 (routing
+all 49 class pairs to their kills), the distinctness wrapper
+deriving the six hypotheses from u ≠ 0, v ≠ 0, u ≠ ±v, then
+no_four_diffs_sp2q and the capstone.
