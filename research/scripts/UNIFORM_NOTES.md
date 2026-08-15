@@ -1575,3 +1575,16 @@ The 210 three-term shapes classify by two clean criteria:
   x ∈ {0,3,4}, {2,5,6}, and class-doubled diagonals) — the analog of
   E's ratio/product tier one level up. These need the new residue
   lemmas (I₈ = 2RI, R₈ = R²−I² structure).
+
+## Round 97 — Theorem F residue sized: 184 leaves, all π⁸-level
+
+Full-system classification over the 2401 (c,d,a,b) combos:
+343 c=d degenerate, 1008 two-term collapses, 612 π-extraction,
+113 q-extraction, 141 E-reuse (p²-cancelled no_assignment_spq),
+**RESIDUE 184 in 41 class-sets** — every one involving
+{Im(π⁸χ⁴), Im(π⁸χ̄⁴)}. The dominant blocks (24 each) are
+{q²I₈, x, π⁸-mixed pair} for x ∈ {p⁴Y, p²M₂, p²M₃}: the π⁸ analog of
+Theorem E's ratio/product tier. Coordinate facts lift: R₈² + I₈² = p⁸,
+p ∤ R₈ (else p ∣ 2I²), p ∤ I₈, R₈ odd, I₈ = 2RI ≠ 0. Plan: an
+R₈/I₈ fact-pack, then the {5,6}-pair mixed core (E's mixed_pair_core
+at level 8), then the cross-level ratio systems.
