@@ -1067,3 +1067,13 @@ shapes. Two composite patterns needed power-generalized theorems:
 
 Coverage stands at 100% for all ten censused exponent grids:
 (2,2)…(4,4) two-prime, (1,1,1), (2,1,1), (2,2,1) three-prime.
+
+## Round 65 — (3,1,1) covered with NO new theorems; N-prime engine
+
+- (3,1,1): 4120 relations, 116 killed unconditionally — every shape an
+  instance of the existing toolkit (master twins for singles including
+  (1,3) lone-odd pairs; composite-chi and composite-lone for the
+  ((1,1),(k,k)) products, k ≤ 3). First census where the theorem set
+  needed zero additions — the toolkit looks saturated for twins.
+- `symN_census.py`: the engine generalized to any number of primes;
+  four-prime (1,1,1,1) census launched (14,944 relations).
