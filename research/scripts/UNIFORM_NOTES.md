@@ -591,3 +591,19 @@ earlier certificates: 134 / 216 relations dead; leaf level
 The 1,572 remaining leaves live in 82 relations: 18 reduce to explicit
 Pell-band equations (core = ±kp inside a constant prime-ratio band) and
 64 carry exponent >= 2 wedges; 24 have a vanishing first-order side.
+
+## Three-prime full-coordinate profiles: 116 band-closable, power-law residue
+
+sym3_unit3.py (with per-factor timeouts) profiles all 600 (1,1,1)
+relations in full coordinates: each relation carries one nontrivial
+factor with a triple of side max-core exponents (h_p, h_q, h_r).
+Census highlights: (1,1,1) x32, (1,1/2,1/2)-family x84, then mixed
+triples up to (4,4,4) x16.  Closure analysis: a slot's condition
+p_i | core_i (|core_i| <= c * max(others)^{h_i}) pinches whenever
+prime_i is the largest and h_i <= 1, so ALL-h<=1 relations (116 / 600)
+are impossible outside constant prime-ratio bands.  For higher
+exponents the three conditions chain into homogeneous log-inequalities
+x_i <= h_i * max_j x_j whose unbounded rays are power-law curves
+(e.g. r ~ p^2): survivors of those relations are confined to explicit
+power-law prime families — a complete characterization of the
+three-prime frontier's geometry, though not yet a closure.
