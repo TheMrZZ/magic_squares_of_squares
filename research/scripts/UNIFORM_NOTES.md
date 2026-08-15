@@ -365,3 +365,17 @@ next valuation layer — a double Wieferich-type coincidence, analogous
 in spirit to Wieferich-prime conditions, refuted at every point of the
 computed censuses and heuristically of density zero.  Everything else
 at 3 and 4 levels is proven impossible.
+
+## New frontier: (2,2) centers s p^2 q^2 — Theorem H' program
+
+D(e) for e = s p^2 q^2 has exactly 12 elements with a clean 2-D grading
+(h22_enum.py):  D = { p^{4-2a} q^{4-2b} s^2 Im(pi^{4a} chi^{±4b}) },
+(a,b) in {0,1,2}^2 \ {(0,0)}.  Leaves: ordered distinct (u,v,s,d) with
+sign patterns = 95,040.  TWO-PRIME GRADING LEMMA (h22_engine.py): a
+relation whose minimal p-layer (or q-layer) holds a single term is
+impossible — that term is a p-unit (mod pi, Im(pi^{4a}chi^{4b}) is a
+unit times pibar^{4a}chibar^{4b}) times p^m against p^{m+2} | rest.
+This kills 88,832 / 95,040 leaves (93.5%) outright.  The 6,208 residual
+leaves have >= 2 terms in every minimal layer of both relations and both
+gradings: next pass = mod-p^2 / mod-q^2 phase-sum analysis (gaps 2 or 4),
+mirroring the s p^a q pipeline.
