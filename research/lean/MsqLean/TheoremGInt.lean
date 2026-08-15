@@ -158,3 +158,77 @@ lemma coprime_re12_im12 (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
     exact (Nat.prime_dvd_prime_iff_eq hrprime hp.out).mp this
   rw [hrpn] at hrR
   exact hpR hrR
+
+/-- Two-square representations of an odd prime are unique up to order
+and sign (squared form). -/
+lemma rep_sq_unique (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (C D u v : ℤ) (hq1 : C ^ 2 + D ^ 2 = q) (hq2 : u ^ 2 + v ^ 2 = q) :
+    (u ^ 2 = C ^ 2 ∧ v ^ 2 = D ^ 2) ∨ (u ^ 2 = D ^ 2 ∧ v ^ 2 = C ^ 2) := by
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  set w : GaussianInt := ⟨u, v⟩ with hwdef
+  have hχprime : Prime χ := prime_pi q C D hq1
+  have hwprime : Prime w := prime_pi q u v hq2
+  have hsplitχ : χ * star χ = ((q : ℤ) : GaussianInt) := by
+    have := pi_mul_star C D
+    rw [← hχdef] at this
+    rw [this, hq1]
+  have hsplitw : w * star w = ((q : ℤ) : GaussianInt) := by
+    have := pi_mul_star u v
+    rw [← hwdef] at this
+    rw [this, hq2]
+  have hwdvd : w ∣ χ * star χ := ⟨star w, by rw [hsplitχ, ← hsplitw]⟩
+  have hsq : ∀ z : GaussianInt, w ∣ z → z.norm = (q : ℤ) →
+      (u ^ 2 = z.re ^ 2 ∧ v ^ 2 = z.im ^ 2)
+        ∨ (u ^ 2 = z.im ^ 2 ∧ v ^ 2 = z.re ^ 2) := by
+    intro z hdz hznorm
+    obtain ⟨t, ht⟩ := hdz
+    have htunit : IsUnit t := by
+      have hnorm : z.norm = w.norm * t.norm := by rw [ht, Zsqrtd.norm_mul]
+      have hwnorm : w.norm = (q : ℤ) := by
+        have h : w.norm = u * u + v * v := by simp [hwdef, Zsqrtd.norm]
+        rw [h]; nlinarith [hq2]
+      have htn : t.norm = 1 := by
+        rw [hznorm, hwnorm] at hnorm
+        have hq0 : ((q : ℤ)) ≠ 0 := Int.natCast_ne_zero.mpr hq.out.pos.ne'
+        have hcancel := mul_left_cancel₀ hq0
+          (show (q : ℤ) * 1 = (q : ℤ) * t.norm by linarith [hnorm])
+        linarith [hcancel]
+      rw [← Zsqrtd.norm_eq_one_iff]
+      simp [htn]
+    have hz2 : z ^ 2 = w ^ 2 * t ^ 2 := by rw [ht]; ring
+    rcases gaussian_unit_sq t htunit with ht2 | ht2 <;> rw [ht2] at hz2
+    · -- z² = w²: compare coordinates
+      have hre : z.re ^ 2 - z.im ^ 2 = u ^ 2 - v ^ 2 := by
+        have h1 : (z ^ 2).re = (w ^ 2).re := by rw [hz2]; simp
+        rw [sq_re, sq_re] at h1
+        simpa [hwdef] using h1
+      have hzn : z.re ^ 2 + z.im ^ 2 = (q : ℤ) := by
+        have h : z.norm = z.re * z.re + z.im * z.im := by simp [Zsqrtd.norm]
+        nlinarith [hznorm, h]
+      exact Or.inl ⟨by linarith [hq2, hzn, hre], by linarith [hq2, hzn, hre]⟩
+    · -- z² = −w²
+      have hre : z.re ^ 2 - z.im ^ 2 = -(u ^ 2 - v ^ 2) := by
+        have h1 : (z ^ 2).re = (w ^ 2 * (-1)).re := by rw [hz2]
+        rw [sq_re] at h1
+        have h2 : (w ^ 2 * (-1)).re = -(w ^ 2).re := by simp
+        rw [h2, sq_re] at h1
+        simpa [hwdef] using h1
+      have hzn : z.re ^ 2 + z.im ^ 2 = (q : ℤ) := by
+        have h : z.norm = z.re * z.re + z.im * z.im := by simp [Zsqrtd.norm]
+        nlinarith [hznorm, h]
+      exact Or.inr ⟨by linarith [hq2, hzn, hre], by linarith [hq2, hzn, hre]⟩
+  rcases hwprime.dvd_mul.mp hwdvd with h | h
+  · have := hsq χ h (by
+      have hc : χ.norm = C * C + D * D := by simp [hχdef, Zsqrtd.norm]
+      rw [hc]; nlinarith [hq1])
+    simpa [hχdef] using this
+  · have := hsq (star χ) h (by
+      rw [Zsqrtd.norm_conj]
+      have hc : χ.norm = C * C + D * D := by simp [hχdef, Zsqrtd.norm]
+      rw [hc]; nlinarith [hq1])
+    have hre : (star χ).re = C := by simp [hχdef]
+    have him : (star χ).im = -D := by simp [hχdef]
+    rw [hre, him] at this
+    rcases this with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact Or.inl ⟨h1, by linarith [h2, sq_abs D]⟩
+    · exact Or.inr ⟨by linarith [h1], by linarith [h2]⟩
