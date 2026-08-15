@@ -1508,3 +1508,14 @@ power), the formally verified impossibility now covers all center
 roots s·pᵃ (a arbitrary) and s·p·q. This extends the formal frontier
 from "one useful prime never suffices" to the first genuinely
 two-prime form.
+
+## Round 92 — Theorem F arc opened: rep_structure_sp2q DONE
+
+`MsqLean/TheoremF.lean`: the 7-class D-set classification for
+e = s·p²·q machine-checked (30 template-generated (j,k)-cases;
+classes {p⁴·Im χ⁴, p²q²·Im π⁴, q²·Im π⁸, p²·Im(π⁴χ^{±4}),
+Im(π⁸χ^{±4})}; the (2,1) slot is real and dies on 2xy ≠ 0).
+Generator gotchas: the LAST disjunct of an n-way Or needs bare ?_
+(no Or.inl); rw closes rfl-goals so template tails must be
+try-tolerant. Next: the assignment catalog for 7 classes (numeric
+verification + certificate tiers), then dispatchers.
