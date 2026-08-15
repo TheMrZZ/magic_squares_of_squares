@@ -647,3 +647,15 @@ pairs the full relation must be refuted at second order (the sweeps
 confirm it fails at every such pair in range).  The (2,2) frontier is
 now calibrated down to which of its 82 relations rest on empty,
 sporadic, or persistent Diophantine loci.
+
+## Band relations fail at second order: v_p, v_q <= 1 at all band pairs
+
+band_fail.py evaluates every band relation exactly at the persistent
+and sporadic coupled pairs ((13,17),(37,13),(37,61),...): the relation
+values are never zero and their joint valuations never exceed
+(v_p, v_q) = (1,1).  So on the band loci the first-order layer
+vanishes (as designed) but the SECOND-ORDER term is a p-unit at every
+tested point.  The identified closing step for all 18 band relations:
+a symbolic mod-p^2 unit certificate on the band parameterization
+(core = k*p substituted into T/p) — second-order but finite and
+concrete, unlike the free-form Wieferich loci of the s p^a q story.
