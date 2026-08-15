@@ -1,0 +1,11 @@
+relations: 216
+KILLED: 56 / 216; certificates: {'double-pinch': 32, 'unit-side': 24, 'parity': 32}
+alive: 160; failure signatures: 8
+70 ('None|None',)
+24 ("('small', 1)|None",)
+24 ("None|('small', 1)",)
+12 ("None|('small', 2)",)
+12 ("('small', 2)|None",)
+8 ("('small', 1)|('small', 2)",)
+8 ("('small', 2)|('small', 1)",)
+2 ("('small', 2)|('small', 2)",)

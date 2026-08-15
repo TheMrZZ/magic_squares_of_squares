@@ -535,3 +535,29 @@ closure requires the per-factor real/imaginary + wedge analysis, in
 progress.  (The three-prime census: 600 relations, 0 parity kills, all
 three residues nonzero everywhere, 140 with all sides deg<=2 — same
 wedge caveat applies.)
+
+## Rigorous per-factor certificates for (2,2): 56 relations, 96.1% of leaves
+
+Replacing the flawed degree heuristic with per-factor certificates
+(sym_unit2.py), each factor of each relation is closed by one of:
+ - PARITY: the factor is an always-odd integer (32 factor uses);
+ - UNIT-SIDE: its mod-pi (or mod-chi) reduction factors entirely into
+   unit atoms {chi^2, chibar^2, I resp. Y} times a nonzero constant c,
+   so p never divides it for p > |c| — and p never dividing F already
+   gives F != 0 (24 uses);
+ - DOUBLE-PINCH: mod-pi reduction = units x ONE small atom
+   (2Re(chi^2) or 2Im(chi^2), strictly < 2q in absolute value, nonzero
+   since q odd), and symmetrically mod-chi with < 2p.  For p > q the
+   pi-side forces the small core C^2-D^2 or 2CD to vanish (impossible);
+   for q > p the chi-side does (using q > sqrt(p) where needed).  No
+   wedge remains (32 uses).
+RESULT: 56 / 216 relations certified dead unconditionally.  At leaf
+level a leaf dies if EITHER of its two relations is dead: 2,480 of the
+6,208 residual leaves die, so together with the grading lemma
+91,312 / 95,040 = 96.1% of ALL (2,2) leaves are closed
+unconditionally; the 3,728 survivors live entirely inside the 160
+uncertified relations, whose reductions decompose into explicit
+cyclotomic cores (2R ± p^2 — odd hence nonzero; Re(chi^4), Re(chi^8)
+nonzero by irrationality of the corresponding quartic/octic roots) of
+quadratic-or-higher size, where first-order pinches leave prime-ratio
+wedges — the precise remaining frontier.
