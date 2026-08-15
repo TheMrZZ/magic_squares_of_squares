@@ -1427,3 +1427,19 @@ target coefficient sits on the same side as the hypothesis's, −h
 otherwise — recorded per collapse type for the generator.
 Five pair-dispatchers remain (02, 03, 12, 13, 23), then the 4×4 outer
 case split and assembly.
+
+## Round 87 — dispatch_23 complete (2 of 6 pair-dispatchers)
+
+`mixed_pair_core` + `dispatch_23`: the {K2, K3} (both-mixed) pair
+fully machine-checked. The four sign-splits normalize to
+I·X = f·Kc1 ∧ R·Y = g·Kc2, and the core runs a 4×4 class analysis:
+pinches (X = ±q², R = ±p² against the norm identities), zero-products,
+parity p²/q² = 2M (via linear_combination with the unit-square fact —
+nlinarith won't find the f·h product), the pinch-product lemma, and
+small linear eliminations. Lean engineering notes: `set` variables
+don't fold into later-unfolded defs (use generalize-at-* +
+coordinate lemmas rewritten through the defs); `positivity` on
+set-variables of big Gaussian expressions blows the whnf budget
+(use pow_two_pos_of_ne_zero); linear_combination does not accept /2
+in ℤ (use linarith for halving). Remaining: dispatch_02/03/12/13,
+outer 4×4 split, assembly.

@@ -121,3 +121,26 @@ lemma coprime_re4_im4 (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
     exact (Nat.prime_dvd_prime_iff_eq hrprime hp.out).mp this
   rw [hrpn] at hrR
   exact hpR hrR
+
+/-- Coordinate norm identity for π⁴. -/
+lemma norm4_coord (p : ℕ) [hp : Fact (Nat.Prime p)]
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) :
+    (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2
+      = (p : ℤ) ^ 4 := by
+  have hn : ((⟨A, B⟩ : GaussianInt) ^ 4).norm = (p : ℤ) ^ 4 := by
+    have h4 : ((⟨A, B⟩ : GaussianInt) ^ 4).norm = (⟨A, B⟩ : GaussianInt).norm ^ 4 := by
+      rw [show (⟨A, B⟩ : GaussianInt) ^ 4
+        = (⟨A, B⟩ : GaussianInt) * (⟨A, B⟩ : GaussianInt)
+          * ((⟨A, B⟩ : GaussianInt) * (⟨A, B⟩ : GaussianInt)) from by ring]
+      simp only [Zsqrtd.norm_mul]
+      ring
+    rw [h4]
+    have : (⟨A, B⟩ : GaussianInt).norm = (p : ℤ) := by
+      have h : (⟨A, B⟩ : GaussianInt).norm = A * A + B * B := by simp [Zsqrtd.norm]
+      rw [h]; nlinarith [hpAB]
+    rw [this]
+  have h : ((⟨A, B⟩ : GaussianInt) ^ 4).norm
+      = ((⟨A, B⟩ : GaussianInt) ^ 4).re * ((⟨A, B⟩ : GaussianInt) ^ 4).re
+        + ((⟨A, B⟩ : GaussianInt) ^ 4).im * ((⟨A, B⟩ : GaussianInt) ^ 4).im := by
+    simp [Zsqrtd.norm]
+  nlinarith [hn, h]
