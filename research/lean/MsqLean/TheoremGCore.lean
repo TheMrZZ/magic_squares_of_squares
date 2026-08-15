@@ -1371,4 +1371,85 @@ lemma cross12_row_M7
     have : p ∣ q := by exact_mod_cast hq'
     exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
 
+/-- S-form (M0-row, M7) cell: 2I₁₂X = f·p⁶Y forces 2X = f·p⁶w after the
+M7-side gives Y = I₁₂w; squaring the two resulting relations eliminates q
+entirely, leaving (2R₁₂ + cp⁶)(R₁₂ + cp⁶) = 0 with c = fe — the first
+branch is even = odd, the second forces I₁₂ = 0. -/
+lemma cross12S_L0_M7
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f g e : ℤ) (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)))
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 12).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      = g * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))) : False := by
+  have hf2 : f ^ 2 = 1 := by rcases hf with rfl | rfl <;> norm_num
+  have hg2 : g ^ 2 = 1 := by rcases hg with rfl | rfl <;> norm_num
+  have he2 : e ^ 2 = 1 := by rcases he with rfl | rfl <;> norm_num
+  have hI120 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ≠ 0 := im12_ne_zero p hpodd A B hpAB
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hq4c : (((⟨C, D⟩ : GaussianInt) ^ 4).re) ^ 2 + (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hp12 : (((⟨A, B⟩ : GaussianInt) ^ 12).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 = (p : ℤ) ^ 12 := norm12_coord p A B hpAB
+  have hcop := coprime_re12_im12 p hpodd A B hpAB
+  -- M7 side: I₁₂ ∣ Y
+  have hIY : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hd : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) * (((⟨A, B⟩ : GaussianInt) ^ 12).re) := by
+      refine ⟨e * (g * (q : ℤ) ^ 2 - 3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re)), ?_⟩
+      linear_combination e * h2 - (((⟨A, B⟩ : GaussianInt) ^ 12).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * he2
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨w, hw⟩ := hIY
+  have hw0 : w ≠ 0 := by rintro rfl; exact hY0 (by simpa using hw)
+  have h3X : 3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * w) = g * (q : ℤ) ^ 2 := by
+    have h0 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * ((3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) + e * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) * w)) - g * (q : ℤ) ^ 2) = 0 := by
+      linear_combination h2 - e * (((⟨A, B⟩ : GaussianInt) ^ 12).re) * hw
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI120
+    · linarith
+  -- L0 side: 2X = f·p⁶·w
+  have h2X : 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) = f * (p : ℤ) ^ 6 * w := by
+    have h0 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) * (2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - f * (p : ℤ) ^ 6 * w) = 0 := by
+      linear_combination h1 + f * (p : ℤ) ^ 6 * hw
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI120
+    · linarith
+  -- squared relation 1: w²(p¹² + 4I₁₂²) = 4q⁴  (from the norm)
+  have h2Xsq : (2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = (p : ℤ) ^ 12 * w ^ 2 := by
+    linear_combination (2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) + f * (p : ℤ) ^ 6 * w) * h2X
+      + (p : ℤ) ^ 12 * w ^ 2 * hf2
+  have hYsq : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ^ 2 = (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 * w ^ 2 := by rw [hw]; ring
+  have hrel1 : w ^ 2 * ((p : ℤ) ^ 12 + 4 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2) = 4 * (q : ℤ) ^ 4 := by
+    linear_combination 4 * hq4c - h2Xsq - 4 * hYsq
+  -- squared relation 2: w²(3fp⁶ + 2eR₁₂)² = 4q⁴
+  have hwrel : w * (3 * f * (p : ℤ) ^ 6 + 2 * e * (((⟨A, B⟩ : GaussianInt) ^ 12).re)) = 2 * g * (q : ℤ) ^ 2 := by
+    linear_combination 2 * h3X - 3 * h2X
+  have hrel2 : w ^ 2 * (3 * f * (p : ℤ) ^ 6 + 2 * e * (((⟨A, B⟩ : GaussianInt) ^ 12).re)) ^ 2 = 4 * (q : ℤ) ^ 4 := by
+    have hsq : (w * (3 * f * (p : ℤ) ^ 6 + 2 * e * (((⟨A, B⟩ : GaussianInt) ^ 12).re))) ^ 2
+        = (2 * g * (q : ℤ) ^ 2) ^ 2 := by rw [hwrel]
+    linear_combination hsq + 4 * (q : ℤ) ^ 4 * hg2
+  -- eliminate q: the quadratic in R₁₂ (scaled by 4 to keep ℤ-coefficients)
+  have hquad : (2 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) + f * e * (p : ℤ) ^ 6))
+      * (2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) + f * e * (p : ℤ) ^ 6)) = 0 := by
+    have hw2 : w ^ 2 ≠ 0 := pow_ne_zero 2 hw0
+    have hid : (3 * f * (p : ℤ) ^ 6 + 2 * e * (((⟨A, B⟩ : GaussianInt) ^ 12).re)) ^ 2
+        = (p : ℤ) ^ 12 + 4 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 := by
+      have h0 : w ^ 2 * ((3 * f * (p : ℤ) ^ 6 + 2 * e * (((⟨A, B⟩ : GaussianInt) ^ 12).re)) ^ 2
+          - ((p : ℤ) ^ 12 + 4 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2)) = 0 := by
+        linear_combination hrel2 - hrel1
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hw2
+      · linarith
+    linear_combination hid + 4 * hp12
+      + ((p : ℤ) ^ 12 * (4 * e ^ 2 - 9)) * hf2
+      + (4 * (p : ℤ) ^ 12 - 4 * (((⟨A, B⟩ : GaussianInt) ^ 12).re) ^ 2) * he2
+  rcases mul_eq_zero.mp hquad with h | h
+  · -- 2R₁₂ = −fe·p⁶ : even = odd
+    obtain ⟨r, hr⟩ := re12_odd p hpodd A B hpAB
+    obtain ⟨s, hs⟩ := (odd_cast p hpodd).pow (n := 6)
+    rcases hf with rfl | rfl <;> rcases he with rfl | rfl <;> omega
+  · -- R₁₂ = −fe·p⁶ : forces I₁₂ = 0
+    have hI2 : 4 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 = 0 := by
+      linear_combination 4 * hp12 - 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12).re) - f * e * (p : ℤ) ^ 6) * h
+        - 4 * (p : ℤ) ^ 12 * e ^ 2 * hf2 - 4 * (p : ℤ) ^ 12 * he2
+    have hI0 : (((⟨A, B⟩ : GaussianInt) ^ 12).im) ^ 2 = 0 := by linarith
+    exact hI120 (pow_eq_zero_iff (two_ne_zero) |>.mp hI0)
+
 end GCore
