@@ -498,7 +498,12 @@ $92{,}413{,}440$ exact checks, no survivor below $75$).  The grading
 lemma itself is machine-checked: \texttt{im\_pipow\_mul\_not\_dvd} in
 the accompanying Lean library proves, with no \texttt{sorry}, that for
 $p=a^2+b^2$ prime, $k\ge 1$, and any Gaussian integer $W$ with
-$p\nmid N(W)$, $p$ never divides $\im\bigl((a+bi)^k\,W\bigr)$.  The ``positive-dimensional wall'' blocked
+$p\nmid N(W)$, $p$ never divides $\im\bigl((a+bi)^k\,W\bigr)$.
+Four primes fall the same way: for $e=s\,pqrt$ ($|D|=40$, four
+gradings), $81.2\%$ of the $17{,}546{,}880$ leaves die structurally and
+$396{,}656{,}640$ exact checks exclude every quadruple from
+$\{5,13,17,29,37\}$ — no center root $s\,pqrt$ with all primes below
+$40$.  The ``positive-dimensional wall'' blocked
 only the solved-form pipeline; the raw-relation grading passes through
 it, and the same balanced-family characterization governs any number
 of primes.
