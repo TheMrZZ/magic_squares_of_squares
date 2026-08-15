@@ -1166,3 +1166,23 @@ against the theorems' hypotheses:
   the orientation pass, the twin layer is EXACTLY the
   collapse-plus-2-adic criterion — killed iff type-matching and
   rule-satisfying.
+
+## Round 71 — Corner sharpness audit: the layer is exactly sharp
+
+Auditing all alive corner-shaped relations at the six two-prime grids:
+ZERO satisfy the theorem hypotheses. The alive corner patterns are:
+
+- mixed conjugation at anchor α ≥ 2 — the fragile class (χ-side core
+  too large; established earlier);
+- "one-sided" conjugation patterns (c₁ ≠ c₃ with c₂ = c₁): the π-side
+  subtraction leaves a mixed-conjugation combination
+  e₂q²χ̄^{4b} + e₃χ^{4b+4} that does not factor, so only the χ-side
+  core extracts — a single pinch closes only one prime ordering, and
+  the relation genuinely survives for p > q.
+
+Combined with the twin audits: the ENTIRE uniform layer (corner +
+twin) is exactly characterized — a relation shape dies
+unconditionally iff it satisfies the machine-checked theorems'
+hypotheses, and each alive shape fails for a nameable structural
+reason (fragile mixed pinch, one-sided extraction, sign-type
+mismatch, composite lone slot, or the 2-adic violation).
