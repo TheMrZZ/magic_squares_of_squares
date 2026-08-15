@@ -269,3 +269,125 @@ theorem uniform_twin_composite_lone_pow
   rcases mul_eq_zero.mp key with h | h
   · exact im_prod_pow_ne_zero p q hpodd hqodd hpq A B C D hpAB hqCD k l h
   · exact odd_ne_zero (even_sub_odd ⟨e * v * w.re, by ring⟩ hc) h
+
+/-- W = χ̄^{4(k+1)}·V with χ̄ ∤ star V is never real. -/
+lemma im_composite_V_ne_zero
+    (q : ℕ) [hq : Fact (Nat.Prime q)] (hqodd : q % 2 = 1)
+    (C D : ℤ) (hqCD : C ^ 2 + D ^ 2 = q)
+    (V : GaussianInt) (k : ℕ)
+    (hV : ¬ star (⟨C, D⟩ : GaussianInt) ∣ star V) :
+    ((star (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (k + 1))) * V).im ≠ 0 := by
+  intro h
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  set W : GaussianInt := (star ((χ ^ 4) ^ (k + 1))) * V with hWdef
+  have hsχprime : Prime (star χ) := by
+    have : star χ = (⟨C, -D⟩ : GaussianInt) := by rw [hχdef]; ext <;> simp
+    rw [this]
+    exact prime_pi q C (-D) (by rw [neg_pow]; ring_nf; linarith [hqCD])
+  have hχnb : ¬ χ ∣ star χ := pi_not_dvd_star q hqodd C D hqCD
+  have hsχχ : ¬ star χ ∣ χ := by
+    intro hd
+    have := star_dvd_star hd
+    rw [star_star] at this
+    exact hχnb this
+  have hy : W = (((W.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [← hWdef, h]
+  have hself : star W = W := by rw [hy, star_intCast]
+  have hstarW : star W = (χ ^ 4) ^ (k + 1) * star V := by
+    rw [hWdef]
+    simp only [star_mul, star_pow, star_star]
+    ring
+  have hW : star χ ∣ W := ⟨(star χ) ^ 3 * ((star χ) ^ 4) ^ k * V, by
+    rw [hWdef, star_pow, star_pow]; ring⟩
+  have hdvd : star χ ∣ (χ ^ 4) ^ (k + 1) * star V := by
+    rw [← hstarW, hself]
+    exact hW
+  rcases hsχprime.dvd_mul.mp hdvd with h1 | h1
+  · exact hsχχ (hsχprime.dvd_of_dvd_pow (hsχprime.dvd_of_dvd_pow h1))
+  · exact hV h1
+
+/-- FULLY general composite twin kill (diff-type): lone = star W with
+W = χ̄^{4(k+1)}·V, V an arbitrary tail (any number of further primes'
+factors, discharged by ¬χ̄ ∣ star V). Subsumes the two- and
+three-prime composite theorems. -/
+theorem uniform_twin_composite_gen
+    (q : ℕ) [hq : Fact (Nat.Prime q)] (hqodd : q % 2 = 1)
+    (C D : ℤ) (hqCD : C ^ 2 + D ^ 2 = q)
+    (V z : GaussianInt) (k : ℕ) (c e : ℤ) (hc : Odd c)
+    (hV : ¬ star (⟨C, D⟩ : GaussianInt) ∣ star V) :
+    (((-c : ℤ) : GaussianInt)
+        * star ((star (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (k + 1))) * V)
+      + ((e : ℤ) : GaussianInt) * z
+        * ((star (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (k + 1))) * V)
+      + ((-e : ℤ) : GaussianInt) * z
+        * star ((star (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (k + 1))) * V)).im ≠ 0 := by
+  intro h0
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  have key : ((star (((⟨C, D⟩ : GaussianInt) ^ 4) ^ (k + 1))) * V).im
+      * (c + 2 * e * z.re) = 0 := by
+    simp only [Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star]
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im_composite_V_ne_zero q hqodd C D hqCD V k hV h
+  · obtain ⟨m, hm⟩ := hc
+    exact odd_ne_zero ⟨m + e * z.re, by rw [hm]; ring⟩ h
+
+/-- W = π^{4(k+1)}·V with π ∤ star V is never real (unconjugated head). -/
+lemma im_lone_V_ne_zero
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (V : GaussianInt) (k : ℕ)
+    (hV : ¬ (⟨A, B⟩ : GaussianInt) ∣ star V) :
+    ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * V).im ≠ 0 := by
+  intro h
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  set Z : GaussianInt := ((π ^ 4) ^ (k + 1)) * V with hZdef
+  have hπprime : Prime π := prime_pi p A B hpAB
+  have hπnb : ¬ π ∣ star π := pi_not_dvd_star p hpodd A B hpAB
+  have hy : Z = (((Z.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [← hZdef, h]
+  have hself : star Z = Z := by rw [hy, star_intCast]
+  have hstarZ : star Z = ((star π) ^ 4) ^ (k + 1) * star V := by
+    rw [hZdef]
+    simp only [star_mul, star_pow]
+    ring
+  have hZdvd : π ∣ Z := ⟨π ^ 3 * (π ^ 4) ^ k * V, by rw [hZdef]; ring⟩
+  have hdvd : π ∣ ((star π) ^ 4) ^ (k + 1) * star V := by
+    rw [← hstarZ, hself]
+    exact hZdvd
+  rcases hπprime.dvd_mul.mp hdvd with h1 | h1
+  · exact hπnb (hπprime.dvd_of_dvd_pow (hπprime.dvd_of_dvd_pow h1))
+  · exact hV h1
+
+/-- FULLY general composite-lone sum-twin kill: lone Z = π^{4(k+1)}·V,
+twin pair Z^{t+1}·w / Z^{t+1}·w̄. Subsumes all composite-lone shapes at
+any prime count. -/
+theorem uniform_twin_lone_gen
+    (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (V w : GaussianInt) (k t : ℕ) (c e : ℤ) (hc : Odd c)
+    (hV : ¬ (⟨A, B⟩ : GaussianInt) ∣ star V) :
+    (((-c : ℤ) : GaussianInt) * ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * V)
+      + ((e : ℤ) : GaussianInt)
+        * ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * V) ^ (t + 1) * w
+      + ((e : ℤ) : GaussianInt)
+        * ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * V) ^ (t + 1)
+        * star w).im ≠ 0 := by
+  intro h0
+  obtain ⟨v, hv⟩ := im_pow_fac ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * V) t
+  simp only [Zsqrtd.im_add, Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star,
+    Zsqrtd.re_neg, Zsqrtd.im_neg, Zsqrtd.re_intCast, Zsqrtd.im_intCast] at h0
+  rw [hv] at h0
+  simp only [Zsqrtd.im_mul, Zsqrtd.re_mul] at h0
+  have key : ((((⟨A, B⟩ : GaussianInt) ^ 4) ^ (k + 1)) * V).im
+      * (2 * e * v * w.re - c) = 0 := by
+    simp only [Zsqrtd.im_mul, Zsqrtd.re_mul]
+    linear_combination h0
+  rcases mul_eq_zero.mp key with h | h
+  · exact im_lone_V_ne_zero p hpodd A B hpAB V k hV h
+  · exact odd_ne_zero (even_sub_odd ⟨e * v * w.re, by ring⟩ hc) h

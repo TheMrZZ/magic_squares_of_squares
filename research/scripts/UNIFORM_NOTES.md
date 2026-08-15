@@ -1186,3 +1186,19 @@ unconditionally iff it satisfies the machine-checked theorems'
 hypotheses, and each alive shape fails for a nameable structural
 reason (fragile mixed pinch, one-sided extraction, sign-type
 mismatch, composite lone slot, or the 2-adic violation).
+
+## Round 72 — FOUR primes: (1,1,1,1) census + the general composite theorems
+
+- (1,1,1,1): 14,944 relations, 232 killed unconditionally — every one
+  a twin shape, now including TRIPLE composites (lone/W spanning three
+  primes' factors).
+- Final generalization: `uniform_twin_composite_gen` (diff-type, lone
+  = star(χ̄^{4(k+1)}·V)) and `uniform_twin_lone_gen` (sum-type, lone
+  Z = π^{4(k+1)}·V, twin Z^{t+1}) with an OPAQUE tail V and a single
+  hypothesis (the head prime doesn't divide star V). Non-reality of
+  the composite reduces to: star-fixedness forces the head prime into
+  χ-or-star-V, both excluded. These subsume every composite shape at
+  ANY prime count — the earlier two/three-prime composite theorems
+  are instances.
+- Coverage: 100% of unconditional kills at all TWELVE censused grids,
+  now spanning two, three, and four primes.
