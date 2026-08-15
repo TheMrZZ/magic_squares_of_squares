@@ -2787,4 +2787,60 @@ lemma cross_pair_core_S
       - e * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * re8_eq A B)
 
 
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Ka and Kc carry the two level-8
+classes; Kb, Kd are low. Sum/difference produce a T- or S-form
+cross-pair system. -/
+lemma dispatch_ac8F
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hac : (Ka = L5 A B C D ∧ Kc = L6 A B C D) ∨ (Ka = L6 A B C D ∧ Kc = L5 A B C D))
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hac with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [L5_coord, L6_coord] at hE1 hE2 <;>
+    rcases he1 with rfl | rfl <;> rcases he3 with rfl | rfl
+  -- Ka = L5, Kc = L6
+  · -- (e1, e3) = (1, 1): T-form, f = −e2, g = e4, e = 1
+    exact cross_pair_core_T p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (-e2) e4 1
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (1, −1): S-form, f = −e2, g = e4, e = 1
+    exact cross_pair_core_S p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (-e2) e4 1
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, 1): S-form, f = e2, g = −e4, e = 1
+    exact cross_pair_core_S p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd e2 (-e4) 1
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, −1): T-form, f = e2, g = −e4, e = 1
+    exact cross_pair_core_T p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd e2 (-e4) 1
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  -- Ka = L6, Kc = L5
+  · -- (1, 1): T-form, f = e2, g = −e4, e = −1
+    exact cross_pair_core_T p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd e2 (-e4) (-1)
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (1, −1): S-form, f = −e2, g = e4, e = −1
+    exact cross_pair_core_S p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (-e2) e4 (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, 1): S-form, f = e2, g = −e4, e = −1
+    exact cross_pair_core_S p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd e2 (-e4) (-1)
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, −1): T-form, f = −e2, g = e4, e = −1
+    exact cross_pair_core_T p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (-e2) e4 (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+
 end FCore
