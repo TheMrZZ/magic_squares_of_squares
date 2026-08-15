@@ -1629,3 +1629,19 @@ Branch inventory:
   couplings (p ∣ X conditions + mod-p finishers through R² ≡ −I²),
   and R₈Y vs p²q²I. Roughly 4–6 joint lemmas to design, then a
   generated mixed_pair_core_8 and the F dispatchers.
+
+## Round 101 — The R₈ ∣ q² enumeration (bespoke branch A1)
+
+For the cross system I₈X = f·p²(RY+IX) ∧ R₈Y = g·q²I₈:
+(i) gives I ∣ Y (I ⊥ R and I ⊥ p); substituting Y = I·m and using
+R ∣ m turns (ii) into R₈·n = 2g·q², so R₈ ∣ q² (R₈ odd, p ∤ R₈).
+Three branches:
+- R₈ = ±1: (R−I)(R+I) = ±1 forces I = 0. Dead.
+- R₈ = ±q: back-substitution gives Y = ±g·q·I₈, and X² + Y² = q⁴
+  forces q² ∣ X², i.e. q ∣ X — contradicting q ∤ Re χ⁴. Dead.
+- R₈ = ±q²: Y = ±g·I₈, I₈² = p⁸ − q⁴ gives X² = 2q⁴ − p⁸; equation (i)
+  mod p forces p ∣ X, so p² ∣ 2q⁴ — dead via p ∤ q.
+The same enumeration pattern (R₈ ∣ q² or R₈ ∣ p²q²-reduced-to-q²)
+covers branch A3. Remaining to design: A4 (both equations cross-type).
+Then the level-8 mixed core can be written with: immediate branches,
+ratio-P, Round-99 ratio, and the R₈-enumeration lemmas.
