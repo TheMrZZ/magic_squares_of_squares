@@ -828,3 +828,32 @@ facts, every certificate class that the symbolic census marks
 gap for the (2,2) unconditional layer is the 24 parity+unit-side
 relations (certificates are simpler but the always-odd cubic factors
 make the Lean statements longer).
+
+## Round 55 — Twin-collapse: ALL 56 symbolic kills at (2,2) machine-checked
+
+`MsqLean/TwinCollapse.lean` formalizes the 24 parity+unit-side
+relations (full build green, zero sorries). Structural discovery: every
+one of the 24 has a lone slot plus a twin slot in both conjugations, so
+Im(zw ± zw̄) = 2·(Im/Re z)·(Re/Im w) collapses the relation value over
+ℤ into (unit factor)·(odd cofactor) — no Gaussian divisibility at all:
+
+- 12 twin families (lone ∈ {(0,1),(1,0),(0,2),(2,0)} × twin slots),
+  each a parametric theorem in the twin sign e ∈ {±1} — 24 relations.
+- The unit factor is Im(π⁴) = 4AB(A²−B²) or Im(χ⁴)-type (nonzero by
+  coordinate facts), doubled with an Re(π⁴)/Re(χ⁴) odd factor for the
+  lone-(0,2)/(2,0) families (the parity:2 census profile).
+- Every cofactor is 2·(integer) − p^aq^b, odd hence nonzero — the
+  formal content of the "parity" certificate is literally even−odd.
+- Kit: pow4_re_eq/pow4_im_eq bridges, sq_re/sq_im, re4_odd',
+  im4_ne_zero, even_sub_odd, odd_cast. The 11 non-prototype theorems
+  were generated from a 30-line template and compiled FIRST TRY.
+
+**Milestone: all 56 relations that the symbolic census kills
+unconditionally at exponent (2,2) — 32 double-pinch + 24
+parity/unit-side — are now formally verified in Lean 4/mathlib,
+parametric over all odd prime pairs, representations, and signs.**
+The unconditional layer of Theorem H' for s·p²q² centers is fully
+machine-checked; what remains beyond it are the 82 alive relations
+(18 Pell-band + 64 wedge/zero-side) that need genuinely new
+mathematics, and the finite-bound closures (≤144) that are swept
+numerically.
