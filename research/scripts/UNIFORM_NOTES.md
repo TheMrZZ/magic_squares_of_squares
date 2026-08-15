@@ -515,3 +515,23 @@ relations exactly in (R,I,X,Y):
    (q^2-size) wedge factors in 38.
 Residue degree census: 74 lin-lin closable; (ZERO,max1) 32x2;
 (max2,max2) 20; (max4,*) 38; (ZERO,ZERO) 16.
+
+## CORRECTION to the previous section (linear pinch over-claim)
+
+The degree census conflated sizes: |chi^2| = q, so a total-degree-d
+factor in (v,vb) has magnitude up to c*q^d, and for factors with
+genuinely complex coefficients the divisibility pi | F only yields
+p | N(F) <= c^2 q^{2d}.  The clean pinch argument applies only to
+factors of the special shape unit*(v ± vb) (= 2Re(chi^2) or
+2i*Im(chi^2): real/imaginary integer-valued, |.| <= 2q, and = 0
+impossible for an odd prime), and even there the unconditional closure
+holds only OUTSIDE a bounded-ratio wedge (p <= c*q with small c needs
+separate treatment: p | F with |F| <= 2q < 2cp leaves finitely many
+possible values F = k*p, each an algebraic condition, not yet closed).
+The claim "98/216 closed unconditionally" is therefore RETRACTED to:
+24/216 closed by parity; the 74 all-sides-deg<=2 relations are closed
+for prime ratios outside an explicit bounded wedge; full unconditional
+closure requires the per-factor real/imaginary + wedge analysis, in
+progress.  (The three-prime census: 600 relations, 0 parity kills, all
+three residues nonzero everywhere, 140 with all sides deg<=2 — same
+wedge caveat applies.)
