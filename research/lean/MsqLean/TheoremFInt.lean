@@ -107,3 +107,155 @@ lemma coprime_re8_im8 (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
     exact (Nat.prime_dvd_prime_iff_eq hrprime hp.out).mp this
   rw [hrpn] at hrR
   exact hpR hrR
+
+
+/-- P-parity finisher. -/
+lemma resid_P_even (P : ℤ) (hPodd : Odd P) (M : ℤ) (h : P = 2 * M) : False := by
+  obtain ⟨k, hk⟩ := hPodd
+  omega
+
+/-- P-quadratic finisher A: q⁴ − 3Pq² + 2P² = 0 impossible when p ∣ P. -/
+lemma resid_quad_factored_P (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (hqodd : q % 2 = 1)
+    (P : ℤ) (hPodd : Odd P) (hPp : (p : ℤ) ∣ P)
+    (h : (q : ℤ) ^ 4 - 3 * P * (q : ℤ) ^ 2 + 2 * P ^ 2 = 0) : False := by
+  have hfac : ((q : ℤ) ^ 2 - P) * ((q : ℤ) ^ 2 - 2 * P) = 0 := by linear_combination h
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  rcases mul_eq_zero.mp hfac with h1 | h1
+  · -- q² = P: p ∣ q² ⇒ p ∣ q ⇒ p = q
+    have hq2 : (p : ℤ) ∣ (q : ℤ) ^ 2 := by
+      have : (q : ℤ) ^ 2 = P := by linarith
+      rw [this]; exact hPp
+    have hqd : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq2
+    have : p ∣ q := by exact_mod_cast hqd
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+  · -- q² = 2P: even = odd
+    obtain ⟨k, hk⟩ := hPodd
+    obtain ⟨l, hl⟩ := odd_p2 q hqodd
+    omega
+/-- P-quadratic finisher B: q⁴ + 3Pq² + 2P² = 0 impossible for positive P. -/
+lemma resid_quad_pos_P (q : ℕ) (P : ℤ) (hq0 : 0 < (q : ℤ)) (hP0 : 0 < P)
+    (h : (q : ℤ) ^ 4 + 3 * P * (q : ℤ) ^ 2 + 2 * P ^ 2 = 0) : False := by
+  nlinarith [pow_pos hq0 4, pow_pos hq0 2, mul_pos hP0 (pow_pos hq0 2),
+    mul_pos hP0 hP0]
+
+/-- P-parametrized ratio kill: for P an odd positive multiple-of-p power,
+P·Y = 2IX with a·q²I = 3b·IX − c·RY is impossible. -/
+lemma resid_ratio_core_P (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)] (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpq : p ≠ q) (hp0 : 0 < (p : ℤ)) (hq0 : 0 < (q : ℤ))
+    (P : ℤ) (hP0 : 0 < P) (hPodd : Odd P) (hPp : (p : ℤ) ∣ P)
+    (R I X Y : ℤ) (hI : I ≠ 0) (hY : Y ≠ 0)
+    (hRI : IsCoprime R I) (hXY : IsCoprime X Y)
+    (hpn : R ^ 2 + I ^ 2 = P ^ 2) (hqn : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (a b c : ℤ) (ha : a = 1 ∨ a = -1) (hb : b = 1 ∨ b = -1) (hc : c = 1 ∨ c = -1)
+    (hiii : P * Y = 2 * I * X)
+    (hii : a * (q : ℤ) ^ 2 * I = 3 * b * I * X - c * R * Y) : False := by
+  have hcancel : ∀ t : ℤ, I * t = 0 → t = 0 := fun t ht => by
+    rcases mul_eq_zero.mp ht with h | h
+    · exact absurd h hI
+    · exact h
+  have hY2I : Y ∣ 2 * I := by
+    have hd : Y ∣ (2 * I) * X := ⟨P, by linarith [hiii]⟩
+    exact (hXY.symm).dvd_of_dvd_mul_right hd
+  have hcsq : c * c = 1 := by rcases hc with rfl | rfl <;> norm_num
+  have hIY : I ∣ Y := by
+    have hd : I ∣ (c * Y) * R := ⟨3 * b * X - a * (q : ℤ) ^ 2, by linarith [hii]⟩
+    have h2 : I ∣ c * Y := (hRI.symm).dvd_of_dvd_mul_right hd
+    rcases hc with rfl | rfl
+    · simpa using h2
+    · have := h2
+      rw [show (-1 : ℤ) * Y = -Y from by ring] at this
+      exact (dvd_neg).mp this
+  obtain ⟨k, hk⟩ := hIY
+  obtain ⟨m, hm⟩ := hY2I
+  have hkm : k * m = 2 := by
+    have h0 : I * (k * m - 2) = 0 := by
+      have h1 : 2 * I = I * k * m := by rw [← hk]; linarith [hm]
+      linarith [h1]
+    linarith [hcancel _ h0]
+  have hk0 : k ≠ 0 := by
+    rintro rfl
+    rw [mul_zero] at hk
+    exact hY hk
+  have hk2 : k ∣ 2 := ⟨m, hkm.symm⟩
+  have hkabs : k.natAbs ∣ 2 := by
+    have h2 : k.natAbs ∣ (2 : ℤ).natAbs := Int.natAbs_dvd_natAbs.mpr hk2
+    simpa using h2
+  have hkb : k.natAbs ≤ 2 := Nat.le_of_dvd (by norm_num) hkabs
+  have hkr : k = 1 ∨ k = -1 ∨ k = 2 ∨ k = -2 := by omega
+  rcases hkr with rfl | rfl | rfl | rfl
+  · -- Y = I
+    have hYI : Y = I := by rw [hk]; ring
+    rw [hYI] at hiii
+    have h2 := hcancel _ (by linarith [hiii] : I * (P - 2 * X) = 0)
+    exact resid_P_even P hPodd X (by linarith)
+  · -- Y = -I
+    have hYI : Y = -I := by rw [hk]; ring
+    rw [hYI] at hiii
+    have h2 := hcancel _ (by linarith [hiii] : I * (P + 2 * X) = 0)
+    exact resid_P_even P hPodd (-X) (by linarith)
+  · -- Y = 2I: X = p², quadratic finisher
+    have hY2 : Y = 2 * I := by rw [hk]; ring
+    rw [hY2] at hiii hii hqn
+    have hX : X = P := by
+      have h2 := hcancel _ (by linarith [hiii] : I * (2 * P - 2 * X) = 0)
+      linarith
+    rw [hX] at hii hqn
+    have hR : 2 * (c * R) = 3 * b * P - a * (q : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linear_combination hii :
+        I * (a * (q : ℤ) ^ 2 - 3 * b * P + 2 * (c * R)) = 0)
+      linarith
+    have hI2 : 4 * I ^ 2 = (q : ℤ) ^ 4 - P ^ 2 := by nlinarith [hqn]
+    have hR2 : 4 * R ^ 2 = 5 * P ^ 2 - (q : ℤ) ^ 4 := by nlinarith [hpn, hI2]
+    have hasq : a * a = 1 := by rcases ha with rfl | rfl <;> norm_num
+    have hbsq : b * b = 1 := by rcases hb with rfl | rfl <;> norm_num
+    have hw : a * b = 1 ∨ a * b = -1 := by
+      rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> norm_num
+    have hkey : (q : ℤ) ^ 4 - 3 * (a * b) * P * (q : ℤ) ^ 2
+        + 2 * P ^ 2 = 0 := by
+      have hsq : (2 * (c * R)) ^ 2 = (3 * b * P - a * (q : ℤ) ^ 2) ^ 2 := by
+        rw [hR]
+      have hexp : (3 * b * P - a * (q : ℤ) ^ 2) ^ 2
+          = 9 * P ^ 2 - 6 * (a * b) * P * (q : ℤ) ^ 2 + (q : ℤ) ^ 4 := by
+        linear_combination 9 * P ^ 2 * hbsq + (q : ℤ) ^ 4 * hasq
+      have hRR : (2 * (c * R)) ^ 2 = 4 * (R ^ 2) := by
+        linear_combination 4 * R ^ 2 * hcsq
+      linarith [hsq, hexp, hR2, hRR]
+    rcases hw with hw | hw
+    · rw [hw] at hkey
+      exact resid_quad_factored_P p q hpq hqodd P hPodd hPp (by linarith [hkey])
+    · rw [hw] at hkey
+      exact resid_quad_pos_P q P hq0 hP0 (by linarith [hkey])
+  · -- Y = -2I: X = -p², symmetric
+    have hY2 : Y = -(2 * I) := by rw [hk]; ring
+    rw [hY2] at hiii hii hqn
+    have hX : X = -P := by
+      have h2 := hcancel _ (by linarith [hiii] : I * (2 * P + 2 * X) = 0)
+      linarith
+    rw [hX] at hii hqn
+    have hR : 2 * (c * R) = 3 * b * P + a * (q : ℤ) ^ 2 := by
+      have h2 := hcancel _ (by linear_combination hii :
+        I * (a * (q : ℤ) ^ 2 + 3 * b * P - 2 * (c * R)) = 0)
+      linarith
+    have hI2 : 4 * I ^ 2 = (q : ℤ) ^ 4 - P ^ 2 := by nlinarith [hqn]
+    have hR2 : 4 * R ^ 2 = 5 * P ^ 2 - (q : ℤ) ^ 4 := by nlinarith [hpn, hI2]
+    have hasq : a * a = 1 := by rcases ha with rfl | rfl <;> norm_num
+    have hbsq : b * b = 1 := by rcases hb with rfl | rfl <;> norm_num
+    have hw : a * b = 1 ∨ a * b = -1 := by
+      rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> norm_num
+    have hkey : (q : ℤ) ^ 4 + 3 * (a * b) * P * (q : ℤ) ^ 2
+        + 2 * P ^ 2 = 0 := by
+      have hsq : (2 * (c * R)) ^ 2 = (3 * b * P + a * (q : ℤ) ^ 2) ^ 2 := by
+        rw [hR]
+      have hexp : (3 * b * P + a * (q : ℤ) ^ 2) ^ 2
+          = 9 * P ^ 2 + 6 * (a * b) * P * (q : ℤ) ^ 2 + (q : ℤ) ^ 4 := by
+        linear_combination 9 * P ^ 2 * hbsq + (q : ℤ) ^ 4 * hasq
+      have hRR : (2 * (c * R)) ^ 2 = 4 * (R ^ 2) := by
+        linear_combination 4 * R ^ 2 * hcsq
+      linarith [hsq, hexp, hR2, hRR]
+    rcases hw with hw | hw
+    · rw [hw] at hkey
+      exact resid_quad_pos_P q P hq0 hP0 (by linarith [hkey])
+    · rw [hw] at hkey
+      exact resid_quad_factored_P p q hpq hqodd P hPodd hPp (by linarith [hkey])

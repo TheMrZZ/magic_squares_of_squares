@@ -1588,3 +1588,16 @@ Theorem E's ratio/product tier. Coordinate facts lift: R₈² + I₈² = p⁸,
 p ∤ R₈ (else p ∣ 2I²), p ∤ I₈, R₈ odd, I₈ = 2RI ≠ 0. Plan: an
 R₈/I₈ fact-pack, then the {5,6}-pair mixed core (E's mixed_pair_core
 at level 8), then the cross-level ratio systems.
+
+## Round 98 — P-parametrized ratio core for Theorem F
+
+`resid_ratio_core_P` (transformed mechanically from the proven E
+version): P·Y = 2IX ∧ a·q²I = 3b·IX − c·RY impossible for any odd
+positive P with p ∣ P and R² + I² = P². The terminal quadratic factors
+as (q² − P)(q² − 2P): the first branch now kills EVEN MORE cleanly
+than at E (p ∣ q² ⇒ p = q), the second by parity. New finishers:
+`resid_P_even`, `resid_quad_factored_P`, `resid_quad_pos_P`.
+Instantiations: P = p² recovers E; P = p⁴ covers the dominant
+{p⁴Y, q²I₈, π⁸-pair} residue block of Theorem F with (R₈, I₈)
+coordinates. The mechanical E→P transform (p² ↦ P, p⁴ ↦ P²) worked
+with only an instance-binder fix.
