@@ -2471,4 +2471,211 @@ lemma s34_chain_S
     omega
 
 
+set_option maxHeartbeats 3200000 in
+/-- The S-form cross-pair core, integer level: the system
+2I₈X = f·Kb ∧ 3I₈X + e·R₈Y = g·Kd over the five low classes. -/
+lemma cross_pair_core_S_int
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (R I X Y Kb Kd f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hpR : ¬ (p : ℤ) ∣ R) (hpI : ¬ (p : ℤ) ∣ I)
+    (hpR8 : ¬ (p : ℤ) ∣ (R ^ 2 - I ^ 2))
+    (hqY : ¬ (q : ℤ) ∣ Y)
+    (hI0 : I ≠ 0) (hR0 : R ≠ 0)
+    (hRodd : Odd R) (hI4 : (4 : ℤ) ∣ I)
+    (hcop : IsCoprime R I)
+    (hb : Kb = (p : ℤ) ^ 4 * Y ∨ Kb = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I
+      ∨ Kb = (q : ℤ) ^ 2 * (2 * R * I)
+      ∨ Kb = (p : ℤ) ^ 2 * (R * Y + I * X) ∨ Kb = (p : ℤ) ^ 2 * (I * X - R * Y))
+    (hd : Kd = (p : ℤ) ^ 4 * Y ∨ Kd = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I
+      ∨ Kd = (q : ℤ) ^ 2 * (2 * R * I)
+      ∨ Kd = (p : ℤ) ^ 2 * (R * Y + I * X) ∨ Kd = (p : ℤ) ^ 2 * (I * X - R * Y))
+    (h1 : 2 * ((2 * R * I) * X) = f * Kb)
+    (h2 : 3 * ((2 * R * I) * X) + e * ((R ^ 2 - I ^ 2) * Y) = g * Kd) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hp20 : ((p : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hp.out.pos.ne')
+  have hoddp2 : Odd ((p : ℤ) ^ 2) := (odd_cast p hpodd).pow
+  have hoddp4 : Odd ((p : ℤ) ^ 4) := (odd_cast p hpodd).pow
+  have hoddq2 : Odd ((q : ℤ) ^ 2) := (odd_cast q hqodd).pow
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hcR : IsCoprime ((p : ℤ)) R := (hpP.coprime_iff_not_dvd).mpr hpR
+  have hcI : IsCoprime ((p : ℤ)) I := (hpP.coprime_iff_not_dvd).mpr hpI
+  have hc4RI : IsCoprime ((p : ℤ) ^ 2) (2 * (2 * R * I)) :=
+    (hc2.mul_right ((hc2.mul_right hcR).mul_right hcI)).pow_left
+  rcases hb with rfl | rfl | rfl | rfl | rfl
+  · -- Kb = L0: double p²-extraction, five partner cells
+    have hp2X : (p : ℤ) ^ 2 ∣ X := by
+      refine hc4RI.dvd_of_dvd_mul_right ?_
+      exact ⟨f * ((p : ℤ) ^ 2 * Y), by linear_combination h1⟩
+    obtain ⟨x, hx⟩ := hp2X
+    subst hx
+    have h1x : 2 * ((2 * R * I) * x) = f * ((p : ℤ) ^ 2 * Y) := by
+      have h0 : (p : ℤ) ^ 2 * (2 * ((2 * R * I) * x) - f * ((p : ℤ) ^ 2 * Y)) = 0 := by
+        linear_combination h1
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hp20
+      · linarith
+    have hp2x : (p : ℤ) ^ 2 ∣ x := by
+      refine hc4RI.dvd_of_dvd_mul_right ?_
+      exact ⟨f * Y, by linear_combination h1x⟩
+    obtain ⟨x₂, hx₂⟩ := hp2x
+    subst hx₂
+    have h4Y : 4 * (R * (I * x₂)) = f * Y := by
+      have h0 : (p : ℤ) ^ 2 * (4 * (R * (I * x₂)) - f * Y) = 0 := by
+        linear_combination h1x
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact absurd h hp20
+      · linarith
+    have hY : Y = f * (4 * (R * (I * x₂))) := by
+      rcases hf with rfl | rfl <;> linarith [h4Y]
+    have hx₂0 : x₂ ≠ 0 := by
+      rintro rfl
+      have hY00 : Y = 0 := by rcases hf with rfl | rfl <;> linarith [h4Y]
+      subst hY00
+      have hq40 : (0 : ℤ) = (q : ℤ) ^ 4 := by linear_combination hq4
+      exact (pow_ne_zero 4 (Int.natCast_ne_zero.mpr hq.out.pos.ne')) hq40.symm
+    rcases hd with rfl | rfl | rfl | rfl | rfl
+    · -- (L0, L0)
+      have h0 : (2 * (R * (I * x₂))) * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)
+          - 2 * f * g * (p : ℤ) ^ 4) = 0 := by
+        linear_combination h2 - (e * (R ^ 2 - I ^ 2) - g * (p : ℤ) ^ 4) * hY
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact (mul_ne_zero two_ne_zero (mul_ne_zero hR0 (mul_ne_zero hI0 hx₂0))) h
+      · obtain ⟨c, hc⟩ := hoddp4
+        set M := R ^ 2 - I ^ 2 with hM
+        rcases he with rfl | rfl <;> rcases hf with rfl | rfl <;>
+          rcases hg with rfl | rfl <;> omega
+    · -- (L0, L1)
+      have h0 : I * (2 * (R * (x₂ * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2))))
+          - g * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2)) = 0 := by
+        linear_combination h2 - e * (R ^ 2 - I ^ 2) * hY
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact hI0 h
+      · obtain ⟨m, hm⟩ := hoddp2.mul hoddq2
+        set N := R * (x₂ * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2))) with hN
+        set PQ := (p : ℤ) ^ 2 * (q : ℤ) ^ 2 with hPQ
+        rcases hg with rfl | rfl <;> omega
+    · -- (L0, L2): the factored quadratic
+      have h0 : (2 * (R * I)) * (x₂ * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2))
+          - g * (q : ℤ) ^ 2) = 0 := by
+        linear_combination h2 - e * (R ^ 2 - I ^ 2) * hY
+      have hE1 : x₂ * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)) = g * (q : ℤ) ^ 2 := by
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h (mul_ne_zero two_ne_zero (mul_ne_zero hR0 hI0))
+        · linarith
+      have hY2sq : Y ^ 2 = 16 * (R ^ 2 * I ^ 2) * x₂ ^ 2 := by
+        rcases hf with rfl | rfl <;> rw [hY] <;> ring
+      have hp8id : (R ^ 2 + I ^ 2) ^ 2 = (p : ℤ) ^ 8 := by rw [hp4]; ring
+      have hE2 : x₂ ^ 2 * (5 * (p : ℤ) ^ 8 - 4 * (R ^ 2 - I ^ 2) ^ 2) = (q : ℤ) ^ 4 := by
+        linear_combination hq4 - hY2sq - 4 * x₂ ^ 2 * hp8id
+      have hs : (x₂ * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2))) ^ 2
+          = (g * (q : ℤ) ^ 2) ^ 2 := by rw [hE1]
+      have hE1sq : x₂ ^ 2 * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)) ^ 2
+          = (q : ℤ) ^ 4 := by
+        rcases hg with rfl | rfl <;> linear_combination hs
+      have hx₂sq : x₂ ^ 2 ≠ 0 := pow_ne_zero _ hx₂0
+      rcases he with rfl | rfl <;> rcases hf with rfl | rfl
+      all_goals (
+        first
+          | (have hzero : x₂ ^ 2 * (4 * ((2 * (R ^ 2 - I ^ 2) + (p : ℤ) ^ 4)
+                * ((R ^ 2 - I ^ 2) + (p : ℤ) ^ 4))) = 0 := by
+              linear_combination hE1sq - hE2
+             have hP : (2 * (R ^ 2 - I ^ 2) + (p : ℤ) ^ 4)
+                * ((R ^ 2 - I ^ 2) + (p : ℤ) ^ 4) = 0 := by
+              rcases mul_eq_zero.mp hzero with h | h
+              · exact absurd h hx₂sq
+              · linarith
+             rcases mul_eq_zero.mp hP with h | h
+             · obtain ⟨c, hc⟩ := hoddp4
+               set M := R ^ 2 - I ^ 2 with hM
+               omega
+             · have hR82 : (R ^ 2 - I ^ 2) ^ 2 = (p : ℤ) ^ 8 := by
+                 linear_combination ((R ^ 2 - I ^ 2) - (p : ℤ) ^ 4) * h
+               have h4RI : 4 * (R ^ 2 * I ^ 2) = 0 := by
+                 linear_combination hp8id - hR82
+               have hRI0 : R ^ 2 * I ^ 2 = 0 := by linarith
+               rcases mul_eq_zero.mp hRI0 with h' | h'
+               · exact hR0 (pow_eq_zero_iff two_ne_zero |>.mp h')
+               · exact hI0 (pow_eq_zero_iff two_ne_zero |>.mp h'))
+          | (have hzero : x₂ ^ 2 * (4 * ((2 * (R ^ 2 - I ^ 2) - (p : ℤ) ^ 4)
+                * ((R ^ 2 - I ^ 2) - (p : ℤ) ^ 4))) = 0 := by
+              linear_combination hE1sq - hE2
+             have hP : (2 * (R ^ 2 - I ^ 2) - (p : ℤ) ^ 4)
+                * ((R ^ 2 - I ^ 2) - (p : ℤ) ^ 4) = 0 := by
+              rcases mul_eq_zero.mp hzero with h | h
+              · exact absurd h hx₂sq
+              · linarith
+             rcases mul_eq_zero.mp hP with h | h
+             · obtain ⟨c, hc⟩ := hoddp4
+               set M := R ^ 2 - I ^ 2 with hM
+               omega
+             · have hR82 : (R ^ 2 - I ^ 2) ^ 2 = (p : ℤ) ^ 8 := by
+                 linear_combination ((R ^ 2 - I ^ 2) + (p : ℤ) ^ 4) * h
+               have h4RI : 4 * (R ^ 2 * I ^ 2) = 0 := by
+                 linear_combination hp8id - hR82
+               have hRI0 : R ^ 2 * I ^ 2 = 0 := by linarith
+               rcases mul_eq_zero.mp hRI0 with h' | h'
+               · exact hR0 (pow_eq_zero_iff two_ne_zero |>.mp h')
+               · exact hI0 (pow_eq_zero_iff two_ne_zero |>.mp h')))
+    · -- (L0, L3)
+      have h0 : (I * x₂) * (2 * (R * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)))
+          - g * ((p : ℤ) ^ 2 * (4 * f * R ^ 2 + (p : ℤ) ^ 4))) = 0 := by
+        linear_combination h2 - (e * (R ^ 2 - I ^ 2) - g * (p : ℤ) ^ 2 * R) * hY
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact (mul_ne_zero hI0 hx₂0) h
+      · have hev4 : Even (4 * f * R ^ 2) := ⟨2 * f * R ^ 2, by ring⟩
+        have hoddin : Odd (4 * f * R ^ 2 + (p : ℤ) ^ 4) := hev4.add_odd hoddp4
+        obtain ⟨m, hm⟩ := hoddp2.mul hoddin
+        set N := R * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)) with hN
+        set PQ := (p : ℤ) ^ 2 * (4 * f * R ^ 2 + (p : ℤ) ^ 4) with hPQ
+        rcases hg with rfl | rfl <;> omega
+    · -- (L0, L4)
+      have h0 : (I * x₂) * (2 * (R * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)))
+          - g * ((p : ℤ) ^ 2 * ((p : ℤ) ^ 4 - 4 * f * R ^ 2))) = 0 := by
+        linear_combination h2 - (e * (R ^ 2 - I ^ 2) + g * (p : ℤ) ^ 2 * R) * hY
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact (mul_ne_zero hI0 hx₂0) h
+      · have hev4 : Even (4 * f * R ^ 2) := ⟨2 * f * R ^ 2, by ring⟩
+        have hoddin : Odd ((p : ℤ) ^ 4 - 4 * f * R ^ 2) := hoddp4.sub_even hev4
+        obtain ⟨m, hm⟩ := hoddp2.mul hoddin
+        set N := R * (3 * (p : ℤ) ^ 4 + 2 * e * f * (R ^ 2 - I ^ 2)) with hN
+        set PQ := (p : ℤ) ^ 2 * ((p : ℤ) ^ 4 - 4 * f * R ^ 2) with hPQ
+        rcases hg with rfl | rfl <;> omega
+  · -- Kb = L1: 4RX = f·p²q², even = odd
+    have h0 : I * (4 * (R * X) - f * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2)) = 0 := by
+      linear_combination h1
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact hI0 h
+    · obtain ⟨m, hm⟩ := hoddp2.mul hoddq2
+      set N := R * X with hN
+      set PQ := (p : ℤ) ^ 2 * (q : ℤ) ^ 2 with hPQ
+      rcases hf with rfl | rfl <;> omega
+  · -- Kb = L2: 2X = f·q², even = odd
+    have h0 : (2 * (R * I)) * (2 * X - f * (q : ℤ) ^ 2) = 0 := by
+      linear_combination h1
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact (mul_ne_zero two_ne_zero (mul_ne_zero hR0 hI0)) h
+    · obtain ⟨c, hc⟩ := hoddq2
+      rcases hf with rfl | rfl <;> omega
+  · -- Kb = L3
+    exact s34_chain_S p q hpodd hqodd hpq R I X Y Kd f g e 1 hf hg he (Or.inl rfl)
+      hp4 hq4 hpR hpI hpR8 hqY hI0 hR0 hRodd hI4 hcop hd
+      (by linear_combination h1) h2
+  · -- Kb = L4
+    exact s34_chain_S p q hpodd hqodd hpq R I X Y Kd f g e (-1) hf hg he (Or.inr rfl)
+      hp4 hq4 hpR hpI hpR8 hqY hI0 hR0 hRodd hI4 hcop hd
+      (by linear_combination h1) h2
+
+
 end FCore

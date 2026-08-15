@@ -1882,3 +1882,15 @@ System: 2I₈X = f·Kb ∧ 3I₈X + e·R₈Y = g·Kd (I₈ = 2RI).
   p⁴∣q⁴ ✗; L2 → x̂ ∣ q² odd vs RHS even ✗; L3/L4 → W = g·even ✗.
 No deep cells. Next: formalize cross_pair_core_S_int, then the
 (a,c)-bucket dispatcher into both cores.
+
+## Round 118 — cross_pair_core_S_int: BOTH cross-pair cores complete
+
+The full S-form 25-cell router compiled: L1/L2 rows by single-equation
+parity, L0 row by the double p²-extraction (X = p⁴x₂, Y = 4fRIx₂)
+with five partner kills including the factored quadratic
+(2R₈ ± p⁴)(R₈ ± p⁴) = 0, and L3/L4 rows via s34_chain_S. Lean note:
+dot-notation on ⟨_,_⟩-ascribed Even terms resolves to Exists — bind
+with `have` first. Remaining for the (a,c)-bucket: the Gaussian-level
+wrappers (instantiate R,I,X,Y := re4/im4 with fact lemmas incl.
+4 ∣ im4) and the dispatcher splitting {a,c} = {L5,L6} systems into
+the T/S cores; then k=1 buckets, router, capstone.
