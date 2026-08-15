@@ -1745,3 +1745,25 @@ coefficient-2 level-8 system for s·p²·q closed. Highlights:
 - Remaining for Theorem F: mixed-cd bucket wrappers, extraction-tier
   call-sites (twoterm_p_extract), E-reuse p²-cancel wrapper, router,
   no_four_diffs_sp2q, capstone.
+
+## Round 110 — dispatch_ab56F + dispatch_lowE + full residual cell map
+
+Shipped: dispatch_ab56F (level-8 pair on the (u,v) side → _two core,
+mirrored branch has its own sign table) and dispatch_lowE (all-low
+L2-free bucket: peel the common p², quotients are EXACTLY the four
+s·p·q classes, hand to Theorem E via new public wrapper
+no_assignment_spq_coord). Residual cell map for the F router
+(distinctness of the four class values will be threaded from the
+capstone, so no class repeats):
+- all-low WITH an L2 slot: the equation pairing L2 against two
+  p²-classes gives p² | q²I₈ → p | I₈, dead (p ∤ 2RI). Easy lemma.
+- one level-8 slot, no L2 elsewhere: the 8-equation reads
+  2·Im(π⁸χ^{±4}) ≡ 0 mod p² — dead once we prove p ∤ Im(π⁸χ^{±4})
+  (Gaussian: π ∣ z, π ∤ z̄ forces p ∤ Im z; mirrors twoterm_p_extract).
+- k=2 cross-position ((a,c)-type): system {2T = ±Kb, 3T+S = ±Kd}
+  with T = R₈Y, S = I₈X. Kb non-L2 → p²∣Y; then Kd non-L2 →
+  p²∣S → p²∣X → p⁴ ∣ X²+Y² = q⁴, dead. Kb = L2 → q²∣R₈Y with
+  q ∤ R₈, Y, dead.
+- bespoke leftovers: level-8 + L2 in the SAME equation:
+  p² ∣ (Im(π⁸χ⁴) ∓ q²·Im(π⁸)) and the (X ≡ ±q² mod p², p²∣Y)
+  valuation cell. Expect deep_val-style arguments.
