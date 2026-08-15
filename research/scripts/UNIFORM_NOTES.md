@@ -607,3 +607,14 @@ x_i <= h_i * max_j x_j whose unbounded rays are power-law curves
 (e.g. r ~ p^2): survivors of those relations are confined to explicit
 power-law prime families — a complete characterization of the
 three-prime frontier's geometry, though not yet a closure.
+
+## Zero-side reduction: no new kills (already covered)
+
+sym_zeroside.py divides out the exact a=2 cancellation of the 104
+relations with a vanishing relation-level residue and re-runs the
+battery on the reduced relation: 72 certify — but all 72 were already
+inside the 134-strong dead set (relation-level residues vanish while
+factor-level certificates fire independently).  The (2,2) frontier is
+confirmed stable at 82 relations / 1,572 leaves (1.65% of all leaves):
+18 Pell-band, 64 exponent->=2 wedge relations.  This appears to be the
+plateau for first-order elementary methods on (2,2).
