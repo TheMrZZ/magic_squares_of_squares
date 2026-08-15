@@ -217,3 +217,23 @@ leading sum becomes a phase polynomial (residues are powers of a single
 t = (2B)^4 mod p) — vanishing forces bounded multiplicative order of t,
 a finite per-p condition.  Next: enumerate the hyperplane arrangement
 and run the tie (second-order) analysis.
+
+## Phase-sum reduction and exception closure
+
+Layering c by pi-exponent: c = sum_e c_e pi^e with c_e = sum of
+gamma_i pibar^{B_i.j} over groups with P_i.j = e.  Mod pi, pibar = 2A,
+so c_e = S_e(j) := sum gamma_i (2A)^{B_i.j} — an ordinary integer.  If
+S_{e_min} != 0 mod p then v_pi(c) = e_min is finite, hence c != 0.
+Symmetrically on the pibar side.  So a deep-shape leaf can survive ONLY
+at points where p | S_pi(j) AND p | S_pibar(j) simultaneously — two
+multiplicative-order conditions on t = 2A mod p (all group coefficients
+are REAL, in {±1, ±2, ±4, ±6, ±8}; verified 0 nonreal across all 20
+shapes).  Grid census (chi2_phasesum.py, p < 200, j in {1..6}^n):
+1,806 such double-vanishing points out of 362,880 (0.5%), concentrated
+in the x-heavy shapes.  Exact evaluation of c at ALL 1,806 points
+(chi2_exceptions.py, group-sum c = sum gamma pi^{P.j} pibar^{B.j}):
+ZERO have c = 0.  Conclusion: every 3- and 4-level deep-shape leaf
+with p < 200, orbit indices <= 6 is impossible; beyond the grid,
+survival requires the double phase-sum vanishing — an explicit thin
+(codimension-2-like) set where second-order (mod p^2) analysis applies.
+Baker-style bookkeeping is fully superseded by this valuation pipeline.

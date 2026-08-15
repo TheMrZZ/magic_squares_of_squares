@@ -1,0 +1,21 @@
+3-level ('m1p', 'm2p', 'm3p', 'x1'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/4536
+3-level ('m1p', 'm3p', 'x1', 'x2'): 29 groups (0 nonreal-coeff); both-sides exceptions: 126/4536
+3-level ('m1p', 'm2p', 'm3p', 'x2'): 33 groups (0 nonreal-coeff); both-sides exceptions: 126/4536
+3-level ('m1m', 'm2m', 'm3m', 'x1'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/4536
+3-level ('m1m', 'm3m', 'x1', 'x2'): 29 groups (0 nonreal-coeff); both-sides exceptions: 126/4536
+3-level ('m1m', 'm2m', 'm3m', 'x2'): 33 groups (0 nonreal-coeff); both-sides exceptions: 126/4536
+3-level ('m2p', 'm3p', 'x1', 'y'): 33 groups (0 nonreal-coeff); both-sides exceptions: 315/4536
+3-level ('m2m', 'm3m', 'x1', 'y'): 33 groups (0 nonreal-coeff); both-sides exceptions: 315/4536
+4-level ('m1p', 'm2p', 'm4p', 'x3'): 33 groups (0 nonreal-coeff); both-sides exceptions: 147/27216
+4-level ('m1p', 'm3p', 'm4p', 'x2'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/27216
+4-level ('m1p', 'm3m', 'm4m', 'x2'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/27216
+4-level ('m1p', 'm4p', 'x2', 'x3'): 29 groups (0 nonreal-coeff); both-sides exceptions: 147/27216
+4-level ('m1m', 'm2m', 'm4m', 'x3'): 33 groups (0 nonreal-coeff); both-sides exceptions: 147/27216
+4-level ('m1m', 'm3p', 'm4p', 'x2'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/27216
+4-level ('m1m', 'm3m', 'm4m', 'x2'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/27216
+4-level ('m1m', 'm4m', 'x2', 'x3'): 29 groups (0 nonreal-coeff); both-sides exceptions: 147/27216
+4-level ('m2p', 'm3p', 'm4p', 'x1'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/27216
+4-level ('m2p', 'm4p', 'x1', 'x3'): 29 groups (0 nonreal-coeff); both-sides exceptions: 42/27216
+4-level ('m2m', 'm3m', 'm4m', 'x1'): 33 groups (0 nonreal-coeff); both-sides exceptions: 0/27216
+4-level ('m2m', 'm4m', 'x1', 'x3'): 29 groups (0 nonreal-coeff); both-sides exceptions: 42/27216
+GRAND: 1806 exceptions / 362880 checks
