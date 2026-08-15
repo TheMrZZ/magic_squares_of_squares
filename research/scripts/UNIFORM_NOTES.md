@@ -1601,3 +1601,15 @@ Instantiations: P = p² recovers E; P = p⁴ covers the dominant
 {p⁴Y, q²I₈, π⁸-pair} residue block of Theorem F with (R₈, I₈)
 coordinates. The mechanical E→P transform (p² ↦ P, p⁴ ↦ P²) worked
 with only an instance-binder fix.
+
+## Round 99 — First cross-level F kill worked out
+
+The {q²I₈, p²M₂, {π⁸-mixed pair}} system (one of the 24-leaf blocks):
+eq2 collapses to q²I₈ = ±R₈Y, whose coprime ratio forces Y = ±I₈ and
+q² = ±(R²−I²), hence X² = R⁴ − 6R²I² + I⁴; eq1's π-extraction leaves
+the CONDITION p ∣ 2X (not yet a contradiction); combining mod p with
+R² ≡ −I² (from R²+I² = p⁴) gives X² ≡ 8I⁴, so p ∣ X forces p ∣ I —
+dead. A genuinely joint, cross-level certificate: condition-from-one-
+equation + ratio-from-the-other + a mod-p finisher through the norm
+identity. The remaining 41 class-sets need a systematic catalog of
+such strategies before further Lean — next step.
