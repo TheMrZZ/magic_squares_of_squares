@@ -3827,4 +3827,102 @@ lemma no_s4_sub_4t4 (u v w : ℤ) (hv : v ≠ 0) (hodd : u % 2 = 1)
     rw [← hmα, ← hnβ]; exact hsum)
 
 
+set_option maxHeartbeats 1600000 in
+/-- Norm-difference descent: a⁴ − b⁴ = 8T² is impossible for distinct
+odd primes a, b. Splits into (a²+b²)/2 · (a²−b²)/4 = T² and feeds the
+Fermat descent. -/
+lemma descent_norm4 (a b : ℕ) [ha : Fact (Nat.Prime a)] [hb : Fact (Nat.Prime b)]
+    (haodd : a % 2 = 1) (hbodd : b % 2 = 1) (hab : a ≠ b)
+    (T : ℤ) (h : (a : ℤ) ^ 4 - (b : ℤ) ^ 4 = 8 * T ^ 2) : False := by
+  obtain ⟨da, hda⟩ := odd_cast a haodd
+  obtain ⟨db, hdb⟩ := odd_cast b hbodd
+  -- A = (a²+b²)/2 odd, B' = (a²−b²)/4
+  have hA : ∃ A : ℤ, (a : ℤ) ^ 2 + (b : ℤ) ^ 2 = 2 * A ∧ A % 2 = 1 := by
+    refine ⟨2 * da ^ 2 + 2 * da + 2 * db ^ 2 + 2 * db + 1,
+      by rw [hda, hdb]; ring, by omega⟩
+  obtain ⟨A, hAeq, hAodd⟩ := hA
+  have hB : ∃ B' : ℤ, (a : ℤ) ^ 2 - (b : ℤ) ^ 2 = 4 * B' := by
+    refine ⟨(da - db) * (da + db + 1), ?_⟩
+    rw [hda, hdb]; ring
+  obtain ⟨B', hBeq⟩ := hB
+  have hT2 : A * B' = T ^ 2 := by
+    have h8 : 8 * (A * B') = 8 * T ^ 2 := by
+      have hprod : ((a : ℤ) ^ 2 + (b : ℤ) ^ 2) * ((a : ℤ) ^ 2 - (b : ℤ) ^ 2)
+          = (a : ℤ) ^ 4 - (b : ℤ) ^ 4 := by ring
+      rw [hAeq, hBeq] at hprod
+      linarith [h, hprod]
+    linarith
+  have hsum2 : A + 2 * B' = (a : ℤ) ^ 2 := by linarith [hAeq, hBeq]
+  have hdiff2 : A - 2 * B' = (b : ℤ) ^ 2 := by linarith [hAeq, hBeq]
+  have hcopAB : IsCoprime A B' := by
+    rw [Int.isCoprime_iff_gcd_eq_one]
+    by_contra hg
+    obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hg
+    have hgA : ((Int.gcd A B' : ℕ) : ℤ) ∣ A := Int.gcd_dvd_left A B'
+    have hgB : ((Int.gcd A B' : ℕ) : ℤ) ∣ B' := Int.gcd_dvd_right A B'
+    have hrA : (r : ℤ) ∣ A := (Int.natCast_dvd_natCast.mpr hrdvd).trans hgA
+    have hrB : (r : ℤ) ∣ B' := (Int.natCast_dvd_natCast.mpr hrdvd).trans hgB
+    have hrP : Prime (r : ℤ) := by
+      rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+    have hra : (r : ℤ) ∣ (a : ℤ) := by
+      refine hrP.dvd_of_dvd_pow (n := 2) ?_
+      rw [← hsum2]; exact dvd_add hrA (hrB.mul_left 2)
+    have hrb : (r : ℤ) ∣ (b : ℤ) := by
+      refine hrP.dvd_of_dvd_pow (n := 2) ?_
+      rw [← hdiff2]; exact dvd_sub hrA (hrB.mul_left 2)
+    have hra' : r ∣ a := by exact_mod_cast hra
+    have hrb' : r ∣ b := by exact_mod_cast hrb
+    have h1 := (Nat.prime_dvd_prime_iff_eq hrprime ha.out).mp hra'
+    have h2 := (Nat.prime_dvd_prime_iff_eq hrprime hb.out).mp hrb'
+    exact hab (h1 ▸ h2)
+  have hApos : 0 < A := by
+    have ha0 : (0 : ℤ) < (a : ℤ) := by exact_mod_cast ha.out.pos
+    have hb0 : (0 : ℤ) < (b : ℤ) := by exact_mod_cast hb.out.pos
+    nlinarith [hAeq, ha0, hb0]
+  obtain ⟨u, hu⟩ := Int.sq_of_isCoprime hcopAB hT2
+  have hAu : A = u ^ 2 := by
+    rcases hu with h' | h'
+    · exact h'
+    · exfalso; nlinarith [hApos, sq_nonneg u]
+  have huodd : u % 2 = 1 := by
+    rcases Int.even_or_odd u with he | ho
+    · exfalso
+      obtain ⟨t, ht⟩ := he
+      have : A = 2 * (2 * t ^ 2) := by rw [hAu, ht]; ring
+      omega
+    · exact Int.odd_iff.mp ho
+  obtain ⟨v, hv⟩ := Int.sq_of_isCoprime hcopAB.symm (by rwa [mul_comm] at hT2)
+  have hcopuv : IsCoprime u v := by
+    rw [Int.isCoprime_iff_gcd_eq_one]
+    by_contra hg
+    obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hg
+    have hru : (r : ℤ) ∣ u := (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_left u v)
+    have hrv : (r : ℤ) ∣ v := (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_right u v)
+    have hrP : Prime (r : ℤ) := by
+      rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+    have hdA : (r : ℤ) ∣ A := by
+      rw [hAu]; exact dvd_pow hru (by norm_num)
+    have hdB : (r : ℤ) ∣ B' := by
+      rcases hv with h' | h'
+      · rw [h']; exact dvd_pow hrv (by norm_num)
+      · rw [h']; exact (dvd_pow hrv (by norm_num)).neg_right
+    exact hrP.not_unit (hcopAB.isUnit_of_dvd' hdA hdB)
+  have hB2 : B' ^ 2 = v ^ 4 := by
+    rcases hv with h' | h' <;> rw [h'] <;> ring
+  have hfinal : u ^ 4 - 4 * v ^ 4 = ((a : ℤ) * (b : ℤ)) ^ 2 := by
+    have hab2 : ((a : ℤ) * (b : ℤ)) ^ 2 = A ^ 2 - 4 * B' ^ 2 := by
+      linear_combination -(A - 2 * B') * hsum2 - (a : ℤ) ^ 2 * hdiff2
+    rw [hab2, ← hB2, hAu]
+    ring
+  have hv0 : v ≠ 0 := by
+    rintro rfl
+    have hB0 : B' = 0 := by
+      rcases hv with h' | h' <;> simpa using h'
+    subst hB0
+    have hab2 : (a : ℤ) ^ 2 = (b : ℤ) ^ 2 := by linarith [hsum2, hdiff2]
+    have : a ^ 2 = b ^ 2 := by exact_mod_cast hab2
+    exact hab (Nat.pow_left_injective (by norm_num) this)
+  exact no_s4_sub_4t4 u v ((a : ℤ) * (b : ℤ)) hv0 huodd hcopuv hfinal
+
+
 end FCore
