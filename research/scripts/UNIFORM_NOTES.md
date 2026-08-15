@@ -458,3 +458,13 @@ center root s p^2 q r with p, q, r < 75, for any s.  Every center-type
 family the machinery has touched — s p^a q for a <= 4 levels, s p^2 q^2,
 s p q r, s p^2 q r — is either unconditionally impossible or excluded
 throughout the computed ranges.
+
+## Four primes: (1,1,1,1) excluded in range
+
+h1111_census.py / h1111_sweep.py: e = s p q r t has |D| = 40 with a
+4-D grading; 17,546,880 leaves, 81.2% grading-killed, 3,305,472
+residual; exact sweep over ALL ordered quadruples from
+{5,13,17,29,37} (396,656,640 checks): ZERO satisfiable.  No magic
+square of squares has center root s p q r t with p,q,r,t < 40, for
+any s — the first four-prime exclusion.  The grading framework now
+spans one, two, three and four primes uniformly.
