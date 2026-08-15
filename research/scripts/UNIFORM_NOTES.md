@@ -1119,3 +1119,22 @@ relations at (2,2,1) are genuinely uncertified, consistent with the
 census. Another instance of the aligned/mixed asymmetry: the mixed
 class is fragile (anchor α = 1 only, no spectators), the aligned class
 is robust (free anchors, arbitrary spectators).
+
+## Round 68 — Spectator-corner harvest across all three-prime grids
+
+Scanning every censused three-prime grid's ALIVE set for
+spectator-corner instances of the formal layer:
+
+| grid | alive | formally dead (aligned-spec + power-0 corners) |
+|---|---|---|
+| (1,1,1) | 564 | 56 (12 mixed-plain + 12 + 32 aligned-spec) |
+| (2,1,1) | 1892 | 120 (12 + 28 + 64 + 16) |
+| (3,1,1) | 4004 | 184 (12 + 44 + 96 + 16 + 16) |
+| (2,2,1) | 6208 | 264 (80 + 184) |
+
+**624 census-alive relations across the four three-prime grids are
+machine-checked dead** by `uniform_corner_aligned(_spec)` /
+`uniform_corner_mixed` — roughly 5% of the multi-prime alive frontier
+eliminated by the formal layer beyond the symbolic engine. The
+remaining alive corner shapes are mixed-class with nonzero spectator
+(provably fragile) or varying-conjugation patterns.
