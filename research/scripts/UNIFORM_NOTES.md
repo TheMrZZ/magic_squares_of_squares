@@ -1822,3 +1822,15 @@ now every L2 partner. Remaining for the cross-pair core: the easy
 p²-chain cells as Lean text, the 2S-form mirror family, then the
 (a,c)-bucket dispatcher; after that k=1 single-8 buckets with L2,
 router, no_four_diffs_sp2q, capstone.
+
+## Round 114 — mirror cell (L1, L2) by parity; (L3/L4, L2) mapped
+
+cross_L1_L2_int: 2·eq2 − 3·eq1 cancels R₈Y and leaves
+4R(eX − gq²) = −3f·p²q², even = odd, dead. Also checked: (L0, ·) is
+the single-equation parity kill, (L2, L2) dies by the same
+substitution parity, so the T-form 25-cell table is complete except
+(L3, L2) and (L4, L2). For those: the descent gives v₂(Y) = v₂(I),
+p² ∥ Y, X ≡ egq² (mod p²), and y² = n(2q² − p⁴n) with n odd killed
+by 2-adics; n = 2m, q ∤ m leads to q² = (p²a)² + b² — a second rep
+of q² as a sum of two squares, suggesting a rep-uniqueness or
+further-descent finish. Next tick.

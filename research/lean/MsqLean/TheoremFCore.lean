@@ -1736,4 +1736,28 @@ lemma cross_L2_L34_int
       nlinarith [hone, hI16, hv2, sq_nonneg xh])
 
 
+/-- Mirror cell (Kb = L1, Kd = L2): eliminating R₈Y leaves
+4R(eX − gq²) = −3f·p²q², even = odd. -/
+lemma cross_L1_L2_int
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (R I X Y f g e : ℤ)
+    (hf : f = 1 ∨ f = -1)
+    (hI0 : I ≠ 0)
+    (h1 : 2 * ((R ^ 2 - I ^ 2) * Y) = f * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I))
+    (h2 : 3 * ((R ^ 2 - I ^ 2) * Y) + e * ((2 * R * I) * X)
+      = g * ((q : ℤ) ^ 2 * (2 * R * I))) : False := by
+  have h0 : I * (4 * (R * (e * X - g * (q : ℤ) ^ 2)) + 3 * f * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2)) = 0 := by
+    linear_combination 2 * h2 - 3 * h1
+  have hin : 4 * (R * (e * X - g * (q : ℤ) ^ 2)) + 3 * f * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2) = 0 := by
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · exact h
+  have hodd : Odd ((p : ℤ) ^ 2 * (q : ℤ) ^ 2) :=
+    ((odd_cast p hpodd).pow).mul ((odd_cast q hqodd).pow)
+  obtain ⟨c, hc⟩ := hodd
+  rw [hc] at hin
+  generalize hM : R * (e * X - g * (q : ℤ) ^ 2) = M at hin
+  rcases hf with rfl | rfl <;> omega
+
+
 end FCore
