@@ -1459,3 +1459,16 @@ anti-diagonals are parity, with the two groups needing OPPOSITE
 linear_combination orientations (−hdiff vs +hdiff). resid_ratio_core
 generalized with an independent third sign c. Remaining:
 dispatch_03 (K3-variant), dispatch_12/13 (prime-swapped), outer split.
+
+## Round 89 — dispatch_03 complete (4 of 6)
+
+`twoterm_q_mixed3` (K3-variant via the D↦−D mirror with a star_pow
+rewrite) + `dispatch_03` ({K0, K3} pair). ratio_bridge generalized
+with an independent 4th sign τ (the RY-orientation differs between
+the {0,2} and {0,3} pairs: τ = −σ vs τ = σ). One structural bug
+caught by Lean: the a=K2 subtree's b=K2 branch is degenerate (K3 = 0
+or K0 = 0), NOT an E1-collapse — the residual 2e₁K2 − 2e₁K3 in the
+failed ring goal pointed straight at it. Remaining: dispatch_12/13
+(prime-swapped clones — the swap works by calling ratio_bridge and
+the kill lemmas with (q,C,D) and (p,A,B) exchanged), outer split,
+assembly.
