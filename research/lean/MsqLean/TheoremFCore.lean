@@ -3620,4 +3620,81 @@ lemma q2_not_dvd_K3v
   linear_combination h
 
 
+set_option maxHeartbeats 1600000 in
+/-- χ-valuation ratio kill: c₁·q²·I₈ = c₂·Im(π⁸χ⁴) is impossible for
+q ∤ c₂ (the self-conjugate witness has χ-valuation 2 on one side and
+0 on the other). -/
+lemma ratio_L2_L5_kill
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c₁ c₂ : ℤ) (hqc₂ : ¬ (q : ℤ) ∣ c₂)
+    (h : c₁ * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      = c₂ * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))) :
+    False := by
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  have hχprime : Prime χ := prime_pi q C D hqCD
+  set G : GaussianInt := π ^ 8 * (((c₁ * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+    - ((c₂ : ℤ) : GaussianInt) * χ ^ 4) with hGdef
+  have hGim : G.im = 0 := by
+    rw [hGdef]
+    simp only [Zsqrtd.im_mul, Zsqrtd.re_mul, Zsqrtd.im_sub, Zsqrtd.re_sub,
+      Zsqrtd.im_intCast, Zsqrtd.re_intCast]
+    linear_combination h
+  have hy : G = (((G.re : ℤ)) : GaussianInt) := by
+    ext
+    · simp
+    · simp [hGim]
+  have hself : star G = G := by rw [hy, star_intCast]
+  have hsplitχ : χ * star χ = ((q : ℤ) : GaussianInt) := by
+    have := pi_mul_star C D
+    rw [← hχdef] at this
+    rw [this, hqCD]
+  have hχG : χ ∣ G := by
+    refine ⟨π ^ 8 * (χ * (((c₁ : ℤ) : GaussianInt) * (star χ) ^ 2
+      - ((c₂ : ℤ) : GaussianInt) * χ ^ 2)), ?_⟩
+    rw [hGdef]
+    have hq2 : ((c₁ * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+        = ((c₁ : ℤ) : GaussianInt) * (χ * star χ) ^ 2 := by
+      rw [hsplitχ]; push_cast; ring
+    rw [hq2]; ring
+  have hχstarG : χ ∣ star G := by rw [hself]; exact hχG
+  have hstarG : star G = (star π) ^ 8 * (((c₁ * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+      - ((c₂ : ℤ) : GaussianInt) * (star χ) ^ 4) := by
+    rw [hGdef]
+    simp only [star_mul, star_sub, star_pow, star_intCast]
+    ring
+  rw [hstarG] at hχstarG
+  rcases hχprime.dvd_mul.mp hχstarG with h1 | h1
+  · have h2 := hχprime.dvd_of_dvd_pow h1
+    have hstarπ : star π = (⟨A, -B⟩ : GaussianInt) := by
+      rw [hπdef]; ext <;> simp
+    rw [hstarπ] at h2
+    have hpAB2 : A ^ 2 + (-B) ^ 2 = p := by rw [neg_pow]; ring_nf; linarith [hpAB]
+    exact not_dvd_other q p (fun hh => hpq hh.symm) C D A (-B) hqCD hpAB2 h2
+  · have hq2d : χ ∣ ((c₁ * (q : ℤ) ^ 2 : ℤ) : GaussianInt) := by
+      refine ⟨((c₁ : ℤ) : GaussianInt) * χ * (star χ) ^ 2, ?_⟩
+      have hq2 : ((c₁ * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+          = ((c₁ : ℤ) : GaussianInt) * (χ * star χ) ^ 2 := by
+        rw [hsplitχ]; push_cast; ring
+      rw [hq2]; ring
+    have hc2χ4 : χ ∣ ((c₂ : ℤ) : GaussianInt) * (star χ) ^ 4 := by
+      have hsub := dvd_sub hq2d h1
+      simpa using hsub
+    rcases hχprime.dvd_mul.mp hc2χ4 with h2 | h2
+    · have hnd := norm_dvd_of_dvd h2
+      have hχnorm : χ.norm = (q : ℤ) := by
+        rw [hχdef, norm_mk, hqCD]
+      have hcnorm : (((c₂ : ℤ) : GaussianInt)).norm = c₂ * c₂ := by
+        rw [Zsqrtd.norm_intCast]
+      rw [hχnorm, hcnorm] at hnd
+      have hqP : Prime (q : ℤ) := by
+        rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+      rcases hqP.dvd_mul.mp hnd with h3 | h3
+      · exact hqc₂ h3
+      · exact hqc₂ h3
+    · exact pi_not_dvd_star q hqodd C D hqCD (hχprime.dvd_of_dvd_pow h2)
+
+
 end FCore
