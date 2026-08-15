@@ -1936,3 +1936,24 @@ have v_p ≥ 2, so mixed pairs die instantly; both-high pairs divide by
 p² into E-class ratio relations; both-low-p pairs
 {L2, L5, L6} × {2, 3, ±1} need bespoke treatment. Next: build the
 ratio layer, then the value-level router wrapper, then the capstone.
+
+## Round 121b — ratio layer refined: only ratio 2 is needed
+
+In the v = −2u scenario all four diffs are u, −2u, −u, 3u, so
+Kb-val = ±2·Ka-val alone kills it: the wrapper derives all six
+distinctness hypotheses from u ≠ 0, v ≠ 0, u ≠ ±v plus
+no_ratio2 (W = 2δV impossible for class values W, V). Kill split:
+- mixed Z×H pairs (Z = {L2,L5,L6} with v_p = 0, H = {L0,L1,L3,L4}
+  with v_p ≥ 2): instant via p2_not_dvd_{I8,L5,L6}.
+- H×H: divide p² to E-classes; v_p(p²Y-image) = 2 vs 0 for the rest
+  (needs p ∤ Im(π⁴χ^±4) — same Gaussian argument at level 4);
+  q-valuation separates q²I from K2/K3 images; remaining deep cell:
+  K2' = ±2K3' ⇒ 3RY = IX or RY = 3IX ⇒ coprime chains give
+  X = ±R, ±3R with I = ±3Y-type conclusions ⇒ p⁴ = R²+9Y²-style
+  two-square relations — needs rep uniqueness.
+- Z×Z: (L2, L5/L6): the self-conjugate element π⁸χ²(χ̄²−2δχ²) has
+  χ-valuation 0 on one side and 2 on the other — instant kill (nice!).
+  Deep cell: L5 = ±2L6 ⇒ 3R₈Y = I₈X-type ⇒ X = ±R₈, I₈ = ±3Y ⇒
+  p⁸ = X² + (3Y)² — needs the p⁸ two-square rep classification.
+- W = 2δW same class: (1∓2)W = 0, class-nonzero.
+Next: formalize the easy ratio cells, then the two deep cells.
