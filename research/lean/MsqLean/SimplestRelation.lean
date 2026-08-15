@@ -16,13 +16,13 @@ open Zsqrtd
 
 variable (p q : ℕ)
 
-private lemma pi_mul_star (a b : ℤ) :
+lemma pi_mul_star (a b : ℤ) :
     (⟨a, b⟩ : GaussianInt) * star ⟨a, b⟩ = ((a ^ 2 + b ^ 2 : ℤ) : GaussianInt) := by
   ext
   · simp only [Zsqrtd.re_mul, Zsqrtd.re_star, Zsqrtd.im_star, Zsqrtd.re_intCast]; ring
   · simp only [Zsqrtd.im_mul, Zsqrtd.re_star, Zsqrtd.im_star, Zsqrtd.im_intCast]; ring
 
-private lemma prime_pi (p : ℕ) [hp : Fact (Nat.Prime p)] (a b : ℤ)
+lemma prime_pi (p : ℕ) [hp : Fact (Nat.Prime p)] (a b : ℤ)
     (hab : a ^ 2 + b ^ 2 = p) : Prime (⟨a, b⟩ : GaussianInt) := by
   have hnorm : (⟨a, b⟩ : GaussianInt).norm = (p : ℤ) := by
     have : (⟨a, b⟩ : GaussianInt).norm = a * a + b * b := by simp [Zsqrtd.norm]
@@ -56,7 +56,7 @@ private lemma prime_pi (p : ℕ) [hp : Fact (Nat.Prime p)] (a b : ℤ)
         exact Zsqrtd.norm_eq_one_iff.mp hy1
   exact hirr.prime
 
-private lemma pi_not_dvd_star (p : ℕ) [hp : Fact (Nat.Prime p)]
+lemma pi_not_dvd_star (p : ℕ) [hp : Fact (Nat.Prime p)]
     (hodd : p % 2 = 1) (a b : ℤ) (hab : a ^ 2 + b ^ 2 = p) :
     ¬ (⟨a, b⟩ : GaussianInt) ∣ star ⟨a, b⟩ := by
   intro h
@@ -107,7 +107,7 @@ private lemma pi_not_dvd_star (p : ℕ) [hp : Fact (Nat.Prime p)]
   · nlinarith
   · rw [← hzero] at hfac; simp at hfac
 
-private lemma coord_ne_zero (p : ℕ) [hp : Fact (Nat.Prime p)]
+lemma coord_ne_zero (p : ℕ) [hp : Fact (Nat.Prime p)]
     (A B : ℤ) (hab : A ^ 2 + B ^ 2 = p) : A ≠ 0 ∧ B ≠ 0 := by
   constructor
   · rintro rfl
@@ -133,7 +133,7 @@ private lemma coord_ne_zero (p : ℕ) [hp : Fact (Nat.Prime p)]
     · rw [h] at this
       have := hp.out.one_lt; nlinarith
 
-private lemma diff_sq_lt (p : ℕ) [hp : Fact (Nat.Prime p)]
+lemma diff_sq_lt (p : ℕ) [hp : Fact (Nat.Prime p)]
     (A B : ℤ) (hab : A ^ 2 + B ^ 2 = p) : |A ^ 2 - B ^ 2| < p := by
   obtain ⟨hA, hB⟩ := coord_ne_zero p A B hab
   have hA1 : 1 ≤ A ^ 2 := by
@@ -147,15 +147,15 @@ private lemma diff_sq_lt (p : ℕ) [hp : Fact (Nat.Prime p)]
   rw [abs_lt]; constructor <;> omega
 
 /-- Norm divisibility along Gaussian divisibility. -/
-private lemma norm_dvd_of_dvd {x y : GaussianInt} (h : x ∣ y) : x.norm ∣ y.norm := by
+lemma norm_dvd_of_dvd {x y : GaussianInt} (h : x ∣ y) : x.norm ∣ y.norm := by
   obtain ⟨c, hc⟩ := h
   exact ⟨c.norm, by rw [hc, Zsqrtd.norm_mul]⟩
 
-private lemma norm_mk (a b : ℤ) : (⟨a, b⟩ : GaussianInt).norm = a ^ 2 + b ^ 2 := by
+lemma norm_mk (a b : ℤ) : (⟨a, b⟩ : GaussianInt).norm = a ^ 2 + b ^ 2 := by
   have : (⟨a, b⟩ : GaussianInt).norm = a * a + b * b := by simp [Zsqrtd.norm]
   rw [this]; ring
 
-private lemma not_dvd_other (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+lemma not_dvd_other (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
     (hpq : p ≠ q) (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
     ¬ (⟨A, B⟩ : GaussianInt) ∣ (⟨C, D⟩ : GaussianInt) := by
   intro h

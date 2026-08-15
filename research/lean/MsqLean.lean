@@ -18,3 +18,5 @@ import MsqLean.TwoPrimeClassify
 import MsqLean.PinchHelpers
 import MsqLean.SimplestRelation
 import MsqLean.RelationFamily
+import MsqLean.CoreDisj
+import MsqLean.RelationFamilyF2

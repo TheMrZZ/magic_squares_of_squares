@@ -770,3 +770,30 @@ the same chain recipe (term divisibility via p = pi*pibar when a slot
 has no pi-power, extraction, cores, pinch); with the recipe now proven
 fast (thm3, thm4 built first-try), the full formal closure of all 32
 is a bounded programme.
+
+## Round 53 — Family F2 fully machine-checked (16/32)
+
+New Lean files (full `lake build` green, 0 sorries):
+
+- `MsqLean/CoreDisj.lean` — reusable core-extraction + finish toolkit:
+  - `pi_core_disj`: π ∣ (E₂q² + E₃χ̄⁴) ⟹ p ∣ 2(C²−D²) ∨ p ∣ 4CD.
+  - `sq_core_disj`: χ ∣ (E₁π² + E₃π̄²) ⟹ q ∣ 2(A²−B²) ∨ q ∣ 4AB.
+  - `double_pinch_finish`: any combination of the two disjunctions is
+    absurd, via the two-ordering strict pinch (trichotomy on p vs q).
+- `MsqLean/RelationFamilyF2.lean` — family F2 = slots {(0,1),(1,0),(1,1)},
+  G = e₁p²K₁⁴ + e₂q²π⁴ + e₃π⁴K₃⁴:
+  - `family_F2_aligned_nonzero` (K₁=K₃=χ): π-side subtracts the p²-term
+    from star G and strips π̄⁴ → `pi_core_disj`; χ-side subtracts the
+    q²-term, strips χ̄⁴ then π̄² → `sq_core_disj`; finish.
+  - `family_F2_mixed_nonzero` (K₁=χ, K₃=χ̄): π-side goes through the
+    D↦−D mirror of `pi_core_disj`; χ-side has NO χ-divisible G, so
+    regroup the six-term G − star G = 0, extract χ̄⁴(e₃π⁴ − e₁p²),
+    strip χ̄⁴ and π² → `sq_core_disj` with signs (e₃, −e₁); finish.
+  - Both theorems are parametric in all three signs e_i ∈ {±1}, so they
+    cover every sign variant of both conjugation classes: all 8 F2
+    relations dead.
+
+Running total: F1 (8) + F2 (8) = **16/32 pure double-pinch relations
+machine-checked**. The toolkit makes F3 {(0,2),(1,1),(1,2)} and its
+q-mirror F4 the remaining work; their cores sit at χ⁴/π⁴-level with an
+extra q² (resp. p²) grading, same extraction pattern.
