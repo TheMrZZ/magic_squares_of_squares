@@ -192,3 +192,63 @@ are therefore genuinely uncertified (consistent with the census
 leaving them alive); only spectator power 0 (W a rational integer)
 reduces to the plain `uniform_corner_mixed`.
 -/
+
+/-- A split prime's Gaussian factor never divides a power of a distinct
+split prime's quartic factor. Discharges the spectator hypotheses for
+W = (ψ⁴)^γ instantiations. -/
+lemma not_dvd_spec_pow
+    (p r : ℕ) [hp : Fact (Nat.Prime p)] [hr : Fact (Nat.Prime r)]
+    (hpr : p ≠ r)
+    (A B E F : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hrEF : E ^ 2 + F ^ 2 = r)
+    (γ : ℕ) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ ((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ := by
+  intro h
+  have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
+  exact not_dvd_other p r hpr A B E F hpAB hrEF
+    (hπprime.dvd_of_dvd_pow (hπprime.dvd_of_dvd_pow h))
+
+/-- Star version: nor does it divide the conjugate power. -/
+lemma not_dvd_spec_pow_star
+    (p r : ℕ) [hp : Fact (Nat.Prime p)] [hr : Fact (Nat.Prime r)]
+    (hpr : p ≠ r) (hrodd : r % 2 = 1)
+    (A B E F : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hrEF : E ^ 2 + F ^ 2 = r)
+    (γ : ℕ) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ star (((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ) := by
+  intro h
+  have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
+  have hstar : star (((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ)
+      = (((⟨E, -F⟩ : GaussianInt)) ^ 4) ^ γ := by
+    have hsψ : star (⟨E, F⟩ : GaussianInt) = (⟨E, -F⟩ : GaussianInt) := by ext <;> simp
+    rw [star_pow, star_pow, hsψ]
+  rw [hstar] at h
+  exact not_dvd_other p r hpr A B E (-F) hpAB
+    (by rw [neg_pow]; ring_nf; linarith [hrEF])
+    (hπprime.dvd_of_dvd_pow (hπprime.dvd_of_dvd_pow h))
+
+/-- Instantiation demonstration: a concrete census-alive corner shape
+at grid (2,2,1) — anchor (2,2) aligned corner carrying a spectator
+ψ^{4γ} of a third prime r — is dead for every prime triple and
+every spectator power. -/
+example
+    (p q r : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    [hr : Fact (Nat.Prime r)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (hpr : p ≠ r) (hqr : q ≠ r) (hrodd : r % 2 = 1)
+    (A B C D E F : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (hrEF : E ^ 2 + F ^ 2 = r) (γ : ℕ)
+    (e1 e2 e3 : ℤ) (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) :
+    (((e1 : ℤ) : GaussianInt) * (((p : ℤ) ^ 2 : ℤ) : GaussianInt)
+        * (⟨A, B⟩ : GaussianInt) ^ (4 * 1) * (star (⟨C, D⟩ : GaussianInt)) ^ (4 * 1 + 4)
+        * ((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ
+      + ((e2 : ℤ) : GaussianInt) * (((q : ℤ) ^ 2 : ℤ) : GaussianInt)
+        * (⟨A, B⟩ : GaussianInt) ^ (4 * 1 + 4) * (star (⟨C, D⟩ : GaussianInt)) ^ (4 * 1)
+        * ((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ
+      + ((e3 : ℤ) : GaussianInt) * (⟨A, B⟩ : GaussianInt) ^ (4 * 1 + 4)
+        * (star (⟨C, D⟩ : GaussianInt)) ^ (4 * 1 + 4)
+        * ((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ).im ≠ 0 :=
+  uniform_corner_aligned_spec p q hpodd hqodd hpq A B C D hpAB hqCD
+    (((⟨E, F⟩ : GaussianInt) ^ 4) ^ γ) 1 1
+    (not_dvd_spec_pow_star p r hpr hrodd A B E F hpAB hrEF γ)
+    (not_dvd_spec_pow q r hqr C D E F hqCD hrEF γ)
+    e1 e2 e3 he1 he2 he3
