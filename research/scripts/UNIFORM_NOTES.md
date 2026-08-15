@@ -2037,3 +2037,19 @@ every single equation are empty. Kill design for the T-form core
   uniformities.
 Needed new machinery: two-square rep uniqueness for q and q²
 (Gaussian: N(w) = q ⇒ w ~ unit·χ^{±1}; small, existing tools).
+
+## Round 128 — CORRECTION to round 127: the (row, M7) kill is NOT uniform
+
+Re-deriving before formalizing caught an arithmetic slip in the
+round-127 "uniform kill": |Y| = 2p²|ab| equals 2|p²a||b| = 2|re₂im₂|
+= |im₄| — CONSISTENT, not contradictory. The relaxed cell
+(only p² ∣ Y from eq1, plus the M7-partner equation) has a genuine
+witness: p = 5, q = 313 = 13² + 12², where p² = 25 divides
+C² − D² = 25; then a = ±1, b = im₂ = 312, Y = 15600 = im₄(χ),
+X = re₄(χ), eg = −1 satisfy the whole descent chain. The full
+cross-pair cell is still empty (census), but its kill must use eq1's
+fine structure per low class — exactly like Theorem F's mirror cells
+(cross_L1_L2 / cross_L34_L2 patterns with p-exponents shifted).
+Consequence for the uniform-induction hope: the level-transfer step
+needs the per-class mirror-cell work at every level; F's proofs are
+the templates but not free. rep_sq_unique (shipped) remains useful.
