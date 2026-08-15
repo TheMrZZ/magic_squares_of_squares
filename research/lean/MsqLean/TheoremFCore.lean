@@ -2973,4 +2973,81 @@ lemma dispatch_bd8F
       (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
 
 
+/-- Split a 7-class membership into low (5) vs level-8 (2). -/
+lemma split7F {K : ℤ} (A B C D : ℤ)
+    (h : K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+      ∨ K = L3 p A B C D ∨ K = L4 p A B C D ∨ K = L5 A B C D ∨ K = L6 A B C D) :
+    (K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+      ∨ K = L3 p A B C D ∨ K = L4 p A B C D) ∨ (K = L5 A B C D ∨ K = L6 A B C D) := by
+  rcases h with h | h | h | h | h | h | h
+  · exact Or.inl (Or.inl h)
+  · exact Or.inl (Or.inr (Or.inl h))
+  · exact Or.inl (Or.inr (Or.inr (Or.inl h)))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inl h))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr h))))
+  · exact Or.inr (Or.inl h)
+  · exact Or.inr (Or.inr h)
+
+/-- Split a low membership into L2 vs the four p²-divisible classes. -/
+lemma lowsplitF {K : ℤ} (A B C D : ℤ)
+    (h : K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+      ∨ K = L3 p A B C D ∨ K = L4 p A B C D) :
+    (K = L0 p C D ∨ K = L1 p q A B ∨ K = L3 p A B C D ∨ K = L4 p A B C D)
+      ∨ K = L2 q A B := by
+  rcases h with h | h | h | h | h
+  · exact Or.inl (Or.inl h)
+  · exact Or.inl (Or.inr (Or.inl h))
+  · exact Or.inr h
+  · exact Or.inl (Or.inr (Or.inr (Or.inl h)))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr h)))
+
+/-- Every L2-free low class carries a factor p². -/
+lemma low_p2_dvd {K : ℤ} (A B C D : ℤ)
+    (h : K = L0 p C D ∨ K = L1 p q A B ∨ K = L3 p A B C D ∨ K = L4 p A B C D) :
+    (p : ℤ) ^ 2 ∣ K := by
+  rcases h with rfl | rfl | rfl | rfl
+  · exact ⟨(p : ℤ) ^ 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im), by unfold L0; ring⟩
+  · exact ⟨(q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im), by unfold L1; ring⟩
+  · exact ⟨(((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re),
+      by unfold L3; ring⟩
+  · exact ⟨(((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im),
+      by unfold L4; ring⟩
+
+/-- A unit multiple of L2 can never be p²-divisible. -/
+lemma low_L2_kill (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (c m : ℤ) (hc : c = 1 ∨ c = -1 ∨ c = 2 ∨ c = -2)
+    (h : c * L2 q A B = (p : ℤ) ^ 2 * m) : False := by
+  have hpc : ¬ (p : ℤ) ∣ c * (q : ℤ) ^ 2 := by
+    intro hd
+    have hpP : Prime (p : ℤ) := by
+      rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+    rcases hpP.dvd_mul.mp hd with h' | h'
+    · have hple : (p : ℤ) ∣ 2 ∨ (p : ℤ) ∣ 1 := by
+        rcases hc with rfl | rfl | rfl | rfl
+        · exact Or.inr h'
+        · exact Or.inr (dvd_neg.mp h')
+        · exact Or.inl h'
+        · exact Or.inl (dvd_neg.mp h')
+      have h2 := hp.out.two_le
+      rcases hple with h' | h'
+      · have : p ∣ 2 := by exact_mod_cast h'
+        have := Nat.le_of_dvd (by norm_num) this
+        omega
+      · have : p ∣ 1 := by exact_mod_cast h'
+        have := Nat.le_of_dvd (by norm_num) this
+        omega
+    · have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow h'
+      have : p ∣ q := by exact_mod_cast hq'
+      exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+  refine p2_extract_kill p hpodd A B hpAB ((⟨A, B⟩ : GaussianInt) ^ 8)
+    (c * (q : ℤ) ^ 2) m hpc (dvd_pow_self _ (by norm_num))
+    (fun hd => pi_not_dvd_star p hpodd A B hpAB
+      ((prime_pi p A B hpAB).dvd_of_dvd_pow (by rwa [star_pow] at hd))) ?_
+  unfold L2 at h
+  linear_combination h
+
+
 end FCore
