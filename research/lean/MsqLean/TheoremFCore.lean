@@ -2061,4 +2061,139 @@ lemma cross_L34_L2_int
         nlinarith [hbig, hinner, sq_nonneg xh, hp4ge])
 
 
+set_option maxHeartbeats 3200000 in
+/-- The T-form cross-pair core, integer level: the system
+2R₈Y = f·Kb ∧ 3R₈Y + e·I₈X = g·Kd over the five low classes
+(coordinates: p⁴Y, p²q²I, q²·2RI, p²(RY+IX), p²(IX−RY)). -/
+lemma cross_pair_core_T_int
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (R I X Y Kb Kd f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 4)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hpR : ¬ (p : ℤ) ∣ R) (hpI : ¬ (p : ℤ) ∣ I)
+    (hpR8 : ¬ (p : ℤ) ∣ (R ^ 2 - I ^ 2))
+    (hqX : ¬ (q : ℤ) ∣ X) (hqY : ¬ (q : ℤ) ∣ Y)
+    (hY0 : Y ≠ 0) (hI0 : I ≠ 0) (hR0 : R ≠ 0)
+    (hI4 : (4 : ℤ) ∣ I)
+    (hcop : IsCoprime R I)
+    (hb : Kb = (p : ℤ) ^ 4 * Y ∨ Kb = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I
+      ∨ Kb = (q : ℤ) ^ 2 * (2 * R * I)
+      ∨ Kb = (p : ℤ) ^ 2 * (R * Y + I * X) ∨ Kb = (p : ℤ) ^ 2 * (I * X - R * Y))
+    (hd : Kd = (p : ℤ) ^ 4 * Y ∨ Kd = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * I
+      ∨ Kd = (q : ℤ) ^ 2 * (2 * R * I)
+      ∨ Kd = (p : ℤ) ^ 2 * (R * Y + I * X) ∨ Kd = (p : ℤ) ^ 2 * (I * X - R * Y))
+    (h1 : 2 * ((R ^ 2 - I ^ 2) * Y) = f * Kb)
+    (h2 : 3 * ((R ^ 2 - I ^ 2) * Y) + e * ((2 * R * I) * X) = g * Kd) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hcR8 : IsCoprime ((p : ℤ)) (R ^ 2 - I ^ 2) := (hpP.coprime_iff_not_dvd).mpr hpR8
+  have hp2R8 : IsCoprime ((p : ℤ) ^ 2) (2 * (R ^ 2 - I ^ 2)) :=
+    (hc2.mul_right hcR8).pow_left
+  -- shared: for Kb ∈ {L1, L3, L4}, h1 forces p² ∣ Y
+  have hp2Y : ∀ M : ℤ, 2 * ((R ^ 2 - I ^ 2) * Y) = (p : ℤ) ^ 2 * M → (p : ℤ) ^ 2 ∣ Y := by
+    intro M hM
+    refine hp2R8.dvd_of_dvd_mul_right ?_
+    exact ⟨M, by linear_combination hM⟩
+  -- shared: with p² ∣ Y and p² ∣ Kd, h2 forces p² ∣ X, then p ∣ q — dead
+  have hkill : (p : ℤ) ^ 2 ∣ Y → (p : ℤ) ^ 2 ∣ Kd → False := by
+    intro hY2 hKd2
+    obtain ⟨y, hy⟩ := hY2
+    obtain ⟨k, hk⟩ := hKd2
+    have hIX : (p : ℤ) ^ 2 ∣ (2 * R * I) * X := by
+      have hEX : e * ((2 * R * I) * X) = (p : ℤ) ^ 2 * (g * k - 3 * (R ^ 2 - I ^ 2) * y) := by
+        linear_combination h2 - 3 * (R ^ 2 - I ^ 2) * hy + g * hk
+      rcases he with rfl | rfl
+      · exact ⟨g * k - 3 * (R ^ 2 - I ^ 2) * y, by linarith [hEX]⟩
+      · exact ⟨-(g * k - 3 * (R ^ 2 - I ^ 2) * y), by linarith [hEX]⟩
+    have hp2X : (p : ℤ) ^ 2 ∣ X := by
+      have hcRI : IsCoprime ((p : ℤ) ^ 2) (2 * R * I) :=
+        ((hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpR)).mul_right
+          ((hpP.coprime_iff_not_dvd).mpr hpI)).pow_left
+      exact hcRI.dvd_of_dvd_mul_right (by rwa [mul_comm] at hIX)
+    obtain ⟨x, hx⟩ := hp2X
+    have hq4d : (p : ℤ) ^ 2 ∣ (q : ℤ) ^ 4 := by
+      refine ⟨(p : ℤ) ^ 2 * x ^ 2 + (p : ℤ) ^ 2 * y ^ 2, ?_⟩
+      rw [← hq4, hx, hy]; ring
+    have hpq4 : (p : ℤ) ∣ (q : ℤ) ^ 4 := dvd_trans ⟨(p : ℤ), by ring⟩ hq4d
+    have hpq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hpq4
+    have : p ∣ q := by exact_mod_cast hpq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+  rcases hb with rfl | rfl | rfl | rfl | rfl
+  · -- Kb = L0: parity
+    have h0 : Y * (2 * (R ^ 2 - I ^ 2) - f * (p : ℤ) ^ 4) = 0 := by
+      linear_combination h1
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact hY0 h
+    · obtain ⟨c, hc⟩ := (odd_cast p hpodd).pow (n := 4)
+      generalize hM : R ^ 2 - I ^ 2 = M at h
+      rcases hf with rfl | rfl <;> omega
+  · -- Kb = L1
+    have hY2 := hp2Y ((q : ℤ) ^ 2 * I * f) (by linear_combination h1)
+    rcases hd with rfl | rfl | rfl | rfl | rfl
+    · exact hkill hY2 ⟨(p : ℤ) ^ 2 * Y, by ring⟩
+    · exact hkill hY2 ⟨(q : ℤ) ^ 2 * I, by ring⟩
+    · exact cross_L1_L2_int p q hpodd hqodd R I X Y f g e hf hI0
+        (by linear_combination h1) (by linear_combination h2)
+    · exact hkill hY2 ⟨R * Y + I * X, by ring⟩
+    · exact hkill hY2 ⟨I * X - R * Y, by ring⟩
+  · -- Kb = L2
+    rcases hd with rfl | rfl | rfl | rfl | rfl
+    · exact cross_L2_L0_int p q hpodd hqodd R I X Y f g e hf hg he hp4 hq4 hpR8 hqX hY0
+        (by linear_combination h1) (by linear_combination h2)
+    · exact cross_L2_L1_int p q hpodd hqodd hpq R I X Y f g e hf hg he hp4 hq4 hpR hqX
+        hY0 hI0 hR0 hcop (by linear_combination h1) (by linear_combination h2)
+    · -- (L2, L2): substitution parity
+      have hsub : (q : ℤ) ^ 2 * (2 * R * I) = 2 * f * ((R ^ 2 - I ^ 2) * Y) := by
+        rcases hf with rfl | rfl <;> linarith [h1]
+      have h0 : (R ^ 2 - I ^ 2) * Y * (3 * (q : ℤ) ^ 2 + 2 * e * f * X - 2 * f * g * (q : ℤ) ^ 2) = 0 := by
+        linear_combination (q : ℤ) ^ 2 * h2 - e * X * hsub + g * (q : ℤ) ^ 2 * hsub
+      have hR8Y0 : (R ^ 2 - I ^ 2) * Y ≠ 0 := by
+        intro hz
+        rcases mul_eq_zero.mp hz with h | h
+        · exact hpR8 (h ▸ dvd_zero _)
+        · exact hY0 h
+      rcases mul_eq_zero.mp h0 with h | h
+      · exact hR8Y0 h
+      · obtain ⟨c, hc⟩ := (odd_cast q hqodd).pow (n := 2)
+        rcases he with rfl | rfl <;> rcases hf with rfl | rfl <;>
+          rcases hg with rfl | rfl <;> omega
+    · exact cross_L2_L34_int p q hpodd hqodd hpq R I X Y f g e 1 hf hg he (Or.inl rfl)
+        hp4 hq4 hpR hqX hY0 hI0 hR0 hI4 hcop
+        (by linear_combination h1) (by linear_combination h2)
+    · exact cross_L2_L34_int p q hpodd hqodd hpq R I X Y f g e (-1) hf hg he (Or.inr rfl)
+        hp4 hq4 hpR hqX hY0 hI0 hR0 hI4 hcop
+        (by linear_combination h1) (by linear_combination h2)
+  · -- Kb = L3
+    have hY2 := hp2Y ((R * Y + I * X) * f) (by linear_combination h1)
+    rcases hd with rfl | rfl | rfl | rfl | rfl
+    · exact hkill hY2 ⟨(p : ℤ) ^ 2 * Y, by ring⟩
+    · exact hkill hY2 ⟨(q : ℤ) ^ 2 * I, by ring⟩
+    · exact cross_L34_L2_int p q hpodd hqodd R I X Y f g e 1 hf hg he (Or.inl rfl)
+        hp4 hq4 hpR hpR8 hY0 hI0 hR0 hI4 hcop
+        (by linear_combination h1) (by linear_combination h2)
+    · exact hkill hY2 ⟨R * Y + I * X, by ring⟩
+    · exact hkill hY2 ⟨I * X - R * Y, by ring⟩
+  · -- Kb = L4
+    have hY2 := hp2Y ((I * X - R * Y) * f) (by linear_combination h1)
+    rcases hd with rfl | rfl | rfl | rfl | rfl
+    · exact hkill hY2 ⟨(p : ℤ) ^ 2 * Y, by ring⟩
+    · exact hkill hY2 ⟨(q : ℤ) ^ 2 * I, by ring⟩
+    · exact cross_L34_L2_int p q hpodd hqodd R I X Y f g e (-1) hf hg he (Or.inr rfl)
+        hp4 hq4 hpR hpR8 hY0 hI0 hR0 hI4 hcop
+        (by linear_combination h1) (by linear_combination h2)
+    · exact hkill hY2 ⟨R * Y + I * X, by ring⟩
+    · exact hkill hY2 ⟨I * X - R * Y, by ring⟩
+
+
 end FCore
