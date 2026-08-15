@@ -1316,3 +1316,15 @@ coordinate of π⁴: both ⇒ π̄ ∣ π³; one ⇒ both via R² + I² = p⁴),
 `coprime_re4_im4` (a shared prime r of R, I divides p⁴, so r = p,
 contradiction), `pinch_sq` (X = ±q² forces Y = 0), `four_w_two_ne`
 (the mod-4 finisher). Full build green.
+
+## Round 80 — Theorem E Gaussian-tier kill lemmas (`TheoremEGauss.lean`)
+
+Machine-checked: `twoterm_q_mixed` (c₁q²·Im π⁴ = c₂·Im(π⁴χ⁴)
+impossible when q ∤ c₂ — χ-regroup leaves χ ∣ c₂π̄⁴χ̄⁴),
+`twoterm_p_mixed` (p-side mirror), `twoterm_qI_pY`
+(c₁q²·Im π⁴ = c₂p²·Im χ⁴ — pure integer q-divisibility chain),
+plus `chi_not_dvd_intcast`, `rep_mod_four` (sum-of-two-squares odd
+primes ≡ 1 mod 4), `useful_not_dvd_small` (useful primes are ≥ 5, so
+∤ {1,2,3}). Conjugate variants come free at call sites via (C, −D).
+Gotcha: `linear_combination` sign — the Im-goal enters with opposite
+orientation; use −h.
