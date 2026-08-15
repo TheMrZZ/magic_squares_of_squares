@@ -1138,3 +1138,12 @@ machine-checked dead** by `uniform_corner_aligned(_spec)` /
 eliminated by the formal layer beyond the symbolic engine. The
 remaining alive corner shapes are mixed-class with nonzero spectator
 (provably fragile) or varying-conjugation patterns.
+
+## Round 69 — Orientation verification pass
+
+The one condition the shape classifier didn't check — that a diff-type
+twin kill's lone conjugation pattern matches one of the two twins'
+flipped-part patterns (so the lone really is W or W̄) — verified
+programmatically on every twin kill at all nine pickled grids:
+0 mismatches / 830 diff-type twins checked. The 100%-coverage claims
+hold at the instance level, not just the shape level.
