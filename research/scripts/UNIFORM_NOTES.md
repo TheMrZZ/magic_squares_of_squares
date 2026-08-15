@@ -237,3 +237,17 @@ with p < 200, orbit indices <= 6 is impossible; beyond the grid,
 survival requires the double phase-sum vanishing — an explicit thin
 (codimension-2-like) set where second-order (mod p^2) analysis applies.
 Baker-style bookkeeping is fully superseded by this valuation pipeline.
+
+## Escape-depth census at the 1,806 double-vanishing points
+
+Delta := v_p(c) - e_min measured exactly (chi2_depth.py):
+{2: 504, 4: 588, 6: 210, 8: 252, 12: 126, 16: 84, 20: 42}.
+All depths EVEN (consistent with realness of c), bounded on the grid
+but growing with j: deep sinking occurs precisely when t = 2A mod p
+has small multiplicative order, which collapses many valuation layers
+simultaneously — these are the special-value loci in their exact
+arithmetic clothing.  Consequence: no fixed-order Hensel cutoff closes
+the thin set uniformly; the degenerate sub-polynomial at small-order t
+needs its own leading-pair analysis (expected self-similar, one level
+down).  Even so, c != 0 at every grid point — the empirical record
+remains unbroken across 3.2M+ direct checks and all structured probes.
