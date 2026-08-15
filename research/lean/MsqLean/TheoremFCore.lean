@@ -4891,4 +4891,67 @@ theorem no_magic_square_of_squares_sp2q_center
     x1 y1 x2 y2 x3 y3 x4 y4 hxy1 hq1 hxy2 hq2 hxy3 hq3 hxy4 hq4'
 
 
+/-- Public coordinate form of the s·p²·q assignment router, for reuse
+by the s·p³·q layer after its p²-cancellation. -/
+lemma no_assignment_sp2q_coord
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ Ka = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ Ka = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ Ka = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (hb : Kb = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ Kb = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ Kb = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ Kb = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (hc : Kc = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ Kc = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ Kc = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ Kc = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (hd : Kd = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ Kd = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ Kd = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ Kd = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (had : Ka ≠ Kd)
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  have conv : ∀ K : ℤ, (K = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) →
+      (K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+        ∨ K = L3 p A B C D ∨ K = L4 p A B C D ∨ K = L5 A B C D ∨ K = L6 A B C D) := by
+    intro K hK
+    rcases hK with h | h | h | h | h | h | h
+    · exact Or.inl (by unfold L0; exact h)
+    · exact Or.inr (Or.inl (by unfold L1; exact h))
+    · exact Or.inr (Or.inr (Or.inl (by unfold L2; exact h)))
+    · exact Or.inr (Or.inr (Or.inr (Or.inl (by unfold L3; exact h))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (by unfold L4; exact h)))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (by unfold L5; exact h))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (by unfold L6; exact h))))))
+  exact no_assignment_sp2q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd
+    e1 e2 e3 e4 he1 he2 he3 he4 (conv Ka ha) (conv Kb hb) (conv Kc hc) (conv Kd hd)
+    hab hac had hbc hbd hcd hE1 hE2
+
+
 end FCore

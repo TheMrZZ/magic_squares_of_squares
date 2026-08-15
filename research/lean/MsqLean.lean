@@ -37,3 +37,4 @@ import MsqLean.TheoremFInt
 import MsqLean.TheoremFCore
 import MsqLean.TheoremGInt
 import MsqLean.TheoremG
+import MsqLean.TheoremGCore
