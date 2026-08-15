@@ -348,3 +348,20 @@ condition, refuted at every grid point by the exact censuses
 3.2M checks).  This is the exact, final characterization of the
 uniform s p^a q frontier at 3 and 4 levels: finitely many
 Wieferich-type loci per shape, everything else proven impossible.
+
+## One-sided closure attempt: the order loci are irreducibly two-sided
+
+chi2_recurse3.py tests whether the ~19 order loci close by a one-sided
+(single-coordinate) layer analysis: NO closure fires anywhere (0/48
+instances).  The reason is structural: one-sided layer coefficients
+sum gamma_i pibar^{b_i} reduce mod pi back to the integer phase sums
+sum gamma_i (2A)^{b_i}, so the multiplicative-order condition reappears
+on either side.  FINAL CHARACTERIZATION of the s p^a q uniform frontier
+at levels 3-4: a hypothetical solution must sit on one of finitely many
+explicit order loci and satisfy, SIMULTANEOUSLY ON BOTH SIDES,
+ord_p(2A) | (explicit exponent gaps) together with Fermat-quotient
+deepenings v_pi(pibar^{Db}-1), v_pibar(pi^{Da}-1) each outrunning the
+next valuation layer — a double Wieferich-type coincidence, analogous
+in spirit to Wieferich-prime conditions, refuted at every point of the
+computed censuses and heuristically of density zero.  Everything else
+at 3 and 4 levels is proven impossible.
