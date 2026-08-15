@@ -20,3 +20,5 @@ import MsqLean.SimplestRelation
 import MsqLean.RelationFamily
 import MsqLean.CoreDisj
 import MsqLean.RelationFamilyF2
+import MsqLean.RelationFamilyF3
+import MsqLean.RelationFamilyF4

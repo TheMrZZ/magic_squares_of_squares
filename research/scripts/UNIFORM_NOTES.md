@@ -797,3 +797,34 @@ Running total: F1 (8) + F2 (8) = **16/32 pure double-pinch relations
 machine-checked**. The toolkit makes F3 {(0,2),(1,1),(1,2)} and its
 q-mirror F4 the remaining work; their cores sit at χ⁴/π⁴-level with an
 extra q² (resp. p²) grading, same extraction pattern.
+
+## Round 54 — ALL 32 pure double-pinch relations machine-checked
+
+`MsqLean/RelationFamilyF3.lean` + `MsqLean/RelationFamilyF4.lean`
+complete the programme (full `lake build` green, zero sorries):
+
+- F3 {(0,2),(1,1),(1,2)}, G = e₁p²χ⁸ + e₂q²π⁴K⁴ + e₃π⁴K⁸:
+  - class A (K=χ̄): π-side strips π̄⁴ then χ⁴ and goes through the
+    D↦−D mirror of pi_core_disj; χ-side regroups G − star G = 0 and
+    extracts χ̄⁸(e₃π⁴ − e₁p²) → sq_core_disj(e₃, −e₁).
+  - class B (K=χ, first slot also unconjugated): NOT a substitution
+    image of class A (checked — term 1 keeps χ⁸ while 2–3 conjugate);
+    proved directly. χ ∣ G holds outright, so no regrouping: strip
+    χ̄⁸ then π̄² → sq_core_disj(e₁,e₃); π-side strips π̄⁴, χ̄⁴ →
+    pi_core_disj directly.
+- F4 {(1,1),(2,0),(2,1)}, G = e₁p²π⁴K⁴ + e₂q²π⁸ + e₃π⁸K⁴:
+  - class A (K=χ̄): π-side strips π̄⁸ (mirror pi_core_disj); χ-side
+    subtracts the q²-term of G itself, strips χ̄⁴, π⁴, π² →
+    sq_core_disj(e₃,e₁).
+  - class B (K=χ): genuine D↦−D substitution image of class A —
+    a 6-line corollary.
+
+**Status: 32/32 residual pure double-pinch relations at exponent
+(2,2) are formally verified in Lean 4 / mathlib, parametric over all
+odd prime pairs (p,q), all Gaussian representations, and all sign
+variants.** Together with the Lean-verified grading lemma and parity
+facts, every certificate class that the symbolic census marks
+"double-pinch" now has a machine-checked proof. The remaining formal
+gap for the (2,2) unconditional layer is the 24 parity+unit-side
+relations (certificates are simpler but the always-odd cubic factors
+make the Lean statements longer).
