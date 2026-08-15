@@ -2678,4 +2678,113 @@ lemma cross_pair_core_S_int
       (by linear_combination h1) h2
 
 
+lemma im4_four (A B : ℤ) :
+    (((⟨A, B⟩ : GaussianInt) ^ 4).im) = 4 * (A * B * (A ^ 2 - B ^ 2)) := by
+  have h4 : (⟨A, B⟩ : GaussianInt) ^ 4
+      = ((⟨A, B⟩ : GaussianInt) * ⟨A, B⟩) * ((⟨A, B⟩ : GaussianInt) * ⟨A, B⟩) := by
+    ring
+  rw [h4]
+  simp only [Zsqrtd.im_mul, Zsqrtd.re_mul]
+  ring
+
+/-- Gaussian-level T-form core. -/
+lemma cross_pair_core_T
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kb Kd f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = f * Kb)
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      + e * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = g * Kd) :
+    False := by
+  have conv : ∀ K : ℤ, (K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+      ∨ K = L3 p A B C D ∨ K = L4 p A B C D) →
+      (K = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (q : ℤ) ^ 2 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+            - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) := by
+    intro K hK
+    rcases hK with rfl | rfl | rfl | rfl | rfl
+    · exact Or.inl (by unfold L0; rfl)
+    · exact Or.inr (Or.inl (by unfold L1; rfl))
+    · refine Or.inr (Or.inr (Or.inl ?_))
+      unfold L2
+      rw [im8_eq]
+    · exact Or.inr (Or.inr (Or.inr (Or.inl (by unfold L3; rfl))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (by unfold L4; rfl))))
+  exact cross_pair_core_T_int p q hpodd hqodd hpq
+    (((⟨A, B⟩ : GaussianInt) ^ 4).re) (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+    (((⟨C, D⟩ : GaussianInt) ^ 4).re) (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+    Kb Kd f g e hf hg he
+    (norm4_coord p A B hpAB) (norm4_coord q C D hqCD)
+    (p_not_dvd_re4_im4 p hpodd A B hpAB).1 (p_not_dvd_re4_im4 p hpodd A B hpAB).2
+    ((re8_eq A B) ▸ (p_not_dvd_re8_im8 p hpodd A B hpAB).1)
+    (p_not_dvd_re4_im4 q hqodd C D hqCD).1 (p_not_dvd_re4_im4 q hqodd C D hqCD).2
+    (im4_ne_zero q hqodd C D hqCD) (im4_ne_zero p hpodd A B hpAB)
+    (odd_ne_zero (re4_odd' p hpodd A B hpAB))
+    ⟨A * B * (A ^ 2 - B ^ 2), im4_four A B⟩
+    (coprime_re4_im4 p hpodd A B hpAB)
+    (conv Kb hb) (conv Kd hd)
+    (by linear_combination h1 - 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * re8_eq A B)
+    (by linear_combination h2 - 3 * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * re8_eq A B
+      - e * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * im8_eq A B)
+
+/-- Gaussian-level S-form core. -/
+lemma cross_pair_core_S
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kb Kd f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hb : Kb = L0 p C D ∨ Kb = L1 p q A B ∨ Kb = L2 q A B
+      ∨ Kb = L3 p A B C D ∨ Kb = L4 p A B C D)
+    (hd : Kd = L0 p C D ∨ Kd = L1 p q A B ∨ Kd = L2 q A B
+      ∨ Kd = L3 p A B C D ∨ Kd = L4 p A B C D)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * Kb)
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      + e * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * Kd) :
+    False := by
+  have conv : ∀ K : ℤ, (K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+      ∨ K = L3 p A B C D ∨ K = L4 p A B C D) →
+      (K = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (q : ℤ) ^ 2 * (2 * (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨A, B⟩ : GaussianInt) ^ 4).im))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+            + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+            - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) := by
+    intro K hK
+    rcases hK with rfl | rfl | rfl | rfl | rfl
+    · exact Or.inl (by unfold L0; rfl)
+    · exact Or.inr (Or.inl (by unfold L1; rfl))
+    · refine Or.inr (Or.inr (Or.inl ?_))
+      unfold L2
+      rw [im8_eq]
+    · exact Or.inr (Or.inr (Or.inr (Or.inl (by unfold L3; rfl))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (by unfold L4; rfl))))
+  exact cross_pair_core_S_int p q hpodd hqodd hpq
+    (((⟨A, B⟩ : GaussianInt) ^ 4).re) (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+    (((⟨C, D⟩ : GaussianInt) ^ 4).re) (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+    Kb Kd f g e hf hg he
+    (norm4_coord p A B hpAB) (norm4_coord q C D hqCD)
+    (p_not_dvd_re4_im4 p hpodd A B hpAB).1 (p_not_dvd_re4_im4 p hpodd A B hpAB).2
+    ((re8_eq A B) ▸ (p_not_dvd_re8_im8 p hpodd A B hpAB).1)
+    (p_not_dvd_re4_im4 q hqodd C D hqCD).2
+    (im4_ne_zero p hpodd A B hpAB)
+    (odd_ne_zero (re4_odd' p hpodd A B hpAB))
+    (re4_odd' p hpodd A B hpAB)
+    ⟨A * B * (A ^ 2 - B ^ 2), im4_four A B⟩
+    (coprime_re4_im4 p hpodd A B hpAB)
+    (conv Kb hb) (conv Kd hd)
+    (by linear_combination h1 - 2 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * im8_eq A B)
+    (by linear_combination h2 - 3 * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * im8_eq A B
+      - e * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * re8_eq A B)
+
+
 end FCore
