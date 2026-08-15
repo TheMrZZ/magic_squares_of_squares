@@ -3502,4 +3502,122 @@ lemma no_assignment_sp2q
               | exact hbc rfl)
 
 
+lemma im_mul44 (A B C D : ℤ) :
+    (((⟨A, B⟩ : GaussianInt) ^ 4) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im
+      = (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+  simp [Zsqrtd.im_mul]
+
+lemma im_mul44s (A B C D : ℤ) :
+    (((⟨A, B⟩ : GaussianInt) ^ 4) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im
+      = (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+  simp only [Zsqrtd.im_mul, ← star_pow, Zsqrtd.re_star, Zsqrtd.im_star]
+  ring
+
+/-- π does not divide the conjugate of π⁴·w⁴ for w ∈ {χ, χ̄}. -/
+lemma pi_not_dvd_star_p4w4
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣
+      star (((⟨A, B⟩ : GaussianInt) ^ 4) * ((⟨C, D⟩ : GaussianInt) ^ 4)) := by
+  intro h
+  rw [star_mul, star_pow, star_pow, mul_comm] at h
+  have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
+  rcases hπprime.dvd_mul.mp h with h1 | h1
+  · exact pi_not_dvd_star p hpodd A B hpAB (hπprime.dvd_of_dvd_pow h1)
+  · have h2 := hπprime.dvd_of_dvd_pow h1
+    have hstar : star (⟨C, D⟩ : GaussianInt) = (⟨C, -D⟩ : GaussianInt) := by
+      ext <;> simp
+    rw [hstar] at h2
+    have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+    exact not_dvd_other p q hpq A B C (-D) hpAB hqCD2 h2
+
+/-- χ does not divide the conjugate of π⁴·χ⁴. -/
+lemma chi_not_dvd_star_p4q4
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨C, D⟩ : GaussianInt) ∣
+      star (((⟨A, B⟩ : GaussianInt) ^ 4) * ((⟨C, D⟩ : GaussianInt) ^ 4)) := by
+  intro h
+  rw [star_mul, star_pow, star_pow] at h
+  have hχprime : Prime (⟨C, D⟩ : GaussianInt) := prime_pi q C D hqCD
+  rcases hχprime.dvd_mul.mp h with h1 | h1
+  · exact pi_not_dvd_star q hqodd C D hqCD (hχprime.dvd_of_dvd_pow h1)
+  · have h2 := hχprime.dvd_of_dvd_pow h1
+    have hstar : star (⟨A, B⟩ : GaussianInt) = (⟨A, -B⟩ : GaussianInt) := by
+      ext <;> simp
+    rw [hstar] at h2
+    have hpAB2 : A ^ 2 + (-B) ^ 2 = p := by rw [neg_pow]; ring_nf; linarith [hpAB]
+    exact not_dvd_other q p (fun hh => hpq hh.symm) C D A (-B) hqCD hpAB2 h2
+
+/-- p² never divides c·(RY + IX) for p ∤ c. -/
+lemma p2_not_dvd_K2v
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      = (p : ℤ) ^ 2 * m) : False := by
+  refine p2_extract_kill p hpodd A B hpAB
+    (((⟨A, B⟩ : GaussianInt) ^ 4) * ((⟨C, D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_right (dvd_pow_self _ (by norm_num)) _)
+    (pi_not_dvd_star_p4w4 p q hpodd hpq A B C D hpAB hqCD) ?_
+  rw [im_mul44]
+  exact h
+
+/-- p² never divides c·(IX − RY) for p ∤ c. -/
+lemma p2_not_dvd_K3v
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      = (p : ℤ) ^ 2 * m) : False := by
+  have hstar : (star (⟨C, D⟩ : GaussianInt)) = (⟨C, -D⟩ : GaussianInt) := by
+    ext <;> simp
+  have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+  refine p2_not_dvd_K2v p q hpodd hpq A B C (-D) hpAB hqCD2 c m hc ?_
+  have hre : (((⟨C, -D⟩ : GaussianInt) ^ 4).re) = (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    rw [← hstar, ← star_pow, Zsqrtd.re_star]
+  have him : (((⟨C, -D⟩ : GaussianInt) ^ 4).im) = -(((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    rw [← hstar, ← star_pow, Zsqrtd.im_star]
+  rw [hre, him]
+  linear_combination h
+
+/-- q² never divides c·(RY + IX) for q ∤ c. -/
+lemma q2_not_dvd_K2v
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c m : ℤ) (hc : ¬ (q : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      = (q : ℤ) ^ 2 * m) : False := by
+  refine p2_extract_kill q hqodd C D hqCD
+    (((⟨A, B⟩ : GaussianInt) ^ 4) * ((⟨C, D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_left (dvd_pow_self _ (by norm_num)) _)
+    (chi_not_dvd_star_p4q4 p q hqodd hpq A B C D hpAB hqCD) ?_
+  rw [im_mul44]
+  exact h
+
+/-- q² never divides c·(IX − RY) for q ∤ c. -/
+lemma q2_not_dvd_K3v
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (c m : ℤ) (hc : ¬ (q : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)
+      - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      = (q : ℤ) ^ 2 * m) : False := by
+  have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+  refine q2_not_dvd_K2v p q hqodd hpq A B C (-D) hpAB hqCD2 c m hc ?_
+  have hstar : (star (⟨C, D⟩ : GaussianInt)) = (⟨C, -D⟩ : GaussianInt) := by
+    ext <;> simp
+  have hre : (((⟨C, -D⟩ : GaussianInt) ^ 4).re) = (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    rw [← hstar, ← star_pow, Zsqrtd.re_star]
+  have him : (((⟨C, -D⟩ : GaussianInt) ^ 4).im) = -(((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    rw [← hstar, ← star_pow, Zsqrtd.im_star]
+  rw [hre, him]
+  linear_combination h
+
+
 end FCore
