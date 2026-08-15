@@ -1557,3 +1557,21 @@ the integer-divisibility kills; the earlier twoterm_q_gen/p_gen and
 even the Theorem E two-term trio become special cases. Remaining
 Theorem F work: the 210 three-term (a ∉ {c,d}) shapes via
 S/D-combinations, then dispatchers and assembly.
+
+## Round 96 — Theorem F three-term map: E-reuse + extraction criteria
+
+The 210 three-term shapes classify by two clean criteria:
+
+- π-extraction kills a 3-term relation iff exactly ONE of its classes
+  lies in {q²I₈, Im(π⁸χ⁴), Im(π⁸χ̄⁴)} (the star-side-p-free set);
+  q-extraction iff exactly TWO lie in {p²q²I, q²I₈}. Both are
+  instances of the universal twoterm_p_extract-style star-subtraction
+  (coefficient 2 is harmless: π ∤ 2).
+- Triples inside {p⁴Y, p²q²I, p²M₂, p²M₃}: dividing by p² gives
+  EXACTLY Theorem E's class set {p²Y, q²I, M₂, M₃} — so the entire
+  π⁴-level sub-landscape of Theorem F is killed by the already-proven
+  `no_assignment_spq` after p²-cancellation. Massive reuse.
+- The genuine F-residue: π⁸-level triples ({5,6,x}, {2,5/6,x} with
+  x ∈ {0,3,4}, {2,5,6}, and class-doubled diagonals) — the analog of
+  E's ratio/product tier one level up. These need the new residue
+  lemmas (I₈ = 2RI, R₈ = R²−I² structure).
