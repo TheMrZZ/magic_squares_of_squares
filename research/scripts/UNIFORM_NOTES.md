@@ -167,3 +167,20 @@ frontier is STABLE across levels — levels 3 and 4 produce no new
 obstruction type, only more copies of the same chi-square locus. The
 uniform-in-level question for Theorem H now reduces entirely to closing
 this single criterion class.
+
+## Chi-square criterion sweep: ZERO survivors (chi2_engine.py)
+
+For every one of the 20 deep shapes (8 at 3 levels + 12 at 4 levels),
+chi^4 = Q Nz / Dz forces the norm condition |Nz|^2 = Q^2 |Dz|^2 at
+Q = q^2, and any root must additionally make Q Nz / Dz an exact 4th
+power of a norm-q^2 Gaussian integer.  Exact-integer sweep over
+p < 200 (p = 1 mod 4), all orbit index tuples j in {1..4}^n, and
+q < 500 (q = 1 mod 4, q != p): 3,236,352 checks, ZERO norm-roots —
+the norm equation |Nz|^2 = Q^2 |Dz|^2 never even holds, so no leaf
+reaches the 4th-power test.  Every 3- and 4-level deep-shape leaf in
+this range is impossible.  Combined with the merged-engine kills, the
+3- and 4-level uniform templates are now fully closed over this range,
+matching the unconditional 1- and 2-level closure.  Remaining gap for
+a fully uniform Theorem H: prove |Nz|^2 - Q^2 |Dz|^2 != 0 uniformly
+(the polynomial identity route: both sides have distinct leading
+behavior in the dominant orbit weight — candidate next argument).
