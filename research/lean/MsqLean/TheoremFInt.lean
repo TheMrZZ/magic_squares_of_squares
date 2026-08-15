@@ -259,3 +259,51 @@ lemma resid_ratio_core_P (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.P
       exact resid_quad_pos_P q P hq0 hP0 (by linarith [hkey])
     · rw [hw] at hkey
       exact resid_quad_factored_P p q hpq hqodd P hPodd hPp (by linarith [hkey])
+
+/-- The cross-cross kill: I₈X = f·p²(RY + εIX) together with
+R₈Y = g·p²(RY + ε′IX) multiplies (after cancelling I·X·Y) into an
+identity whose mod-p reduction forces p ∣ 2R·R₈. -/
+lemma resid_cross_product (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (R I X Y : ℤ) (hI : I ≠ 0) (hX : X ≠ 0) (hY : Y ≠ 0)
+    (hpR : ¬ (p : ℤ) ∣ R) (hpR8 : ¬ (p : ℤ) ∣ (R ^ 2 - I ^ 2))
+    (f g e e' : ℤ)
+    (h1 : 2 * R * I * X = f * ((p : ℤ) ^ 2 * (R * Y + e * (I * X))))
+    (h2 : (R ^ 2 - I ^ 2) * Y = g * ((p : ℤ) ^ 2 * (R * Y + e' * (I * X)))) : False := by
+  have hα : I * X * (2 * R - e * f * (p : ℤ) ^ 2) = f * (p : ℤ) ^ 2 * R * Y := by
+    linear_combination h1
+  have hβ : Y * ((R ^ 2 - I ^ 2) - g * (p : ℤ) ^ 2 * R) = e' * g * (p : ℤ) ^ 2 * I * X := by
+    linear_combination h2
+  have hmul : (I * X * (2 * R - e * f * (p : ℤ) ^ 2))
+      * (Y * ((R ^ 2 - I ^ 2) - g * (p : ℤ) ^ 2 * R))
+      = (f * (p : ℤ) ^ 2 * R * Y) * (e' * g * (p : ℤ) ^ 2 * I * X) := by
+    rw [hα, hβ]
+  have hcan : I * (X * (Y * ((2 * R - e * f * (p : ℤ) ^ 2)
+      * ((R ^ 2 - I ^ 2) - g * (p : ℤ) ^ 2 * R)
+      - e' * f * g * (p : ℤ) ^ 4 * R))) = 0 := by
+    linear_combination hmul
+  have hγ : (2 * R - e * f * (p : ℤ) ^ 2) * ((R ^ 2 - I ^ 2) - g * (p : ℤ) ^ 2 * R)
+      - e' * f * g * (p : ℤ) ^ 4 * R = 0 := by
+    rcases mul_eq_zero.mp hcan with h | h
+    · exact absurd h hI
+    rcases mul_eq_zero.mp h with h | h
+    · exact absurd h hX
+    rcases mul_eq_zero.mp h with h | h
+    · exact absurd h hY
+    · exact h
+  have hdvd : (p : ℤ) ∣ 2 * R * (R ^ 2 - I ^ 2) := by
+    refine ⟨(p : ℤ) * (e * f * (R ^ 2 - I ^ 2) + 2 * g * R ^ 2
+      - e * f * g * (p : ℤ) ^ 2 * R + e' * f * g * (p : ℤ) ^ 2 * R), ?_⟩
+    linear_combination hγ
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hp2 : ¬ (p : ℤ) ∣ 2 := by
+    intro hd
+    have hle := Int.le_of_dvd (by norm_num) hd
+    have h3 : 3 ≤ p := by have := hp.out.two_le; omega
+    have : (3 : ℤ) ≤ (p : ℤ) := by exact_mod_cast h3
+    omega
+  rcases hpP.dvd_mul.mp hdvd with h | h
+  · rcases hpP.dvd_mul.mp h with h' | h'
+    · exact hp2 h'
+    · exact hpR h'
+  · exact hpR8 h
