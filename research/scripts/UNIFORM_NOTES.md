@@ -1099,3 +1099,23 @@ shapes with a constant spectator prime coordinate:
 Consequence: census "alive" counts at multi-prime grids overstate the
 frontier; the machine-checked uniform layer strictly exceeds the
 symbolic engine's certificate coverage.
+
+## Round 67 — Spectator-corner theorem + a correction found BY Lean
+
+`MsqLean/SpectatorCorner.lean`: `uniform_corner_aligned_spec` — the
+aligned corner triple survives an arbitrary common spectator factor W
+in every slot (hypotheses: π ∤ W̄, χ ∤ W). Both extraction chains stay
+clean because the remainders group entirely on one side (all-W or
+all-W̄). This formally kills the 244 census-alive aligned-corner
+relations at (2,2,1) (80 spectator-power-0 via the plain corner
+theorems + 164 with ψ^{4γ} spectators... exact split: 60+20 power-0,
+128+56 aligned power ≥ 1).
+
+CORRECTION (caught by the failing Lean proof, not by inspection): the
+MIXED class does NOT survive a non-real spectator. Its χ-side
+regrouping leaves the core e₃π²W − e₁π̄²W̄, which mixes W and W̄ and is
+no longer small — the pinch fails. The 72 mixed-spectator-power ≥ 1
+relations at (2,2,1) are genuinely uncertified, consistent with the
+census. Another instance of the aligned/mixed asymmetry: the mixed
+class is fragile (anchor α = 1 only, no spectators), the aligned class
+is robust (free anchors, arbitrary spectators).
