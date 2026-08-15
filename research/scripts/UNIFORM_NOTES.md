@@ -1264,3 +1264,25 @@ constraints as 2A = C + D, 2B = C − D with C = ±V_c, D = ±V_d:
   the kills are joint-system arguments: pinches |X| < q², |R| < p²,
   nonzero products IX, RY, and p/q-divisibility interplay. Catalog
   per system to be built next.
+
+## Round 77 — Theorem E kill mechanisms identified (no Fermat needed)
+
+Working the assignment systems by hand with numeric guidance:
+
+- Even single equations V_c ± V_d = ±2V_a have ZERO numeric solutions
+  over 812 prime pairs.
+- Sample kills: {c,d}={3,4}: sum/diff give IX = ±V_a and RY = ±V_b;
+  a=1 ⇒ X = ±q² (pinch); the deep-looking a=2 (IX = ±p²Y) yields, via
+  R⊥I and X⊥Y coprimality (gcd² ∣ p⁴, gcd coprime to p ⇒ 1),
+  |I| = |Y| and q⁴ = p⁴ + Y² — and the partner equation b=1 gives
+  p⁴ = q⁴ + I², so summing forces Y² + I² = 0. No Fermat descent.
+- {c,d}={1,2} with a=3: the wedge-like equation
+  I(q²−2X) = Y(2R−p²) resists alone, but the partner b=4 equation
+  combines: ε-aligned cases give 2X = ±q² (even = odd); anti-aligned
+  give 2IX = ±p²Y ∧ 2RY = ±q²I, whose PRODUCT yields 4RX = ±p²q²
+  (even = odd).
+- Kernel needs: coprime-from-norm lemma, pinch lemmas, sq-dvd-sq
+  extraction, and even≠odd finishers — all elementary.
+
+Next: mechanical certificate catalog over all systems, then the Lean
+case tree.
