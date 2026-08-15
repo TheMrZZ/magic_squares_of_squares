@@ -355,3 +355,205 @@ theorem simplest_relation_nonzero
   · exact hpq heq
   · have hqp' : ((q : ℤ)) < (p : ℤ) := by exact_mod_cast hgt
     exact strict_pinch_int (p : ℤ) (C ^ 2 - D ^ 2) (by exact_mod_cast Int.natCast_pos.mpr hp.out.pos) hpCD hCD0 (by omega)
+
+/-- **Second machine-checked relation (Im-core variant).**
+Same G-shape with the third sign flipped:
+Im(−p²·π⁴·χ̄⁸ − q²·π⁸·χ̄⁴ + π⁸·χ̄⁸) is never zero: the extraction now
+yields π ∣ (q² − χ⁴) = χ²(χ̄² − χ²) = −χ²·⟨0, 4CD⟩, so p ∣ 4CD, hence
+p ∣ C or p ∣ D with C², D² < q — pinched; symmetrically q ∣ 4AB. -/
+theorem second_relation_nonzero
+    (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    (-(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * (⟨A, B⟩ : GaussianInt) ^ 4 * (star (⟨C, D⟩ : GaussianInt)) ^ 8
+      - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (⟨A, B⟩ : GaussianInt) ^ 8 * (star (⟨C, D⟩ : GaussianInt)) ^ 4
+      + (⟨A, B⟩ : GaussianInt) ^ 8 * (star (⟨C, D⟩ : GaussianInt)) ^ 8).im ≠ 0 := by
+  intro h0
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  set G : GaussianInt :=
+    -(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 4 * (star χ) ^ 8
+      - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 8 * (star χ) ^ 4
+      + π ^ 8 * (star χ) ^ 8 with hGdef
+  have hself : star G = G := by
+    ext
+    · simp
+    · simp [h0]
+  have hππb : π * star π = ((p : ℤ) : GaussianInt) := by
+    rw [hπdef, pi_mul_star, hpAB]
+  have hχχb : χ * star χ = ((q : ℤ) : GaussianInt) := by
+    rw [hχdef, pi_mul_star, hqCD]
+  have hπprime : Prime π := prime_pi p A B hpAB
+  have hχprime : Prime χ := prime_pi q C D hqCD
+  have hπnb : ¬ π ∣ star π := pi_not_dvd_star p hpodd A B hpAB
+  have hχnb : ¬ χ ∣ star χ := pi_not_dvd_star q hqodd C D hqCD
+  have hπχ : ¬ π ∣ χ := not_dvd_other p q hpq A B C D hpAB hqCD
+  have hχπ : ¬ χ ∣ π := not_dvd_other q p (fun h => hpq h.symm) C D A B hqCD hpAB
+  have hP2 : (((p : ℤ) ^ 2 : ℤ) : GaussianInt) = π ^ 2 * (star π) ^ 2 := by
+    have hcast : (((p : ℤ) ^ 2 : ℤ) : GaussianInt) = ((p : ℤ) : GaussianInt) ^ 2 := by
+      push_cast; ring
+    rw [hcast, ← hππb]; ring
+  have hQ2 : (((q : ℤ) ^ 2 : ℤ) : GaussianInt) = χ ^ 2 * (star χ) ^ 2 := by
+    have hcast : (((q : ℤ) ^ 2 : ℤ) : GaussianInt) = ((q : ℤ) : GaussianInt) ^ 2 := by
+      push_cast; ring
+    rw [hcast, ← hχχb]; ring
+  have hπG : π ∣ G := by
+    rw [hGdef]
+    have h4 : π ∣ π ^ 4 := dvd_pow_self π (by norm_num)
+    have h8 : π ∣ π ^ 8 := dvd_pow_self π (by norm_num)
+    exact dvd_add (dvd_sub ((h4.mul_left _).mul_right _) ((h8.mul_left _).mul_right _))
+      (h8.mul_right _)
+  have hstarG : star G =
+      -(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 4 * χ ^ 8
+        - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 8 * χ ^ 4
+        + (star π) ^ 8 * χ ^ 8 := by
+    rw [hGdef]
+    simp only [star_add, star_sub, star_neg, star_mul, star_pow, star_star, star_intCast]
+    ring
+  have hπsG : π ∣ (-(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 4 * χ ^ 8
+      - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 8 * χ ^ 4
+      + (star π) ^ 8 * χ ^ 8) := by
+    rw [← hstarG, hself]; exact hπG
+  have hπrest : π ∣ ((((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 8 * χ ^ 4
+      - (star π) ^ 8 * χ ^ 8) := by
+    have hterm : π ∣ (-(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 4 * χ ^ 8) := by
+      rw [hP2]
+      have h2 : π ∣ π ^ 2 := dvd_pow_self π (by norm_num)
+      have h3 : π ∣ π ^ 2 * (star π) ^ 2 := h2.mul_right _
+      exact ((dvd_neg.mpr h3).mul_right _).mul_right _
+    have := dvd_sub hterm hπsG
+    have heq : -(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 4 * χ ^ 8
+        - (-(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 4 * χ ^ 8
+          - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 8 * χ ^ 4
+          + (star π) ^ 8 * χ ^ 8)
+        = (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 8 * χ ^ 4
+          - (star π) ^ 8 * χ ^ 8 := by ring
+    rwa [heq] at this
+  have hfact : ((((q : ℤ) ^ 2 : ℤ) : GaussianInt) * (star π) ^ 8 * χ ^ 4
+      - (star π) ^ 8 * χ ^ 8)
+      = (star π) ^ 8 * χ ^ 4 * ((((q : ℤ) ^ 2 : ℤ) : GaussianInt) - χ ^ 4) := by ring
+  have hπq4 : π ∣ ((((q : ℤ) ^ 2 : ℤ) : GaussianInt) - χ ^ 4) := by
+    rcases hπprime.dvd_mul.mp (hfact ▸ hπrest) with h1 | h1
+    · rcases hπprime.dvd_mul.mp h1 with h2 | h2
+      · exact absurd (hπprime.dvd_of_dvd_pow h2) hπnb
+      · exact absurd (hπprime.dvd_of_dvd_pow h2) hπχ
+    · exact h1
+  have hsplit : ((((q : ℤ) ^ 2 : ℤ) : GaussianInt) - χ ^ 4)
+      = -(χ ^ 2 * (χ ^ 2 - (star χ) ^ 2)) := by rw [hQ2]; ring
+  have hcoreχ : χ ^ 2 - (star χ) ^ 2 = (⟨0, 4 * C * D⟩ : GaussianInt) := by
+    rw [hχdef]; exact im_core_eq C D
+  have hπcore : π ∣ (⟨0, 4 * C * D⟩ : GaussianInt) := by
+    rw [← hcoreχ]
+    have hneg : π ∣ (χ ^ 2 * (χ ^ 2 - (star χ) ^ 2)) := by
+      have := hsplit ▸ hπq4
+      exact (dvd_neg.mp this)
+    rcases hπprime.dvd_mul.mp hneg with h1 | h1
+    · exact absurd (hπprime.dvd_of_dvd_pow h1) hπχ
+    · exact h1
+  have hpdvd : (p : ℤ) ∣ 4 * C * D :=
+    int_dvd_of_gaussian_dvd_imag p A B hpAB _ hπcore
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hp2' : ¬ (p : ℤ) ∣ 4 := by
+    intro hd
+    have hn : p ∣ 4 := by
+      have : ((4 : ℕ) : ℤ) = (4 : ℤ) := by norm_num
+      exact_mod_cast hd
+    have h2 := hp.out.two_le
+    have hle : p ≤ 4 := Nat.le_of_dvd (by norm_num) hn
+    interval_cases p <;> omega
+  have hpCD : (p : ℤ) ∣ C ∨ (p : ℤ) ∣ D := by
+    rcases hpP.dvd_mul.mp hpdvd with h1 | h1
+    · rcases hpP.dvd_mul.mp h1 with h2 | h2
+      · exact absurd h2 hp2'
+      · exact Or.inl h2
+    · exact Or.inr h1
+  -- symmetric chain: q ∣ A or q ∣ B
+  have hχsG : χ ∣ star G := by
+    rw [hstarG]
+    have h4 : χ ∣ χ ^ 4 := dvd_pow_self χ (by norm_num)
+    have h8 : χ ∣ χ ^ 8 := dvd_pow_self χ (by norm_num)
+    exact dvd_add (dvd_sub (h8.mul_left _) (h4.mul_left _)) (h8.mul_left _)
+  have hχG : χ ∣ G := hself ▸ hχsG
+  have hχrest : χ ∣ ((((p : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 4 * (star χ) ^ 8
+      - π ^ 8 * (star χ) ^ 8) := by
+    have hterm : χ ∣ (-(((q : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 8 * (star χ) ^ 4) := by
+      rw [hQ2]
+      have h2 : χ ∣ χ ^ 2 := dvd_pow_self χ (by norm_num)
+      have h3 : χ ∣ χ ^ 2 * (star χ) ^ 2 := h2.mul_right _
+      exact ((dvd_neg.mpr h3).mul_right _).mul_right _
+    have hG' : χ ∣ (-(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 4 * (star χ) ^ 8
+        - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 8 * (star χ) ^ 4
+        + π ^ 8 * (star χ) ^ 8) := by rw [← hGdef]; exact hχG
+    have := dvd_sub hterm hG'
+    have heq : -(((q : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 8 * (star χ) ^ 4
+        - (-(((p : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 4 * (star χ) ^ 8
+          - (((q : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 8 * (star χ) ^ 4
+          + π ^ 8 * (star χ) ^ 8)
+        = (((p : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 4 * (star χ) ^ 8
+          - π ^ 8 * (star χ) ^ 8 := by ring
+    rwa [heq] at this
+  have hfact2 : ((((p : ℤ) ^ 2 : ℤ) : GaussianInt) * π ^ 4 * (star χ) ^ 8
+      - π ^ 8 * (star χ) ^ 8)
+      = π ^ 4 * (star χ) ^ 8 * ((((p : ℤ) ^ 2 : ℤ) : GaussianInt) - π ^ 4) := by ring
+  have hχp4 : χ ∣ ((((p : ℤ) ^ 2 : ℤ) : GaussianInt) - π ^ 4) := by
+    rcases hχprime.dvd_mul.mp (hfact2 ▸ hχrest) with h1 | h1
+    · rcases hχprime.dvd_mul.mp h1 with h2 | h2
+      · exact absurd (hχprime.dvd_of_dvd_pow h2) hχπ
+      · exact absurd (hχprime.dvd_of_dvd_pow h2) hχnb
+    · exact h1
+  have hsplit2 : ((((p : ℤ) ^ 2 : ℤ) : GaussianInt) - π ^ 4)
+      = -(π ^ 2 * (π ^ 2 - (star π) ^ 2)) := by rw [hP2]; ring
+  have hcoreπ : π ^ 2 - (star π) ^ 2 = (⟨0, 4 * A * B⟩ : GaussianInt) := by
+    rw [hπdef]; exact im_core_eq A B
+  have hχcore : χ ∣ (⟨0, 4 * A * B⟩ : GaussianInt) := by
+    rw [← hcoreπ]
+    have hneg : χ ∣ (π ^ 2 * (π ^ 2 - (star π) ^ 2)) := dvd_neg.mp (hsplit2 ▸ hχp4)
+    rcases hχprime.dvd_mul.mp hneg with h1 | h1
+    · exact absurd (hχprime.dvd_of_dvd_pow h1) hχπ
+    · exact h1
+  have hqdvd : (q : ℤ) ∣ 4 * A * B :=
+    int_dvd_of_gaussian_dvd_imag q C D hqCD _ hχcore
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hq2' : ¬ (q : ℤ) ∣ 4 := by
+    intro hd
+    have hn : q ∣ 4 := by
+      have : ((4 : ℕ) : ℤ) = (4 : ℤ) := by norm_num
+      exact_mod_cast hd
+    have h2 := hq.out.two_le
+    have hle : q ≤ 4 := Nat.le_of_dvd (by norm_num) hn
+    interval_cases q <;> omega
+  have hqAB : (q : ℤ) ∣ A ∨ (q : ℤ) ∣ B := by
+    rcases hqP.dvd_mul.mp hqdvd with h1 | h1
+    · rcases hqP.dvd_mul.mp h1 with h2 | h2
+      · exact absurd h2 hq2'
+      · exact Or.inl h2
+    · exact Or.inr h1
+  -- pinch: coordinates are strictly smaller than the OTHER prime once ordered
+  obtain ⟨hA2, hB2⟩ := coord_sq_lt p A B hpAB
+  obtain ⟨hC2, hD2⟩ := coord_sq_lt q C D hqCD
+  obtain ⟨hAne, hBne⟩ := coord_ne_zero p A B hpAB
+  obtain ⟨hCne, hDne⟩ := coord_ne_zero q C D hqCD
+  rcases Nat.lt_trichotomy p q with hlt | heq | hgt
+  · -- p < q: use q ∣ A or B, with A², B² < p ≤ q² but need |A| < q:
+    -- A² < p < q so |A| < q since |A| ≤ A² for |A| ≥ 1
+    have hq0 : (0 : ℤ) < (q : ℤ) := by exact_mod_cast hq.out.pos
+    have hpq' : ((p : ℤ)) < (q : ℤ) := by exact_mod_cast hlt
+    rcases hqAB with h | h
+    · have hAabs : |A| < (q : ℤ) := by
+        nlinarith [abs_nonneg A, sq_abs A, abs_pos.mpr hAne]
+      exact strict_pinch_int (q : ℤ) A hq0 h hAne hAabs
+    · have hBabs : |B| < (q : ℤ) := by
+        nlinarith [abs_nonneg B, sq_abs B, abs_pos.mpr hBne]
+      exact strict_pinch_int (q : ℤ) B hq0 h hBne hBabs
+  · exact hpq heq
+  · have hp0 : (0 : ℤ) < (p : ℤ) := by exact_mod_cast hp.out.pos
+    have hqp' : ((q : ℤ)) < (p : ℤ) := by exact_mod_cast hgt
+    rcases hpCD with h | h
+    · have hCabs : |C| < (p : ℤ) := by
+        nlinarith [abs_nonneg C, sq_abs C, abs_pos.mpr hCne]
+      exact strict_pinch_int (p : ℤ) C hp0 h hCne hCabs
+    · have hDabs : |D| < (p : ℤ) := by
+        nlinarith [abs_nonneg D, sq_abs D, abs_pos.mpr hDne]
+      exact strict_pinch_int (p : ℤ) D hp0 h hDne hDabs

@@ -717,3 +717,13 @@ pairs (Re,Re)/(Im,Im)/(Re,Im)/(Im,Re).  simplest_relation_nonzero is
 the (all-minus, all-conjugated) instance; the other 31 are template
 instantiations with star swaps (Re-core via (star chi)^2 + chi^2 =
 2(C^2-D^2), Im-core via im_core_eq and coord_sq_lt pinch on C, D).
+
+## Second machine-checked relation: the Im-core template
+
+second_relation_nonzero (SimplestRelation.lean, zero sorries): the
+G-shape with flipped third sign.  Extraction yields pi | (q^2 - chi^4)
+= -chi^2 (chi^2 - chibar^2) = -chi^2 * <0, 4CD>, so p | 4CD, hence
+p | C or p | D with C^2, D^2 < q — coordinate pinch (strict, both
+orderings); symmetrically q | A or q | B.  Both certificate variants
+(Re-core, Im-core) now have verified Lean templates; the remaining 30
+double-pinch relations are sign/star permutations of the two.
