@@ -1908,3 +1908,15 @@ the six pair dispatchers (ab56F, 56F, ac, ad, bc, bd); k≥3 →
 pigeonhole + distinctness. Remaining: helperA (one-L2 low relation),
 helperB (lone-8 vs two lows), the 16-bucket router, rep_structure
 hookup, no_four_diffs_sp2q, capstone.
+
+## Round 120 — no_assignment_sp2q COMPILED (first try)
+
+The seven-class router for s·p²·q is machine-checked: 16 buckets by
+level-8 count, every dispatcher slotting in cleanly, pigeonhole +
+distinctness pruning the repeats. This is the F-analogue of E's
+no_assignment_spq. Remaining for the capstone: hook up
+rep_structure_sp2q (7-class D-value classification, already proven),
+derive the pairwise distinctness of the four class values from the
+distinctness of the differences, the s²-cancellation
+(no_four_diffs_sp2q), and the final
+no_magic_square_of_squares_sp2q_center. Mirror E's capstone assembly.
