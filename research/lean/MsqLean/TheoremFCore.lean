@@ -4954,4 +4954,45 @@ lemma no_assignment_sp2q_coord
     hab hac had hbc hbd hcd hE1 hE2
 
 
+/-- Coordinate-form wrapper for the ratio exclusion, for reuse downstream. -/
+lemma no_ratio2_coord
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (W V δ : ℤ) (hδ : δ = 1 ∨ δ = -1)
+    (hW : (fun K => K = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) W)
+    (hV : (fun K => K = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) V)
+    (h : W = 2 * δ * V) : False := by
+  have conv : ∀ K : ℤ, (K = (p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+        ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ 8) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) →
+      (K = L0 p C D ∨ K = L1 p q A B ∨ K = L2 q A B
+        ∨ K = L3 p A B C D ∨ K = L4 p A B C D ∨ K = L5 A B C D ∨ K = L6 A B C D) := by
+    intro K hK
+    rcases hK with h' | h' | h' | h' | h' | h' | h'
+    · exact Or.inl (by unfold L0; linear_combination h')
+    · exact Or.inr (Or.inl (by unfold L1; linear_combination h'))
+    · exact Or.inr (Or.inr (Or.inl (by unfold L2; exact h')))
+    · exact Or.inr (Or.inr (Or.inr (Or.inl (by unfold L3; exact h'))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (by unfold L4; exact h')))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (by unfold L5; exact h'))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (by unfold L6; exact h'))))))
+  exact no_ratio2 p q hpodd hqodd hpq A B C D hpAB hqCD W V δ hδ
+    (conv W hW) (conv V hV) h
+
 end FCore
