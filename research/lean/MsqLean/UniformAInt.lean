@@ -5,6 +5,7 @@ facts about (π^{4a}).re/.im proved by induction on a via the recurrence
 -/
 import Mathlib
 import MsqLean.TheoremGInt
+import MsqLean.TheoremFCore
 
 open Zsqrtd
 
@@ -131,5 +132,72 @@ lemma J_chain (A B : ℤ) (a : ℕ) (ha : 1 ≤ a) :
         rw [hR, hJ]
         push_cast
         linear_combination ((n : ℤ)) * hpow
+
+/-- 4 divides the imaginary coordinate for a >= 1. -/
+lemma im_four (A B : ℤ) (a : ℕ) (ha : 1 ≤ a) :
+    (4 : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) := by
+  obtain ⟨J, c, d, hI, _, _⟩ := J_chain A B a ha
+  rw [hI, im4_four A B]
+  exact ⟨A * B * (A ^ 2 - B ^ 2) * J, by ring⟩
+
+/-- The real coordinate is odd for a >= 1. -/
+lemma re_odd (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) (ha : 1 ≤ a) :
+    Odd ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) := by
+  have hn := norm_coord p A B hpAB a
+  obtain ⟨k4, hk4⟩ := im_four A B a ha
+  have hoddp : Odd ((p : ℤ) ^ (2 * a)) := (odd_cast p hpodd).pow
+  obtain ⟨m, hm⟩ := hoddp
+  obtain ⟨t, ht⟩ := Int.even_mul_succ_self m
+  have hp8 : (p : ℤ) ^ (4 * a) = 8 * t + 1 := by
+    have hsq : (p : ℤ) ^ (4 * a) = ((p : ℤ) ^ (2 * a)) ^ 2 := by
+      rw [← pow_mul]; ring_nf
+    rw [hsq, hm]
+    linear_combination 4 * ht
+  rcases Int.even_or_odd ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) with ⟨r, hr⟩ | ho
+  · exfalso
+    rw [hr, hk4, hp8] at hn
+    have hexp : 4 * (r * r) + 16 * k4 ^ 2 = 8 * t + 1 := by linear_combination hn
+    generalize r * r = r2 at hexp
+    generalize k4 ^ 2 = K2 at hexp
+    omega
+  · exact ho
+
+/-- The coordinates are coprime for a >= 1. -/
+lemma coprime_coords (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) (ha : 1 ≤ a) :
+    IsCoprime ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) := by
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hsum := norm_coord p A B hpAB a
+  rw [Int.isCoprime_iff_gcd_eq_one]
+  by_contra hg
+  obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hg
+  have hrR : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) :=
+    (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_left _ _)
+  have hrI : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) :=
+    (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_right _ _)
+  have hrP : Prime (r : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+  have hrp4a : (r : ℤ) ∣ (p : ℤ) ^ (4 * a) := by
+    rw [← hsum]
+    exact dvd_add (dvd_pow hrR (by norm_num)) (dvd_pow hrI (by norm_num))
+  have hrp : (r : ℤ) ∣ (p : ℤ) := hrP.dvd_of_dvd_pow hrp4a
+  have hrpn : r = p := by
+    have hnat : r ∣ p := by exact_mod_cast hrp
+    exact (Nat.prime_dvd_prime_iff_eq hrprime hp.out).mp hnat
+  rw [hrpn] at hrR
+  exact hpR hrR
+
+/-- The J-cofactor in explicit mod-16 form: I4a = I4*J with
+J = a*R4^(a-1) + 16 t^2 d, where I4 = 4t. -/
+lemma J_mod_form (A B : ℤ) (a : ℕ) (ha : 1 ≤ a) :
+    ∃ J d : ℤ,
+      (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) = ((((⟨A, B⟩ : GaussianInt) ^ 4).im)) * J
+      ∧ J = (a : ℤ) * ((((⟨A, B⟩ : GaussianInt) ^ 4).re)) ^ (a - 1)
+          + 16 * (A * B * (A ^ 2 - B ^ 2)) ^ 2 * d := by
+  obtain ⟨J, c, d, hI, _, hJ⟩ := J_chain A B a ha
+  refine ⟨J, d, hI, ?_⟩
+  rw [hJ, im4_four A B]
+  ring
 
 end UniformA
