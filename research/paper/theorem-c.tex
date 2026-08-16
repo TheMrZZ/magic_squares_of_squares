@@ -324,6 +324,43 @@ $\chi^{8},\chi^{12},\dots$ are polynomials in $(R_B,I_B)$.  The open
 problems are uniformity in the exponents and the $\ge 3$-prime landscape,
 where the leaf systems acquire positive dimension.
 
+
+\section{Center roots $s\,p^3q$}
+
+\begin{theorem}\label{thm:G}
+There is no magic square of squares whose center root is $s\,p^3q$, where
+$p\neq q$ are primes $\equiv 1\pmod 4$ and $s$ is free of such primes.
+\end{theorem}
+
+Here $|D(e)|=10$: the seven Theorem~\ref{thm:F} classes scaled by $p^2$,
+together with the three genuinely new elements
+$Q\,|\!\im\pi^{12}|$ and $|\!\im(\pi^{12}\chi^{\pm4})|$.  The formal proof
+(\texttt{TheoremGCore.lean}, again zero \texttt{sorry}s) mirrors the
+Theorem~\ref{thm:F} architecture rung for rung, and the comparison is
+instructive for the eventual induction on the exponent:
+\begin{itemize}
+\item the all-low bucket of the $16$-bucket router cancels $p^2$ and invokes
+the Theorem~\ref{thm:F} router verbatim --- the ladder telescopes;
+\item the mixed core, which at level~$8$ required a page of residue
+analysis, collapses at level~$12$ to a three-line valuation argument:
+every low class is divisible by $p^2$, so the paired equations force
+$p^4\mid q^4$;
+\item the new $q^2\im\pi^{12}$ class dies through the classification of
+$J=4R_4^2-p^4$ and $J'=4R_4^2-3p^4$ against powers of $q$, with unit
+branches killed modulo $16$ and by consecutive squares, and one deep cell
+descending to $p^4\mid 20t^2J^2$, which forces $p=5$ and then $5\mid tJ$,
+a contradiction;
+\item the ratio layer's hardest cell, $\im(\pi^{12}\chi^4)=\pm2
+\im(\pi^{12}\bar\chi^4)$, factors through $\pi^{12}=(\pi^6)^2$ and runs the
+same Fermat descent as Theorem~\ref{thm:F} with base pair $(q,p^3)$ in place
+of $(q,p^2)$.
+\end{itemize}
+The proof is thus not merely analogous to Theorem~\ref{thm:F} but
+\emph{reuses} it as a black box wherever a factor $p^2$ can be cancelled,
+and the three new classes are dispatched by arguments whose shape is
+independent of the exponent.  This is precisely the inductive step one
+would want for a uniform theorem covering all center roots $s\,p^aq$.
+
 \section{The two-prime frontier}
 
 \subsection*{Toward uniformity in the exponent}
