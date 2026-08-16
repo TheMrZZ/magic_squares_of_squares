@@ -2990,4 +2990,236 @@ lemma dispatch_ab56G
       (by rcases he4 with rfl | rfl <;> norm_num) hc hd
       (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
 
+set_option maxHeartbeats 1600000 in
+lemma dispatch_ac12G
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q) (hq4m : q % 4 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hac : (Ka = M8 A B C D ∧ Kc = M9 A B C D) ∨ (Ka = M9 A B C D ∧ Kc = M8 A B C D))
+    (hb : Kb = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hd : Kd = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hac with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8_coord, M9_coord] at hE1 hE2 <;>
+    rcases he1 with rfl | rfl <;> rcases he3 with rfl | rfl
+  -- Ka = L5, Kc = L6
+  · -- (e1, e3) = (1, 1): T-form, f = −e2, g = e4, e = 1
+    exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd (-e2) e4 1
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (1, −1): S-form, f = −e2, g = e4, e = 1
+    exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd (-e2) e4 1
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, 1): S-form, f = e2, g = −e4, e = 1
+    exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd e2 (-e4) 1
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, −1): T-form, f = e2, g = −e4, e = 1
+    exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd e2 (-e4) 1
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  -- Ka = L6, Kc = L5
+  · -- (1, 1): T-form, f = e2, g = −e4, e = −1
+    exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd e2 (-e4) (-1)
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (1, −1): S-form, f = −e2, g = e4, e = −1
+    exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd (-e2) e4 (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, 1): S-form, f = e2, g = −e4, e = −1
+    exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd e2 (-e4) (-1)
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, −1): T-form, f = −e2, g = e4, e = −1
+    exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kd (-e2) e4 (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Ka and Kd carry the level-8 classes. -/
+lemma dispatch_ad12G
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q) (hq4m : q % 4 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (had : (Ka = M8 A B C D ∧ Kd = M9 A B C D) ∨ (Ka = M9 A B C D ∧ Kd = M8 A B C D))
+    (hb : Kb = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hc : Kc = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases had with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8_coord, M9_coord] at hE1 hE2 <;>
+    rcases he1 with rfl | rfl <;> rcases he4 with rfl | rfl
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc e2 e3 1
+      he2 he3 (Or.inl rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc e2 e3 1
+      he2 he3 (Or.inl rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc (-e2) (-e3) 1
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc (-e2) (-e3) 1
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc (-e2) (-e3) (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc e2 e3 (-1)
+      he2 he3 (Or.inr rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc (-e2) (-e3) (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Kb Kc e2 e3 (-1)
+      he2 he3 (Or.inr rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Kb and Kc carry the level-8 classes. -/
+lemma dispatch_bc12G
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q) (hq4m : q % 4 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hbc : (Kb = M8 A B C D ∧ Kc = M9 A B C D) ∨ (Kb = M9 A B C D ∧ Kc = M8 A B C D))
+    (ha : Ka = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hd : Kd = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hbc with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8_coord, M9_coord] at hE1 hE2 <;>
+    rcases he2 with rfl | rfl <;> rcases he3 with rfl | rfl
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd (-e1) (-e4) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd (-e1) (-e4) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd e1 e4 1
+      he1 he4 (Or.inl rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd e1 e4 1
+      he1 he4 (Or.inl rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd e1 e4 (-1)
+      he1 he4 (Or.inr rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd (-e1) (-e4) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd e1 e4 (-1)
+      he1 he4 (Or.inr rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kd (-e1) (-e4) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Kb and Kd carry the level-8 classes. -/
+lemma dispatch_bd12G
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q) (hq4m : q % 4 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hbd : (Kb = M8 A B C D ∧ Kd = M9 A B C D) ∨ (Kb = M9 A B C D ∧ Kd = M8 A B C D))
+    (ha : Ka = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hc : Kc = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hbd with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8_coord, M9_coord] at hE1 hE2 <;>
+    rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc e1 e3 1
+      he1 he3 (Or.inl rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc e1 e3 1
+      he1 he3 (Or.inl rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc (-e1) (-e3) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc (-e1) (-e3) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc e1 e3 (-1)
+      he1 he3 (Or.inr rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc (-e1) (-e3) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_T12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc e1 e3 (-1)
+      he1 he3 (Or.inr rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact cross_pair_core_S12 p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kc (-e1) (-e3) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+
+
 end GCore
