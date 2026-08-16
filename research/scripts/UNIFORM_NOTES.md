@@ -2215,3 +2215,26 @@ Risk register: (a) even-a J_a parity changes the sform/J-classification kills �
 must re-derive those generically with v₂(J_a) tracked; (b) rep_structure for
 generic a needs a recursive classification proof (G's was a 42-case template —
 the generic version wants the divisor-combinatorics argument done once).
+
+## Round 137 (2026-08-17) — generic class family
+
+Derivation: x+iy with x²+y² = s²p^{2a}q², 2xy ≠ 0. Gaussian factorization
+(rigid s ⇒ σ-part contributes s²·±1; u² = ±1, no i-twist):
+2xy = ±s²·p^{2(a−e)}·q^{2(1−|κ|)}·Im(π^{4e}χ^{4κ}), e ∈ 0..a, κ ∈ {−1,0,1},
+minus the real (e,κ)=(0,0) case. Class family (1 + 3a members ✓ census):
+
+  UClass a K :≡ K = p^{2a}·im₄(χ)
+    ∨ ∃ e, 1 ≤ e ≤ a ∧ ( K = p^{2(a−e)}·q²·im(π^{4e})
+                       ∨ K = p^{2(a−e)}·Im(π^{4e}χ⁴)
+                       ∨ K = p^{2(a−e)}·Im(π^{4e}χ̄⁴) )
+
+**Telescoping identity (nearly definitional)**: for a ≥ 2,
+  UClass a K ↔ (∃ K', K = p²·K' ∧ UClass (a−1) K') ∨ K ∈
+    { q²·im(π^{4a}), Im(π^{4a}χ⁴), Im(π^{4a}χ̄⁴) }
+(e ≤ a−1 terms shift p²; e = a gives the three new classes). This is the
+formal skeleton of the G-reuses-F phenomenon and the induction's backbone.
+
+Phase-1 status: UniformAInt.lean has norm/p∤coords/J_chain/im_four/re_odd/
+coprime_coords/J_mod_form, all generic in a, zero sorries. Remaining phase-1:
+generic rep_structure into UClass (the UFD argument, hardest piece), then
+phase 2 (abstract-step routers).
