@@ -232,3 +232,98 @@ lemma rep_sq_unique (q : ℕ) [hq : Fact (Nat.Prime q)]
     rcases this with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · exact Or.inl ⟨h1, by linarith [h2, sq_abs D]⟩
     · exact Or.inr ⟨by linarith [h1], by linarith [h2]⟩
+
+/-- Level 12 through level 6: real part. -/
+lemma re12_eq6 (A B : ℤ) :
+    (((⟨A, B⟩ : GaussianInt) ^ 12).re) = (((⟨A, B⟩ : GaussianInt) ^ 6).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 6).im) ^ 2 := by
+  rw [show (⟨A, B⟩ : GaussianInt) ^ 12 = ((⟨A, B⟩ : GaussianInt) ^ 6) * ((⟨A, B⟩ : GaussianInt) ^ 6) from by ring]
+  simp [Zsqrtd.re_mul]
+  ring
+
+/-- Level 12 through level 6: imaginary part. -/
+lemma im12_eq6 (A B : ℤ) :
+    (((⟨A, B⟩ : GaussianInt) ^ 12).im) = 2 * (((⟨A, B⟩ : GaussianInt) ^ 6).re) * (((⟨A, B⟩ : GaussianInt) ^ 6).im) := by
+  rw [show (⟨A, B⟩ : GaussianInt) ^ 12 = ((⟨A, B⟩ : GaussianInt) ^ 6) * ((⟨A, B⟩ : GaussianInt) ^ 6) from by ring]
+  simp [Zsqrtd.im_mul]
+  ring
+
+lemma norm6_coord (p : ℕ) [hp : Fact (Nat.Prime p)]
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) :
+    (((⟨A, B⟩ : GaussianInt) ^ 6).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 6).im) ^ 2 = (p : ℤ) ^ 6 := by
+  have h12 := norm12_coord p A B hpAB
+  have hre := re12_eq6 A B
+  have him := im12_eq6 A B
+  have hsq : ((((⟨A, B⟩ : GaussianInt) ^ 6).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 6).im) ^ 2) ^ 2 = ((p : ℤ) ^ 6) ^ 2 := by
+    linear_combination h12 - ((((⟨A, B⟩ : GaussianInt) ^ 12).re) + (((⟨A, B⟩ : GaussianInt) ^ 6).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ 6).im) ^ 2) * hre
+      - ((((⟨A, B⟩ : GaussianInt) ^ 12).im) + 2 * (((⟨A, B⟩ : GaussianInt) ^ 6).re) * (((⟨A, B⟩ : GaussianInt) ^ 6).im)) * him
+  have hnn : 0 ≤ (((⟨A, B⟩ : GaussianInt) ^ 6).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 6).im) ^ 2 := by positivity
+  have hnn2 : (0 : ℤ) ≤ (p : ℤ) ^ 6 := by positivity
+  nlinarith [hsq, hnn, hnn2]
+
+lemma im6_even (A B : ℤ) : Even ((((⟨A, B⟩ : GaussianInt) ^ 6).im)) := by
+  rw [show (⟨A, B⟩ : GaussianInt) ^ 6 = ((⟨A, B⟩ : GaussianInt) ^ 3) * ((⟨A, B⟩ : GaussianInt) ^ 3) from by ring]
+  exact ⟨(((⟨A, B⟩ : GaussianInt) ^ 3).re) * (((⟨A, B⟩ : GaussianInt) ^ 3).im), by simp [Zsqrtd.im_mul]; ring⟩
+
+lemma im6_ne_zero (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) : (((⟨A, B⟩ : GaussianInt) ^ 6).im) ≠ 0 := by
+  intro h0
+  have h12 := im12_eq6 A B
+  rw [h0, mul_zero] at h12
+  exact im12_ne_zero p hpodd A B hpAB h12
+
+lemma re6_ne_zero (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) : (((⟨A, B⟩ : GaussianInt) ^ 6).re) ≠ 0 := by
+  intro h0
+  have h12 := im12_eq6 A B
+  rw [h0] at h12
+  simp at h12
+  exact im12_ne_zero p hpodd A B hpAB h12
+
+lemma re6_odd (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) : Odd ((((⟨A, B⟩ : GaussianInt) ^ 6).re)) := by
+  have hn := norm6_coord p A B hpAB
+  obtain ⟨k, hk⟩ := im6_even A B
+  obtain ⟨d, hd⟩ := odd_cast p hpodd
+  obtain ⟨t, ht⟩ := Int.even_mul_succ_self d
+  have hp2 : (p : ℤ) ^ 2 = 8 * t + 1 := by rw [hd]; linear_combination 4 * ht
+  have hp6 : (p : ℤ) ^ 6 = ((p : ℤ) ^ 2) ^ 3 := by ring
+  rcases Int.even_or_odd ((((⟨A, B⟩ : GaussianInt) ^ 6).re)) with ⟨m, hm⟩ | ho
+  · exfalso
+    rw [hp6, hp2] at hn
+    rw [hm, hk] at hn
+    have hexp : 4 * m ^ 2 + 4 * k ^ 2 = (8 * t + 1) ^ 3 := by linear_combination hn
+    have h8 : (8 * t + 1) ^ 3 = 8 * (64 * t ^ 3 + 24 * t ^ 2 + 3 * t) + 1 := by ring
+    rw [h8] at hexp
+    generalize m ^ 2 = M2 at hexp
+    generalize k ^ 2 = K2 at hexp
+    generalize 64 * t ^ 3 + 24 * t ^ 2 + 3 * t = T3 at hexp
+    omega
+  · exact ho
+
+lemma coprime_re6_im6 (p : ℕ) [hp : Fact (Nat.Prime p)] (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) :
+    IsCoprime ((((⟨A, B⟩ : GaussianInt) ^ 6).re)) ((((⟨A, B⟩ : GaussianInt) ^ 6).im)) := by
+  obtain ⟨hpR12, hpI12⟩ := p_not_dvd_re12_im12 p hpodd A B hpAB
+  have hsum := norm6_coord p A B hpAB
+  rw [Int.isCoprime_iff_gcd_eq_one]
+  by_contra hg
+  obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hg
+  have hrR : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ 6).re) :=
+    (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_left _ _)
+  have hrI : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ 6).im) :=
+    (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_right _ _)
+  have hrP : Prime (r : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+  have hr6 : (r : ℤ) ∣ (p : ℤ) ^ 6 := by
+    rw [← hsum]
+    exact dvd_add (dvd_pow hrR (by norm_num)) (dvd_pow hrI (by norm_num))
+  have hrp : (r : ℤ) ∣ (p : ℤ) := hrP.dvd_of_dvd_pow hr6
+  have hrpn : r = p := by
+    have : r ∣ p := by exact_mod_cast hrp
+    exact (Nat.prime_dvd_prime_iff_eq hrprime hp.out).mp this
+  rw [hrpn] at hrR hrI
+  refine hpR12 ?_
+  obtain ⟨a, ha⟩ := hrR
+  obtain ⟨b, hb⟩ := hrI
+  have hre := re12_eq6 A B
+  exact ⟨(p : ℤ) * a ^ 2 - (p : ℤ) * b ^ 2, by rw [hre, ha, hb]; ring⟩
