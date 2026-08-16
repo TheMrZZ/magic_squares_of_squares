@@ -2160,3 +2160,17 @@ ab slot-pairs → mixed core + deep cell), deep_val_cell12 (M8,M9 both
 present, the E1−E2 elimination leaving Im(π¹²χ⁴)-difference structure),
 unsafe-pair dispatchers ac/ad/bc/bd, lone-12 dispatchers, then
 no_assignment_sp3q.
+
+## Round 134 (2026-08-16) — no_assignment_sp3q COMPLETE
+
+The full 16-bucket router for Theorem G is machine-checked: `no_assignment_sp3q`
+(10 classes M0..M9, four distinct slots, E1/E2 relations → False). Structure
+mirrors F exactly; the port of the router text was almost purely textual.
+Bucket inventory: dispatch_lowG_full (telescope to F's full 7-class router
+when M7 absent; p²-residue kill when present), lone12a-d, 56G/ab56G (χ-pairs
+via the two mixed cores), ac/ad/bc/bd12G (unsafe pairs via T12/S12 cores),
+pigeonhole for ≥3 χ-slots. Zero sorries, full build green.
+
+Remaining for the capstone: the G ratio layer (no_ratio2 analog — plan:
+H×H cells cancel p² → F's no_ratio2; cells with M7/M8/M9 need χ-valuation
++ descent_norm4' with b := p³), no_four_diffs_sp3q, capstone.

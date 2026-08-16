@@ -3711,4 +3711,181 @@ lemma dispatch_lowG_full
       (by rcases he1 with rfl | rfl <;> norm_num)
       (by unfold M7; linear_combination -hE1 - 2 * e1 * hM7a + e3 * hmc + e4 * hmd)
 
+/-- Split a 10-class membership into low (8) vs level-12 χ (2). -/
+lemma split10G {K : ℤ} (A B C D : ℤ)
+    (h : K = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)
+      ∨ K = M8 A B C D ∨ K = M9 A B C D) :
+    (K = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)) ∨ (K = M8 A B C D ∨ K = M9 A B C D) := by
+  rcases h with h | h | h | h | h | h | h | h | h | h
+  · exact Or.inl (Or.inl h)
+  · exact Or.inl (Or.inr (Or.inl h))
+  · exact Or.inl (Or.inr (Or.inr (Or.inl h)))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inl h))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr h)))))))
+  · exact Or.inr (Or.inl h)
+  · exact Or.inr (Or.inr h)
+
+set_option maxHeartbeats 1600000 in
+lemma no_assignment_sp3q
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q) (hq4m : q % 4 = 1)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha : Ka = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)
+      ∨ Ka = M8 A B C D ∨ Ka = M9 A B C D)
+    (hb : Kb = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)
+      ∨ Kb = M8 A B C D ∨ Kb = M9 A B C D)
+    (hc : Kc = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)
+      ∨ Kc = M8 A B C D ∨ Kc = M9 A B C D)
+    (hd : Kd = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)
+      ∨ Kd = M8 A B C D ∨ Kd = M9 A B C D)
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (had : Ka ≠ Kd)
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases split10G p q A B C D ha with haL | ha8 <;>
+    rcases split10G p q A B C D hb with hbL | hb8 <;>
+    rcases split10G p q A B C D hc with hcL | hc8 <;>
+    rcases split10G p q A B C D hd with hdL | hd8
+  · exact dispatch_lowG_full p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 haL hbL hcL hdL hab hac had hbc hbd hcd hE1 hE2
+  · exact dispatch_lone12d p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 hd8 haL hbL hcL hab hac hbc hE1 hE2
+  · exact dispatch_lone12c p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 hc8 haL hbL hdL hab had hbd hE1 hE2
+  · -- c, d both level-8
+    rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact hcd rfl
+    · exact dispatch_56G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kb e1 e2 e3 e4
+        he1 he2 he3 he4 haL hbL hE1 hE2
+    · exact dispatch_56G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kb e1 (-e2) e4 e3
+        he1 (by rcases he2 with rfl | rfl <;> norm_num) he4 he3 haL hbL
+        (by linarith [hE1]) (by linarith [hE2])
+    · exact hcd rfl
+  · exact dispatch_lone12b p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 hb8 haL hcL hdL hac had hcd hE1 hE2
+  · -- b, d both level-8
+    rcases hb8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact hbd rfl
+    · exact dispatch_bd12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka _ Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) haL hcL hE1 hE2
+    · exact dispatch_bd12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka _ Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) haL hcL hE1 hE2
+    · exact hbd rfl
+  · -- b, c both level-8
+    rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl
+    · exact hbc rfl
+    · exact dispatch_bc12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka _ _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) haL hdL hE1 hE2
+    · exact dispatch_bc12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka _ _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) haL hdL hE1 hE2
+    · exact hbc rfl
+  · -- b, c, d all level-8: pigeonhole
+    rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hbc rfl
+        | exact hbd rfl
+        | exact hcd rfl
+  · exact dispatch_lone12a p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd e1 e2 e3 e4
+      he1 he2 he3 he4 ha8 hbL hcL hdL hbc hbd hcd hE1 hE2
+  · -- a, d both level-8
+    rcases ha8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact had rfl
+    · exact dispatch_ad12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD _ Kb Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) hbL hcL hE1 hE2
+    · exact dispatch_ad12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD _ Kb Kc _ e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) hbL hcL hE1 hE2
+    · exact had rfl
+  · -- a, c both level-8
+    rcases ha8 with rfl | rfl <;> rcases hc8 with rfl | rfl
+    · exact hac rfl
+    · exact dispatch_ac12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD _ Kb _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) hbL hdL hE1 hE2
+    · exact dispatch_ac12G p q hpodd hqodd hpq hq4m A B C D hpAB hqCD _ Kb _ Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) hbL hdL hE1 hE2
+    · exact hac rfl
+  · -- a, c, d all level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hac rfl
+        | exact had rfl
+        | exact hcd rfl
+  · -- a, b both level-8
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl
+    · exact hab rfl
+    · exact dispatch_ab56G p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd e1 e2 e3 e4
+        he1 he2 he3 he4 hcL hdL hE1 hE2
+    · exact dispatch_ab56G p q hpodd hqodd hpq A B C D hpAB hqCD Kc Kd e2 e1 e3 (-e4)
+        he2 he1 he3 (by rcases he4 with rfl | rfl <;> norm_num) hcL hdL
+        (by linarith [hE2]) (by linarith [hE1])
+    · exact hab rfl
+  · -- a, b, d all level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact had rfl
+        | exact hbd rfl
+  · -- a, b, c all level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact hac rfl
+        | exact hbc rfl
+  · -- all four level-8: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | (rcases hc8 with rfl | rfl <;>
+            first
+              | exact hac rfl
+              | exact hbc rfl)
+
+
+
 end GCore
