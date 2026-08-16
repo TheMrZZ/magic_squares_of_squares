@@ -3888,4 +3888,175 @@ lemma no_assignment_sp3q
 
 
 
+set_option maxHeartbeats 1600000 in
+lemma ratio_M8_M9_kill
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (R I X Y δ : ℤ) (hδ : δ = 1 ∨ δ = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (p : ℤ) ^ 6)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hcopRI : IsCoprime R I) (hcopXY : IsCoprime X Y)
+    (hRodd : Odd R)
+    (hR0 : R ≠ 0) (hI0 : I ≠ 0) (hX0 : X ≠ 0) (hY0 : Y ≠ 0)
+    (h : (R ^ 2 - I ^ 2) * Y + (2 * R * I) * X
+      = 2 * δ * ((2 * R * I) * X - (R ^ 2 - I ^ 2) * Y)) : False := by
+  have hP3 : Prime (3 : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; norm_num
+  have hoddp4 : Odd ((p : ℤ) ^ 6) := (odd_cast p hpodd).pow
+  obtain ⟨c4, hc4⟩ := hoddp4
+  obtain ⟨r, hr⟩ := hRodd
+  have hIeven : Even I := by
+    rcases Int.even_or_odd I with he | ho
+    · exact he
+    · exfalso
+      obtain ⟨i, hi⟩ := ho
+      have hpar : (2 * r + 1) ^ 2 + (2 * i + 1) ^ 2 = 2 * c4 + 1 := by
+        rw [← hr, ← hi, ← hc4]; exact hp4
+      have hexp : 4 * r ^ 2 + 4 * r + 4 * i ^ 2 + 4 * i + 2 = 2 * c4 + 1 := by
+        linear_combination hpar
+      generalize r ^ 2 = R2 at hexp
+      generalize i ^ 2 = I2 at hexp
+      omega
+  obtain ⟨iv, hiv⟩ := hIeven
+  have hR8odd : Odd (R ^ 2 - I ^ 2) :=
+    ⟨2 * r ^ 2 + 2 * r - 2 * iv ^ 2, by rw [hr, hiv]; ring⟩
+  have hR80 : R ^ 2 - I ^ 2 ≠ 0 := odd_ne_zero hR8odd
+  have hI80 : 2 * R * I ≠ 0 := by
+    intro h0
+    rcases mul_eq_zero.mp h0 with h' | h'
+    · rcases mul_eq_zero.mp h' with h'' | h''
+      · norm_num at h''
+      · exact hR0 h''
+    · exact hI0 h'
+  have hRR8 : IsCoprime R (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime R (I ^ 2) := hcopRI.pow_right
+    have h1'' := (h0.neg_right).add_mul_right_right R
+    have heq : -I ^ 2 + R * R = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hIR8 : IsCoprime I (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime I (R ^ 2) := hcopRI.symm.pow_right
+    have h1'' := h0.add_mul_right_right (-I)
+    have heq : R ^ 2 + -I * I = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hcop2 : IsCoprime (R ^ 2 - I ^ 2) (2 : ℤ) := by
+    have hP2 : Prime (2 : ℤ) := Int.prime_two
+    refine ((hP2.coprime_iff_not_dvd).mpr ?_).symm
+    intro hd
+    obtain ⟨k, hk⟩ := hd
+    obtain ⟨m, hm⟩ := hR8odd
+    omega
+  have hcopR8I8 : IsCoprime (R ^ 2 - I ^ 2) (2 * R * I) :=
+    (hcop2.mul_right hRR8.symm).mul_right hIR8.symm
+  have hnorm8 : (R ^ 2 - I ^ 2) ^ 2 + (2 * R * I) ^ 2 = (p : ℤ) ^ 12 := by
+    have hp8 : (R ^ 2 + I ^ 2) ^ 2 = (p : ℤ) ^ 12 := by rw [hp4]; ring
+    linear_combination hp8
+  have hp2odd : p ^ 3 % 2 = 1 := by
+    have := Nat.pow_mod p 3 2
+    rw [hpodd] at this
+    simpa using this
+  have hcopqp2 : Nat.Coprime q (p ^ 3) :=
+    Nat.Coprime.pow_right 3 ((Nat.coprime_primes hq.out hp.out).mpr (Ne.symm hpq))
+  have hqnep2 : q ≠ p ^ 3 := by
+    intro hqe
+    have hpd : p ∣ q := by rw [hqe]; exact ⟨p ^ 2, by ring⟩
+    have hpe := (Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hpd
+    rw [← hpe] at hqe
+    have hgt : p ^ 1 < p ^ 3 :=
+      Nat.pow_lt_pow_right (by have := hp.out.two_le; omega) (by omega)
+    rw [pow_one] at hgt
+    omega
+  have hq0 : 0 < q := hq.out.pos
+  have hp20 : 0 < p ^ 3 := pow_pos hp.out.pos 3
+  have hcast : (((p ^ 3 : ℕ)) : ℤ) ^ 4 = (p : ℤ) ^ 12 := by push_cast; ring
+  rcases hδ with rfl | rfl
+  · -- 3R₈Y = I₈X
+    have h3 : 3 * ((R ^ 2 - I ^ 2) * Y) = (2 * R * I) * X := by linarith
+    have hR8X : (R ^ 2 - I ^ 2) ∣ X := by
+      refine hcopR8I8.dvd_of_dvd_mul_right ?_
+      exact ⟨3 * Y, by linear_combination -h3⟩
+    obtain ⟨xh, hxh⟩ := hR8X
+    subst hxh
+    have hYI8 : Y ∣ 2 * R * I := by
+      refine (hcopXY.symm).dvd_of_dvd_mul_right ?_
+      exact ⟨3 * (R ^ 2 - I ^ 2), by linear_combination -h3⟩
+    obtain ⟨ih, hih⟩ := hYI8
+    have h3c : ih * xh = 3 := by
+      have h0 : (R ^ 2 - I ^ 2) * Y * (3 - ih * xh) = 0 := by
+        linear_combination h3 + (R ^ 2 - I ^ 2) * xh * hih
+      rcases mul_eq_zero.mp h0 with h' | h'
+      · exact absurd h' (mul_ne_zero hR80 hY0)
+      · linarith
+    have hihd : ih ∣ 3 := ⟨xh, h3c.symm⟩
+    have hcases : (ih = 1 ∧ xh = 3) ∨ (ih = -1 ∧ xh = -3)
+        ∨ (ih = 3 ∧ xh = 1) ∨ (ih = -3 ∧ xh = -1) := by
+      obtain ⟨i, hi, ha⟩ := (dvd_prime_pow hP3 1).mp (by simpa using hihd)
+      interval_cases i
+      rotate_left
+      · rw [pow_one] at ha
+        rcases Int.associated_iff.mp ha with rfl | rfl
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl, by linarith⟩))
+        · exact Or.inr (Or.inr (Or.inr ⟨rfl, by linarith⟩))
+      rw [pow_zero] at ha
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp ha) with rfl | rfl
+      · exact Or.inl ⟨rfl, by linarith⟩
+      · exact Or.inr (Or.inl ⟨rfl, by linarith⟩)
+    rcases hcases with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · have hsq : (2 * R * I) ^ 2 = Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' q (p ^ 3) hqodd hp2odd hcopqp2 hqnep2 hq0 hp20
+        (R ^ 2 - I ^ 2) (by rw [hcast]; linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (2 * R * I) ^ 2 = Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' q (p ^ 3) hqodd hp2odd hcopqp2 hqnep2 hq0 hp20
+        (R ^ 2 - I ^ 2) (by rw [hcast]; linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (2 * R * I) ^ 2 = 9 * Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' (p ^ 3) q hp2odd hqodd hcopqp2.symm (Ne.symm hqnep2) hp20 hq0
+        Y (by rw [hcast]; linear_combination hq4 - hnorm8 + hsq)
+    · have hsq : (2 * R * I) ^ 2 = 9 * Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' (p ^ 3) q hp2odd hqodd hcopqp2.symm (Ne.symm hqnep2) hp20 hq0
+        Y (by rw [hcast]; linear_combination hq4 - hnorm8 + hsq)
+  · -- R₈Y = 3I₈X
+    have h3 : (R ^ 2 - I ^ 2) * Y = 3 * ((2 * R * I) * X) := by linarith
+    have hI8Y : (2 * R * I) ∣ Y := by
+      refine hcopR8I8.symm.dvd_of_dvd_mul_right ?_
+      exact ⟨3 * X, by linear_combination h3⟩
+    obtain ⟨yh, hyh⟩ := hI8Y
+    subst hyh
+    have hXR8 : X ∣ (R ^ 2 - I ^ 2) := by
+      refine (hcopXY).dvd_of_dvd_mul_right ?_
+      exact ⟨3 * (2 * R * I), by linear_combination h3⟩
+    obtain ⟨rh, hrh⟩ := hXR8
+    have h3c : rh * yh = 3 := by
+      have h0 : (2 * R * I) * X * (rh * yh - 3) = 0 := by
+        linear_combination h3 - (2 * R * I) * yh * hrh
+      rcases mul_eq_zero.mp h0 with h' | h'
+      · exact absurd h' (mul_ne_zero hI80 hX0)
+      · linarith
+    have hrhd : rh ∣ 3 := ⟨yh, h3c.symm⟩
+    have hcases : (rh = 1 ∧ yh = 3) ∨ (rh = -1 ∧ yh = -3)
+        ∨ (rh = 3 ∧ yh = 1) ∨ (rh = -3 ∧ yh = -1) := by
+      obtain ⟨i, hi, ha⟩ := (dvd_prime_pow hP3 1).mp (by simpa using hrhd)
+      interval_cases i
+      rotate_left
+      · rw [pow_one] at ha
+        rcases Int.associated_iff.mp ha with rfl | rfl
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl, by linarith⟩))
+        · exact Or.inr (Or.inr (Or.inr ⟨rfl, by linarith⟩))
+      rw [pow_zero] at ha
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp ha) with rfl | rfl
+      · exact Or.inl ⟨rfl, by linarith⟩
+      · exact Or.inr (Or.inl ⟨rfl, by linarith⟩)
+    rcases hcases with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' q (p ^ 3) hqodd hp2odd hcopqp2 hqnep2 hq0 hp20
+        (2 * R * I) (by rw [hcast]; linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' q (p ^ 3) hqodd hp2odd hcopqp2 hqnep2 hq0 hp20
+        (2 * R * I) (by rw [hcast]; linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = 9 * X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' (p ^ 3) q hp2odd hqodd hcopqp2.symm (Ne.symm hqnep2) hp20 hq0
+        X (by rw [hcast]; linear_combination hq4 - hnorm8 + hsq)
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = 9 * X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' (p ^ 3) q hp2odd hqodd hcopqp2.symm (Ne.symm hqnep2) hp20 hq0
+        X (by rw [hcast]; linear_combination hq4 - hnorm8 + hsq)
+
+
+
 end GCore
