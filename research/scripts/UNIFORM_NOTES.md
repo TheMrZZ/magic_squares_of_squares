@@ -2174,3 +2174,18 @@ pigeonhole for ≥3 χ-slots. Zero sorries, full build green.
 Remaining for the capstone: the G ratio layer (no_ratio2 analog — plan:
 H×H cells cancel p² → F's no_ratio2; cells with M7/M8/M9 need χ-valuation
 + descent_norm4' with b := p³), no_four_diffs_sp3q, capstone.
+
+## Round 135 (2026-08-16) — THEOREM G COMPLETE
+
+`no_magic_square_of_squares_sp3q_center` is machine-checked, zero sorries:
+no 3×3 fully magic square of nine perfect squares has center (s·p³·q)² for
+distinct primes p, q ≡ 1 (mod 4) and rigid s. The fourth verified
+impossibility family (after s·pᵃ, s·p·q, s·p²·q).
+
+Final pieces this round: no_four_diffs_sp3q (port of F's four-diffs with
+rep_structure_sp3q + no_ratio2_sp3q + no_assignment_sp3q; q ≡ 1 mod 4
+derived from the two-square rep) and the capstone via converse_reduction.
+
+The ladder now telescopes twice (F reuses E, G reuses F). Next: the uniform
+s·pᵃ·q induction — the G build showed the inductive step's shape: three new
+classes per rung (q²I_{4a}, Im(π^{4a}χ^±4)), everything else cancels p².

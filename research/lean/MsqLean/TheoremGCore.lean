@@ -4,6 +4,7 @@ level-12 classes on top of p²-scaled Theorem-F classes.
 -/
 import Mathlib
 import MsqLean.TheoremGInt
+import MsqLean.TheoremG
 import MsqLean.TheoremFCore
 
 open Zsqrtd
@@ -4328,5 +4329,244 @@ lemma no_ratio2_sp3q
         rcases mul_eq_zero.mp h0 with h' | h'
         · linear_combination hM9c - h'
         · exfalso; rcases hδ with rfl | rfl <;> omega
+
+set_option maxHeartbeats 1600000 in
+/-- Four differences u, v, u+v, u−v cannot all lie in D(s·p³·q). -/
+theorem no_four_diffs_sp3q
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1) (hs0 : 0 < s)
+    (u v : ℤ) (hu0 : u ≠ 0) (hv0 : v ≠ 0) (huv : u ≠ v) (huv' : u ≠ -v)
+    (x1 y1 x2 y2 x3 y3 x4 y4 : ℤ)
+    (h1 : x1 ^ 2 + y1 ^ 2 = (s : ℤ) ^ 2 * (p : ℤ) ^ 6 * (q : ℤ) ^ 2) (e1 : 2 * x1 * y1 = u)
+    (h2 : x2 ^ 2 + y2 ^ 2 = (s : ℤ) ^ 2 * (p : ℤ) ^ 6 * (q : ℤ) ^ 2) (e2 : 2 * x2 * y2 = v)
+    (h3 : x3 ^ 2 + y3 ^ 2 = (s : ℤ) ^ 2 * (p : ℤ) ^ 6 * (q : ℤ) ^ 2) (e3 : 2 * x3 * y3 = u + v)
+    (h4 : x4 ^ 2 + y4 ^ 2 = (s : ℤ) ^ 2 * (p : ℤ) ^ 6 * (q : ℤ) ^ 2) (e4 : 2 * x4 * y4 = u - v) :
+    False := by
+  have hq4m : q % 4 = 1 := by
+    have hqz : (q : ℤ) % 4 = 1 := by
+      rcases Int.even_or_odd C with ⟨c, hc⟩ | ⟨c, hc⟩ <;>
+        rcases Int.even_or_odd D with ⟨d, hd⟩ | ⟨d, hd⟩ <;>
+        rw [hc, hd] at hqCD
+      · exfalso
+        obtain ⟨m, hm⟩ := odd_cast q hqodd
+        rw [hm] at hqCD
+        have hx : 4 * (c * c) + 4 * (d * d) = 2 * m + 1 := by linear_combination hqCD
+        generalize c * c = c2 at hx
+        generalize d * d = d2 at hx
+        omega
+      · have hx : (q : ℤ) = 4 * (c * c + d * d + d) + 1 := by linear_combination -hqCD
+        omega
+      · have hx : (q : ℤ) = 4 * (c * c + c + d * d) + 1 := by linear_combination -hqCD
+        omega
+      · exfalso
+        obtain ⟨m, hm⟩ := odd_cast q hqodd
+        rw [hm] at hqCD
+        have hx : 4 * (c * c + c + d * d + d) + 2 = 2 * m + 1 := by linear_combination hqCD
+        generalize c * c = c2 at hx
+        generalize d * d = d2 at hx
+        omega
+    omega
+  obtain ⟨ε1, hε1, hd1⟩ := rep_structure_sp3q p q hpq A B C D hpAB hqCD s hs x1 y1 h1
+    (by rw [e1]; exact hu0)
+  obtain ⟨ε2, hε2, hd2⟩ := rep_structure_sp3q p q hpq A B C D hpAB hqCD s hs x2 y2 h2
+    (by rw [e2]; exact hv0)
+  obtain ⟨ε3, hε3, hd3⟩ := rep_structure_sp3q p q hpq A B C D hpAB hqCD s hs x3 y3 h3
+    (by rw [e3]; intro h; exact huv' (by linarith))
+  obtain ⟨ε4, hε4, hd4⟩ := rep_structure_sp3q p q hpq A B C D hpAB hqCD s hs x4 y4 h4
+    (by rw [e4]; intro h; exact huv (by linarith))
+  rw [e1] at hd1; rw [e2] at hd2; rw [e3] at hd3; rw [e4] at hd4
+  have him84 : (((⟨A, B⟩ : GaussianInt) ^ 8 * (⟨C, D⟩ : GaussianInt) ^ 4).im) = (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    simp [Zsqrtd.im_mul]
+  have him84s : (((⟨A, B⟩ : GaussianInt) ^ 8 * (star (⟨C, D⟩ : GaussianInt)) ^ 4).im) = (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    simp only [Zsqrtd.im_mul, ← star_pow, Zsqrtd.re_star, Zsqrtd.im_star]
+    ring
+  have pack : ∀ w εw,
+      (w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 4 * (((⟨A, B⟩ : GaussianInt) ^ 4 * (⟨C, D⟩ : GaussianInt) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 4 * (((⟨A, B⟩ : GaussianInt) ^ 4 * (star (⟨C, D⟩ : GaussianInt)) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 2 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8 * (⟨C, D⟩ : GaussianInt) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((p : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8 * (star (⟨C, D⟩ : GaussianInt)) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12 * (⟨C, D⟩ : GaussianInt) ^ 4).im)))
+       ∨ w = εw * ((s : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 12 * (star (⟨C, D⟩ : GaussianInt)) ^ 4).im)))) →
+      ∃ K, (K = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+        ∨ K = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+        ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+        ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)
+        ∨ K = M8 A B C D
+        ∨ K = M9 A B C D)
+        ∧ w = εw * ((s : ℤ) ^ 2 * K) := by
+    intro w εw hw
+    rcases hw with h | h | h | h | h | h | h | h | h | h
+    · exact ⟨(p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im), Or.inl rfl, h⟩
+    · exact ⟨(p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im), Or.inr (Or.inl rfl), h⟩
+    · refine ⟨(p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)), Or.inr (Or.inr (Or.inr (Or.inl rfl))), ?_⟩
+      rw [im_mul44] at h
+      exact h
+    · refine ⟨(p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)), Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))), ?_⟩
+      rw [im_mul44s] at h
+      exact h
+    · exact ⟨(p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im)), Or.inr (Or.inr (Or.inl rfl)), by linear_combination h⟩
+    · refine ⟨(p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)), Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))), ?_⟩
+      rw [him84] at h
+      exact h
+    · refine ⟨(p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)), Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))), ?_⟩
+      rw [him84s] at h
+      exact h
+    · exact ⟨(q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im), Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))), h⟩
+    · refine ⟨M8 A B C D, Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))))), ?_⟩
+      unfold M8
+      exact h
+    · refine ⟨M9 A B C D, Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (rfl))))))))), ?_⟩
+      unfold M9
+      exact h
+  obtain ⟨Ka, hKa, hu⟩ := pack u ε1 hd1
+  obtain ⟨Kb, hKb, hv⟩ := pack v ε2 hd2
+  obtain ⟨Kc, hKc, hsv⟩ := pack (u + v) ε3 hd3
+  obtain ⟨Kd, hKd, hdv⟩ := pack (u - v) ε4 hd4
+  have hs2 : ((s : ℤ) ^ 2) ≠ 0 := by positivity
+  have hcancel : ∀ Kx Ky d : ℤ, (s : ℤ) ^ 2 * (Kx - 2 * d * Ky) = 0 → Kx = 2 * d * Ky := by
+    intro Kx Ky d h0
+    rcases mul_eq_zero.mp h0 with h' | h'
+    · exact absurd h' hs2
+    · linarith
+  -- distinctness of the four class values
+  have hab : Ka ≠ Kb := by
+    intro he
+    rw [he] at hu
+    rcases hε1 with rfl | rfl <;> rcases hε2 with rfl | rfl
+    · exact huv (by linarith [hu, hv])
+    · exact huv' (by linarith [hu, hv])
+    · exact huv' (by linarith [hu, hv])
+    · exact huv (by linarith [hu, hv])
+  have hcd : Kc ≠ Kd := by
+    intro he
+    rw [he] at hsv
+    rcases hε3 with rfl | rfl <;> rcases hε4 with rfl | rfl
+    · exact hv0 (by linarith [hsv, hdv])
+    · exact hu0 (by linarith [hsv, hdv])
+    · exact hu0 (by linarith [hsv, hdv])
+    · exact hv0 (by linarith [hsv, hdv])
+  have hac : Ka ≠ Kc := by
+    intro he
+    rw [he] at hu
+    rcases hε1 with rfl | rfl <;> rcases hε3 with rfl | rfl
+    · exact hv0 (by linarith [hu, hsv])
+    · rcases hε2 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kc (-1)
+          (Or.inr rfl) hKb hKc (hcancel Kb Kc (-1) (by linear_combination hsv - hu - hv))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kc (1)
+          (Or.inl rfl) hKb hKc (hcancel Kb Kc (1) (by linear_combination hu + hv - hsv))
+    · rcases hε2 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kc (1)
+          (Or.inl rfl) hKb hKc (hcancel Kb Kc (1) (by linear_combination hsv - hu - hv))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kc (-1)
+          (Or.inr rfl) hKb hKc (hcancel Kb Kc (-1) (by linear_combination hu + hv - hsv))
+    · exact hv0 (by linarith [hu, hsv])
+  have had : Ka ≠ Kd := by
+    intro he
+    rw [he] at hu
+    rcases hε1 with rfl | rfl <;> rcases hε4 with rfl | rfl
+    · exact hv0 (by linarith [hu, hdv])
+    · rcases hε2 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (1)
+          (Or.inl rfl) hKb hKd (hcancel Kb Kd (1) (by linear_combination hu - hdv - hv))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (-1)
+          (Or.inr rfl) hKb hKd (hcancel Kb Kd (-1) (by linear_combination hdv + hv - hu))
+    · rcases hε2 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (-1)
+          (Or.inr rfl) hKb hKd (hcancel Kb Kd (-1) (by linear_combination hu - hdv - hv))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Kb Kd (1)
+          (Or.inl rfl) hKb hKd (hcancel Kb Kd (1) (by linear_combination hdv + hv - hu))
+    · exact hv0 (by linarith [hu, hdv])
+  have hbc : Kb ≠ Kc := by
+    intro he
+    rw [he] at hv
+    rcases hε2 with rfl | rfl <;> rcases hε3 with rfl | rfl
+    · exact hu0 (by linarith [hv, hsv])
+    · rcases hε1 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kc (-1)
+          (Or.inr rfl) hKa hKc (hcancel Ka Kc (-1) (by linear_combination hsv - hv - hu))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kc (1)
+          (Or.inl rfl) hKa hKc (hcancel Ka Kc (1) (by linear_combination hv + hu - hsv))
+    · rcases hε1 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kc (1)
+          (Or.inl rfl) hKa hKc (hcancel Ka Kc (1) (by linear_combination hsv - hv - hu))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kc (-1)
+          (Or.inr rfl) hKa hKc (hcancel Ka Kc (-1) (by linear_combination hv + hu - hsv))
+    · exact hu0 (by linarith [hv, hsv])
+  have hbd : Kb ≠ Kd := by
+    intro he
+    rw [he] at hv
+    rcases hε2 with rfl | rfl <;> rcases hε4 with rfl | rfl
+    · rcases hε1 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kd (1)
+          (Or.inl rfl) hKa hKd (hcancel Ka Kd (1) (by linear_combination hv + hdv - hu))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kd (-1)
+          (Or.inr rfl) hKa hKd (hcancel Ka Kd (-1) (by linear_combination hu - hdv - hv))
+    · exact hu0 (by linarith [hv, hdv])
+    · exact hu0 (by linarith [hv, hdv])
+    · rcases hε1 with rfl | rfl
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kd (-1)
+          (Or.inr rfl) hKa hKd (hcancel Ka Kd (-1) (by linear_combination hv + hdv - hu))
+      · exact no_ratio2_sp3q p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kd (1)
+          (Or.inl rfl) hKa hKd (hcancel Ka Kd (1) (by linear_combination hu - hdv - hv))
+  have hE1 : ε3 * Kc + ε4 * Kd = 2 * ε1 * Ka := by
+    have hlin : (s : ℤ) ^ 2 * (ε3 * Kc + ε4 * Kd - 2 * ε1 * Ka) = 0 := by
+      have h0 : (u + v) + (u - v) = 2 * u := by ring
+      rw [hsv, hdv, hu] at h0
+      linear_combination h0
+    rcases mul_eq_zero.mp hlin with h' | h'
+    · exact absurd h' hs2
+    · linarith
+  have hE2 : ε3 * Kc - ε4 * Kd = 2 * ε2 * Kb := by
+    have hlin : (s : ℤ) ^ 2 * (ε3 * Kc - ε4 * Kd - 2 * ε2 * Kb) = 0 := by
+      have h0 : (u + v) - (u - v) = 2 * v := by ring
+      rw [hsv, hdv, hv] at h0
+      linear_combination h0
+    rcases mul_eq_zero.mp hlin with h' | h'
+    · exact absurd h' hs2
+    · linarith
+  exact no_assignment_sp3q p q hpodd hqodd hpq hq4m A B C D hpAB hqCD Ka Kb Kc Kd
+    ε1 ε2 ε3 ε4 hε1 hε2 hε3 hε4 hKa hKb hKc hKd hab hac had hbc hbd hcd hE1 hE2
+
+/-- **Theorem G, machine-checked.** No 3×3 fully magic square of nine
+perfect squares has center entry (s·p³·q)² for distinct primes
+p, q ≡ 1 (mod 4) and rigid s. -/
+theorem no_magic_square_of_squares_sp3q_center
+    (hp4 : p % 4 = 1) (hq4 : q % 4 = 1) (hpq : p ≠ q)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1) (hs0 : 0 < s)
+    (A B C D E F G H I S : ℤ)
+    (sqA : IsSq A) (sqB : IsSq B) (sqC : IsSq C) (sqD : IsSq D) (sqE : IsSq E)
+    (sqF : IsSq F) (sqG : IsSq G) (sqH : IsSq H) (sqI : IsSq I)
+    (r1 : A + B + C = S) (r2 : D + E + F = S) (r3 : G + H + I = S)
+    (c1 : A + D + G = S) (c2 : B + E + H = S) (c3 : C + F + I = S)
+    (d1 : A + E + I = S) (d2 : C + E + G = S)
+    (hE : E = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ 6 * (q : ℤ) ^ 2)
+    (hAE : A ≠ E) (hCE : C ≠ E) (hAC : A ≠ C) (hHE : H ≠ E) : False := by
+  obtain ⟨e, u, v, x1, y1, x2, y2, x3, y3, x4, y4, hEe, hAu, hCv,
+    hxy1, hq1, hxy2, hq2, hxy3, hq3, hxy4, hq4'⟩ :=
+    converse_reduction A B C D E F G H I S sqA sqB sqC sqD sqE sqF sqG sqH sqI
+      r1 r2 r3 c1 c2 c3 d1 d2
+  have he2 : e ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ 6 * (q : ℤ) ^ 2 := by omega
+  rw [he2] at hxy1 hxy2 hxy3 hxy4
+  obtain ⟨PA, PB, hAB⟩ := Nat.Prime.sq_add_sq (p := p) (by omega)
+  obtain ⟨QC, QD, hCD⟩ := Nat.Prime.sq_add_sq (p := q) (by omega)
+  have hu0 : u ≠ 0 := by omega
+  have hv0 : v ≠ 0 := by omega
+  have huv : u ≠ v := by omega
+  have huv' : u ≠ -v := by omega
+  exact no_four_diffs_sp3q p q (by omega) (by omega) hpq
+    (PA : ℤ) (PB : ℤ) (QC : ℤ) (QD : ℤ)
+    (by exact_mod_cast hAB) (by exact_mod_cast hCD)
+    s hs hs0 u v hu0 hv0 huv huv'
+    x1 y1 x2 y2 x3 y3 x4 y4 hxy1 hq1 hxy2 hq2 hxy3 hq3 hxy4 hq4'
 
 end GCore
