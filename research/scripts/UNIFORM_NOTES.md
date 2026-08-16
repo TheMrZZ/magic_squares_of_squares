@@ -2143,3 +2143,20 @@ the G-analog of F's 12 resid-cells (F: resid_cross_p2q2 / resid_r8_derive /
 resid_cross_product / bespoke pX-pY extractions). Level-12 reductions to
 level 4: I₁₂ = I₄J, R₁₂ = R₄J', J = 4R₄²−p⁴, J' = 4R₄²−3p⁴, J ⊥ J'
 (gcd ∣ 8I₄², both odd, both ⊥ I₄).
+
+## Round 133 (2026-08-16) — mixed_pair_core_12 COMPLETE
+
+The 30-cell pair grid predicted in round 132 collapsed to ONE lemma: every
+M0..M6 value carries a p² factor (they are p²·F-classes), so eq1 forces
+p² ∣ X, eq2 forces p² ∣ Y, and p⁴ ∣ X²+Y² = q⁴ is fatal (`mixed12_p2p2`).
+The full 8×8 mixed core is a 3-way split: c1 = M7 (pinch), c2 = M7 (the J'
+double classification), both p²-divisible (valuation). This is MUCH simpler
+than F's level-8 mixed core — G's extra p² does all the work. The
+mixed12_c1_M2/c1_M1/c2_M0 kills shipped earlier are subsumed (kept as
+alternate proofs). `mixed_pair_core_12` is done.
+
+Remaining for the G routers: dispatch_56G / ab56G analogs (M8/M9 in cd or
+ab slot-pairs → mixed core + deep cell), deep_val_cell12 (M8,M9 both
+present, the E1−E2 elimination leaving Im(π¹²χ⁴)-difference structure),
+unsafe-pair dispatchers ac/ad/bc/bd, lone-12 dispatchers, then
+no_assignment_sp3q.
