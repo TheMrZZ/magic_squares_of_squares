@@ -3222,4 +3222,384 @@ lemma dispatch_bd12G
 
 
 
+/-- Split an 8-class membership into the seven p²-divisible values vs M7. -/
+lemma lowsplitG {K : ℤ} (A B C D : ℤ)
+    (h : K = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im)) :
+    (K = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) ∨ K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im) := by
+  rcases h with h | h | h | h | h | h | h | h
+  · exact Or.inl (Or.inl h)
+  · exact Or.inl (Or.inr (Or.inl h))
+  · exact Or.inl (Or.inr (Or.inr (Or.inl h)))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inl h))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))))
+  · exact Or.inl (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr h))))))
+  · exact Or.inr h
+
+/-- Each p²-divisible value has an explicit p² cofactor. -/
+lemma low_p2_dvdG {K : ℤ} (A B C D : ℤ)
+    (h : K = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ K = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ K = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))) : ∃ m, K = (p : ℤ) ^ 2 * m := by
+  rcases h with rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  · exact ⟨(p : ℤ) ^ 4 * (((⟨C, D⟩ : GaussianInt) ^ 4).im), by ring⟩
+  · exact ⟨(p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)), by ring⟩
+  · exact ⟨(q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im), by ring⟩
+  · exact ⟨(p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)), by ring⟩
+  · exact ⟨(p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)), by ring⟩
+  · exact ⟨(((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re), by ring⟩
+  · exact ⟨(((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im), by ring⟩
+
+set_option maxHeartbeats 1600000 in
+lemma dispatch_lone12a
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha8 : Ka = M8 A B C D ∨ Ka = M9 A B C D)
+    (hb : Kb = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hc : Kc = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hd : Kd = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitG p q A B C D hb with hbNL | rfl
+  · rcases lowsplitG p q A B C D hc with hcNL | rfl
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · -- no L2: doubled-8 relation, 2e1·Ka = e3Kc + e4Kd ≡ 0 (mod p²)
+        obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e1) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he1 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases ha8 with rfl | rfl
+        · exact p2_not_dvd_M8 p q hpodd hpq A B C D hpAB hqCD (2 * e1)
+            (e3 * mc + e4 * md) hcunit
+            (by (try unfold M7); linear_combination -hE1 + e3 * hmc + e4 * hmd)
+        · exact p2_not_dvd_M9 p q hpodd hpq A B C D hpAB hqCD (2 * e1)
+            (e3 * mc + e4 * md) hcunit
+            (by (try unfold M7); linear_combination -hE1 + e3 * hmc + e4 * hmd)
+      · -- L2 at d: use hE2 (a-free)
+        obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        exact low_M7_kill p q hpodd hpq A B hpAB e4 (e3 * mc - 2 * e2 * mb)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination -hE2 + e3 * hmc - 2 * e2 * hmb)
+    · -- L2 at c
+      rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        exact low_M7_kill p q hpodd hpq A B hpAB e3 (2 * e2 * mb + e4 * md)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination hE2 + 2 * e2 * hmb + e4 * hmd)
+      · exact hcd rfl
+  · -- L2 at b
+    rcases lowsplitG p q A B C D hc with hcNL | rfl
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e2) (e3 * mc - e4 * md)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination -hE2 + e3 * hmc - e4 * hmd)
+      · exact hbd rfl
+    · exact hbc rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot b. -/
+lemma dispatch_lone12b
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hb8 : Kb = M8 A B C D ∨ Kb = M9 A B C D)
+    (ha : Ka = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hc : Kc = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hd : Kd = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hac : Ka ≠ Kc) (had : Ka ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitG p q A B C D ha with haNL | rfl
+  · rcases lowsplitG p q A B C D hc with hcNL | rfl
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e2) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he2 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hb8 with rfl | rfl
+        · exact p2_not_dvd_M8 p q hpodd hpq A B C D hpAB hqCD (2 * e2)
+            (e3 * mc - e4 * md) hcunit
+            (by (try unfold M7); linear_combination -hE2 + e3 * hmc - e4 * hmd)
+        · exact p2_not_dvd_M9 p q hpodd hpq A B C D hpAB hqCD (2 * e2)
+            (e3 * mc - e4 * md) hcunit
+            (by (try unfold M7); linear_combination -hE2 + e3 * hmc - e4 * hmd)
+      · -- L2 at d: use hE1 (b-free)
+        obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        exact low_M7_kill p q hpodd hpq A B hpAB e4 (2 * e1 * ma - e3 * mc)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination hE1 + 2 * e1 * hma - e3 * hmc)
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        exact low_M7_kill p q hpodd hpq A B hpAB e3 (2 * e1 * ma - e4 * md)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination hE1 + 2 * e1 * hma - e4 * hmd)
+      · exact hcd rfl
+  · rcases lowsplitG p q A B C D hc with hcNL | rfl
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e1) (e3 * mc + e4 * md)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination -hE1 + e3 * hmc + e4 * hmd)
+      · exact had rfl
+    · exact hac rfl
+
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot c. -/
+lemma dispatch_lone12c
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hc8 : Kc = M8 A B C D ∨ Kc = M9 A B C D)
+    (ha : Ka = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hb : Kb = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hd : Kd = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kd = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kd = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kd = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hab : Ka ≠ Kb) (had : Ka ≠ Kd) (hbd : Kb ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitG p q A B C D ha with haNL | rfl
+  · rcases lowsplitG p q A B C D hb with hbNL | rfl
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · -- no L2: 2e3·Kc = 2e1Ka + 2e2Kb ≡ 0 (mod p²)
+        obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e3) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he3 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hc8 with rfl | rfl
+        · exact p2_not_dvd_M8 p q hpodd hpq A B C D hpAB hqCD (2 * e3)
+            (2 * e1 * ma + 2 * e2 * mb) hcunit
+            (by (try unfold M7); linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+        · exact p2_not_dvd_M9 p q hpodd hpq A B C D hpAB hqCD (2 * e3)
+            (2 * e1 * ma + 2 * e2 * mb) hcunit
+            (by (try unfold M7); linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+      · -- L2 at d: c-free relation hE1 − hE2
+        obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e4) (2 * e1 * ma - 2 * e2 * mb)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+    · -- L2 at b
+      rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e2) (2 * e1 * ma - 2 * e4 * md)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e4 * hmd)
+      · exact hbd rfl
+  · -- L2 at a
+    rcases lowsplitG p q A B C D hb with hbNL | rfl
+    · rcases lowsplitG p q A B C D hd with hdNL | rfl
+      · obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        obtain ⟨md, hmd⟩ := low_p2_dvdG p q A B C D hdNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e1) (2 * e2 * mb + 2 * e4 * md)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination -hE1 + hE2 + 2 * e2 * hmb + 2 * e4 * hmd)
+      · exact had rfl
+    · exact hab rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone level-8 at slot d. -/
+lemma dispatch_lone12d
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hd8 : Kd = M8 A B C D ∨ Kd = M9 A B C D)
+    (ha : Ka = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Ka = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Ka = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Ka = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hb : Kb = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kb = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kb = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kb = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hc : Kc = (p : ℤ) ^ 6 * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 4 * (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 4).im)
+      ∨ Kc = (p : ℤ) ^ 2 * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 8).im))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 4 * ((((⟨A, B⟩ : GaussianInt) ^ 4).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 4).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) + (((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+      ∨ Kc = (p : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ 8).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) - (((⟨A, B⟩ : GaussianInt) ^ 8).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im))
+      ∨ Kc = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ 12).im))
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (hbc : Kb ≠ Kc)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases lowsplitG p q A B C D ha with haNL | rfl
+  · rcases lowsplitG p q A B C D hb with hbNL | rfl
+    · rcases lowsplitG p q A B C D hc with hcNL | rfl
+      · -- no L2: 2e4·Kd = 2e1Ka − 2e2Kb
+        obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e4) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he4 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hd8 with rfl | rfl
+        · exact p2_not_dvd_M8 p q hpodd hpq A B C D hpAB hqCD (2 * e4)
+            (2 * e1 * ma - 2 * e2 * mb) hcunit
+            (by (try unfold M7); linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+        · exact p2_not_dvd_M9 p q hpodd hpq A B C D hpAB hqCD (2 * e4)
+            (2 * e1 * ma - 2 * e2 * mb) hcunit
+            (by (try unfold M7); linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+      · -- L2 at c: d-free relation hE1 + hE2
+        obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e3) (2 * e1 * ma + 2 * e2 * mb)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+    · -- L2 at b
+      rcases lowsplitG p q A B C D hc with hcNL | rfl
+      · obtain ⟨ma, hma⟩ := low_p2_dvdG p q A B C D haNL
+        obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e2) (2 * e3 * mc - 2 * e1 * ma)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination -hE1 - hE2 + 2 * e3 * hmc - 2 * e1 * hma)
+      · exact hbc rfl
+  · -- L2 at a
+    rcases lowsplitG p q A B C D hb with hbNL | rfl
+    · rcases lowsplitG p q A B C D hc with hcNL | rfl
+      · obtain ⟨mb, hmb⟩ := low_p2_dvdG p q A B C D hbNL
+        obtain ⟨mc, hmc⟩ := low_p2_dvdG p q A B C D hcNL
+        exact low_M7_kill p q hpodd hpq A B hpAB (2 * e1) (2 * e3 * mc - 2 * e2 * mb)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by (try unfold M7); linear_combination -hE1 - hE2 + 2 * e3 * hmc - 2 * e2 * hmb + 0)
+      · exact hac rfl
+    · exact hab rfl
+
+
+
 end GCore
