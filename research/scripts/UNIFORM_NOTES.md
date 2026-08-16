@@ -2189,3 +2189,29 @@ derived from the two-square rep) and the capstone via converse_reduction.
 The ladder now telescopes twice (F reuses E, G reuses F). Next: the uniform
 s·pᵃ·q induction — the G build showed the inductive step's shape: three new
 classes per rung (q²I_{4a}, Im(π^{4a}χ^±4)), everything else cancels p².
+
+## Round 136 (2026-08-17) — uniform s·pᵃ·q induction: design
+
+Probes (sympy): classes of s²p^{2a}q² reps = 1 + 3a (verified a=4: 13 + zero);
+J_a := im(π^{4a})/im(π⁴) satisfies **J_a ≡ a·R₄^{2a−2} (mod 4)** — for odd a,
+J_a is odd and ≡ a (mod 4); for even a, J_a is even (a=2: J₂ = 2R₄ exactly),
+which is why Theorem F's level-8 classification differed structurally from G's.
+
+Design, three phases:
+1. **Generic level-4a coordinate layer** (`UniformAInt.lean`): by induction on
+   a via π^{4(a+1)} = π^{4a}·π⁴ — norm R_a²+I_a² = p^{4a}, p ∤ R_a, I_a,
+   I₄ ∣ I_a with cofactor J_a, J_a parity/mod-4 (split a odd/even),
+   coprime R_a I_a, R_a odd / I_a ≡ 0 mod 4.
+2. **Abstract-step router**: statement takes the PREVIOUS rung's routers as
+   ∀-hypotheses over an abstract class predicate P; rung-a classes =
+   p²·P ∪ {q²I_{4a}, Im(π^{4a}χ^±4)}. The G build showed every bucket then
+   either cancels p² (invoke hypothesis) or hits the three new classes with
+   kills whose only level inputs are the layer-1 facts (the deep p=5 cell's
+   constant 20 = 4+16 is a-independent; the J/J'-vs-q classifications need
+   the a-mod-4 sign bookkeeping).
+3. **Ratio + four-diffs + capstone** by the same step scheme; base = Theorem E.
+
+Risk register: (a) even-a J_a parity changes the sform/J-classification kills —
+must re-derive those generically with v₂(J_a) tracked; (b) rep_structure for
+generic a needs a recursive classification proof (G's was a 42-case template —
+the generic version wants the divisor-combinatorics argument done once).
