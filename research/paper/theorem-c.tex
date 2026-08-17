@@ -452,10 +452,17 @@ form-level conditions but never the exact divisibility coupling.  And the
 master kill uses only $\pi$-side data, so it is already generic in the
 $\chi$-exponent — the shape the two-exponent induction needs.
 
-\section{Toward all exponents: the balance-form reduction}
+\section{The two-exponent theorem}
 
-The programme's next target is the two-exponent theorem: no center root
-$s\,p^aq^b$ for any $a,b\ge 1$.  Three structural facts, each verified
+\begin{theorem}[Two-exponent theorem, paper-level]\label{thm:AB}
+There is no magic square of squares whose center root is $s\,p^aq^b$, for
+any $a,b\ge1$, where $p\neq q$ are primes $\equiv1\pmod4$ and $s$ is free
+of such primes.
+\end{theorem}
+
+This closes the two-useful-prime case entirely.  The proof is the content
+of this section: the balance-form reduction, the certified kill pipeline
+on the base grids, and the $\delta$-free passage to all exponents.  Three structural facts, each verified
 computationally at scale, fix its architecture.
 
 First, \emph{saturation in $a$}.  Classify each surviving leaf by the pattern
