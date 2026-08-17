@@ -19,6 +19,8 @@ static DONE: AtomicUsize = AtomicUsize::new(0);
 static TOTAL: AtomicUsize = AtomicUsize::new(0);
 const PHASES: [&str; 6] = ["startup", "leaf enumeration", "relation screen",
                            "condition map", "pair verdicts", "elimination"];
+static POOLDUMP: std::sync::LazyLock<std::sync::Mutex<HashSet<String>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(HashSet::new()));
 static CHAINDUMP: std::sync::LazyLock<std::sync::Mutex<HashSet<String>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(HashSet::new()));
 static CROSSDUMP: std::sync::LazyLock<std::sync::Mutex<HashSet<String>>> =
@@ -622,6 +624,11 @@ fn main() {
         let hd = CHAINDUMP.lock().unwrap();
         for c in hd.iter() { writeln!(hf, "{c}").unwrap(); }
         println!("chain dump: {} distinct PRS chains -> {hname}", hd.len());
+        let pname = format!("pool_{a}_{b}.txt");
+        let mut pf = std::fs::File::create(&pname).unwrap();
+        let pd = POOLDUMP.lock().unwrap();
+        for c in pd.iter() { writeln!(pf, "{c}").unwrap(); }
+        println!("pool dump: {} distinct lc layers -> {pname}", pd.len());
     }
     let mut evs: Vec<_> = everdict.iter().collect();
     evs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
@@ -1039,6 +1046,17 @@ fn prs_chain_rec(f: &P5, g: &P5, axis: u8, steps: &mut Vec<PrsStep>) -> Option<P
         if deg(&r1) == 0 { return Some(r1); }
         let (k, q, rem) = p5pdiv(&r0, &r1, axis);
         let (ct, pp) = p5primitive(&rem);
+        {
+            // the lc's q-minimal layer joins the factor pool: extraneous
+            // factors of PRS endpoints are powers of these
+            let lc = coef(&r1, deg(&r1));
+            if !lc.is_empty() {
+                let qmin = lc.keys().map(|m| m.2).min().unwrap();
+                let t0: Vec<String> = lc.iter().filter(|(m, _)| m.2 == qmin)
+                    .map(|(m, c)| format!("{}*r**{}*s**{}", c, m.0, m.1)).collect();
+                POOLDUMP.lock().unwrap().insert(t0.join(" + "));
+            }
+        }
         // exact self-check: lc^k * r0 == q * r1 + ct * pp
         let lc = coef(&r1, deg(&r1));
         let mut lhs = r0.clone();

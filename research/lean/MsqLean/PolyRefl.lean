@@ -11,23 +11,53 @@ namespace PolyRefl
 /-- A monomial: exponents of the four variables. -/
 abbrev Mono := ℕ × ℕ × ℕ × ℕ
 
+/-- Literal-friendly constructor: one plain application per data entry,
+so giant generated lists elaborate without tuple-sugar unification. -/
+def mkT (a b c d : ℕ) (co : ℤ) : (ℕ × ℕ × ℕ × ℕ) × ℤ := ((a, b, c, d), co)
+
 /-- A sparse polynomial: a list of (monomial, coefficient) pairs.
 The list need not be normalized; evaluation is the semantics. -/
 abbrev SPoly := List (Mono × ℤ)
 
 variable {R : Type*} [CommRing R]
 
+/-- Fueled binary exponentiation: log-many kernel multiplications where
+`Monoid.npow` needs linearly many. Fuel exhaustion falls back to `^`. -/
+def powF : ℕ → R → ℕ → R
+  | _, _, 0 => 1
+  | 0, x, n => x ^ n
+  | fuel + 1, x, n + 1 =>
+    let h := powF fuel x ((n + 1) / 2)
+    if (n + 1) % 2 = 0 then h * h else x * (h * h)
+
+lemma powF_eq (fuel : ℕ) (x : R) (n : ℕ) : powF fuel x n = x ^ n := by
+  induction fuel generalizing n with
+  | zero => cases n <;> simp [powF]
+  | succ fuel ih =>
+    cases n with
+    | zero => simp [powF]
+    | succ m =>
+      simp only [powF, ih]
+      by_cases h : (m + 1) % 2 = 0
+      · rw [if_pos h, ← pow_add]
+        congr 1
+        omega
+      · rw [if_neg h, ← pow_add, ← pow_succ']
+        congr 1
+        omega
+
 /-- Evaluation at a point of any commutative ring (coefficients cast). -/
 def eval (P : SPoly) (u v x y : R) : R :=
   P.foldr (fun t acc =>
-    acc + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2) 0
+    acc + (t.2 : R) * powF t.1.1 u t.1.1 * powF t.1.2.1 v t.1.2.1
+        * powF t.1.2.2.1 x t.1.2.2.1 * powF t.1.2.2.2 y t.1.2.2.2) 0
 
 @[simp] lemma eval_nil (u v x y : R) : eval ([] : SPoly) u v x y = 0 := rfl
 
 @[simp] lemma eval_cons (t : Mono × ℤ) (P : SPoly) (u v x y : R) :
     eval (t :: P) u v x y
-      = eval P u v x y + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2 :=
-  rfl
+      = eval P u v x y + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2 := by
+  simp only [eval, List.foldr_cons, powF_eq]
 
 /-- Concatenation evaluates to the sum. -/
 lemma eval_append (P Q : SPoly) (u v x y : R) :
@@ -137,6 +167,124 @@ lemma eval_eq_of_normalize_eq {P Q : SPoly}
   rw [← eval_normalize P, ← eval_normalize Q, h]
 
 
+/-- Total linear "≤" on monomials for mergesort. -/
+def mle (a b : Mono) : Bool := mlt a b || a == b
+
+/-- Alternating split (structural, kernel-reducible). -/
+def split2 : List (Mono × ℤ) → List (Mono × ℤ) × List (Mono × ℤ)
+  | [] => ([], [])
+  | x :: rest => let (l, r) := split2 rest; (x :: r, l)
+
+lemma eval_split2 (P : List (Mono × ℤ)) (u v x y : R) :
+    eval (split2 P).1 u v x y + eval (split2 P).2 u v x y = eval P u v x y := by
+  induction P with
+  | nil => simp [split2]
+  | cons t rest ih =>
+    simp only [split2, eval_cons]
+    rw [← ih]
+    ring
+
+/-- Fueled merge of two mle-sorted lists (structural, kernel-reducible). -/
+def mergeF : ℕ → List (Mono × ℤ) → List (Mono × ℤ) → List (Mono × ℤ)
+  | _, [], l2 => l2
+  | _, l1, [] => l1
+  | 0, l1, l2 => l1 ++ l2
+  | fuel + 1, a :: l1, b :: l2 =>
+    if mle a.1 b.1 then a :: mergeF fuel l1 (b :: l2)
+    else b :: mergeF fuel (a :: l1) l2
+
+lemma eval_mergeF (fuel : ℕ) (P Q : List (Mono × ℤ)) (u v x y : R) :
+    eval (mergeF fuel P Q) u v x y = eval P u v x y + eval Q u v x y := by
+  induction fuel generalizing P Q with
+  | zero => cases P with
+    | nil => simp [mergeF]
+    | cons a l1 => cases Q with
+      | nil => simp [mergeF]
+      | cons b l2 => simp [mergeF, eval_append]; ring
+  | succ fuel ih =>
+    cases P with
+    | nil => simp [mergeF]
+    | cons a l1 => cases Q with
+      | nil => simp [mergeF]
+      | cons b l2 =>
+        by_cases h : mle a.1 b.1
+        · simp only [mergeF, if_pos h, eval_cons, ih]
+          ring
+        · simp only [mergeF, if_neg h, eval_cons, ih]
+          ring
+
+/-- Fueled mergesort (structural, kernel-reducible). -/
+def msortF : ℕ → List (Mono × ℤ) → List (Mono × ℤ)
+  | _, [] => []
+  | _, [t] => [t]
+  | 0, l => l
+  | fuel + 1, l =>
+    let (a, b) := split2 l
+    mergeF (a.length + b.length) (msortF fuel a) (msortF fuel b)
+
+lemma eval_msortF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y : R) :
+    eval (msortF fuel P) u v x y = eval P u v x y := by
+  induction fuel generalizing P with
+  | zero => cases P with
+    | nil => rfl
+    | cons t rest => cases rest <;> rfl
+  | succ fuel ih =>
+    cases hP : P with
+    | nil => rfl
+    | cons t rest =>
+      cases rest with
+      | nil => rfl
+      | cons t2 rest2 =>
+        show eval (mergeF _ (msortF fuel (split2 (t :: t2 :: rest2)).1)
+                            (msortF fuel (split2 (t :: t2 :: rest2)).2)) u v x y = _
+        rw [eval_mergeF, ih, ih, eval_split2]
+
+/-- Fueled adjacent-combine of equal monomials (structural). -/
+def combineF : ℕ → List (Mono × ℤ) → List (Mono × ℤ)
+  | _, [] => []
+  | _, [t] => [t]
+  | 0, l => l
+  | fuel + 1, a :: b :: rest =>
+    if a.1 = b.1 then combineF fuel ((a.1, a.2 + b.2) :: rest)
+    else a :: combineF fuel (b :: rest)
+
+lemma eval_combineF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y : R) :
+    eval (combineF fuel P) u v x y = eval P u v x y := by
+  induction fuel generalizing P with
+  | zero => cases P with
+    | nil => rfl
+    | cons t rest => cases rest <;> rfl
+  | succ fuel ih =>
+    cases P with
+    | nil => rfl
+    | cons a rest =>
+      cases rest with
+      | nil => rfl
+      | cons b rest2 =>
+        by_cases h : a.1 = b.1
+        · simp only [combineF, if_pos h, ih, eval_cons]
+          rw [← h]
+          push_cast
+          ring
+        · simp only [combineF, if_neg h, eval_cons, ih]
+
+/-- Mergesort-based normal form: n·log n in the kernel instead of the
+insertion sort's n². Only soundness is used: equal fast normal forms
+give equal evaluations. -/
+def normalizeFast (P : SPoly) : List (Mono × ℤ) :=
+  (combineF P.length (msortF P.length P)).filter (fun t => t.2 ≠ 0)
+
+lemma eval_normalizeFast (P : SPoly) (u v x y : R) :
+    eval (normalizeFast P) u v x y = eval P u v x y := by
+  unfold normalizeFast
+  rw [eval_filter_ne_zero, eval_combineF, eval_msortF]
+
+/-- The fast bridge: equal fast normal forms give equal evaluations. -/
+lemma eval_eq_of_normalizeFast_eq {P Q : SPoly}
+    (h : normalizeFast P = normalizeFast Q) (u v x y : R) :
+    eval P u v x y = eval Q u v x y := by
+  rw [← eval_normalizeFast P, ← eval_normalizeFast Q, h]
+
 /-- A ring homomorphism commutes with evaluation. -/
 lemma eval_map {S : Type*} [CommRing S] (f : R →+* S) (P : SPoly) (u v x y : R) :
     f (eval P u v x y) = eval P (f u) (f v) (f x) (f y) := by
@@ -146,27 +294,27 @@ lemma eval_map {S : Type*} [CommRing S] (f : R →+* S) (P : SPoly) (u v x y : R
 
 
 /-- A factorization certificate on data gives a factorization of values. -/
-lemma eval_factor (P Q₁ Q₂ : SPoly) (h : normalize (mul Q₁ Q₂) = normalize P)
+lemma eval_factor (P Q₁ Q₂ : SPoly) (h : normalizeFast (mul Q₁ Q₂) = normalizeFast P)
     (u v x y : R) :
     eval P u v x y = eval Q₁ u v x y * eval Q₂ u v x y := by
   rw [← eval_mul]
-  exact (eval_eq_of_normalize_eq h u v x y).symm
+  exact (eval_eq_of_normalizeFast_eq h u v x y).symm
 
 /-- A Bezout certificate on data: A·F + B·G = C as normalized lists implies
 the same identity of values. This is the shape of one elimination step of
 the certifier (a resultant with its cofactors). -/
 lemma eval_bezout (A F B G C : SPoly)
-    (h : normalize (mul A F ++ mul B G) = normalize C) (u v x y : R) :
+    (h : normalizeFast (mul A F ++ mul B G) = normalizeFast C) (u v x y : R) :
     eval A u v x y * eval F u v x y + eval B u v x y * eval G u v x y
       = eval C u v x y := by
-  have h1 := eval_eq_of_normalize_eq h u v x y
+  have h1 := eval_eq_of_normalizeFast_eq h u v x y
   rwa [eval_append, eval_mul, eval_mul] at h1
 
 /-- Two vanishing inputs and a Bezout certificate kill the output:
 if F and G vanish at the point, the eliminant C vanishes too. Combined
 with a certificate lemma `eval C ≠ 0`, this closes an elimination leaf. -/
 lemma bezout_kill (A F B G C : SPoly) (u v x y : R)
-    (h : normalize (mul A F ++ mul B G) = normalize C)
+    (h : normalizeFast (mul A F ++ mul B G) = normalizeFast C)
     (hF : eval F u v x y = 0) (hG : eval G u v x y = 0) :
     eval C u v x y = 0 := by
   have h1 := eval_bezout A F B G C h u v x y

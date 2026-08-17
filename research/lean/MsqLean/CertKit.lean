@@ -124,4 +124,32 @@ lemma dyadic_gate (N e : ℕ) {c0 r s rest v : ℤ} (hr : Odd r) (hs : Even s)
   rw [hv2]
   exact mul_ne_zero (pow_ne_zero e two_ne_zero) hne
 
+
+/-- The parity gate on evaluation form: a data-level split certificate
+`P = lead·r^N + s·rest` (checked by `decide`) plus an odd lead give
+`eval P ≠ 0`. Uniform interface for the routers. -/
+lemma parity_gate_eval (N : ℕ) (lead : ℤ) (P rest : PolyRefl.SPoly)
+    (h : PolyRefl.normalizeFast P
+       = PolyRefl.normalizeFast (((N, 0, 0, 0), lead)
+           :: PolyRefl.mulTerm ((0, 1, 0, 0), 1) rest))
+    (hlead : Odd lead) {r s : ℤ} (hr : Odd r) (hs : Even s) :
+    PolyRefl.eval P r s 1 1 ≠ 0 := by
+  refine parity_gate (rest := PolyRefl.eval rest r s 1 1) N hr hs hlead ?_
+  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s 1 1
+  rw [PolyRefl.eval_cons, PolyRefl.eval_mulTerm] at he
+  rw [he]; push_cast; ring
+
+/-- The dyadic gate on evaluation form: split certificate
+`P = 2^e·c₀·r^N + s^(e+1)·rest` with c₀ odd gives `eval P ≠ 0`. -/
+lemma dyadic_gate_eval (N e : ℕ) (c0 : ℤ) (P rest : PolyRefl.SPoly)
+    (h : PolyRefl.normalizeFast P
+       = PolyRefl.normalizeFast (((N, 0, 0, 0), 2 ^ e * c0)
+           :: PolyRefl.mulTerm ((0, e + 1, 0, 0), 1) rest))
+    (hc : Odd c0) {r s : ℤ} (hr : Odd r) (hs : Even s) :
+    PolyRefl.eval P r s 1 1 ≠ 0 := by
+  refine dyadic_gate (rest := PolyRefl.eval rest r s 1 1) N e hr hs hc ?_
+  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s 1 1
+  rw [PolyRefl.eval_cons, PolyRefl.eval_mulTerm] at he
+  rw [he]; push_cast; ring
+
 end CertKit

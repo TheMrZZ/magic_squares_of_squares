@@ -2699,3 +2699,46 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The polymorphic PolyRefl (evaluation into any CommRing — the same data serves the (r,s)-integer layer and the Gaussian value layer) built into the library with CertKit.
 - The zero-cost emitter (statements in pre-split shape: lead·r^N + s·eval restData; hv = rfl; only `decide (Odd lead)` computes) regenerated everything. **All twelve certificate files compile: 834 oracle-form lemmas + 100+ cross-form lemmas across grids (2,2)–(3,4), about six minutes total.**
 - Remaining Lean ladder: the sieve gate (12 straggler forms at a = 3), the relation layer (factorization identities as normalize-equality decides), the value bridge (eval at Gaussian points ↔ class values), the routers, and the hand lemmas.
+
+## Round 188: every oracle form gets a hardcoded Rust certificate
+
+- The gate ladder in the emitter is now: parity → dyadic (2-adic valuation
+  pinch, new `dyadic_gate`) → projective mod-l sieve (`sieve_gate`, any
+  l ≥ 2, primality not needed) → factor route. The factor route hardcodes
+  Rust-computed factorizations: pool division (the PRS chains' leading-
+  coefficient layers), Durand–Kerner + continued-fraction linear factors
+  in (r², s²), gcd-with-derivative square splitting, and pairwise gcds
+  between sibling endpoints (the two degree-856 forms share a degree-600
+  factor with lead 1 — parity-killable).
+- Lean re-checks each hardcoded factor by one `decide` per division
+  (`eval_factor`, normalize equality on data) and kills each piece with a
+  gate. No search happens in Lean.
+- The eval-form gates (`parity_gate_eval`, `dyadic_gate_eval`) take the
+  split certificate as data, so every certificate lemma now has the
+  uniform statement `PolyRefl.eval formData r s 1 1 ≠ 0`.
+- Remaining ladder: the 5-variable Mono refactor (r, s, q, X, Y) for the
+  chain layer; `chain_emit` (one normalize-`decide` per recorded PRS step,
+  `bezout_kill` propagates vanishing to the endpoint); the value bridge
+  (`eval_map` at Gaussian points ties data to class values); the routers;
+  the hand lemmas (exactness, coprime masters, √−5, telescoping).
+
+## Round 189: the certificate corpus is fully machine-checked, and fast
+
+- All ~1,160 certificate lemmas across the six grids and their cross
+  forms compile with zero errors, in under three minutes of wall clock.
+- The performance ladder that got there: (1) parallel per-file
+  compilation; (2) `normalizeFast` — a fuel-based structural mergesort
+  (well-founded recursion does not reduce in the kernel, and the
+  insertion sort was quadratic); (3) `powF` — fuel-based binary
+  exponentiation inside `eval` (kernel `npowRec` is linear, and the
+  (2,5) forms have exponents near 856); (4) `mkT` literals — the giant
+  generated lists elaborated in minutes because nested tuple sugar
+  triggers unification per entry; (5) `decide +kernel` — skip the
+  elaborator's slow reducer; (6) `native_decide` for the ~40 large
+  product identities only (10,000-term kernel sorts are a ~1000x
+  constant factor; each identity is independently verified in Rust;
+  `KERNEL_DECIDE=1` re-emits the pure-kernel gold version); (7) a
+  verified factor cache so re-emission is instant.
+- The stubborn forms all fell to hardcoded Rust factorizations:
+  grouped powers with binary squaring ladders, sibling-endpoint gcds,
+  and bounded backtracking over divisor choices.
