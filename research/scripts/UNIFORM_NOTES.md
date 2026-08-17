@@ -2660,3 +2660,11 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - **Master gcd table** (all 1,653 pairs): gcds are smooth constants, p-powers, s-powers, (p ± s) — plus a handful sharing (p²+8s²) or (9p²−8s²). For shared-form pairs, dividing the two master equations gives q^{2(δ₁−δ₂)} = smooth·p-powers, forcing δ₁ = δ₂ — they collapse into the same-δ case. **The coprime-masters lemma survives with this refinement, and every route is δ-free.**
 - Oracle progress: (2,3) 71/71 OK, (2,4) 97/97 OK; (2,5)/(3,3)/(3,4) running.
 - M2 status: reduced to the paper writeup of the δ-free architecture + finishing the oracle pass.
+
+## Round 182: Milestone 3 design — the three-prime certifier
+
+- Setting: e = s·p·q·r with three useful primes (π, χ, ψ over p, q, r). D(e) has 13 classes on a 3-dimensional grading grid: values p^{2(1−i)}q^{2(1−j)}r^{2(1−k)}·Im(π^{2i}χ^{±2j}ψ^{±2k})-type with the sign structure of the two-prime case extended to two independent conjugation choices.
+- The certifier generalizes mechanically: the polynomial ring gains a third variable pair (m, n) for ψ²; the library gains m^j ± n^j and its pinch forms; the grading kill runs over three valuations; the balance structure is conjugation in THREE involutions — factors classify by their invariance pattern under (u↔v), (x↔y), (m↔n).
+- The pinning generalizes: a live condition pins a product χ^{2δ}ψ^{2ε} (bi-shift) to a π-side z/w̃; the master identity becomes 4w̃²q^{2δ}r^{2ε} = Σ² + 4Ω²; the coprime-masters and cross lemmas extend verbatim (the gcd tables get one more prime to absorb).
+- Known from the old sweeps: (1,1,1) has 137k leaves, 68% grading-killed, zero satisfiable for p,q,r < 300. The certifier should close it the way it closed the two-prime grids — and the residue landscape (the power-law loci) is where the genuinely new mathematics may sit.
+- Plan: extend certifier.rs with the third pair behind a prime-count switch; run (1,1,1); classify; then (2,1,1).
