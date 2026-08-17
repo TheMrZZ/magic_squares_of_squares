@@ -2500,3 +2500,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - 448 unresolved factor shapes remain. The frequent ones have small direct arguments (example: (u²+v²)(x²+y²) ∓ 2uvxy = 2(2RX ∓ p²q²), a thin band cell: p ∤ R forces p² | 2X, so p < √2·q, and symmetrically — then the exact equation dies like the master cells). The rest are the (2,3) core catalog for the b-generic master treatment.
 - Caution learned: u, v, x, y are complex, so no positivity/definiteness shortcuts — every factor argument must run through values (norms, valuations, balance).
 - State of Milestone 2 after day one: architecture fixed (b-induction, a-generic cells); rung (2,3) is 468 unit + 284 degenerate patterns of which 960/6,704 leaf pairs are dead; the 576 core patterns carry p | f(q) conditions awaiting the coupled q-side analysis.
+
+## Round 159: the (2,3) degenerate sector is dead
+
+- `u23_shape_classify.py`: all 448 unresolved factor shapes classify — **zero true cores**. 46 die by a lone-minimal-valuation monomial with coefficient ±1 (the prime must divide 1: impossible for every p, q, no bound). 402 are balance forms (self- or anti-conjugate): sums of paired Im-terms, the generalized master families.
+- `rs/src/bin/u23_vanish.rs`: all 448 shapes evaluated at every rep orientation for p ≠ q < 300 — 1,455,104 exact evaluations, **zero vanishing points**.
+- Consequence: every relation over the 284 degenerate patterns factors into provably- or empirically-nonzero pieces, so all 6,704 degenerate-sector leaf pairs are dead. The proof burden for the paper: one nonvanishing lemma per balance family (the generalized master argument: G real forces a χ-valuation balance, then a norm equation with a small cofactor).
+- Remaining at rung (2,3): the 576 core-pattern sector (p ∣ f(q) certificates). Next: the same factor screen on its leaves — the pattern-level condition is only the resultant's necessary condition; the exact relations may die outright.
