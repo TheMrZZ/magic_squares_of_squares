@@ -2486,3 +2486,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - `rs/src/bin/uab_census.rs` (Rust; 93M leaves at (5,5) in seconds): the minimal-p-layer pattern universe **saturates in a at a = 2** — grids (3,3), (4,3), (5,3) add zero patterns over (2,3); (4,4) adds zero over (3,4); (5,5) adds zero over (2,5). It **grows linearly in b**: 608 (b=2) → 1,328 (b=3) → 2,304 (b=4) → 3,536 (b=5), increments 720, 976, 1,232.
 - Consequence: no finite pattern set covers all b, so Milestone 2 is a single induction in b with the q²-telescoping (the mirror of the uniform theorem's a-induction), and all cells stated a-generically — the census shows a-genericity adds no new cells beyond a = 2.
 - Plan for the b-step: UClass2(a,b) telescopes as rung b = q²·rung(b−1) plus the top-k classes; all-low leaves cancel q² and recurse; top-cell families need b-generic certificates (the residues are sparse trinomials whose resultant law depends only on the exponent gaps).
+
+## Round 157: the (2,3) pattern certificates — the b-frontier appears
+
+- `uab_patcert.py` on the 1,328 (2,3) pattern pairs: **468 unit certificates, 284 degenerate, 576 core**.
+- The core certificates are conditions p ∣ f(q): sporadic polynomials (q⁴+3, q¹²−9q⁸+24q⁴−15, 2q⁴±2q²+1) and cyclotomic order conditions (factors of q⁸−1, q¹²−1). The order loci of the old analytic program reappear here, now as exact per-leaf certificates.
+- The b ≥ 3 kill plan: (i) the q-side mirror certificates give the coupled condition q ∣ g(p); (ii) the coupled loci are thin bands; (iii) on the loci, the master-kill technology (real/imaginary balance → exact norm equations → Pythagorean splitting) applies — the tool the old program lacked. The 284 degenerates go to the pinch/master screen first, as at (2,2).
+- Care point: the pattern-level residue argument needs the layer-j ≥ 1 fact (all-j=0 layers die by q-grading) and leading-coefficient unit checks for the resultant implication.
