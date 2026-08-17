@@ -175,4 +175,16 @@ lemma prs_step {L r0 r1 q r2 : PolyRefl.SPoly} {ct : ℤ} (hct : ct ≠ 0)
   · exact absurd h' hc
   · exact h'
 
+
+/-- The grading kill: a value of the shape q^g·(T + q·R) with q ∤ T is
+nonzero. The router's phase-1 dispatcher: T is the minimal q-layer of a
+relation, and the grading lemma supplies q ∤ T. -/
+lemma grading_kill (q : ℕ) [hq : Fact (Nat.Prime q)] {E T R : ℤ} (g : ℕ)
+    (hE : E = (q : ℤ) ^ g * (T + q * R)) (hT : ¬ (q : ℤ) ∣ T) : E ≠ 0 := by
+  intro h0
+  rw [hE] at h0
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact absurd h (pow_ne_zero _ (by exact_mod_cast hq.out.ne_zero))
+  · exact hT ⟨-R, by linarith⟩
+
 end CertKit
