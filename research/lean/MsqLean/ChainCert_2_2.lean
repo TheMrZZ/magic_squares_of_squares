@@ -281,7 +281,7 @@ lemma st0_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp5_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp4_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st1_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -289,7 +289,7 @@ lemma st1_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp5_2_2 u v x y z = 0) :
     PolyRefl.eval cp8_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp7_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st2_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -297,7 +297,7 @@ lemma st2_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp11_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp10_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st3_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -305,7 +305,7 @@ lemma st3_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp11_2_2 u v x y z = 0) :
     PolyRefl.eval cp14_2_2 u v x y z = 0 :=
   prs_step (L := cp12_2_2) (q := cp13_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st4_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -313,7 +313,7 @@ lemma st4_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp14_2_2 u v x y z = 0) :
     PolyRefl.eval cp0_2_2 u v x y z = 0 :=
   prs_step (L := cp15_2_2) (q := cp16_2_2) (ct := 64)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st5_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -321,7 +321,7 @@ lemma st5_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp20_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp19_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st6_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -329,7 +329,7 @@ lemma st6_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp23_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp22_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st7_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -337,7 +337,7 @@ lemma st7_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp20_2_2 u v x y z = 0) :
     PolyRefl.eval cp17_2_2 u v x y z = 0 :=
   prs_step (L := cp24_2_2) (q := cp25_2_2) (ct := 32)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st8_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -345,7 +345,7 @@ lemma st8_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp29_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp28_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st9_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -353,7 +353,7 @@ lemma st9_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp29_2_2 u v x y z = 0) :
     PolyRefl.eval cp32_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp31_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st10_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -361,7 +361,7 @@ lemma st10_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp35_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp34_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st11_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -369,7 +369,7 @@ lemma st11_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp35_2_2 u v x y z = 0) :
     PolyRefl.eval cp38_2_2 u v x y z = 0 :=
   prs_step (L := cp36_2_2) (q := cp37_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st12_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -377,7 +377,7 @@ lemma st12_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp38_2_2 u v x y z = 0) :
     PolyRefl.eval cp26_2_2 u v x y z = 0 :=
   prs_step (L := cp39_2_2) (q := cp40_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st13_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -385,7 +385,7 @@ lemma st13_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp43_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp34_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st14_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -393,7 +393,7 @@ lemma st14_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp43_2_2 u v x y z = 0) :
     PolyRefl.eval cp38_2_2 u v x y z = 0 :=
   prs_step (L := cp36_2_2) (q := cp44_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st15_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -401,7 +401,7 @@ lemma st15_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp47_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp46_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st16_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -409,7 +409,7 @@ lemma st16_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp47_2_2 u v x y z = 0) :
     PolyRefl.eval cp49_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp48_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st17_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -417,7 +417,7 @@ lemma st17_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp38_2_2 u v x y z = 0) :
     PolyRefl.eval cp41_2_2 u v x y z = 0 :=
   prs_step (L := cp39_2_2) (q := cp50_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st18_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -425,7 +425,7 @@ lemma st18_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp54_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp53_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st19_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -433,7 +433,7 @@ lemma st19_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp57_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp56_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st20_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -441,7 +441,7 @@ lemma st20_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp57_2_2 u v x y z = 0) :
     PolyRefl.eval cp60_2_2 u v x y z = 0 :=
   prs_step (L := cp58_2_2) (q := cp59_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st21_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -449,7 +449,7 @@ lemma st21_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp54_2_2 u v x y z = 0) :
     PolyRefl.eval cp51_2_2 u v x y z = 0 :=
   prs_step (L := cp61_2_2) (q := cp62_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st22_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -457,7 +457,7 @@ lemma st22_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp65_2_2 u v x y z = 0) :
     PolyRefl.eval cp67_2_2 u v x y z = 0 :=
   prs_step (L := cp64_2_2) (q := cp66_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st23_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -465,7 +465,7 @@ lemma st23_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp70_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st24_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -473,7 +473,7 @@ lemma st24_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp70_2_2 u v x y z = 0) :
     PolyRefl.eval cp73_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp72_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st25_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -481,7 +481,7 @@ lemma st25_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp67_2_2 u v x y z = 0) :
     PolyRefl.eval cp63_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp75_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st26_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -489,7 +489,7 @@ lemma st26_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp13_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp78_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st27_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -497,7 +497,7 @@ lemma st27_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp13_2_2 u v x y z = 0) :
     PolyRefl.eval cp14_2_2 u v x y z = 0 :=
   prs_step (L := cp12_2_2) (q := cp11_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st28_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -505,7 +505,7 @@ lemma st28_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp81_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp80_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st29_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -513,7 +513,7 @@ lemma st29_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp81_2_2 u v x y z = 0) :
     PolyRefl.eval cp83_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp82_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st30_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -521,7 +521,7 @@ lemma st30_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp14_2_2 u v x y z = 0) :
     PolyRefl.eval cp76_2_2 u v x y z = 0 :=
   prs_step (L := cp15_2_2) (q := cp84_2_2) (ct := 64)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st31_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -529,7 +529,7 @@ lemma st31_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp88_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp87_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st32_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -537,7 +537,7 @@ lemma st32_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp88_2_2 u v x y z = 0) :
     PolyRefl.eval cp91_2_2 u v x y z = 0 :=
   prs_step (L := cp89_2_2) (q := cp90_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st33_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -545,7 +545,7 @@ lemma st33_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp54_2_2 u v x y z = 0) :
     PolyRefl.eval cp85_2_2 u v x y z = 0 :=
   prs_step (L := cp61_2_2) (q := cp92_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st34_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -553,7 +553,7 @@ lemma st34_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp54_2_2 u v x y z = 0) :
     PolyRefl.eval cp17_2_2 u v x y z = 0 :=
   prs_step (L := cp24_2_2) (q := cp93_2_2) (ct := 32)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st35_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -561,7 +561,7 @@ lemma st35_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp20_2_2 u v x y z = 0) :
     PolyRefl.eval cp85_2_2 u v x y z = 0 :=
   prs_step (L := cp61_2_2) (q := cp94_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st36_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -569,7 +569,7 @@ lemma st36_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp98_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp97_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st37_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -577,7 +577,7 @@ lemma st37_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp98_2_2 u v x y z = 0) :
     PolyRefl.eval cp100_2_2 u v x y z = 0 :=
   prs_step (L := cp89_2_2) (q := cp99_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st38_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -585,7 +585,7 @@ lemma st38_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp20_2_2 u v x y z = 0) :
     PolyRefl.eval cp95_2_2 u v x y z = 0 :=
   prs_step (L := cp61_2_2) (q := cp101_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st39_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -593,7 +593,7 @@ lemma st39_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp105_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp104_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st40_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -601,7 +601,7 @@ lemma st40_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp108_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp107_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st41_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -609,7 +609,7 @@ lemma st41_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp108_2_2 u v x y z = 0) :
     PolyRefl.eval cp111_2_2 u v x y z = 0 :=
   prs_step (L := cp109_2_2) (q := cp110_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st42_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -617,7 +617,7 @@ lemma st42_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp105_2_2 u v x y z = 0) :
     PolyRefl.eval cp102_2_2 u v x y z = 0 :=
   prs_step (L := cp112_2_2) (q := cp113_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st43_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -625,7 +625,7 @@ lemma st43_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp116_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp115_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st44_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -633,7 +633,7 @@ lemma st44_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp116_2_2 u v x y z = 0) :
     PolyRefl.eval cp91_2_2 u v x y z = 0 :=
   prs_step (L := cp89_2_2) (q := cp117_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st45_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -641,7 +641,7 @@ lemma st45_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp121_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp120_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st46_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -649,7 +649,7 @@ lemma st46_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp54_2_2 u v x y z = 0) :
     PolyRefl.eval cp118_2_2 u v x y z = 0 :=
   prs_step (L := cp24_2_2) (q := cp122_2_2) (ct := 32)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st47_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -657,7 +657,7 @@ lemma st47_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp125_2_2 u v x y z = 0) :
     PolyRefl.eval cp127_2_2 u v x y z = 0 :=
   prs_step (L := cp124_2_2) (q := cp126_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st48_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -665,7 +665,7 @@ lemma st48_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp130_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp129_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st49_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -673,7 +673,7 @@ lemma st49_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp130_2_2 u v x y z = 0) :
     PolyRefl.eval cp133_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp132_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st50_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -681,7 +681,7 @@ lemma st50_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp127_2_2 u v x y z = 0) :
     PolyRefl.eval cp123_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp134_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st51_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -689,7 +689,7 @@ lemma st51_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp137_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp136_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st52_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -697,7 +697,7 @@ lemma st52_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp137_2_2 u v x y z = 0) :
     PolyRefl.eval cp49_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp138_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st53_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -705,7 +705,7 @@ lemma st53_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp141_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp129_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st54_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -713,7 +713,7 @@ lemma st54_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp141_2_2 u v x y z = 0) :
     PolyRefl.eval cp143_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp142_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st55_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -721,7 +721,7 @@ lemma st55_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp126_2_2 u v x y z = 0) :
     PolyRefl.eval cp127_2_2 u v x y z = 0 :=
   prs_step (L := cp124_2_2) (q := cp125_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st56_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -729,7 +729,7 @@ lemma st56_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp127_2_2 u v x y z = 0) :
     PolyRefl.eval cp139_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp144_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st57_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -737,7 +737,7 @@ lemma st57_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp54_2_2 u v x y z = 0) :
     PolyRefl.eval cp95_2_2 u v x y z = 0 :=
   prs_step (L := cp61_2_2) (q := cp145_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st58_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -745,7 +745,7 @@ lemma st58_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp148_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp147_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st59_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -753,7 +753,7 @@ lemma st59_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp148_2_2 u v x y z = 0) :
     PolyRefl.eval cp100_2_2 u v x y z = 0 :=
   prs_step (L := cp89_2_2) (q := cp149_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st60_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -761,7 +761,7 @@ lemma st60_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp152_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp151_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st61_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -769,7 +769,7 @@ lemma st61_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp152_2_2 u v x y z = 0) :
     PolyRefl.eval cp154_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp153_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st62_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -777,7 +777,7 @@ lemma st62_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp38_2_2 u v x y z = 0) :
     PolyRefl.eval cp0_2_2 u v x y z = 0 :=
   prs_step (L := cp39_2_2) (q := cp155_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st63_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -785,7 +785,7 @@ lemma st63_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp157_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st64_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -793,7 +793,7 @@ lemma st64_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp157_2_2 u v x y z = 0) :
     PolyRefl.eval cp159_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp158_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st65_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -801,7 +801,7 @@ lemma st65_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp160_2_2 u v x y z = 0) :
     PolyRefl.eval cp67_2_2 u v x y z = 0 :=
   prs_step (L := cp64_2_2) (q := cp161_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st66_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -809,7 +809,7 @@ lemma st66_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp67_2_2 u v x y z = 0) :
     PolyRefl.eval cp123_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp162_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st67_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -817,7 +817,7 @@ lemma st67_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp165_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp164_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st68_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -825,7 +825,7 @@ lemma st68_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp165_2_2 u v x y z = 0) :
     PolyRefl.eval cp167_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp166_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st69_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -833,7 +833,7 @@ lemma st69_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp38_2_2 u v x y z = 0) :
     PolyRefl.eval cp76_2_2 u v x y z = 0 :=
   prs_step (L := cp39_2_2) (q := cp168_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st70_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -841,7 +841,7 @@ lemma st70_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp171_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp170_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st71_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -849,7 +849,7 @@ lemma st71_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp171_2_2 u v x y z = 0) :
     PolyRefl.eval cp173_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp172_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st72_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -857,7 +857,7 @@ lemma st72_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp14_2_2 u v x y z = 0) :
     PolyRefl.eval cp26_2_2 u v x y z = 0 :=
   prs_step (L := cp15_2_2) (q := cp174_2_2) (ct := 64)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st73_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -865,7 +865,7 @@ lemma st73_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp178_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp177_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st74_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -873,7 +873,7 @@ lemma st74_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp178_2_2 u v x y z = 0) :
     PolyRefl.eval cp180_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp179_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st75_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -881,7 +881,7 @@ lemma st75_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp127_2_2 u v x y z = 0) :
     PolyRefl.eval cp175_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp181_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st76_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -889,7 +889,7 @@ lemma st76_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp183_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st77_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -897,7 +897,7 @@ lemma st77_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp183_2_2 u v x y z = 0) :
     PolyRefl.eval cp185_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp184_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st78_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -905,7 +905,7 @@ lemma st78_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp67_2_2 u v x y z = 0) :
     PolyRefl.eval cp175_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp186_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st79_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -913,7 +913,7 @@ lemma st79_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp189_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp188_2_2) (ct := 2)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st80_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -921,7 +921,7 @@ lemma st80_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp189_2_2 u v x y z = 0) :
     PolyRefl.eval cp102_2_2 u v x y z = 0 :=
   prs_step (L := cp112_2_2) (q := cp190_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st81_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -929,7 +929,7 @@ lemma st81_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp110_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp192_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st82_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -937,7 +937,7 @@ lemma st82_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp110_2_2 u v x y z = 0) :
     PolyRefl.eval cp111_2_2 u v x y z = 0 :=
   prs_step (L := cp109_2_2) (q := cp108_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st83_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -945,7 +945,7 @@ lemma st83_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp194_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp177_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st84_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -953,7 +953,7 @@ lemma st84_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp194_2_2 u v x y z = 0) :
     PolyRefl.eval cp196_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp195_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st85_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -961,7 +961,7 @@ lemma st85_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp127_2_2 u v x y z = 0) :
     PolyRefl.eval cp63_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp197_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st86_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -969,7 +969,7 @@ lemma st86_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp199_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp177_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st87_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -977,7 +977,7 @@ lemma st87_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp199_2_2 u v x y z = 0) :
     PolyRefl.eval cp180_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp200_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st88_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -985,7 +985,7 @@ lemma st88_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp202_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st89_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -993,7 +993,7 @@ lemma st89_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp202_2_2 u v x y z = 0) :
     PolyRefl.eval cp204_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp203_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st90_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1001,7 +1001,7 @@ lemma st90_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp67_2_2 u v x y z = 0) :
     PolyRefl.eval cp139_2_2 u v x y z = 0 :=
   prs_step (L := cp74_2_2) (q := cp205_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st91_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1009,7 +1009,7 @@ lemma st91_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp208_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp207_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st92_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1017,7 +1017,7 @@ lemma st92_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp208_2_2 u v x y z = 0) :
     PolyRefl.eval cp167_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp209_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st93_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1025,7 +1025,7 @@ lemma st93_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp212_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp211_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st94_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1033,7 +1033,7 @@ lemma st94_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp212_2_2 u v x y z = 0) :
     PolyRefl.eval cp154_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp213_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st95_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1041,7 +1041,7 @@ lemma st95_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp215_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st96_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1049,7 +1049,7 @@ lemma st96_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp215_2_2 u v x y z = 0) :
     PolyRefl.eval cp73_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp216_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st97_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1057,7 +1057,7 @@ lemma st97_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp218_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp129_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st98_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1065,7 +1065,7 @@ lemma st98_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp218_2_2 u v x y z = 0) :
     PolyRefl.eval cp143_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp219_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st99_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1073,7 +1073,7 @@ lemma st99_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp221_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st100_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1081,7 +1081,7 @@ lemma st100_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp221_2_2 u v x y z = 0) :
     PolyRefl.eval cp185_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp222_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st101_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1089,7 +1089,7 @@ lemma st101_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp59_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp224_2_2) (ct := 16)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st102_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1097,7 +1097,7 @@ lemma st102_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp59_2_2 u v x y z = 0) :
     PolyRefl.eval cp60_2_2 u v x y z = 0 :=
   prs_step (L := cp58_2_2) (q := cp57_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st103_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1105,7 +1105,7 @@ lemma st103_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp20_2_2 u v x y z = 0) :
     PolyRefl.eval cp51_2_2 u v x y z = 0 :=
   prs_step (L := cp61_2_2) (q := cp225_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st104_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1113,7 +1113,7 @@ lemma st104_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp228_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp227_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st105_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1121,7 +1121,7 @@ lemma st105_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp228_2_2 u v x y z = 0) :
     PolyRefl.eval cp8_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp229_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st106_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1129,7 +1129,7 @@ lemma st106_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp232_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp231_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st107_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1137,7 +1137,7 @@ lemma st107_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp232_2_2 u v x y z = 0) :
     PolyRefl.eval cp83_2_2 u v x y z = 0 :=
   prs_step (L := cp6_2_2) (q := cp233_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st108_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1145,7 +1145,7 @@ lemma st108_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp235_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp129_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st109_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1153,7 +1153,7 @@ lemma st109_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp235_2_2 u v x y z = 0) :
     PolyRefl.eval cp133_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp236_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st110_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1161,7 +1161,7 @@ lemma st110_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp239_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp238_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st111_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1169,7 +1169,7 @@ lemma st111_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp239_2_2 u v x y z = 0) :
     PolyRefl.eval cp241_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp240_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st112_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1177,7 +1177,7 @@ lemma st112_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp14_2_2 u v x y z = 0) :
     PolyRefl.eval cp41_2_2 u v x y z = 0 :=
   prs_step (L := cp15_2_2) (q := cp242_2_2) (ct := 64)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st113_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1185,7 +1185,7 @@ lemma st113_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp245_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp244_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st114_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1193,7 +1193,7 @@ lemma st114_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp245_2_2 u v x y z = 0) :
     PolyRefl.eval cp32_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp246_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st115_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1201,7 +1201,7 @@ lemma st115_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp20_2_2 u v x y z = 0) :
     PolyRefl.eval cp118_2_2 u v x y z = 0 :=
   prs_step (L := cp24_2_2) (q := cp247_2_2) (ct := 32)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st116_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1209,7 +1209,7 @@ lemma st116_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp250_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp249_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st117_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1217,7 +1217,7 @@ lemma st117_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp250_2_2 u v x y z = 0) :
     PolyRefl.eval cp173_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp251_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st118_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1225,7 +1225,7 @@ lemma st118_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp253_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st119_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1233,7 +1233,7 @@ lemma st119_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp253_2_2 u v x y z = 0) :
     PolyRefl.eval cp204_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp254_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st120_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1241,7 +1241,7 @@ lemma st120_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp256_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp177_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st121_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1249,7 +1249,7 @@ lemma st121_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp256_2_2 u v x y z = 0) :
     PolyRefl.eval cp196_2_2 u v x y z = 0 :=
   prs_step (L := cp71_2_2) (q := cp257_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st122_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1257,7 +1257,7 @@ lemma st122_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp259_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp69_2_2) (ct := 4)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st123_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1265,7 +1265,7 @@ lemma st123_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp259_2_2 u v x y z = 0) :
     PolyRefl.eval cp159_2_2 u v x y z = 0 :=
   prs_step (L := cp131_2_2) (q := cp260_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st124_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1273,7 +1273,7 @@ lemma st124_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp3_2_2 u v x y z = 0) :
     PolyRefl.eval cp263_2_2 u v x y z = 0 :=
   prs_step (L := cp1_2_2) (q := cp262_2_2) (ct := 8)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma st125_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)
@@ -1281,7 +1281,7 @@ lemma st125_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (h1 : PolyRefl.eval cp263_2_2 u v x y z = 0) :
     PolyRefl.eval cp241_2_2 u v x y z = 0 :=
   prs_step (L := cp30_2_2) (q := cp264_2_2) (ct := 1)
-    (by norm_num) (by native_decide) u v x y z h0 h1
+    (by norm_num) (by decide +kernel) u v x y z h0 h1
 
 lemma leaf0_2_2 {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (u v x y z : R)

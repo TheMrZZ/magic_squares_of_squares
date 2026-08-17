@@ -500,7 +500,7 @@ fn emit_factored(out: &mut std::fs::File, tag: &str, li: usize,
     // big chain: divide P once per group
     let mut chain: Vec<(String, Vec<Term>)> = Vec::new();
     let mut rem = dense(terms).unwrap();
-    chain.push((format!("p0_{tag}_{li}"), terms.to_vec()));
+    chain.push((format!("f_{tag}_{li}"), terms.to_vec()));
     for (k, (_, gdata)) in gdatas.iter().enumerate() {
         rem = poly_div(&rem, gdata).expect("group divides");
         chain.push((format!("p{}_{tag}_{li}", k + 1), undense(&rem)));
@@ -517,7 +517,7 @@ fn emit_factored(out: &mut std::fs::File, tag: &str, li: usize,
     }
     writeln!(out, "lemma form_{tag}_{li} (r s : ℤ) (hr : Odd r) (hs : Even s)").unwrap();
     writeln!(out, "    (hco : IsCoprime r s) :").unwrap();
-    writeln!(out, "    PolyRefl.eval p0_{tag}_{li} r s 1 1 1 ≠ 0 := by").unwrap();
+    writeln!(out, "    PolyRefl.eval f_{tag}_{li} r s 1 1 1 ≠ 0 := by").unwrap();
     for h in &haves { writeln!(out, "{h}").unwrap(); }
     for (k, (gpair, _)) in gdatas.iter().enumerate() {
         let (gname, ghyp) = gpair.trim_matches(|c| c == '(' || c == ')')

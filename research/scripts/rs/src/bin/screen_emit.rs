@@ -156,8 +156,8 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let fname = &args[1];
     let tag = fname.replace("screen_", "").replace(".txt", "").replace('/', "_");
-    let dec = if std::env::var("KERNEL_DECIDE").is_ok() { "decide +kernel" }
-              else { "native_decide" };
+    let dec = if std::env::var("NATIVE_DECIDE").is_ok() { "native_decide" }
+              else { "decide +kernel" };
     let mut out = std::fs::File::create(format!("ScreenCert_{tag}.lean")).unwrap();
     writeln!(out, "/- Generated: the screen-phase kills of grid {tag}. Every relation").unwrap();
     writeln!(out, "   with a monomial or unit core is nonzero at the Gaussian point. -/").unwrap();

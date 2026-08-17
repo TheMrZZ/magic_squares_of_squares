@@ -62,8 +62,8 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let fname = &args[1]; // chains_{a}_{b}.txt
     let tag = fname.replace("chains_", "").replace(".txt", "").replace('/', "_");
-    let dec = if std::env::var("KERNEL_DECIDE").is_ok() { "decide +kernel" }
-              else { "native_decide" };
+    let dec = if std::env::var("NATIVE_DECIDE").is_ok() { "native_decide" }
+              else { "decide +kernel" };
 
     let mut polys: HashMap<String, usize> = HashMap::new();
     let mut poly_list: Vec<P5> = Vec::new();
@@ -259,13 +259,19 @@ fn main() {
         if end.keys().any(|m| m.2 != g) { n_pskip += 1; continue; } // not single-level
         let mut terms: Vec<(num_bigint::BigInt, u16, u16)> = end.iter()
             .map(|(m, c)| (c.clone(), m.0, m.1)).collect();
-        if terms.len() == 1 { n_pskip += 1; continue; }
-        let a0 = terms.iter().map(|t| t.1).min().unwrap();
-        let b0 = terms.iter().map(|t| t.2).min().unwrap();
-        let two = strip_form(&mut terms);
-        let key: String = terms.iter()
-            .map(|(c, a, b)| format!("{c},{a},{b}")).collect::<Vec<_>>().join(";");
-        let Some(fli) = form_index.get(&key) else { n_pskip += 1; continue; };
+        let mono_end: Option<(num_bigint::BigInt, u16, u16)> =
+            if terms.len() == 1 { Some(terms[0].clone()) } else { None };
+        let (a0, b0, two, fli) = if mono_end.is_some() {
+            (0u16, 0u16, 0u32, usize::MAX)
+        } else {
+            let a0 = terms.iter().map(|t| t.1).min().unwrap();
+            let b0 = terms.iter().map(|t| t.2).min().unwrap();
+            let two = strip_form(&mut terms);
+            let key: String = terms.iter()
+                .map(|(c, a, b)| format!("{c},{a},{b}")).collect::<Vec<_>>().join(";");
+            let Some(fli) = form_index.get(&key) else { n_pskip += 1; continue; };
+            (a0, b0, two, *fli)
+        };
         // core data defs (4-var embedded at (1,2,4,5))
         let mut intern_core = |ser: &str| -> usize {
             let next = core_ids.len();
@@ -327,13 +333,13 @@ fn main() {
         });
         writeln!(pout, "  have hin1 : PolyRefl.eval cp{in1}_{tag} r s (q : ℤ) X Y = 0 := by").unwrap();
         writeln!(pout, "    rw [PolyRefl.eval_eq_of_normalizeFast_eq").unwrap();
-        writeln!(pout, "      (show PolyRefl.normalizeFast cp{in1}_{tag} = PolyRefl.normalizeFast (GaussData.{}Of core{ci1}_{tag}) from by native_decide)]",
+        writeln!(pout, "      (show PolyRefl.normalizeFast cp{in1}_{tag} = PolyRefl.normalizeFast (GaussData.{}Of core{ci1}_{tag}) from by {dec})]",
             if pick1 == "re" { "re" } else { "im" }).unwrap();
         writeln!(pout, "    rw [← (GaussData.re_im_of_bridge core{ci1}_{tag} r s q X Y).{part1}, h1]").unwrap();
         writeln!(pout, "    rfl").unwrap();
         writeln!(pout, "  have hin2 : PolyRefl.eval cp{in2}_{tag} r s (q : ℤ) X Y = 0 := by").unwrap();
         writeln!(pout, "    rw [PolyRefl.eval_eq_of_normalizeFast_eq").unwrap();
-        writeln!(pout, "      (show PolyRefl.normalizeFast cp{in2}_{tag} = PolyRefl.normalizeFast (GaussData.{}Of core{ci2}_{tag}) from by native_decide)]",
+        writeln!(pout, "      (show PolyRefl.normalizeFast cp{in2}_{tag} = PolyRefl.normalizeFast (GaussData.{}Of core{ci2}_{tag}) from by {dec})]",
             if pick2 == "re" { "re" } else { "im" }).unwrap();
         writeln!(pout, "    rw [← (GaussData.re_im_of_bridge core{ci2}_{tag} r s q X Y).{part2}, h2]").unwrap();
         writeln!(pout, "    rfl").unwrap();
@@ -351,11 +357,27 @@ fn main() {
         }).collect();
         writeln!(pout, "  have hend := leaf{li}_{tag} (R := ℤ) r s ((q : ℤ)) X Y {}",
             leafargs.join(" ")).unwrap();
-        writeln!(pout, "  exact CertKit.endpoint_split cp{eid}_{tag} CertForms.f_{tag}_{fli}").unwrap();
-        writeln!(pout, "    {a0} {b0} {g} (2 ^ {two}) (by native_decide) r s (q : ℤ) X Y hend").unwrap();
-        writeln!(pout, "    (by norm_num) hr0 hs0 hq0").unwrap();
-        writeln!(pout, "    (by rw [PolyRefl.eval_qxy_free CertForms.f_{tag}_{fli} (by native_decide) r s ((q : ℤ)) X Y 1 1 1]").unwrap();
-        writeln!(pout, "        exact CertForms.form_{tag}_{fli} r s hr hs hco)\n").unwrap();
+        if let Some((mc, ma, mb)) = &mono_end {
+            writeln!(pout, "  have hval : PolyRefl.eval cp{eid}_{tag} r s (q : ℤ) X Y").unwrap();
+            writeln!(pout, "      = ({mc} : ℤ) * r ^ {ma} * s ^ {mb} * (q : ℤ) ^ {g} := by").unwrap();
+            writeln!(pout, "    simp only [cp{eid}_{tag}, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]").unwrap();
+            writeln!(pout, "    push_cast").unwrap();
+            writeln!(pout, "    ring").unwrap();
+            writeln!(pout, "  rw [hval] at hend").unwrap();
+            writeln!(pout, "  rcases mul_eq_zero.mp hend with h | h").unwrap();
+            writeln!(pout, "  · rcases mul_eq_zero.mp h with h | h").unwrap();
+            writeln!(pout, "    · rcases mul_eq_zero.mp h with h | h").unwrap();
+            writeln!(pout, "      · norm_num at h").unwrap();
+            writeln!(pout, "      · exact hr0 (pow_eq_zero_iff'.mp h).1").unwrap();
+            writeln!(pout, "    · exact hs0 (pow_eq_zero_iff'.mp h).1").unwrap();
+            writeln!(pout, "  · exact hq0 (pow_eq_zero_iff'.mp h).1\n").unwrap();
+        } else {
+            writeln!(pout, "  exact CertKit.endpoint_split cp{eid}_{tag} CertForms.f_{tag}_{fli}").unwrap();
+            writeln!(pout, "    {a0} {b0} {g} (2 ^ {two}) (by {dec}) r s (q : ℤ) X Y hend").unwrap();
+            writeln!(pout, "    (by norm_num) hr0 hs0 hq0").unwrap();
+            writeln!(pout, "    (by rw [PolyRefl.eval_qxy_free CertForms.f_{tag}_{fli} (by {dec}) r s ((q : ℤ)) X Y 1 1 1]").unwrap();
+            writeln!(pout, "        exact CertForms.form_{tag}_{fli} r s hr hs hco)\n").unwrap();
+        }
         n_pair += 1;
     }
     // core defs must precede the theorems: write them into a prelude
