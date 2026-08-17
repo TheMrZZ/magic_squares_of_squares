@@ -2647,3 +2647,8 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - All aligned-residual pairs at (3,3) and (3,4) carry ONE family: Σ = ±2p⁴ = ±2(r²+s²)², Ω-scale = ±16rs(r²−s²) = ±4·Im(π⁸). The smooth w̃ divides p⁴, so w̃ = 1 for p > 5, and the pinning is exact: **χ^{2δ} = ±p⁴ ± (π⁸ − π̄⁸)**, equivalently q^{2δ} = p⁸ + 4S₈² = R₈² + 5S₈² — a norm form of discriminant −20 (the first non-UFD ring in the campaign, class number 2).
 - The finish skeleton: q^{2δ} = W² with W = q^δ gives (W − R₈)(W + R₈) = 5S₈²; parity (R₈ odd, 4 ∣ S₈) and coprimality split the factors as {β², 5α²}-types with S₈ = 2αβ, forcing (R₈, S₈) into a √−5-parametrization and hence **p⁸ = β⁴ − 6α²β² + 25α⁴** — a quartic Thue-type equation against an eighth power. One page of descent expected; the p = 5 stragglers (w̃ ∈ {5, 25}) are finite checks.
 - This is the last open cell on every swept grid: (2,3), (2,4), (2,5) fully closed; (3,3)/(3,4) closed except these 12/16 pairs.
+
+## Round 180: the sqrt(-5) cell is dead — every swept grid closes
+
+- The finish, in full: the aligned pinning gives q^{2δ} = R₈² + 5S₈²; the coprime Pell splitting yields S₈ = 2αβ and p⁸ = β⁴ − 6α²β² + 25α⁴ = N(z), z = (β²−3α²) + 4iα²; z is odd and coprime to its conjugate, so z = u·π⁸; the imaginary-part comparison against S₈ = 2αβ forces β = ±2α (u = ±1), hence α = 1 and p⁸ = 17 — absurd; u = ±i makes R₈ even — absurd. p = 5 and q = 5 die by direct divisibility. In the paper.
+- **Status: grids (2,3), (2,4), (2,5), (3,3), (3,4) are entirely dead.** Remaining for the two-exponent theorem: the exact-root oracle pass (dumps exist per grid) and the b-generic statement of the elimination layers threaded through the q²-telescoping induction.
