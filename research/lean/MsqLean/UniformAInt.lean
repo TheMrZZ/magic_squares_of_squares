@@ -1584,4 +1584,126 @@ lemma mixed_core_a (q : ℕ) [hq : Fact (Nat.Prime q)]
     · exact mixed_c2_M7a_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD N1 f g hg hIX hRY
   · exact mixed_c1_M7a p q hpodd hqodd a ha A B C D hpAB hqCD f hf hIX
 
+set_option maxHeartbeats 800000 in
+/-- Generic two-core, both partners p²-divisible. -/
+lemma two_p2p2_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N1 N2 f g : ℤ)
+    (hIX : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * ((p : ℤ) ^ 2 * N1))
+    (hRY : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = g * ((p : ℤ) ^ 2 * N2)) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2X : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpI)).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨f * N1, by linear_combination hIX⟩
+  have hp2Y : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re))) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpR)).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨g * N2, by linear_combination hRY⟩
+  obtain ⟨x, hx⟩ := hp2X
+  obtain ⟨y, hy⟩ := hp2Y
+  have hdq : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    refine (dvd_pow_self _ (by norm_num : (4 : ℕ) ≠ 0)).trans ?_
+    exact ⟨x ^ 2 + y ^ 2, by rw [← hq4c, hx, hy]; ring⟩
+  have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hdq
+  have hnat : p ∣ q := by exact_mod_cast hq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+set_option maxHeartbeats 800000 in
+/-- Generic two-core (p²-partner, M7ₐ): the classify2 residue gives
+4X² = 5q⁴ − p^(4a), and p² ∣ X forces p² ∣ 5q⁴ — dead through p = 5. -/
+lemma two_c2_M7a_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N f g : ℤ) (hg : g = 1 ∨ g = -1)
+    (hIX : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * ((p : ℤ) ^ 2 * N))
+    (hRY : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = g * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) : False := by
+  have hg2 : g ^ 2 = 1 := by rcases hg with rfl | rfl <;> norm_num
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hna := norm_coord p A B hpAB a
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  obtain ⟨ε, hε, hRa, h2Y⟩ := M7a_classify2 p q hpodd hqodd hpq a ha A B C D hpAB hqCD g hg hRY
+  have hε2 : ε ^ 2 = 1 := by rcases hε with rfl | rfl <;> norm_num
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2X : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpI)).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨f * N, by linear_combination hIX⟩
+  have hRsq : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 = (q : ℤ) ^ 4 := by
+    rw [hRa]
+    linear_combination (q : ℤ) ^ 4 * hε2
+  have hY4 : 4 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 := by
+    have hsq : (2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) ^ 2 = (ε * g * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) ^ 2 := by rw [h2Y]
+    linear_combination hsq + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * g ^ 2 * hε2 + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * hg2
+  have hX4 : 4 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = 5 * (q : ℤ) ^ 4 - (p : ℤ) ^ (4 * a) := by
+    linear_combination 4 * hq4c - hY4 - hna + hRsq
+  obtain ⟨x, hx⟩ := hp2X
+  have hp2q4 : (p : ℤ) ^ 2 ∣ 5 * (q : ℤ) ^ 4 := by
+    refine ⟨4 * (p : ℤ) ^ 2 * x ^ 2 + (p : ℤ) ^ (4 * a - 2), ?_⟩
+    have hpow : (p : ℤ) ^ (4 * a) = (p : ℤ) ^ 2 * (p : ℤ) ^ (4 * a - 2) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    linear_combination -hX4 + 4 * (((((⟨C, D⟩ : GaussianInt) ^ 4).re)) + (p : ℤ) ^ 2 * x) * hx + hpow
+  have hpq4 : (p : ℤ) ∣ 5 * (q : ℤ) ^ 4 :=
+    (dvd_pow_self _ (by norm_num : (2 : ℕ) ≠ 0)).trans hp2q4
+  rcases hpP.dvd_mul.mp hpq4 with h5 | hq4
+  · -- p = 5, then 25 ∣ 5q⁴ forces 5 ∣ q
+    have h5n : p ∣ 5 := by exact_mod_cast h5
+    have hle := Nat.le_of_dvd (by norm_num) h5n
+    have h2le := hp.out.two_le
+    have hp5 : p = 5 := by
+      interval_cases p <;> first
+        | rfl
+        | omega
+        | exact absurd h5n (by decide)
+        | exact absurd hp.out (by decide)
+    subst hp5
+    obtain ⟨k, hk⟩ := hp2q4
+    push_cast at hk
+    have h5q4 : (5 : ℤ) ∣ (q : ℤ) ^ 4 := ⟨k, by linarith⟩
+    have h5q : (5 : ℤ) ∣ (q : ℤ) := (by norm_num : Prime (5 : ℤ)).dvd_of_dvd_pow h5q4
+    have hnat : (5 : ℕ) ∣ q := by exact_mod_cast h5q
+    have := (Nat.prime_dvd_prime_iff_eq (by norm_num) hq.out).mp hnat
+    exact hpq (by omega)
+  · have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4
+    have hnat : p ∣ q := by exact_mod_cast hq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+set_option maxHeartbeats 800000 in
+/-- The full generic two-core at rung a. -/
+lemma two_core_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kc1 Kc2 f g : ℤ) (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1)
+    (hc1 : (∃ N, Kc1 = (p : ℤ) ^ 2 * N) ∨ Kc1 = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc2 : (∃ N, Kc2 = (p : ℤ) ^ 2 * N) ∨ Kc2 = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hIX : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * Kc1)
+    (hRY : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = g * Kc2) : False := by
+  rcases hc1 with ⟨N1, rfl⟩ | rfl
+  · rcases hc2 with ⟨N2, rfl⟩ | rfl
+    · exact two_p2p2_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD N1 N2 f g hIX hRY
+    · exact two_c2_M7a_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD N1 f g hg hIX hRY
+  · exact Srow_M7_kill_a p q hpodd hqodd a ha A B C D hpAB hqCD f hf hIX
+
 end UniformA

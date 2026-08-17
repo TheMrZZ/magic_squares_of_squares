@@ -2318,3 +2318,16 @@ L34/L56 sform_M7_J_core) were all unnecessary at this level of generality —
 the uniform argument was hiding in plain sight. Both generic cores now
 stand; remaining: generic χₐ-machinery (the mixed cores mostly exist),
 step router, ratio-step, four-diffs-step, wrapper.
+
+## Round 144 (2026-08-17) — ALL FOUR GENERIC CORES COMPLETE
+
+`two_core_a` closes the coefficient-2 core (the G deep p = 5 cell reappears
+as 4X² = 5q⁴ − p^{4a} mod p² and closes in six lines). With Tcore_a,
+Score_a, mixed_core_a, and two_core_a, every cross-pair and χ-pair cell of
+the step router exists generically — the per-rung cell mathematics of
+Theorems E/F/G is now subsumed by ~25 uniform lemmas in UniformAInt.lean
+(~1750 lines, zero sorries). Remaining for no_assignment_step: the sign-
+juggling dispatchers (56/ab56/unsafe/lone analogs — route into the four
+cores, exponent-free), the low-bucket telescoping via UClass_step + the IH
+hypothesis, then the router; after that ratio-step, four-diffs-step, and
+the induction wrapper with base Theorem E.
