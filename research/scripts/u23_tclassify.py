@@ -33,13 +33,13 @@ def nonvanishing_rs(b_):
     return True
 
 
-terms = pickle.load(open('u23_terminal_polys.pkl', 'rb'))
-print(f"{len(terms)} distinct terminal polynomials")
-cls = Counter()
-thin = []
-for ts, cnt in terms.items():
+def classify_one(item):
+    ts, cnt = item
+    return ts, cnt, _classify(ts)
+
+
+def _classify(ts):
     T = expand(sympify(ts))
-    # try full factorization first
     allok = True
     anyq = False
     for fc in Mul.make_args(factor(T)):
@@ -51,8 +51,7 @@ for ts, cnt in terms.items():
         if not v:
             allok = False
     if allok and not anyq:
-        cls['FACTOR kill (all pieces nonvanishing)'] += cnt
-        continue
+        return ('FACTOR kill (all pieces nonvanishing)', None)
     P = Poly(T, q)
     lv = [(m[0], c) for m, c in P.terms()]
     k0 = min(k for k, c in lv)
@@ -60,23 +59,31 @@ for ts, cnt in terms.items():
     ok0 = True
     for fc in Mul.make_args(factor(t0)):
         b_, ex = (fc.base, int(fc.exp)) if isinstance(fc, Pow) else (fc, 1)
-        v = nonvanishing_rs(b_)
-        if v is False:
+        if nonvanishing_rs(b_) is False:
             ok0 = False
     if len(lv) == 1:
-        cls['single q-level, t0 ' + ('nonvanishing -> DEAD' if ok0 else 'UNRESOLVED')] += cnt
-        if not ok0:
-            thin.append((ts, 'single-level t0 vanishing possible'))
-        continue
+        if ok0:
+            return ('single q-level, t0 nonvanishing -> DEAD', None)
+        return ('single q-level UNRESOLVED', 'single-level t0 vanishing possible')
     if ok0:
-        cls['Q-GRADE thin branch (q^2 | t0 band)'] += cnt
-        thin.append((ts, 'thin: q^2 | ' + str(factor(t0))[:80]))
-    else:
-        cls['t0 can vanish: UNRESOLVED'] += cnt
-        thin.append((ts, 'unresolved t0'))
-for k, c in cls.most_common():
-    print(f"  {c:5d}  {k}")
-print(f"\nthin/unresolved entries: {len(thin)}")
-for ts, why in thin[:8]:
-    print("  ", why)
-pickle.dump(thin, open('u23_thin.pkl', 'wb'))
+        return ('Q-GRADE thin branch (q^2 | t0 band)', 'thin: q^2 | ' + str(factor(t0))[:80])
+    return ('t0 can vanish: UNRESOLVED', 'unresolved t0')
+
+
+if __name__ == '__main__':
+    from multiprocessing import Pool
+    terms = pickle.load(open('u23_terminal_polys.pkl', 'rb'))
+    print(f"{len(terms)} distinct terminal polynomials")
+    cls = Counter()
+    thin = []
+    with Pool(10) as pool:
+        for ts, cnt, (verdict, note) in pool.imap_unordered(classify_one, list(terms.items()), chunksize=4):
+            cls[verdict] += cnt
+            if note:
+                thin.append((ts, note))
+    for k, c in cls.most_common():
+        print(f"  {c:5d}  {k}")
+    print(f"\nthin/unresolved entries: {len(thin)}")
+    for ts, why in thin[:8]:
+        print("  ", why)
+    pickle.dump(thin, open('u23_thin.pkl', 'wb'))
