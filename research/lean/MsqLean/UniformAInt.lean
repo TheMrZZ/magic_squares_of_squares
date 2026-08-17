@@ -1953,4 +1953,262 @@ lemma dispatch_bd_a (q : ℕ) [hq : Fact (Nat.Prime q)]
       (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hc
       (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
 
+
+
+/-- p-squared cannot divide a unit multiple of q-squared times im at rung a. -/
+lemma lowq_M7a_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (e m : ℤ) (he : e = 1 ∨ e = -1 ∨ e = 2 ∨ e = -2)
+    (h : e * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) = (p : ℤ) ^ 2 * m) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hpq' : ¬ (p : ℤ) ∣ (q : ℤ) := by
+    intro hd
+    have hnat : p ∣ q := by exact_mod_cast hd
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+  have hc : ¬ (p : ℤ) ∣ e * (q : ℤ) ^ 2 := by
+    intro hd
+    rcases hpP.dvd_mul.mp hd with h' | h'
+    · have he0 : e ≠ 0 := by rcases he with rfl | rfl | rfl | rfl <;> norm_num
+      have hle : (p : ℤ) ≤ |e| := Int.le_of_dvd (abs_pos.mpr he0) ((dvd_abs _ _).mpr h')
+      have habs : |e| ≤ 2 := by rcases he with rfl | rfl | rfl | rfl <;> norm_num
+      have hple : (p : ℤ) ≤ 2 := hle.trans habs
+      have h2le : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+      have hp2 : (p : ℤ) ≠ 2 := by
+        intro h2
+        have hp2n : p = 2 := by exact_mod_cast h2
+        rw [hp2n] at hpodd
+        norm_num at hpodd
+      omega
+    · exact hpq' (hpP.dvd_of_dvd_pow h')
+  exact p2_not_dvd_I4a p hpodd A B hpAB a ha1 (e * (q : ℤ) ^ 2) m hc
+    (by linear_combination h)
+
+set_option maxHeartbeats 1600000 in
+/-- Lone chi-class at slot a, rung a. -/
+lemma dispatch_lonea_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (_hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (ha8 : Ka = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∨ Ka = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc : (∃ N, Kc = (p : ℤ) ^ 2 * N) ∨ Kc = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+
+  rcases hb with ⟨mb, hmb⟩ | rfl
+  · rcases hc with ⟨mc, hmc⟩ | rfl
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · -- no L2: doubled-8 relation, 2e1·Ka = e3Kc + e4Kd ≡ 0 (mod p²)
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e1) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he1 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases ha8 with rfl | rfl
+        · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e1)
+            (e3 * mc + e4 * md) hcunit
+            (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+        · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e1)
+            (e3 * mc + e4 * md) hcunit
+            (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+      · -- L2 at d: use hE2 (a-free)
+        exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 e4 (e3 * mc - 2 * e2 * mb)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE2 + e3 * hmc - 2 * e2 * hmb)
+    · -- L2 at c
+      rcases hd with ⟨md, hmd⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 e3 (2 * e2 * mb + e4 * md)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by linear_combination hE2 + 2 * e2 * hmb + e4 * hmd)
+      · exact hcd rfl
+  · -- L2 at b
+    rcases hc with ⟨mc, hmc⟩ | rfl
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e2) (e3 * mc - e4 * md)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+      · exact hbd rfl
+    · exact hbc rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone chi-class at slot b, rung a. -/
+lemma dispatch_loneb_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (_hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hb8 : Kb = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∨ Kb = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (ha : (∃ N, Ka = (p : ℤ) ^ 2 * N) ∨ Ka = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc : (∃ N, Kc = (p : ℤ) ^ 2 * N) ∨ Kc = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hac : Ka ≠ Kc) (had : Ka ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+
+  rcases ha with ⟨ma, hma⟩ | rfl
+  · rcases hc with ⟨mc, hmc⟩ | rfl
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · have hcunit : ¬ (p : ℤ) ∣ (2 * e2) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he2 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hb8 with rfl | rfl
+        · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e2)
+            (e3 * mc - e4 * md) hcunit
+            (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+        · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e2)
+            (e3 * mc - e4 * md) hcunit
+            (by linear_combination -hE2 + e3 * hmc - e4 * hmd)
+      · -- L2 at d: use hE1 (b-free)
+        exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 e4 (2 * e1 * ma - e3 * mc)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 + 2 * e1 * hma - e3 * hmc)
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 e3 (2 * e1 * ma - e4 * md)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 + 2 * e1 * hma - e4 * hmd)
+      · exact hcd rfl
+  · rcases hc with ⟨mc, hmc⟩ | rfl
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e1) (e3 * mc + e4 * md)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 + e3 * hmc + e4 * hmd)
+      · exact had rfl
+    · exact hac rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone chi-class at slot c, rung a. -/
+lemma dispatch_lonec_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (_hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hc8 : Kc = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∨ Kc = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (ha : (∃ N, Ka = (p : ℤ) ^ 2 * N) ∨ Ka = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hab : Ka ≠ Kb) (had : Ka ≠ Kd) (hbd : Kb ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+
+  rcases ha with ⟨ma, hma⟩ | rfl
+  · rcases hb with ⟨mb, hmb⟩ | rfl
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · -- no L2: 2e3·Kc = 2e1Ka + 2e2Kb ≡ 0 (mod p²)
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e3) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he3 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hc8 with rfl | rfl
+        · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e3)
+            (2 * e1 * ma + 2 * e2 * mb) hcunit
+            (by linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+        · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e3)
+            (2 * e1 * ma + 2 * e2 * mb) hcunit
+            (by linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+      · -- L2 at d: c-free relation hE1 − hE2
+        exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e4) (2 * e1 * ma - 2 * e2 * mb)
+          (by rcases he4 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+    · -- L2 at b
+      rcases hd with ⟨md, hmd⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e2) (2 * e1 * ma - 2 * e4 * md)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e4 * hmd)
+      · exact hbd rfl
+  · -- L2 at a
+    rcases hb with ⟨mb, hmb⟩ | rfl
+    · rcases hd with ⟨md, hmd⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e1) (2 * e2 * mb + 2 * e4 * md)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 + hE2 + 2 * e2 * hmb + 2 * e4 * hmd)
+      · exact had rfl
+    · exact hab rfl
+
+set_option maxHeartbeats 1600000 in
+/-- Lone chi-class at slot d, rung a. -/
+lemma dispatch_loned_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (_hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hd8 : Kd = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∨ Kd = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+    (ha : (∃ N, Ka = (p : ℤ) ^ 2 * N) ∨ Ka = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc : (∃ N, Kc = (p : ℤ) ^ 2 * N) ∨ Kc = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (hbc : Kb ≠ Kc)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+
+  rcases ha with ⟨ma, hma⟩ | rfl
+  · rcases hb with ⟨mb, hmb⟩ | rfl
+    · rcases hc with ⟨mc, hmc⟩ | rfl
+      · -- no L2: 2e4·Kd = 2e1Ka − 2e2Kb
+        have hcunit : ¬ (p : ℤ) ∣ (2 * e4) := by
+          intro hdv
+          have h2' : (p : ℤ) ∣ 2 := by
+            rcases he4 with rfl | rfl
+            · simpa using hdv
+            · exact (dvd_neg.mp (by simpa using hdv))
+          have h2n : p ∣ 2 := by exact_mod_cast h2'
+          have := Nat.le_of_dvd (by norm_num) h2n
+          have := hp.out.two_le
+          omega
+        rcases hd8 with rfl | rfl
+        · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e4)
+            (2 * e1 * ma - 2 * e2 * mb) hcunit
+            (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+        · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * e4)
+            (2 * e1 * ma - 2 * e2 * mb) hcunit
+            (by linear_combination hE1 - hE2 + 2 * e1 * hma - 2 * e2 * hmb)
+      · -- L2 at c: d-free relation hE1 + hE2
+        exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e3) (2 * e1 * ma + 2 * e2 * mb)
+          (by rcases he3 with rfl | rfl <;> norm_num)
+          (by linear_combination hE1 + hE2 + 2 * e1 * hma + 2 * e2 * hmb)
+    · -- L2 at b
+      rcases hc with ⟨mc, hmc⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e2) (2 * e3 * mc - 2 * e1 * ma)
+          (by rcases he2 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 - hE2 + 2 * e3 * hmc - 2 * e1 * hma)
+      · exact hbc rfl
+  · -- L2 at a
+    rcases hb with ⟨mb, hmb⟩ | rfl
+    · rcases hc with ⟨mc, hmc⟩ | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * e1) (2 * e3 * mc - 2 * e2 * mb)
+          (by rcases he1 with rfl | rfl <;> norm_num)
+          (by linear_combination -hE1 - hE2 + 2 * e3 * hmc - 2 * e2 * hmb)
+      · exact hac rfl
+    · exact hab rfl
+
 end UniformA
