@@ -228,4 +228,95 @@ lemma pow_fold_le (z : GaussianInt) (P : ℤ)
     _ = (star z) ^ n * (star (star z)) ^ m := by rw [star_star]
     _ = ((P : GaussianInt)) ^ m * (star z) ^ (n - m) := pow_fold_ge (star z) P h2 n m h
 
+/-- Integer-scalar imaginary parts. -/
+lemma im_intCast_mul (n : ℤ) (w : GaussianInt) :
+    (((n : GaussianInt)) * w).im = n * w.im := by
+  simp [Zsqrtd.im_mul]
+
+/-- Class fold, quadrant (+,+): both indices at or above the middle.
+The contents extract and the residual is a pure-power class. -/
+lemma class_fold_pp (z ξ : GaussianInt) (P Q : ℤ)
+    (hz : z * star z = (P : GaussianInt)) (hξ : ξ * star ξ = (Q : GaussianInt))
+    (a b j k : ℕ) (hj : a ≤ j) (hj2 : j ≤ 2 * a) (hk : b ≤ k) (hk2 : k ≤ 2 * b) :
+    (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)).im
+      = P ^ (2 * a - j) * Q ^ (2 * b - k)
+        * (z ^ (j - (2 * a - j)) * ξ ^ (k - (2 * b - k))).im := by
+  have h1 := pow_fold_ge z P hz j (2 * a - j) (by omega)
+  have h2 := pow_fold_ge ξ Q hξ k (2 * b - k) (by omega)
+  have hprod : z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)
+      = ((P ^ (2 * a - j) * Q ^ (2 * b - k) : ℤ) : GaussianInt)
+        * (z ^ (j - (2 * a - j)) * ξ ^ (k - (2 * b - k))) := by
+    calc z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)
+        = (z ^ j * (star z) ^ (2 * a - j)) * (ξ ^ k * (star ξ) ^ (2 * b - k)) := by ring
+      _ = ((P : GaussianInt) ^ (2 * a - j) * z ^ (j - (2 * a - j)))
+          * ((Q : GaussianInt) ^ (2 * b - k) * ξ ^ (k - (2 * b - k))) := by rw [h1, h2]
+      _ = ((P ^ (2 * a - j) * Q ^ (2 * b - k) : ℤ) : GaussianInt)
+          * (z ^ (j - (2 * a - j)) * ξ ^ (k - (2 * b - k))) := by push_cast; ring
+  rw [hprod, im_intCast_mul]
+
+/-- Class fold, quadrant (+,−): the ξ-index below the middle folds to
+the conjugate power — the mixed-orientation class. -/
+lemma class_fold_pm (z ξ : GaussianInt) (P Q : ℤ)
+    (hz : z * star z = (P : GaussianInt)) (hξ : ξ * star ξ = (Q : GaussianInt))
+    (a b j k : ℕ) (hj : a ≤ j) (hj2 : j ≤ 2 * a) (hk : k ≤ b) :
+    (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)).im
+      = P ^ (2 * a - j) * Q ^ k
+        * (z ^ (j - (2 * a - j)) * (star ξ) ^ (2 * b - k - k)).im := by
+  have h1 := pow_fold_ge z P hz j (2 * a - j) (by omega)
+  have h2 := pow_fold_le ξ Q hξ k (2 * b - k) (by omega)
+  have hprod : z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)
+      = ((P ^ (2 * a - j) * Q ^ k : ℤ) : GaussianInt)
+        * (z ^ (j - (2 * a - j)) * (star ξ) ^ (2 * b - k - k)) := by
+    calc z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)
+        = (z ^ j * (star z) ^ (2 * a - j)) * (ξ ^ k * (star ξ) ^ (2 * b - k)) := by ring
+      _ = ((P : GaussianInt) ^ (2 * a - j) * z ^ (j - (2 * a - j)))
+          * ((Q : GaussianInt) ^ k * (star ξ) ^ (2 * b - k - k)) := by rw [h1, h2]
+      _ = ((P ^ (2 * a - j) * Q ^ k : ℤ) : GaussianInt)
+          * (z ^ (j - (2 * a - j)) * (star ξ) ^ (2 * b - k - k)) := by push_cast; ring
+  rw [hprod, im_intCast_mul]
+
+/-- Class fold, quadrant (−,+): the z-index below the middle. By global
+conjugation this is the negative of the (+,−) class with the roles of
+the pure powers swapped. -/
+lemma class_fold_mp (z ξ : GaussianInt) (P Q : ℤ)
+    (hz : z * star z = (P : GaussianInt)) (hξ : ξ * star ξ = (Q : GaussianInt))
+    (a b j k : ℕ) (hj : j ≤ a) (hk : b ≤ k) (hk2 : k ≤ 2 * b) :
+    (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)).im
+      = P ^ j * Q ^ (2 * b - k)
+        * ((star z) ^ (2 * a - j - j) * ξ ^ (k - (2 * b - k))).im := by
+  have h1 := pow_fold_le z P hz j (2 * a - j) (by omega)
+  have h2 := pow_fold_ge ξ Q hξ k (2 * b - k) (by omega)
+  have hprod : z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)
+      = ((P ^ j * Q ^ (2 * b - k) : ℤ) : GaussianInt)
+        * ((star z) ^ (2 * a - j - j) * ξ ^ (k - (2 * b - k))) := by
+    calc z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)
+        = (z ^ j * (star z) ^ (2 * a - j)) * (ξ ^ k * (star ξ) ^ (2 * b - k)) := by ring
+      _ = ((P : GaussianInt) ^ j * (star z) ^ (2 * a - j - j))
+          * ((Q : GaussianInt) ^ (2 * b - k) * ξ ^ (k - (2 * b - k))) := by rw [h1, h2]
+      _ = ((P ^ j * Q ^ (2 * b - k) : ℤ) : GaussianInt)
+          * ((star z) ^ (2 * a - j - j) * ξ ^ (k - (2 * b - k))) := by push_cast; ring
+  rw [hprod, im_intCast_mul]
+
+/-- Class fold, quadrant (−,−): both indices below the middle. The
+residual is the conjugate of a pure-power class, so the sign flips. -/
+lemma class_fold_mm (z ξ : GaussianInt) (P Q : ℤ)
+    (hz : z * star z = (P : GaussianInt)) (hξ : ξ * star ξ = (Q : GaussianInt))
+    (a b j k : ℕ) (hj : j ≤ a) (hk : k ≤ b) :
+    (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)).im
+      = -(P ^ j * Q ^ k
+        * (z ^ (2 * a - j - j) * ξ ^ (2 * b - k - k)).im) := by
+  have hpp := class_fold_pp z ξ P Q hz hξ a b (2 * a - j) (2 * b - k)
+    (by omega) (by omega) (by omega) (by omega)
+  rw [show 2 * a - (2 * a - j) = j from by omega,
+      show 2 * b - (2 * b - k) = k from by omega] at hpp
+  have hT : star (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k))
+      = z ^ (2 * a - j) * (star z) ^ j * ξ ^ (2 * b - k) * (star ξ) ^ k := by
+    simp only [star_mul, star_pow, star_star]
+    ring
+  have him : (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k)).im
+      = -(star (z ^ j * (star z) ^ (2 * a - j) * ξ ^ k * (star ξ) ^ (2 * b - k))).im := by
+    rw [Zsqrtd.im_star, neg_neg]
+  rw [him, hT]
+  rw [hpp]
+
 end RepStructure2
