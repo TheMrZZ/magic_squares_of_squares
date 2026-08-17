@@ -2253,3 +2253,23 @@ parity, coprimality, UClass + telescoping, folds, rep classification.
 Phase 2 next: the abstract-step routers — no_assignment and no_ratio2 at
 rung a as consequences of rung a−1's routers (taken as hypotheses over the
 telescoped UClass (a−1)) plus generic kills for the three new classes.
+
+## Round 139 (2026-08-17) — phase 2 underway
+
+Generic kills accumulated (UniformAInt.lean, all zero-sorry, all ∀ a):
+- p2_not_dvd_I4a / M8a / M9a + pi_not_dvd_star_paw4: the p²-residue kills
+  for the three new classes — these close every lone-new-class bucket of the
+  step router.
+- **Ja_unit_kill**: the J-cofactor unit branch dies by SIZE for a ≥ 2
+  ((p^{2a}−R)(p^{2a}+R) = I₄² < p⁴ ≤ p^{2a}) — no mod-16 needed. Higher
+  rungs are strictly easier than G here; the ab ≥ a+b−1 trick formalizes
+  cleanly with one nlinarith.
+
+Remaining phase-2 kills to derive generically: the M7ₐ-chain classification
+(R₄ₐ ∣ q² with unit branch = consecutive squares vs (p^{2a})², q-branches by
+the q ∣ w propagation — G's proofs used only norm+coprimality, port
+directly), the row-M7ₐ norm-cancellation (exponent-free already in form),
+and the sform J-classification (needs the J_chain invariant + the q∣J → q∣w
+argument — the q = p⁴−4-composite branch generalizes to |Jₐ| = q with Jₐ ≡
+a·R₄^{a−1} mod 16t², where the size bounds now do more work). Then the
+abstract-step router.
