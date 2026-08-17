@@ -329,7 +329,24 @@ fn main() {
             (Cond::Clean { delta: d1, sig: s1, om: o1 }, Cond::Clean { delta: d2, sig: s2, om: o2 }) => {
                 if d1 == d2 {
                     let cross = radd(&rmul(s1, o2), &rneg(&rmul(s2, o1)));
-                    if cross.is_empty() { "clean aligned (residual)" }
+                    if cross.is_empty() {
+                        // aligned: shared (X, Y) forces the magnitude identity
+                        // w2^2 (Sigma1^2 + om1^2) = w1^2 (Sigma2^2 + om2^2)
+                        // over the finite smooth w-set (om = 2*Omega scale).
+                        let m1 = radd(&rmul(s1, s1), &rmul(o1, o1));
+                        let m2 = radd(&rmul(s2, s2), &rmul(o2, o2));
+                        let mut allkill = true;
+                        'ws: for &a2_ in &[1i128, 2, 4, 8, 16, 32, 64, 3, 9, 27, 5, 25, 7,
+                                          6, 12, 18, 24, 36, 48, 10, 20, 15, 45, 14, 21, 35] {
+                            for &b2_ in &[1i128, 2, 4, 8, 16, 32, 64, 3, 9, 27, 5, 25, 7,
+                                          6, 12, 18, 24, 36, 48, 10, 20, 15, 45, 14, 21, 35] {
+                                let cand = radd(&rscale(&m1, b2_ * b2_), &rneg(&rscale(&m2, a2_ * a2_)));
+                                if cand.is_empty() || !nonvanishing_form(&cand) { allkill = false; break 'ws; }
+                            }
+                        }
+                        if allkill { "pair dead (aligned magnitude, all w)" }
+                        else { "clean aligned (residual)" }
+                    }
                     else if nonvanishing_form(&cross) { "pair dead (cross nonvanishing)" }
                     else { "cross unresolved (residual)" }
                 } else {
@@ -507,19 +524,9 @@ fn main() {
             _ => None,
         }
     };
-    let t_start = std::time::Instant::now();
-    let n_res = residuals.len();
-    let prog = AtomicUsize::new(0);
     set_phase(5, residuals.len());
     let evs_par: Vec<(String, Option<String>)> = residuals.par_iter().map(|(tag, c1, c2)| {
         tick();
-        let idx = prog.fetch_add(1, Ordering::Relaxed);
-        if idx > 0 && idx % 50 == 0 {
-            let el = t_start.elapsed().as_secs_f64();
-            let eta = el / idx as f64 * (n_res - idx) as f64;
-            eprintln!("[elim] {idx}/{n_res} ({:.0}%)  elapsed {el:.0}s  ETA {eta:.0}s",
-                      100.0 * idx as f64 / n_res as f64);
-        }
         let (e1, e2) = match (cond_to_p5(c1), cond_to_p5(c2)) {
             (Some(a), Some(b)) => (a, b),
             _ => { return (format!("{tag}: no-p5 (multi)"), None); }

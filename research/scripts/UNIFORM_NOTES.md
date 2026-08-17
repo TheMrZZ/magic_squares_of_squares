@@ -2633,3 +2633,11 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - **Grid (2,4) closes completely**: every pair dead; the elimination handled its own residual structure (272 clean-affine mismatch + 208 multi-level + 56 affine mismatch + 8 parallel = 544, all DEAD, single-level nonvanishing on data).
 - Correction: an earlier b-axis loop printed (2,3)-identical numbers for the higher grids — an argument-forwarding artifact of `cargo run` inside the loop. Direct binary invocations are authoritative and show per-grid structures.
 - The axis sweep at (2,5), (3,3), (3,4) runs with the rayon build.
+
+## Round 178: the b-axis sweep — (2,5) closes; the aligned class appears at a = 3
+
+- Grid (2,5): **every pair dead** (32,720 pairs; 29,792 + 520 + 192 mechanical; 1,488 eliminations all DEAD; 107 terminal polynomials all single-level nonvanishing).
+- Grids (3,3) and (3,4): everything dead except a new small class — 12 and 16 "clean aligned" pairs whose base elimination is identically zero (both relations pin the same χ-direction). This class appears only at a = 3: pattern-level a-saturation holds, but pair-level combinations can still differ.
+- The aligned kill: shared (X, Y) forces the magnitude identity w̃₂²(Σ₁² + Ω₁²) = w̃₁²(Σ₂² + Ω₂²) over the finite smooth w̃-set — wired into the certifier as a per-pair nonvanishing check; (3,3) reruns.
+- The zsh gotcha behind the earlier corrupted axis loop: unquoted $var does NOT word-split in zsh; ${=var} does. Direct binary runs are authoritative.
+- Oracle dumps per grid (oracle_t0_a_b.txt) now feed the exact-root sympy oracle.
