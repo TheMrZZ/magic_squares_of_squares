@@ -2528,3 +2528,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Verified across all 1,074 balance shapes (both sectors): the minimal χ- and χ̄-layers are **clean** — a single x-monomial times a π-side polynomial. The balance lemma applies in its clean form everywhere: shifted profile → χ^{2Δ} ∣ P-value → q^{2Δ} ∣ N(P).
 - Paper section added: "Toward all exponents: the balance-form reduction" — the a-saturation census, the four-gate dichotomy at (2,3), the balance lemma L1–L3, and the per-family finish programme with the Theorem-H splitting as prototype.
 - Remaining for Milestone 2: (i) write the per-family L4 finishes (band + small-factor descents; the norm formulas are computed); (ii) the q²-telescoping induction wrapper in b; (iii) verify rungs (2,4)/(2,5) reuse the same balance families (expected from the linear pattern growth: new shapes = wider shifts, same P-catalog — check).
+
+## Round 163: THE 58-FAMILY KEYSTONE
+
+- `u2b_pcatalog.py`: the π-side P-catalog of balance factors is **identical at (2,3) and (2,4)** — 58 distinct polynomials, zero new. Only the χ-shifts grow with b.
+- With the a-saturation census, this is the keystone of Milestone 2: **the entire two-exponent landscape reduces to 58 P-families.** Each family's kill is the exact equation N(P) = w²·q^{2Δ} (for single-pair balance shapes: χ^{2Δ}·P real forces P = w·χ̄^{2Δ} with w ∈ ℤ), and larger Δ tightens the band — higher rungs are easier.
+- Structural reason: the P's live on the j ≤ 2 grid (a-saturation), which does not see b.
+- Next: the 58-family table with norm formulas and single-/multi-pair statistics; then the finishes.
