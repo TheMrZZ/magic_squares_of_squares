@@ -187,4 +187,27 @@ lemma grading_kill (q : ℕ) [hq : Fact (Nat.Prime q)] {E T R : ℤ} (g : ℕ)
   · exact absurd h (pow_ne_zero _ (by exact_mod_cast hq.out.ne_zero))
   · exact hT ⟨-R, by linarith⟩
 
+
+/-- The endpoint split: a single-level eliminant is a q-power times a
+monomial times a certified form. Its vanishing contradicts the form's
+nonvanishing when the scalar atoms are nonzero. -/
+lemma endpoint_split (E F : PolyRefl.SPoly) (a b g : ℕ) (c0 : ℤ)
+    (h : PolyRefl.normalizeFast E
+       = PolyRefl.normalizeFast (PolyRefl.mulTerm ((a, b, g, 0, 0), c0) F))
+    (r s q X Y : ℤ) (hE : PolyRefl.eval E r s q X Y = 0)
+    (hc : c0 ≠ 0) (hr : r ≠ 0) (hs : s ≠ 0) (hq : q ≠ 0)
+    (hF : PolyRefl.eval F r s q X Y ≠ 0) : False := by
+  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s q X Y
+  rw [hE, PolyRefl.eval_mulTerm] at he
+  rcases mul_eq_zero.mp he.symm with h0 | h0
+  · simp only [pow_zero, mul_one, Int.cast_id] at h0
+    rcases mul_eq_zero.mp h0 with h1 | h1
+    · rcases mul_eq_zero.mp h1 with h2 | h2
+      · rcases mul_eq_zero.mp h2 with h3 | h3
+        · exact hc h3
+        · exact hr (pow_eq_zero_iff'.mp h3).1
+      · exact hs (pow_eq_zero_iff'.mp h2).1
+    · exact hq (pow_eq_zero_iff'.mp h1).1
+  · exact hF h0
+
 end CertKit

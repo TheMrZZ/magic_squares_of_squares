@@ -326,4 +326,19 @@ lemma bezout_kill (A F B G C : SPoly) (u v x y z : R)
   rw [hF, hG] at h1
   simpa using h1.symm
 
+/-- Positions 3, 4, 5 (q, X, Y) do not matter for a form whose data
+carries zero exponents there. The router uses this to connect the
+certificate statements (evaluated at 1) to the chain points. -/
+lemma eval_qxy_free (P : SPoly)
+    (h : P.all (fun t => t.1.2.2.1 == 0 && t.1.2.2.2.1 == 0 && t.1.2.2.2.2 == 0) = true)
+    (u v x y z x' y' z' : R) :
+    eval P u v x y z = eval P u v x' y' z' := by
+  induction P with
+  | nil => rfl
+  | cons t rest ih =>
+    simp only [List.all_cons, Bool.and_eq_true, beq_iff_eq] at h
+    obtain ⟨⟨⟨h3, h4⟩, h5⟩, hrest⟩ := h
+    rw [eval_cons, eval_cons, ih (by simpa using hrest), h3, h4, h5]
+    simp
+
 end PolyRefl
