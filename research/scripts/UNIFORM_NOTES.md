@@ -2549,3 +2549,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Support bound: any prime of w̃ divides Σ and Ω; coprimality of the π-coordinates pushes the common support into a fixed small integer per family (the (1,−2) prototype: w̃ = ±3^t; the (2,±1)-affine families reproduce the uniform theorem's S-core quadratic 2(4R² ∓ 3p²R + p⁴)).
 - Every finish is: band (q^{2Δ} ≤ C·p⁴-type) + a Pell/Pythagorean equation with tiny coefficients — the argument class already machine-checked in the uniform theorem's cores.
 - b-genericity is built in: Δ enters only as the q-exponent, and larger Δ tightens the band.
+
+## Round 166: the cross layer is a theorem
+
+- `u23_cross.py` + factor verification: each leaf's two balance conditions pin the coordinates of χ^{2Δ} to two π-side forms; the compatibility cross Σ₁Ω₂ − Σ₂Ω₁ is w̃-free. Over all live (2,3) pairs: 8,416 combos have a nonzero cross, and **every one of the 154 nontrivial factors of the 140 distinct cross polynomials is homogeneous in (r, s) with all-irrational roots — provably nonvanishing on integers, for all p and q.** All shifts matched (no mismatch cases).
+- Scoreboard at (2,3): 1,856 pairs already dead + 8,416 cross-killed = **10,272 of 10,800; the remainder is 528 zero-cross pairs** (their two conditions pin identically), which need the single-family exact finishes (w̃-support + Pell).
+- The chain is now: grading → unit certificates → factor screen → cross layer → 528 per-family Pell cases. Every layer is uniform in p, q and generic in b.
