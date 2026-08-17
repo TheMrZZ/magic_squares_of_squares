@@ -2493,3 +2493,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The core certificates are conditions p ∣ f(q): sporadic polynomials (q⁴+3, q¹²−9q⁸+24q⁴−15, 2q⁴±2q²+1) and cyclotomic order conditions (factors of q⁸−1, q¹²−1). The order loci of the old analytic program reappear here, now as exact per-leaf certificates.
 - The b ≥ 3 kill plan: (i) the q-side mirror certificates give the coupled condition q ∣ g(p); (ii) the coupled loci are thin bands; (iii) on the loci, the master-kill technology (real/imaginary balance → exact norm equations → Pythagorean splitting) applies — the tool the old program lacked. The 284 degenerates go to the pinch/master screen first, as at (2,2).
 - Care point: the pattern-level residue argument needs the layer-j ≥ 1 fact (all-j=0 layers die by q-grading) and leading-coefficient unit checks for the resultant implication.
+
+## Round 158: the (2,3) factor screen and the cell catalog
+
+- `u23_factor_screen.py` with the nonzero-factor library (variable monomials; u^j ± v^j and x^j ± y^j at all levels — these are 2Re/2i·Im of half-level powers; pinch forms): 96 of 1,800 distinct relations factor into fully-nonzero pieces, which kills 960 of the 6,704 degenerate-pattern leaf pairs.
+- 448 unresolved factor shapes remain. The frequent ones have small direct arguments (example: (u²+v²)(x²+y²) ∓ 2uvxy = 2(2RX ∓ p²q²), a thin band cell: p ∤ R forces p² | 2X, so p < √2·q, and symmetrically — then the exact equation dies like the master cells). The rest are the (2,3) core catalog for the b-generic master treatment.
+- Caution learned: u, v, x, y are complex, so no positivity/definiteness shortcuts — every factor argument must run through values (norms, valuations, balance).
+- State of Milestone 2 after day one: architecture fixed (b-induction, a-generic cells); rung (2,3) is 468 unit + 284 degenerate patterns of which 960/6,704 leaf pairs are dead; the 576 core patterns carry p | f(q) conditions awaiting the coupled q-side analysis.
