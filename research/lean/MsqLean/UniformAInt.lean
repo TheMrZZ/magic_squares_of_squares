@@ -1014,4 +1014,84 @@ lemma M7a_chain (q : ℕ) [hq : Fact (Nat.Prime q)]
   · exact absurd h hI0
   · linarith
 
+set_option maxHeartbeats 800000 in
+/-- Full M7ₐ classification: R₄ₐY = g·q²·I₄ₐ forces R₄ₐ = ±q² with
+Y = ±g·I₄ₐ — the unit branch dies by consecutive squares and the ±q branch
+by q ∤ im₄(χ). -/
+lemma M7a_classify (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (g : ℤ) (hg : g = 1 ∨ g = -1)
+    (hRY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) :
+    ∃ ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) = ε * (q : ℤ) ^ 2
+      ∧ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = ε * g * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) := by
+  have hg2 : g ^ 2 = 1 := by rcases hg with rfl | rfl <;> norm_num
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  obtain ⟨hqX, hqY⟩ := p_not_dvd_re4_im4 q hqodd C D hqCD
+  obtain ⟨y2, hy2, hkey⟩ := M7a_chain p q hpodd hqodd a ha A B C D hpAB hqCD g hRY
+  have hRq2 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ∣ (q : ℤ) ^ 2 := by
+    have hd1 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ∣ g * (q : ℤ) ^ 2 :=
+      ⟨y2, by linear_combination -hkey⟩
+    have hgg : g * (g * (q : ℤ) ^ 2) = (q : ℤ) ^ 2 := by
+      rcases hg with rfl | rfl <;> ring
+    exact hgg ▸ hd1.mul_left g
+  obtain ⟨i, hi, hass⟩ := (dvd_prime_pow hqP 2).mp hRq2
+  interval_cases i
+  · -- unit: dead by consecutive squares
+    exfalso
+    rw [pow_zero] at hass
+    have hR2 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 = 1 := by
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp hass) with h1 | h1 <;>
+        rw [h1] <;> norm_num
+    exact Ra_unit_kill p hpodd A B hpAB a ha hR2
+  · -- ±q: dead by q ∤ Y
+    exfalso
+    rcases Int.associated_iff.mp hass with h1 | h1 <;> simp only [pow_one] at h1
+    · have hy : (q : ℤ) * y2 = g * (q : ℤ) ^ 2 := by linear_combination hkey - y2 * h1
+      have hyq : y2 = g * (q : ℤ) := by
+        have h0 : (q : ℤ) * (y2 - g * (q : ℤ)) = 0 := by linear_combination hy
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h (by
+            intro hq0
+            exact hq.out.pos.ne' (by exact_mod_cast hq0))
+        · linarith
+      exact hqY ⟨g * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)), by rw [hy2, hyq]; ring⟩
+    · have hy : (q : ℤ) * y2 = -(g * (q : ℤ) ^ 2) := by
+        have := hkey
+        rw [h1] at this
+        linarith
+      have hyq : y2 = -(g * (q : ℤ)) := by
+        have h0 : (q : ℤ) * (y2 + g * (q : ℤ)) = 0 := by linear_combination hy
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h (by
+            intro hq0
+            exact hq.out.pos.ne' (by exact_mod_cast hq0))
+        · linarith
+      exact hqY ⟨-(g * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))), by rw [hy2, hyq]; ring⟩
+  · -- ±q²: the residue
+    rcases Int.associated_iff.mp hass with h1 | h1
+    · refine ⟨1, Or.inl rfl, by rw [h1]; ring, ?_⟩
+      have hy : (q : ℤ) ^ 2 * y2 = g * (q : ℤ) ^ 2 := by linear_combination hkey - y2 * h1
+      have hyq : y2 = g := by
+        have h0 : (q : ℤ) ^ 2 * (y2 - g) = 0 := by linear_combination hy
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h hq20
+        · linarith
+      rw [hy2, hyq]
+      ring
+    · refine ⟨-1, Or.inr rfl, by rw [h1]; ring, ?_⟩
+      have hy : (q : ℤ) ^ 2 * y2 = -(g * (q : ℤ) ^ 2) := by
+        linear_combination -hkey + y2 * h1
+      have hyq : y2 = -g := by
+        have h0 : (q : ℤ) ^ 2 * (y2 + g) = 0 := by linear_combination hy
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h hq20
+        · linarith
+      rw [hy2, hyq]
+      ring
+
 end UniformA

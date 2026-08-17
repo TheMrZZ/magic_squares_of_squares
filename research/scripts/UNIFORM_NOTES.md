@@ -2273,3 +2273,15 @@ and the sform J-classification (needs the J_chain invariant + the q∣J → q∣
 argument — the q = p⁴−4-composite branch generalizes to |Jₐ| = q with Jₐ ≡
 a·R₄^{a−1} mod 16t², where the size bounds now do more work). Then the
 abstract-step router.
+
+## Round 140 (2026-08-17) — M7a_classify
+
+The generic M7ₐ classification is machine-checked: R₄ₐY = g·q²·I₄ₐ forces
+**R₄ₐ = ±q² with Y = ±g·I₄ₐ**. The unit branch dies by consecutive squares
+against (p^{2a})² (Ra_unit_kill); the ±q branch dies INSTANTLY because it
+would put q ∣ Y = im₄(χ) — far simpler than G's a = 3 treatment. The
+surviving ±q² residue is packaged with explicit signs for the downstream
+cells (its norm consequence: X² + p^{4a} = 2q⁴ with Y = ±I₄ₐ — one explicit
+Pell-type locus, to be closed with each invoking cell's second equation).
+
+Generic kill inventory now: 12 lemmas, all ∀a, zero sorries.
