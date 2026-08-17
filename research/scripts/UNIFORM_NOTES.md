@@ -2296,3 +2296,12 @@ p² ∣ 4q⁴ — dead. `M7row_M7_kill` closes the diagonal by parity
 (M7_chain + J-endgame + L34/L56 machinery); the generic residue is strictly
 stronger because R₄ₐ ∣ q² classifies against ±q² directly instead of
 spreading over J-values. Kill inventory: 16 generic lemmas.
+
+## Round 142 (2026-08-17) — GENERIC T-CORE COMPLETE
+
+`Tcore_a`: the T-form cross-pair core at EVERY rung a is machine-checked —
+partners split into p²-divisible vs M7ₐ, and the four bucket combinations
+close via Tcore_p2p2_a / row_M7a_kill / M7row_p2_kill / M7row_M7_kill.
+What took a 64-cell assembly at rung 3 (Theorem G) is four generic lemmas
+plus a four-line router at every rung simultaneously. The S-core generic
+analog is next, then the χₐ-pair machinery and the step router.

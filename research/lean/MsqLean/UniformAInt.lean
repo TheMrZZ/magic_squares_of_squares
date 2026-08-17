@@ -1292,4 +1292,75 @@ lemma M7row_M7_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
   rcases hf with rfl | rfl <;> rcases hg with rfl | rfl <;> rcases he with rfl | rfl <;>
     omega
 
+/-- Level-12 T-form cells with two p²-divisible partners die
+uniformly: p² ∣ Y then p² ∣ X force p ∣ q. Generic in both
+cofactors, covering 49 cells of the core at once. -/
+lemma Tcore_p2p2_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Mb Md f g e : ℤ) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) = f * ((p : ℤ) ^ 2 * Mb))
+    (h2 : 3 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)) + e * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re)) = g * ((p : ℤ) ^ 2 * Md)) :
+    False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR12, hpI12⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2Y : (p : ℤ) ^ 2 ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).im) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpR12)).pow_left
+    refine hc.dvd_of_dvd_mul_right ?_
+    exact ⟨f * Mb, by linear_combination h1⟩
+  obtain ⟨y, hy⟩ := hp2Y
+  have hIX : (p : ℤ) ^ 2 ∣ (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    have hEX : e * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) * (((⟨C, D⟩ : GaussianInt) ^ 4).re))
+        = (p : ℤ) ^ 2 * (g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * y) := by
+      linear_combination h2 - 3 * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * hy
+    rcases he with rfl | rfl
+    · exact ⟨g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * y, by linarith [hEX]⟩
+    · exact ⟨-(g * Md - 3 * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * y), by linarith [hEX]⟩
+  have hp2X : (p : ℤ) ^ 2 ∣ (((⟨C, D⟩ : GaussianInt) ^ 4).re) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpI12).pow_left
+    exact hc.dvd_of_dvd_mul_right (by rwa [mul_comm] at hIX)
+  obtain ⟨x, hx⟩ := hp2X
+  have hq4c := norm4_coord q C D hqCD
+  have hq4d : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    refine ⟨(p : ℤ) ^ 3 * (x ^ 2 + y ^ 2), ?_⟩
+    rw [← hq4c, hx, hy]; ring
+  have hpq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4d
+  have : p ∣ q := by exact_mod_cast hpq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
+
+set_option maxHeartbeats 800000 in
+/-- The generic T-form cross-pair core at rung a: partners are either
+p²-divisible or the M7ₐ value. -/
+lemma Tcore_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kb Kd f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = f * Kb)
+    (h2 : 3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = g * Kd) : False := by
+  rcases hb with ⟨N1, rfl⟩ | rfl
+  · rcases hd with ⟨N2, rfl⟩ | rfl
+    · exact Tcore_p2p2_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD
+        N1 N2 f g e he h1 h2
+    · exact row_M7a_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD
+        N1 f g e hg he h1 h2
+  · rcases hd with ⟨N2, rfl⟩ | rfl
+    · exact M7row_p2_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD
+        N2 f g e hf he h1 h2
+    · exact M7row_M7_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD
+        f g e hf hg he h1 h2
+
 end UniformA
