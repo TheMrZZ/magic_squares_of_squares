@@ -272,4 +272,38 @@ lemma UClass_step (p q : ℕ) (A B C D : ℤ) (a : ℕ) (ha : 2 ≤ a) (K : ℤ)
     · exact Or.inr ⟨a, by omega, le_refl a,
         Or.inr (Or.inr (by rw [show a - a = 0 from by omega]; norm_num))⟩
 
+/-- Fold a balanced conjugate power: for j ≤ a,
+π^(2j)·π̄^(2(2a−j)) = (p : ℤ[i])^(2j) · π̄^(4(a−j)). -/
+lemma fold_le (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a j : ℕ) (hj : j ≤ a) :
+    ((⟨A, B⟩ : GaussianInt) ^ (2 * j)) * ((star (⟨A, B⟩ : GaussianInt)) ^ (2 * (2 * a - j)))
+      = ((((p : ℤ)) : GaussianInt) ^ (2 * j)) * ((star (⟨A, B⟩ : GaussianInt)) ^ (4 * (a - j))) := by
+  have hsplit : (⟨A, B⟩ : GaussianInt) * star (⟨A, B⟩ : GaussianInt) = (((p : ℤ)) : GaussianInt) := by
+    rw [pi_mul_star, hpAB]
+  have hexp : 2 * (2 * a - j) = 2 * j + 4 * (a - j) := by omega
+  rw [hexp, pow_add, ← mul_assoc]
+  congr 1
+  rw [← mul_pow, hsplit]
+
+/-- Fold, unbalanced side: for a < j ≤ 2a,
+π^(2j)·π̄^(2(2a−j)) = (p : ℤ[i])^(2(2a−j)) · π^(4(j−a)). -/
+lemma fold_gt (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a j : ℕ) (hja : a < j) (hj2 : j ≤ 2 * a) :
+    ((⟨A, B⟩ : GaussianInt) ^ (2 * j)) * ((star (⟨A, B⟩ : GaussianInt)) ^ (2 * (2 * a - j)))
+      = ((((p : ℤ)) : GaussianInt) ^ (2 * (2 * a - j))) * ((⟨A, B⟩ : GaussianInt) ^ (4 * (j - a))) := by
+  have hsplit : (⟨A, B⟩ : GaussianInt) * star (⟨A, B⟩ : GaussianInt) = (((p : ℤ)) : GaussianInt) := by
+    rw [pi_mul_star, hpAB]
+  have hexp : 2 * j = 4 * (j - a) + 2 * (2 * a - j) := by omega
+  rw [hexp, pow_add]
+  rw [show ((⟨A, B⟩ : GaussianInt) ^ (4 * (j - a)) * (⟨A, B⟩ : GaussianInt) ^ (2 * (2 * a - j)))
+        * ((star (⟨A, B⟩ : GaussianInt)) ^ (2 * (2 * a - j)))
+      = ((⟨A, B⟩ : GaussianInt) * star (⟨A, B⟩ : GaussianInt)) ^ (2 * (2 * a - j))
+        * (⟨A, B⟩ : GaussianInt) ^ (4 * (j - a)) from by rw [mul_pow]; ring, hsplit]
+
+/-- The imaginary part of an integer multiple. -/
+lemma im_int_mul (n : ℤ) (w : GaussianInt) : (((n : GaussianInt)) * w).im = n * w.im := by
+  simp [Zsqrtd.im_mul]
+
+/-- The imaginary part of a conjugate. -/
+lemma im_star_eq (w : GaussianInt) : (star w).im = -w.im := by
+  simp
+
 end UniformA
