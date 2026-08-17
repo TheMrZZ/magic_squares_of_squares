@@ -2823,3 +2823,19 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Hand-lemma scoreboard: exactness ✓, √−5 ✓; remaining: coprime
   masters, telescoping. Router: lone_kill ✓; remaining: screen/unit
   kills, pair verdicts, the per-grid dispatch emitters.
+
+## Round 195: the screen layer — library lemmas, dispatchers, dump, sizing
+
+- `LibraryNonzero.lean` (machine-checked): every screen-phase library
+  factor is nonzero at the Gaussian point — conjugate-power sums and
+  differences through the coordinate lemmas, the odd pinch forms by
+  parity, the even ones by the strict circle bound.
+- `Router.gauss_lone_kill`: the Gaussian lone-layer dispatcher for
+  unit-core verdicts (E = π^e·(T + π·R), π ∤ T ⟹ E ≠ 0).
+- The certifier dumps every screen division chain
+  (`screen_{a}_{b}.txt`); `screen_emit` recognizes the library shapes
+  and sizes the pass. At (2,2): 600 relations = 16 monomial kills + 96
+  unit-core kills + 488 live to the condition layer.
+- Next: full screen emission (strip steps + factor chains + unit-core
+  dispatch), then the condition bridge (Clean/Affine/Multi through the
+  exactness lemma), then the per-grid leaf dispatch.
