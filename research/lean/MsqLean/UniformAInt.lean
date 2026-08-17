@@ -745,4 +745,46 @@ lemma p2_not_dvd_I4a
   have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
   exact pi_not_dvd_star p hpodd A B hpAB (hπprime.dvd_of_dvd_pow hd)
 
+/-- The J-cofactor is never a unit for a ≥ 2: |I₄ₐ| = |I₄| would force
+(p^(2a) − R)(p^(2a) + R) = I₄² < p⁴ ≤ p^(2a), impossible by size. -/
+lemma Ja_unit_kill
+    (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (a : ℕ) (ha : 2 ≤ a)
+    (h : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 = ((((⟨A, B⟩ : GaussianInt) ^ 4).im)) ^ 2) : False := by
+  have hna := norm_coord p A B hpAB a
+  have hn1 := norm4_coord p A B hpAB
+  have hR4odd := re4_odd' p hpodd A B hpAB
+  have hI40 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero p hpodd A B hpAB
+  have hR41 : (1 : ℤ) ≤ (((⟨A, B⟩ : GaussianInt) ^ 4).re) ^ 2 := by
+    have hR40 : (((⟨A, B⟩ : GaussianInt) ^ 4).re) ≠ 0 := odd_ne_zero hR4odd
+    rcases lt_or_gt_of_ne hR40 with h' | h' <;> nlinarith
+  have hI41 : (1 : ℤ) ≤ (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 := by
+    rcases lt_or_gt_of_ne hI40 with h' | h' <;> nlinarith
+  set R : ℤ := (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) with hRdef
+  set P : ℤ := (p : ℤ) ^ (2 * a) with hPdef
+  have hsq : (p : ℤ) ^ (4 * a) = P ^ 2 := by
+    rw [hPdef, ← pow_mul]
+    ring_nf
+  have hF1 : R ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 = P ^ 2 := by
+    rw [← h, ← hsq]
+    exact hna
+  have hp1 : (1 : ℤ) ≤ (p : ℤ) := by
+    have := hp.out.two_le
+    omega
+  have hcmp : (p : ℤ) ^ 4 ≤ P := by
+    rw [hPdef]
+    exact pow_le_pow_right₀ hp1 (by omega)
+  have hIP : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 ≤ P - 1 := by
+    have h4 : (((⟨A, B⟩ : GaussianInt) ^ 4).im) ^ 2 ≤ (p : ℤ) ^ 4 - 1 := by linarith [hn1, hR41]
+    linarith
+  have hP0 : (0 : ℤ) < P := by
+    rw [hPdef]
+    positivity
+  have hRP : R < P ∧ -P < R := by
+    constructor <;> nlinarith [hF1, hI41, hP0]
+  have hprod : (P - R - 1) * (P + R - 1) ≥ 0 :=
+    mul_nonneg (by omega) (by omega)
+  nlinarith [hF1, hIP, hprod, hP0]
+
 end UniformA
