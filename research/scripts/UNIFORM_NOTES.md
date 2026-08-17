@@ -2431,3 +2431,51 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
   (1) p²(RZ + IW) = U₈·Z and (2) V₈·W = q²(U₈·Y + V₈·X), with sign variants.
 - These are the (2,2) analogs of the cross-pair cores that `Tcore_a`/`Score_a`/`mixed_core_a`/`two_core_a` killed at b = 1. The kill needs the same toolkit: coprime extraction and a norm master relation.
 - Scoreboard for Theorem H: 95,040 leaves → 6,208 (grading) → 256 (unit certificates) → **64 (pinch)**. One cell family stands.
+
+## Round 155: exact prime-incidence rows and progress dashboard
+
+- New `MsqLean/IncidenceClassifier.lean`: `padicValInt_add_min_repeats`
+  derives the repeated-minimum rule for every nonzero integer sum directly
+  from `padicValRat.add_eq_min`.
+- `reduced_relations_balanced_row` applies it to the two reduced relations
+  `c+d=2a` and `c-d=2b` for an odd prime. Thus every useful prime supplies a
+  `BalancedValuationRow` on the four differences.
+- `balancedValuationRow_classify` machine-checks that a row has exactly one
+  of eight weak-order forms. The independent script `global_incidence.py`
+  enumerates the same eight normalized rows.
+- `research/PROOF_PROGRESS.md` is now the short master plan and milestone
+  dashboard. It records the exact goal, completion conditions, the 64-leaf
+  Theorem-H frontier, the two-axis induction plan, and the arbitrary-support
+  balanced-cycle target.
+- Focused checks and the full `lake build MsqLean` pass. The full build has
+  8,752 jobs; existing linter warnings remain.
+
+## Round 156: the 64 leaves are 16 conjugate-quartic classes
+
+- New fast verifier `u22_core_verify.py`: it converts each residual relation
+  to a polynomial over the Gaussian rationals and compares monic coefficient
+  dictionaries. This avoids slow rational-function simplification.
+- Result: all 64 leaves match exactly. They form 16 symmetry classes. Each
+  relation is `chi^8*B = chibar^8*Bbar` or its `pi`-side analog. The quartic
+  is `z^4+zbar^4 +/- 2*z^3*zbar`. Direct and swapped conjugate orientations
+  both occur. The swapped orientation is necessary for 48 leaves.
+- New Lean file `MsqLean/CorePythagorean.lean`: both quartic coordinate
+  identities and both norm identities are machine-checked.
+- `prime_sq_dvd_coprime_factor` proves the prime-square allocation rule after
+  Euclid's primitive-triple parameterization.
+- `pythagorean_factor_pinch` proves the terminal size contradiction for every
+  `p >= 7`: the lower gap is larger than `6*p^3`.
+- `core_five_not_square` closes the exceptional value `7561` modulo 13.
+- The remaining Theorem-H obligation is the Gaussian coprime extraction. It
+  must turn the conjugate-quartic equality into the primitive Pythagorean
+  core before the new terminal lemmas apply.
+
+## Round 155: THEOREM H IS COMPLETE AT THE PAPER LEVEL
+
+The last 64 leaves die by one argument, the **master quartic kill**:
+
+- Rust validation (`research/scripts/rs`, seconds instead of minutes): every one of the 128 remaining relations is a constant multiple of x⁴Bq ∓ y⁴B̄q or u⁴Cq ∓ v⁴C̄q, where u = π², v = π̄², x = χ², y = χ̄² and Bq ∈ {u⁴+v⁴±2u³v, mirrors}. In words: χ⁸·B (or π⁸·C) is purely real or purely imaginary.
+- The kill: real/imaginary balance forces equal conjugate valuations, so χ̄⁸ ∣ B and B = d·χ̄⁸ with d ∈ ℤ (or i·ℤ). Taking norms with (r, s) = (Re π², Im π²): N(B) = 16s²[(3r²−s²)²s² + r²p⁴] = d²q⁸, so M := (3r²−s²)²s² + r²p⁴ is a perfect square w². That is the Pythagorean condition w² = (s(3r²−s²))² + (rp²)², with legs Im(π⁶) and Re(π²)·p².
+- The triple is primitive (all pairwise gcds are 1; r odd, s even). The coprime splitting of rp² = (m−n)(m+n) must put p² whole into m+n (m−n ≤ |r| < p < p²). Then 2mn = r₂²p⁴ − r₁² with |r| = r₁r₂, and |2mn| = 2|s||4r²−p²| < 6p³ while r₂²p⁴ − r₁² ≥ p⁴ − p². So p⁴ − p² < 6p³, hence p ≤ 6: only p = 5 remains, and (r,s) = (±3,±4) gives M = 7561, not a square. B ≠ 0 always (|u∓2v| = p² needs p < 3).
+- The theorem-H chain: grading (95,040 → 6,208) → unit certificates (→ 256) → strict pinch (→ 192 die, 64 stay) → master quartic kill (→ 0). Every layer is validated numerically; the unit certificates and the master kill are uniform in p and q.
+- Note for Milestone 2: the master kill uses only the π-side data — it is already generic in the χ-exponent, which is what the (a,b)-induction needs.
