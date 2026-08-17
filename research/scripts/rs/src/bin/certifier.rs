@@ -660,8 +660,19 @@ fn main() {
                 "STEP {} {} {} | {} | {} | {} | {}",
                 st.axis, st.k, st.ct, p5ser(&st.r0), p5ser(&st.r1),
                 p5ser(&st.q), p5ser(&st.r2))).collect();
+            let pick_tag = |core: &Poly| -> &'static str {
+                let (re, im) = core_to_reim(core);
+                match (re.is_empty(), im.is_empty()) {
+                    (false, true) => "re",
+                    (true, false) => "im",
+                    (false, false) => "re",
+                    (true, true) => "none",
+                }
+            };
             CHAINDUMP.lock().unwrap().insert(format!(
-                "LEAF {} || {} || END {}", chain.len(), chain.join(" ## "), p5ser(&rf)));
+                "CORES {} | {} | {} | {} || LEAF {} || {} || END {}",
+                ser4(core1), pick_tag(core1), ser4(core2), pick_tag(core2),
+                chain.len(), chain.join(" ## "), p5ser(&rf)));
         }
         // dump the q-minimal layer of the final polynomial for the oracle
         let dump = if rf.is_empty() { None } else {

@@ -82,6 +82,10 @@ fn main() {
     for line in std::io::BufReader::new(std::fs::File::open(fname).unwrap()).lines() {
         let line = line.unwrap();
         if line.trim().is_empty() { continue; }
+        // optional pair-provenance prefix: "CORES ... || LEAF ..."
+        let line = if let Some(pos) = line.find("|| LEAF") {
+            if line.starts_with("CORES") { line[pos + 3..].to_string() } else { line }
+        } else { line };
         let body = line.splitn(2, "||").nth(1).unwrap();
         let (chain_part, end_part) = body.rsplit_once("|| END").unwrap();
         let end = parse_p5(end_part.trim());
