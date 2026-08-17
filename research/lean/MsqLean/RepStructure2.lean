@@ -205,4 +205,27 @@ theorem four_diffs_model (p q : ℕ)
     · exact absurd h hs2
     · linarith
 
+/-- Fold: a mixed conjugate power with m ≥ n collapses to a norm power
+times a pure power. -/
+lemma pow_fold_ge (z : GaussianInt) (P : ℤ)
+    (hz : z * star z = (P : GaussianInt)) (m n : ℕ) (h : n ≤ m) :
+    z ^ m * (star z) ^ n = ((P : GaussianInt)) ^ n * z ^ (m - n) := by
+  have hm : m = n + (m - n) := by omega
+  calc z ^ m * (star z) ^ n
+      = z ^ (n + (m - n)) * (star z) ^ n := by rw [← hm]
+    _ = (z * star z) ^ n * z ^ (m - n) := by rw [pow_add, mul_pow]; ring
+    _ = ((P : GaussianInt)) ^ n * z ^ (m - n) := by rw [hz]
+
+/-- Fold: the n ≥ m side collapses to a norm power times a conjugate
+power. -/
+lemma pow_fold_le (z : GaussianInt) (P : ℤ)
+    (hz : z * star z = (P : GaussianInt)) (m n : ℕ) (h : m ≤ n) :
+    z ^ m * (star z) ^ n = ((P : GaussianInt)) ^ m * (star z) ^ (n - m) := by
+  have h2 : star z * star (star z) = (P : GaussianInt) := by
+    rw [star_star]; rw [mul_comm] at hz; exact hz
+  calc z ^ m * (star z) ^ n
+      = (star z) ^ n * z ^ m := by ring
+    _ = (star z) ^ n * (star (star z)) ^ m := by rw [star_star]
+    _ = ((P : GaussianInt)) ^ m * (star z) ^ (n - m) := pow_fold_ge (star z) P h2 n m h
+
 end RepStructure2
