@@ -2370,3 +2370,10 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
 - Zero sorries. The full build is green (8749 jobs).
 - Gotcha: `rep_structure_uniform` binds q as an auto-bound implicit (its signature starts with `hpq : p ≠ q`). Call it as `rep_structure_uniform p hpq ...`, without an explicit q.
 - This theorem subsumes Theorems E (a=1), F (a=2), and G (a=3) in one induction. The infinite family s·pᵃ·q is now closed for all a at once.
+
+## Round 149: the (2,2) re-attack starts
+
+- Corollary shipped: `no_magic_square_of_squares_two_useful_min_exp_one`. Two useful primes with either exponent equal to 1 are impossible. The a = 1 case swaps the roles of p and q in the uniform theorem.
+- New probe `u22_probe.py`: enumerates the 95,040 leaves of (2,2) in half-level coordinates (R,I = π⁴; X,Y = χ⁴; W,Z = χ⁸). The grading kill reproduces the old baseline exactly: 93.5% dead, 6,208 survivors, 114 class-multiset shapes.
+- Observation: the sixteen top shapes (192 leaves each) are levelled copies of the Theorem-E class set {q-axis, p-axis, M8/M9 pair}. The dispatcher cores killed exactly these shapes at b = 1. The new frontier is the shapes with a chi-8 twist (β = 2, both signs).
+- Plan: apply the F-style norm-core elimination to all 6,208 survivors. The old battery (mod-32, IA-elimination, rational root) left 82 relations; the norm-core toolkit is independent of it and may close the band cells.
