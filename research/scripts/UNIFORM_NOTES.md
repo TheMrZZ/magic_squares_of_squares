@@ -2900,3 +2900,20 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   emitter is next: one decide per pair ties the chain inputs to
   reOf/imOf of the cores, then the ChainCert leaf lemma and the
   oracle-form split close the pair.
+
+## Round 200: the pair layer verifies — the router's last unknown falls
+
+- `PairCert_2_2.lean`: all 104 residual pairs at (2,2) are
+  machine-checked in 11 seconds. Each pair theorem: the two cores
+  vanish at the Gaussian point ⟹ (re_im_of_bridge + one decide per
+  input) the chain inputs vanish ⟹ (the ChainCert leaf lemma at ℤ)
+  the eliminant vanishes ⟹ (endpoint_split + eval_qxy_free + the
+  CertForms certificate) contradiction.
+- Gotcha fixed on the way: dump-order nondeterminism between certifier
+  runs — all generated files must come from one certifier invocation.
+  `pipeline.sh` runs certifier → lean_emit → chain_emit → screen_emit
+  coherently per grid; the rollout to the other five grids is running.
+- The remaining Lean work is now: the live-relation factorization
+  emission (screen_emit extension), the leaf dispatch (generic
+  symbolic lone-kill + enumerated tie residue), and the
+  UClass2/telescoping assembly.
