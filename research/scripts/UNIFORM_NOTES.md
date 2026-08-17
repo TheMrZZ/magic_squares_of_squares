@@ -2586,3 +2586,11 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Mismatch sector: 276 distinct family pairs. 22 die outright (the resultant contents of (A₁₂, C₁₂) are pure 2-powers, and q ≥ 5). 14 are aligned (single-condition). The 232 with degenerate resultants have only **12 distinct polynomial gcds**: powers of (r²+s²) = p² (dead instantly: q ≠ p), r², s², (r±s)², and the disc-8 forms (r² ± 2rs − s²).
 - **The terminal list T**: q-power ∣ r; q-power ∣ s; q-power ∣ r ± s; q-power ∣ r² ± 2rs − s². Six divisibility classes — the historical band conditions — but now each arrives inside an overdetermined exact pinning system (2w̃X = Σ, w̃Y = Ω on both sides), so the second condition delivers the contradiction. The disc-8 forms are ℤ[√2]-norm conditions: the deepest T-members, with the master-kill splitting as the tool.
 - Everything above T is proved or mechanically certified. The two-exponent theorem = T-proofs + the layered-lemma chain (14 profiles) + the exactness lemma + the q²-telescoping wrapper.
+
+## Round 171: the non-layered sector of (2,3) is closed
+
+- Liveness filter: a condition with exactly one of (Σ, Ω) identically zero is dead outright (it forces Re or Im of χ^{2Δ} to vanish — impossible). This kills 1,824 more pairs and reveals the terminal landscape:
+- Live mismatch gcds are ONLY powers of (r²+s²) = p-powers and the constant 16 — both impossible for q ≥ 5, q ≠ p. **The disc-8 "band" forms of round 170 were phantoms living on dead branches.**
+- All 116 live equal-shift crosses verified nonvanishing (parity-excluded or irrational-rooted).
+- The 24 aligned (cross-zero) systems are all monomial families (±u², ±u⁴, ±v², ±v⁴) — dead by the pure χ-valuation kill.
+- **The non-layered sector of rung (2,3) is completely dead**, by seven mechanically verified kill layers. Remaining at this rung: the layered sandwich sector (3,280 pairs, 216 factors, 14 profiles).
