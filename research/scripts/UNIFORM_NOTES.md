@@ -408,7 +408,7 @@ s p^a q deep loci; characterization in place of unconditional closure.
 
 ## Uniform two-prime structure: the grading lemma for ALL (a,b)
 
-The D-set for e = s p^a q^b is always
+The D-set for e = s p^a qᵇ is always
   { p^{2a-2al} q^{2b-2be} s^2 Im(pi^{4al} chi^{±4be}) },
 0<=al<=a, 0<=be<=b, (al,be)!=(0,0) — |D| = ((2a+1)(2b+1)-1)/2 — and the
 two-prime grading lemma applies verbatim for every (a,b).  Census
@@ -842,7 +842,7 @@ Im(zw ± zw̄) = 2·(Im/Re z)·(Re/Im w) collapses the relation value over
 - The unit factor is Im(π⁴) = 4AB(A²−B²) or Im(χ⁴)-type (nonzero by
   coordinate facts), doubled with an Re(π⁴)/Re(χ⁴) odd factor for the
   lone-(0,2)/(2,0) families (the parity:2 census profile).
-- Every cofactor is 2·(integer) − p^aq^b, odd hence nonzero — the
+- Every cofactor is 2·(integer) − p^aqᵇ, odd hence nonzero — the
   formal content of the "parity" certificate is literally even−odd.
 - Kit: pow4_re_eq/pow4_im_eq bridges, sq_re/sq_im, re4_odd',
   im4_ne_zero, even_sub_odd, odd_cast. The 11 non-prototype theorems
@@ -868,7 +868,7 @@ EVERY exponent (a,b) simultaneously (full build green, zero sorries):
 - `uniform_twin_L01`: Im(−c·χ⁴ + e·z·(χ⁴)^k − e·z·(χ̄⁴)^k) ≠ 0 for ANY
   Gaussian z, any k ≥ 1, any odd c, any e — covers every lone-(0,1)
   diff-twin relation at every (a,b) (z absorbs the π-power, c absorbs
-  the p^aq^b coefficient pattern).
+  the p^aqᵇ coefficient pattern).
 - `uniform_twin_L10`: the sum-twin mirror with opaque χ-side w.
 - `uniform_twin_L02` / `uniform_twin_L20`: lone (0,2)/(2,0) with any
   EVEN twin power; the cofactor stays odd via c·Re(χ⁴) odd
@@ -2134,7 +2134,7 @@ invoked when M8/M9 occupy paired slots) — global single-equation kills:
    * J = −q: q = p⁴−4R₄² < p⁴, but X = −fp⁴q needs X² = p⁸q² ≤ q⁴ → q ≥ p⁴. Size.
    * J = −q²: X = −fp⁴, X² = p⁸ ≤ q⁴ → q² ≥ p⁴ but q² = p⁴−4R₄² < p⁴. Size.
 5. Kc2 = M7 (TODO): J∣Y then I₄∣ → R₄J'y'' = gq², J' = 4R₄²−3p⁴ ≡ 1 (mod 4):
-   * J' = −q^b: sign dead. J' = 1: 4I₄² = p⁴−1 consecutive squares dead.
+   * J' = −qᵇ: sign dead. J' = 1: 4I₄² = p⁴−1 consecutive squares dead.
    * J' = q, R₄ = ±1: I₄² = p⁴−1 dead. J' = q, R₄ = ±q: q ∣ 3p⁴ → q = 3 dead.
    * J' = q²: R₄ = ±1 → I₄² = p⁴−1 dead.
 
@@ -2479,3 +2479,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The triple is primitive (all pairwise gcds are 1; r odd, s even). The coprime splitting of rp² = (m−n)(m+n) must put p² whole into m+n (m−n ≤ |r| < p < p²). Then 2mn = r₂²p⁴ − r₁² with |r| = r₁r₂, and |2mn| = 2|s||4r²−p²| < 6p³ while r₂²p⁴ − r₁² ≥ p⁴ − p². So p⁴ − p² < 6p³, hence p ≤ 6: only p = 5 remains, and (r,s) = (±3,±4) gives M = 7561, not a square. B ≠ 0 always (|u∓2v| = p² needs p < 3).
 - The theorem-H chain: grading (95,040 → 6,208) → unit certificates (→ 256) → strict pinch (→ 192 die, 64 stay) → master quartic kill (→ 0). Every layer is validated numerically; the unit certificates and the master kill are uniform in p and q.
 - Note for Milestone 2: the master kill uses only the π-side data — it is already generic in the χ-exponent, which is what the (a,b)-induction needs.
+
+## Round 156: the (a,b) pattern census fixes the Milestone-2 architecture
+
+- Audit fixes landed in the paper (the B ≠ 0 argument is the strict pinch through |u∓2v| = p; the norm modulus is |d|²).
+- `rs/src/bin/uab_census.rs` (Rust; 93M leaves at (5,5) in seconds): the minimal-p-layer pattern universe **saturates in a at a = 2** — grids (3,3), (4,3), (5,3) add zero patterns over (2,3); (4,4) adds zero over (3,4); (5,5) adds zero over (2,5). It **grows linearly in b**: 608 (b=2) → 1,328 (b=3) → 2,304 (b=4) → 3,536 (b=5), increments 720, 976, 1,232.
+- Consequence: no finite pattern set covers all b, so Milestone 2 is a single induction in b with the q²-telescoping (the mirror of the uniform theorem's a-induction), and all cells stated a-generically — the census shows a-genericity adds no new cells beyond a = 2.
+- Plan for the b-step: UClass2(a,b) telescopes as rung b = q²·rung(b−1) plus the top-k classes; all-low leaves cancel q² and recurse; top-cell families need b-generic certificates (the residues are sparse trinomials whose resultant law depends only on the exponent gaps).
