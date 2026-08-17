@@ -680,4 +680,69 @@ theorem rep_structure_uniform
         push_cast
         ring
 
+/-- π does not divide the conjugate of π^(4a)·w⁴ for w a conjugate of χ,
+generic in a ≥ 1. -/
+lemma pi_not_dvd_star_paw4 (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (a : ℕ) (ha : 1 ≤ a) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣
+      star (((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)) := by
+  intro h
+  rw [star_mul, star_pow, star_pow] at h
+  have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
+  rcases hπprime.dvd_mul.mp h with h1 | h1
+  · have h2 := hπprime.dvd_of_dvd_pow h1
+    have hstar : star (⟨C, D⟩ : GaussianInt) = (⟨C, -D⟩ : GaussianInt) := by
+      ext <;> simp
+    rw [hstar] at h2
+    have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+    exact not_dvd_other p q hpq A B C (-D) hpAB hqCD2 h2
+  · exact pi_not_dvd_star p hpodd A B hpAB (hπprime.dvd_of_dvd_pow h1)
+
+/-- p² never divides c·Im(π^(4a)·χ⁴) for p ∤ c, generic in a ≥ 1. -/
+lemma p2_not_dvd_M8a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+      = (p : ℤ) ^ 2 * m) : False := by
+  refine p2_extract_kill p hpodd A B hpAB
+    (((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_right ((dvd_pow_self _ (by omega : 4 * a ≠ 0))) _)
+    (pi_not_dvd_star_paw4 p q hpodd hpq A B C D hpAB hqCD a ha) h
+
+/-- p² never divides c·Im(π^(4a)·χ̄⁴) for p ∤ c, generic in a ≥ 1. -/
+lemma p2_not_dvd_M9a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)
+      = (p : ℤ) ^ 2 * m) : False := by
+  have hstar : (star (⟨C, D⟩ : GaussianInt)) = (⟨C, -D⟩ : GaussianInt) := by ext <;> simp
+  have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+  refine p2_extract_kill p hpodd A B hpAB
+    (((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, -D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_right ((dvd_pow_self _ (by omega : 4 * a ≠ 0))) _)
+    (pi_not_dvd_star_paw4 p q hpodd hpq A B C (-D) hpAB hqCD2 a ha) ?_
+  rw [← hstar]
+  exact h
+
+/-- p² never divides c·I₄ₐ for p ∤ c, generic in a ≥ 1. -/
+lemma p2_not_dvd_I4a
+    (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (a : ℕ) (ha : 1 ≤ a)
+    (c m : ℤ) (hc : ¬ (p : ℤ) ∣ c)
+    (h : c * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) = (p : ℤ) ^ 2 * m) : False := by
+  refine p2_extract_kill p hpodd A B hpAB ((⟨A, B⟩ : GaussianInt) ^ (4 * a)) c m hc
+    (dvd_pow_self _ (by omega : 4 * a ≠ 0))
+    ?_ h
+  intro hd
+  rw [star_pow] at hd
+  have hπprime : Prime (⟨A, B⟩ : GaussianInt) := prime_pi p A B hpAB
+  exact pi_not_dvd_star p hpodd A B hpAB (hπprime.dvd_of_dvd_pow hd)
+
 end UniformA
