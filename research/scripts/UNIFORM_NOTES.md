@@ -2522,3 +2522,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The family kill template: the balance condition forces q^{2Δ} ∣ N(P)-value with Δ the χ-shift; every factor of N(P) is bounded by C·p^k, so the condition gives a band q^Δ ≤ C·p^k plus an exact divisibility of a small factor (q^m ∣ p ± s and relatives) — descent territory, with the (2,2) Pythagorean splitting as the deepest case.
 - Notable identities that trivialize several families: p² + Re π⁴ = 2r², p² − Re π⁴ = 2s² (so P = u(u ± v) gives N = 4p²·(2r² or 2s²) — the divisibility collapses to q-power ∣ 2r or 2s).
 - Discovery layer for rung (2,3) is complete. Next: write the general balance lemma and the per-family finishes into the paper — the b-generic step of Milestone 2.
+
+## Round 162: the balance lemma is grounded and in the paper
+
+- Verified across all 1,074 balance shapes (both sectors): the minimal χ- and χ̄-layers are **clean** — a single x-monomial times a π-side polynomial. The balance lemma applies in its clean form everywhere: shifted profile → χ^{2Δ} ∣ P-value → q^{2Δ} ∣ N(P).
+- Paper section added: "Toward all exponents: the balance-form reduction" — the a-saturation census, the four-gate dichotomy at (2,3), the balance lemma L1–L3, and the per-family finish programme with the Theorem-H splitting as prototype.
+- Remaining for Milestone 2: (i) write the per-family L4 finishes (band + small-factor descents; the norm formulas are computed); (ii) the q²-telescoping induction wrapper in b; (iii) verify rungs (2,4)/(2,5) reuse the same balance families (expected from the linear pattern growth: new shapes = wider shifts, same P-catalog — check).
