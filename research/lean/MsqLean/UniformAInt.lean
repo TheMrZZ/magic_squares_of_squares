@@ -912,4 +912,58 @@ lemma row_M7a_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
     have : p ∣ q := by exact_mod_cast hq'
     exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp this)
 
+/-- Generic mixed-pair valuation kill: both partners p²-divisible forces
+p⁴ ∣ q⁴. -/
+lemma mixed_p2p2_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N1 N2 f g : ℤ)
+    (hIX : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((p : ℤ) ^ 2 * N1))
+    (hRY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * ((p : ℤ) ^ 2 * N2)) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hp2X : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpI).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨f * N1, by linear_combination hIX⟩
+  have hp2Y : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re))) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpR).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨g * N2, by linear_combination hRY⟩
+  obtain ⟨x, hx⟩ := hp2X
+  obtain ⟨y, hy⟩ := hp2Y
+  have hdq : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    refine (dvd_pow_self _ (by norm_num : (4 : ℕ) ≠ 0)).trans ?_
+    exact ⟨x ^ 2 + y ^ 2, by rw [← hq4c, hx, hy]; ring⟩
+  have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hdq
+  have hnat : p ∣ q := by exact_mod_cast hq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+/-- Generic mixed-pair pinch: I₄ₐX = f·q²I₄ₐ forces X = ±q², so Y = 0. -/
+lemma mixed_c1_M7a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (hIX : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) : False := by
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hI0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ≠ 0 := by
+    intro h0
+    exact hpI (h0 ▸ dvd_zero _)
+  have hY0 : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hf2 : f ^ 2 = 1 := by rcases hf with rfl | rfl <;> norm_num
+  have hX : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * (q : ℤ) ^ 2 := by
+    have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (((((⟨C, D⟩ : GaussianInt) ^ 4).re)) - f * (q : ℤ) ^ 2) = 0 := by linear_combination hIX
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  have hXsq : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = (q : ℤ) ^ 4 := by
+    rw [hX]; linear_combination (q : ℤ) ^ 4 * hf2
+  have hY2 : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = 0 := by linarith
+  exact hY0 (pow_eq_zero_iff two_ne_zero |>.mp hY2)
+
 end UniformA
