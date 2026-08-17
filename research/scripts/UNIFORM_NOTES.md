@@ -2580,3 +2580,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   6. single conditions (mismatch sector) — finite w̃-set per family, terminal Pell systems;
   7. layered sandwich (14 profiles) — 3-term valuation battle with a deepening chain, terminal Pell systems.
 - Remaining proof obligations for the two-exponent theorem: (i) the exactness lemma in its layered/multi-pair form; (ii) the terminal Pell lemma list (finite, from sectors 6–7); (iii) the q²-telescoping wrapper in b; (iv) collect everything into the paper.
+
+## Round 170: the terminal list T — the finite bottom of Milestone 2
+
+- Mismatch sector: 276 distinct family pairs. 22 die outright (the resultant contents of (A₁₂, C₁₂) are pure 2-powers, and q ≥ 5). 14 are aligned (single-condition). The 232 with degenerate resultants have only **12 distinct polynomial gcds**: powers of (r²+s²) = p² (dead instantly: q ≠ p), r², s², (r±s)², and the disc-8 forms (r² ± 2rs − s²).
+- **The terminal list T**: q-power ∣ r; q-power ∣ s; q-power ∣ r ± s; q-power ∣ r² ± 2rs − s². Six divisibility classes — the historical band conditions — but now each arrives inside an overdetermined exact pinning system (2w̃X = Σ, w̃Y = Ω on both sides), so the second condition delivers the contradiction. The disc-8 forms are ℤ[√2]-norm conditions: the deepest T-members, with the master-kill splitting as the tool.
+- Everything above T is proved or mechanically certified. The two-exponent theorem = T-proofs + the layered-lemma chain (14 profiles) + the exactness lemma + the q²-telescoping wrapper.
