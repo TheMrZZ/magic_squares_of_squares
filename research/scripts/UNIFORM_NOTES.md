@@ -2386,3 +2386,10 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
 - `u22_coupling_scan.py` (p, q < 250, all orientations): 402 of the 600 relations have ZERO joint divisibility events. The 198 others couple only at isolated pairs.
 - `u22_coupling_scan2.py` (p, q < 1000): the joint sets stay thin (one to three pairs per relation; union 44 pairs; max prime 829) but slowly grow — per-relation incompatibility is not absolute.
 - Next: leaf-level coupling. A leaf needs joint divisibility for BOTH its relations at the same point. The per-relation joint sets are thin, so the leaf-level intersection is plausibly empty everywhere. If the scan confirms this, the proof target becomes the first-order incompatibility of the two minimal-layer residues — a resultant computation per leaf shape.
+
+## Round 151: the leaf-level incompatibility is empirically exact
+
+- `u22_leaf_coupling.py` (p, q < 1000, all rep orientations, all 6,208 leaves): **zero leaves have a common joint-divisibility point.** 262 single relations couple somewhere, but no leaf ever finds a point where p and q divide both of its content-free relation values at once.
+- This sharpens the Theorem-H target into one clean statement: for every surviving leaf, the two first-order residue conditions exclude each other. The proof shape per leaf: reduce both minimal-layer residues mod π (they become phase sums in the orbit variable), eliminate the shared coordinates, and show that simultaneous vanishing forces p to divide a bounded nonzero quantity — then the same on the q side.
+- Care point: the 296 zero-side relations have an identically vanishing minimal layer on one side. For leaves that carry them, the first-order condition is vacuous on that side and the incompatibility must run at the mod-π² layer (J-chain toolkit).
+- Next: the certificate engine — symbolic residue pairs per leaf shape, automatic elimination, one certificate per shape.
