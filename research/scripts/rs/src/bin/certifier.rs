@@ -172,7 +172,9 @@ fn grade_unit(p: &Poly) -> bool {
 }
 
 fn main() {
-    let (a, b) = (2u16, 3u16);
+    let args: Vec<String> = std::env::args().collect();
+    let a: u16 = args.get(1).and_then(|x| x.parse().ok()).unwrap_or(2);
+    let b: u16 = args.get(2).and_then(|x| x.parse().ok()).unwrap_or(3);
     let els = classes(a, b);
     let n = els.len();
     let ep: Vec<Poly> = els.iter().map(|&e| elem_poly(a, b, e)).collect();
@@ -261,6 +263,7 @@ fn main() {
     }
     let mut verdict: HashMap<&str, u64> = HashMap::new();
     let mut terminals: HashMap<Vec<((u16, u16, u16), i128)>, u32> = HashMap::new();
+    let mut residuals: Vec<(&'static str, Cond, Cond)> = Vec::new();
     for (k1, k2) in &pairset {
         let c1 = &relcond[k1];
         let c2 = &relcond[k2];
@@ -316,7 +319,7 @@ fn main() {
                     }
                 } else { "affine level mismatch (residual)" }
             }
-            (Cond::Multi, _) | (_, Cond::Multi) => "multi-level (residual)",
+            (Cond::Multi { .. }, _) | (_, Cond::Multi { .. }) => "multi-level (residual)",
             (Cond::Clean { delta, sig, om }, Cond::Affine { j2, alpha, beta, eoff, gam })
             | (Cond::Affine { j2, alpha, beta, eoff, gam }, Cond::Clean { delta, sig, om }) => {
                 if 2 * *delta == 2 * *j2 {
@@ -353,6 +356,9 @@ fn main() {
             }
         };
         *verdict.entry(tag).or_insert(0) += 1;
+        if tag.contains("residual") {
+            residuals.push((tag, c1.clone(), c2.clone()));
+        }
     }
     let mut vs: Vec<_> = verdict.iter().collect();
     vs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
@@ -372,6 +378,101 @@ fn main() {
         } else { tunres += 1; }
     }
     println!("terminal classes: single-level dead {tdead}, q-grade thin {tthin}, unresolved {tunres}");
+
+    // ---- Part 4 driver: base-coordinate elimination for residuals ----
+    let circle: P5 = {
+        let mut c = P5::new();
+        c.insert((0, 0, 0, 2, 0), BigInt::from(1));
+        c.insert((0, 0, 0, 0, 2), BigInt::from(1));
+        c.insert((0, 0, 2, 0, 0), BigInt::from(-1));
+        c
+    };
+    let cond_to_p5 = |c: &Cond| -> Option<P5> {
+        match c {
+            Cond::Clean { delta, sig, om } => {
+                let (re, im) = powmap(*delta);
+                Some(p5add(&p5mul(&p5from_r(sig), &im), &p5neg(&p5mul(&p5from_r(om), &re))))
+            }
+            Cond::Affine { j2, alpha, beta, eoff, gam } => {
+                let (re, im) = powmap(*j2);
+                let mut e = p5add(&p5mul(&p5from_r(alpha), &re), &p5mul(&p5from_r(beta), &im));
+                let qe = (2 * (*eoff).max(0)) as u16;
+                let mut gq = P5::new();
+                for (m, c) in gam { gq.insert((m.0, m.1, qe, 0, 0), BigInt::from(*c)); }
+                e = p5add(&e, &gq);
+                Some(e)
+            }
+            Cond::Multi { core } => {
+                // E = sum over chi-levels: q^{2 m} [ Re/Im combination ], one
+                // real scalar equation (the core is a balance form).
+                let corep: Poly = core.iter().cloned().collect();
+                let mut acc_re = P5::new();
+                let mut acc_im = P5::new();
+                let mut groups: BTreeMap<i32, Poly> = BTreeMap::new();
+                for (m, c) in &corep {
+                    let d = m.2 as i32 - m.3 as i32;
+                    groups.entry(d).or_insert_with(Poly::new).insert(*m, *c);
+                }
+                for (d, g) in &groups {
+                    let qm = g.keys().map(|m| m.2.min(m.3)).min().unwrap() as u16;
+                    let cuv: Poly = g.iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect();
+                    let gc = uv_to_rs(&cuv);
+                    let cre = p5from_r(&gre(&gc));
+                    let cim = p5from_r(&gim(&gc));
+                    let qshift = |p: &P5, qe: u16| -> P5 {
+                        p.iter().map(|(m, c)| ((m.0, m.1, m.2 + 2 * qe, m.3, m.4), c.clone())).collect()
+                    };
+                    if *d == 0 {
+                        acc_re = p5add(&acc_re, &qshift(&cre, qm));
+                        acc_im = p5add(&acc_im, &qshift(&cim, qm));
+                    } else if *d > 0 {
+                        let (rm, im_) = powmap(*d as u16);
+                        // (cre + i cim)(Re + i Im) = (cre*Re - cim*Im) + i(cre*Im + cim*Re)
+                        let tre = p5add(&p5mul(&cre, &rm), &p5neg(&p5mul(&cim, &im_)));
+                        let tim = p5add(&p5mul(&cre, &im_), &p5mul(&cim, &rm));
+                        acc_re = p5add(&acc_re, &qshift(&tre, qm));
+                        acc_im = p5add(&acc_im, &qshift(&tim, qm));
+                    } else {
+                        let (rm, im_) = powmap((-d) as u16);
+                        // conj power: (X - iY)^l = Re - i Im
+                        let tre = p5add(&p5mul(&cre, &rm), &p5mul(&cim, &im_));
+                        let tim = p5add(&p5neg(&p5mul(&cre, &im_)), &p5mul(&cim, &rm));
+                        acc_re = p5add(&acc_re, &qshift(&tre, qm));
+                        acc_im = p5add(&acc_im, &qshift(&tim, qm));
+                    }
+                }
+                // balance: exactly one of the parts is the scalar equation
+                if acc_re.is_empty() && !acc_im.is_empty() { Some(acc_im) }
+                else if acc_im.is_empty() && !acc_re.is_empty() { Some(acc_re) }
+                else if !acc_re.is_empty() { Some(acc_re) } // take Re; Im equation joins via the pair
+                else { None }
+            }
+            _ => None,
+        }
+    };
+    let mut everdict: HashMap<String, u64> = HashMap::new();
+    let t_start = std::time::Instant::now();
+    let n_res = residuals.len();
+    for (idx, (tag, c1, c2)) in residuals.iter().enumerate() {
+        if idx > 0 && idx % 25 == 0 {
+            let el = t_start.elapsed().as_secs_f64();
+            let eta = el / idx as f64 * (n_res - idx) as f64;
+            eprintln!("[elim] {idx}/{n_res} ({:.0}%)  elapsed {el:.0}s  ETA {eta:.0}s",
+                      100.0 * idx as f64 / n_res as f64);
+        }
+        let (e1, e2) = match (cond_to_p5(c1), cond_to_p5(c2)) {
+            (Some(a), Some(b)) => (a, b),
+            _ => { *everdict.entry(format!("{tag}: no-p5 (multi)")).or_insert(0) += 1; continue; }
+        };
+        let r1 = match resultant(&e1, &circle, 0) { Some(r) => r, None => { *everdict.entry("div-fail".into()).or_insert(0) += 1; continue; } };
+        let r2 = match resultant(&e2, &circle, 0) { Some(r) => r, None => { *everdict.entry("div-fail".into()).or_insert(0) += 1; continue; } };
+        let rf = match resultant(&r1, &r2, 1) { Some(r) => r, None => { *everdict.entry("div-fail".into()).or_insert(0) += 1; continue; } };
+        let v = classify_rsq(&rf);
+        *everdict.entry(format!("{tag} -> {v}")).or_insert(0) += 1;
+    }
+    let mut evs: Vec<_> = everdict.iter().collect();
+    evs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
+    for (k, c) in evs { println!("  ELIM {c:5}  {k}"); }
 }
 
 // ===================== Part 2: the (r, s)-engine =====================
@@ -526,7 +627,7 @@ enum Cond {
     Dead,
     Clean { delta: u16, sig: RPoly, om: RPoly },
     Affine { j2: u16, alpha: RPoly, beta: RPoly, eoff: i32, gam: RPoly },
-    Multi,
+    Multi { core: Vec<(Mono, i128)> },
 }
 
 fn condition_of(core: &Poly) -> Cond {
@@ -562,14 +663,16 @@ fn condition_of(core: &Poly) -> Cond {
         levels.entry(d).or_insert_with(Poly::new).insert((m.0, m.1, m.2, m.3), *c);
     }
     let pos: Vec<i32> = levels.keys().cloned().filter(|&d| d > 0).collect();
-    if pos.len() != 1 { return Cond::Multi; }
+    if pos.len() != 1 {
+        return Cond::Multi { core: core.iter().map(|(m, c)| (*m, *c)).collect() };
+    }
     let j2 = pos[0] as u16;
     let cpos: Poly = levels[&(j2 as i32)].iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect();
     let cneg: Poly = levels[&(-(j2 as i32))].iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect();
     let cposc = pconj(&cpos);
     let sigma: i128 = if padd(&cneg, &pneg(&cposc)).is_empty() { 1 }
         else if padd(&cneg, &cposc).is_empty() { -1 }
-        else { return Cond::Multi };
+        else { return Cond::Multi { core: core.iter().map(|(m, c)| (*m, *c)).collect() } };
     let dpoly: Poly = levels.get(&0).map(|l| l.iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect()).unwrap_or_default();
     let qpos = levels[&(j2 as i32)].keys().map(|m| m.2.min(m.3)).min().unwrap() as i32;
     let qdia = levels.get(&0).map(|l| l.keys().map(|m| m.2.min(m.3)).min().unwrap() as i32).unwrap_or(0);
@@ -584,4 +687,178 @@ fn condition_of(core: &Poly) -> Cond {
         (rscale(&cim, 2), rscale(&cre, 2), gim(&g_d))
     };
     Cond::Affine { j2, alpha, beta, eoff, gam }
+}
+
+// ============ Part 4: base-coordinate elimination ============
+// Polynomials in (r, s, q, X, Y) with X + iY = chi^2-coordinates.
+use num_bigint::BigInt;
+use num_traits::{Zero, One, Signed};
+
+type M5 = (u16, u16, u16, u16, u16); // r, s, q, X, Y
+type P5 = BTreeMap<M5, BigInt>;
+
+fn p5add(a: &P5, b: &P5) -> P5 {
+    let mut r = a.clone();
+    for (m, c) in b {
+        let e = r.entry(*m).or_insert_with(BigInt::zero);
+        *e += c;
+        if e.is_zero() { r.remove(m); }
+    }
+    r
+}
+fn p5neg(a: &P5) -> P5 { a.iter().map(|(m, c)| (*m, -c.clone())).collect() }
+fn p5mul(a: &P5, b: &P5) -> P5 {
+    let mut r = P5::new();
+    for (m1, c1) in a {
+        for (m2, c2) in b {
+            let m = (m1.0 + m2.0, m1.1 + m2.1, m1.2 + m2.2, m1.3 + m2.3, m1.4 + m2.4);
+            let e = r.entry(m).or_insert_with(BigInt::zero);
+            *e += c1 * c2;
+            if e.is_zero() { r.remove(&m); }
+        }
+    }
+    r
+}
+fn p5from_r(p: &RPoly) -> P5 {
+    p.iter().map(|(m, c)| ((m.0, m.1, 0, 0, 0), BigInt::from(*c))).collect()
+}
+fn p5mono(q: u16, x: u16, y: u16, c: i128) -> P5 {
+    let mut p = P5::new();
+    p.insert((0, 0, q, x, y), BigInt::from(c));
+    p
+}
+
+/// (Re, Im) of (X + iY)^l as P5 polynomials.
+fn powmap(l: u16) -> (P5, P5) {
+    let mut re = p5mono(0, 0, 0, 1);
+    // re starts as the constant 1
+    let mut im = P5::new();
+    for _ in 0..l {
+        // (re + i im)(X + iY) = re*X - im*Y + i(re*Y + im*X)
+        let x = p5mono(0, 1, 0, 1);
+        let y = p5mono(0, 0, 1, 1);
+        let nre = p5add(&p5mul(&re, &x), &p5neg(&p5mul(&im, &y)));
+        let nim = p5add(&p5mul(&re, &y), &p5mul(&im, &x));
+        re = nre; im = nim;
+    }
+    (re, im)
+}
+
+/// Degree in Y and coefficient extraction (as P5 with Y-exp zeroed).
+fn ydeg(p: &P5) -> u16 { p.keys().map(|m| m.4).max().unwrap_or(0) }
+fn ycoef(p: &P5, k: u16) -> P5 {
+    p.iter().filter(|(m, _)| m.4 == k)
+        .map(|(m, c)| ((m.0, m.1, m.2, m.3, 0), c.clone())).collect()
+}
+fn xdeg(p: &P5) -> u16 { p.keys().map(|m| m.3).max().unwrap_or(0) }
+fn xcoef(p: &P5, k: u16) -> P5 {
+    p.iter().filter(|(m, _)| m.3 == k)
+        .map(|(m, c)| ((m.0, m.1, m.2, 0, m.4), c.clone())).collect()
+}
+
+/// Exact division for P5 (needed by Bareiss).
+fn p5div(a: &P5, b: &P5) -> Option<P5> {
+    if b.is_empty() { return None; }
+    let (blm, blc) = { let (m, c) = b.iter().next_back().unwrap(); (*m, c.clone()) };
+    let mut rem = a.clone();
+    let mut quo = P5::new();
+    while !rem.is_empty() {
+        let (rlm, rlc) = { let (m, c) = rem.iter().next_back().unwrap(); (*m, c.clone()) };
+        if rlm.0 < blm.0 || rlm.1 < blm.1 || rlm.2 < blm.2 || rlm.3 < blm.3 || rlm.4 < blm.4 {
+            return None;
+        }
+        if (&rlc % &blc) != BigInt::zero() { return None; }
+        let qm = (rlm.0 - blm.0, rlm.1 - blm.1, rlm.2 - blm.2, rlm.3 - blm.3, rlm.4 - blm.4);
+        let mut t = P5::new();
+        t.insert(qm, &rlc / &blc);
+        quo = p5add(&quo, &t);
+        rem = p5add(&rem, &p5neg(&p5mul(&t, b)));
+    }
+    Some(quo)
+}
+
+/// Resultant of two P5 polynomials w.r.t. Y (or X when axis = 1),
+/// via fraction-free Bareiss on the Sylvester matrix.
+fn resultant(a: &P5, b: &P5, axis: u8) -> Option<P5> {
+    let (da, db) = if axis == 0 { (ydeg(a), ydeg(b)) } else { (xdeg(a), xdeg(b)) };
+    if da == 0 && db == 0 { return Some(P5::new()); }
+    let n = (da + db) as usize;
+    let coef = |p: &P5, k: u16| if axis == 0 { ycoef(p, k) } else { xcoef(p, k) };
+    let mut mat: Vec<Vec<P5>> = vec![vec![P5::new(); n]; n];
+    for i in 0..db as usize {
+        for k in 0..=da {
+            mat[i][i + (da - k) as usize] = coef(a, k);
+        }
+    }
+    for i in 0..da as usize {
+        for k in 0..=db {
+            mat[db as usize + i][i + (db - k) as usize] = coef(b, k);
+        }
+    }
+    // Bareiss
+    let mut prev: P5 = { let mut o = P5::new(); o.insert((0,0,0,0,0), BigInt::one()); o };
+    for k in 0..n - 1 {
+        if mat[k][k].is_empty() {
+            // pivot: swap with a nonzero row below (sign change irrelevant for
+            // vanishing analysis)
+            let mut found = false;
+            for i in k + 1..n {
+                if !mat[i][k].is_empty() { mat.swap(k, i); found = true; break; }
+            }
+            if !found { return Some(P5::new()); } // resultant is zero
+        }
+        for i in k + 1..n {
+            for j in k + 1..n {
+                let t1 = p5mul(&mat[i][j], &mat[k][k]);
+                let t2 = p5mul(&mat[i][k], &mat[k][j]);
+                let num = p5add(&t1, &p5neg(&t2));
+                match p5div(&num, &prev) {
+                    Some(d) => mat[i][j] = d,
+                    None => return None, // exact division failed (shouldn't)
+                }
+            }
+        }
+        for i in k + 1..n { mat[i][k] = P5::new(); }
+        prev = mat[k][k].clone();
+    }
+    Some(mat[n - 1][n - 1].clone())
+}
+
+/// Classify an (r, s, q)-polynomial: q-grade then nonvanishing of the
+/// minimal layer as an (r, s)-form.
+fn classify_rsq(p: &P5) -> &'static str {
+    if p.is_empty() { return "IDENTICALLY ZERO"; }
+    let qmin = p.keys().map(|m| m.2).min().unwrap();
+    let t0: Vec<(u16, u16, BigInt)> = p.iter().filter(|(m, _)| m.2 == qmin)
+        .map(|(m, c)| (m.0, m.1, c.clone())).collect();
+    let single = p.keys().all(|m| m.2 == qmin);
+    // empirical nonvanishing on Gaussian pi^2-data (r, s) for p < 500,
+    // plus the trivial-root parity screen: forms vanishing at data are flagged.
+    let mut vanishes = false;
+    'outer: for pp in 5i64..500 {
+        if (2..pp).take_while(|k| k * k <= pp).any(|k| pp % k == 0) || pp % 4 != 1 { continue; }
+        let (mut aa, mut bb) = (0i64, 0i64);
+        'rep: for a_ in 1..pp {
+            let b2 = pp - a_ * a_;
+            if b2 <= 0 { break; }
+            let b_ = (b2 as f64).sqrt() as i64;
+            for bc in [b_ - 1, b_, b_ + 1] {
+                if bc > 0 && bc * bc == b2 { aa = a_; bb = bc; break 'rep; }
+            }
+        }
+        for (rr, ss) in [(aa * aa - bb * bb, 2 * aa * bb), (bb * bb - aa * aa, -2 * aa * bb)] {
+            let mut acc = BigInt::zero();
+            for (er, es, c) in &t0 {
+                let mut t = c.clone();
+                for _ in 0..*er { t *= BigInt::from(rr); }
+                for _ in 0..*es { t *= BigInt::from(ss); }
+                acc += t;
+            }
+            if acc.is_zero() { vanishes = true; break 'outer; }
+        }
+    }
+    if !vanishes {
+        if single { "DEAD (single level, no vanishing on data; oracle-pending)" }
+        else { "THIN (q-grade band, t0 nonzero on data)" }
+    } else { "UNRESOLVED (t0 vanishes on data)" }
 }
