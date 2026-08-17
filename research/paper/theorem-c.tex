@@ -496,10 +496,31 @@ small forms such as $p\pm s$, $p\pm 2s$, $(p^2-2s^2)^2$, $(3p^2-4s^2)^2$
 divisibility gives a band $q^\Delta\le C p^k$ plus an exact small-factor
 condition; on the residual thin loci the full balance pins an exact norm
 equation, and the Theorem~\ref{thm:H} splitting argument is the prototype
-finish.  The finish is in fact sharper than the norm divisibility.  The clean
-balance condition is exact: $P\text{-value}=\tilde w\,\bar\chi^{2\Delta}$
-with $\tilde w\in\Z\cup i\Z$, and together with its conjugate it
-\emph{linearizes}: writing $\Sigma=P+\bar P$ and $\Omega=(P-\bar P)/2i$
+finish.  The finish is in fact sharper than the norm divisibility, through the
+following exactness lemma.
+
+\begin{lemma}[Exactness]\label{lem:exact}
+Let $M=\chi^{2e}\bar\chi^{2f}\,P$ with $P=P(\pi^2,\bar\pi^2)\neq0$ and
+$\Delta=f-e>0$.  If $M$ is real, then $\chi^{2\Delta}\mid P$-value, and
+$P=\tilde w\,\chi^{2\Delta}$ with $\tilde w\in\Z$; if $M$ is purely
+imaginary, the same holds with $\tilde w\in i\Z$.
+\end{lemma}
+
+\begin{proof}
+$M=\bar M$ reads $\chi^{2e}\bar\chi^{2f}P=\chi^{2f}\bar\chi^{2e}\bar P$;
+dividing by $\chi^{2e}\bar\chi^{2e}$ gives $\bar\chi^{2\Delta}P=
+\chi^{2\Delta}\bar P$.  Since $\chi\nmid\bar\chi$, unique factorization
+gives $\chi^{2\Delta}\mid P$; writing $P=\chi^{2\Delta}\kappa$ and
+substituting yields $\bar\chi^{2\Delta}\kappa=\bar P=\overline{\chi^{2\Delta}\kappa}
+=\bar\chi^{2\Delta}\bar\kappa$, so $\kappa=\bar\kappa\in\Z$.  The
+imaginary case is identical with $M=-\bar M$.
+\end{proof}
+
+For a balance factor with several asymmetric layers the same cascade
+applies level by level (the catalog factors have clean minimal layers, so
+each step is an instance of the lemma), and the layered factors follow the
+$q^{2d}$-division chain described below.  The exact condition, together
+with its conjugate, \emph{linearizes}: writing $\Sigma=P+\bar P$ and $\Omega=(P-\bar P)/2i$
 (explicit integer forms in the $\pi$-coordinates),
 \[
   2\tilde w\,\re\chi^{2\Delta}=\Sigma,\qquad
