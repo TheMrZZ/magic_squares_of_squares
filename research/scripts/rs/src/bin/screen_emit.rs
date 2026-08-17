@@ -173,7 +173,6 @@ fn main() {
         let line = line.unwrap();
         if line.trim().is_empty() { continue; }
         let verdict = line.rsplit('|').next().unwrap().trim().to_string();
-        if verdict == "live" { n_live += 1; continue; }
         let body = line.splitn(2, '|').nth(1).unwrap();
         let mut secs = body.split("||");
         let p0 = parse4(secs.next().unwrap().trim());
@@ -214,7 +213,7 @@ fn main() {
             }
             if unit_data.is_none() { ok = false; }
         }
-        if !ok || (verdict != "monomial" && verdict != "unit") {
+        if !ok {
             n_skip += 1;
             continue;
         }
@@ -253,6 +252,39 @@ fn main() {
             idx += 1;
         }
         let last_s = name(idx, "s");
+        if verdict == "live" {
+            // emit the downward cascade: relation = 0 forces core = 0
+            for d in &stage_defs { writeln!(out, "{d}").unwrap(); }
+            writeln!(out).unwrap();
+            writeln!(out, "theorem screen_live_{li}_{tag}").unwrap();
+            writeln!(out, "    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)").unwrap();
+            writeln!(out, "    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)").unwrap();
+            writeln!(out, "    (h0 : PolyRefl.eval (s{li}_0p_{tag}) {PT} = 0) :").unwrap();
+            writeln!(out, "    PolyRefl.eval (s{li}_{idx}s_{tag}) {PT} = 0 := by").unwrap();
+            writeln!(out, "  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero").unwrap();
+            writeln!(out, "  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero").unwrap();
+            writeln!(out, "  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)").unwrap();
+            writeln!(out, "  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)").unwrap();
+            for pl in &proof { writeln!(out, "{pl}").unwrap(); }
+            // downward cascade
+            writeln!(out, "  have hz0p : PolyRefl.eval (s{li}_0p_{tag}) {PT} = 0 := h0").unwrap();
+            for i in 0..=steps.len() {
+                writeln!(out, "  have hz{i}s : PolyRefl.eval (s{li}_{i}s_{tag}) {PT} = 0 := by").unwrap();
+                writeln!(out, "    rcases mul_eq_zero.mp (e{i}s.symm.trans hz{i}p) with h | h").unwrap();
+                writeln!(out, "    · exact absurd h (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _)").unwrap();
+                writeln!(out, "    · exact h").unwrap();
+                if i < steps.len() {
+                    writeln!(out, "  have hz{}p : PolyRefl.eval (s{li}_{}p_{tag}) {PT} = 0 := by",
+                        i + 1, i + 1).unwrap();
+                    writeln!(out, "    rcases mul_eq_zero.mp (e{i}f.symm.trans hz{i}s) with h | h").unwrap();
+                    writeln!(out, "    · exact absurd h h{i}f").unwrap();
+                    writeln!(out, "    · exact h").unwrap();
+                }
+            }
+            writeln!(out, "  exact hz{}s\n", steps.len()).unwrap();
+            n_live += 1;
+            continue;
+        }
         // core nonzero
         match &unit_data {
             None => {
