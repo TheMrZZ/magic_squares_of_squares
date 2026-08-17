@@ -8,6 +8,7 @@ nonzero, coprime. The coordinate facts live in UniformAInt (re_2a_odd,
 im_2a_even, coords_2a_ne_zero, coprime_2a).
 -/
 import Mathlib
+import MsqLean.PolyRefl
 
 namespace CertKit
 
@@ -79,5 +80,48 @@ lemma sq_ne_two_sq {x y : ℤ} (hy : y ≠ 0) : x ^ 2 ≠ 2 * y ^ 2 := by
     simp [Nat.factorization_pow, hp.factorization_self]
   rw [hnat, h2] at h1
   omega
+
+
+/-- The projective mod-l sieve gate. If the form has no nonzero root over
+`ZMod l`, then coprime integers cannot make it vanish: a zero would force
+`l` to divide both coordinates. Primality is not needed; `2 <= l` is. -/
+lemma sieve_gate (l : ℕ) [NeZero l] (hl : 2 ≤ l) (P : PolyRefl.SPoly)
+    (hno : ∀ a b : ZMod l, PolyRefl.eval P a b 1 1 = 0 → a = 0 ∧ b = 0)
+    {r s : ℤ} (hco : IsCoprime r s) :
+    PolyRefl.eval P r s 1 1 ≠ 0 := by
+  intro h0
+  have hcast : PolyRefl.eval P (r : ZMod l) (s : ZMod l) 1 1 = 0 := by
+    have h := congrArg (Int.castRingHom (ZMod l)) h0
+    rw [PolyRefl.eval_map] at h
+    simpa using h
+  obtain ⟨ha, hb⟩ := hno _ _ hcast
+  have hr : (l : ℤ) ∣ r := by
+    exact_mod_cast (ZMod.intCast_zmod_eq_zero_iff_dvd r l).mp ha
+  have hs : (l : ℤ) ∣ s := by
+    exact_mod_cast (ZMod.intCast_zmod_eq_zero_iff_dvd s l).mp hb
+  have hu := Int.isUnit_iff.mp (hco.isUnit_of_dvd' hr hs)
+  rcases hu with h1 | h1 <;>
+    [exact absurd (by exact_mod_cast h1 : l = 1) (by omega);
+     (have := Int.natCast_nonneg l; omega)]
+
+
+/-- The dyadic gate: v = 2^e·c₀·r^N + s^(e+1)·rest with c₀ odd, r odd,
+s even has 2-adic valuation exactly e, so v ≠ 0. The parity gate is the
+case e = 0. -/
+lemma dyadic_gate (N e : ℕ) {c0 r s rest v : ℤ} (hr : Odd r) (hs : Even s)
+    (hc : Odd c0) (hv : v = 2 ^ e * c0 * r ^ N + s ^ (e + 1) * rest) : v ≠ 0 := by
+  obtain ⟨m, rfl⟩ := hs
+  have hodd : Odd (c0 * r ^ N + 2 * m ^ (e + 1) * rest) := by
+    have h1 : Odd (c0 * r ^ N) := hc.mul (hr.pow)
+    obtain ⟨t, ht⟩ := h1
+    exact ⟨t + m ^ (e + 1) * rest, by linarith⟩
+  have hne : c0 * r ^ N + 2 * m ^ (e + 1) * rest ≠ 0 := by
+    intro h; rw [h] at hodd; simp [Int.odd_iff] at hodd
+  have hv2 : v = 2 ^ e * (c0 * r ^ N + 2 * m ^ (e + 1) * rest) := by
+    rw [hv, show m + m = 2 * m by ring]
+    rw [mul_pow, pow_succ]
+    ring
+  rw [hv2]
+  exact mul_ne_zero (pow_ne_zero e two_ne_zero) hne
 
 end CertKit

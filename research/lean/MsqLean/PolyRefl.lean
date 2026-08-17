@@ -136,4 +136,41 @@ lemma eval_eq_of_normalize_eq {P Q : SPoly}
     eval P u v x y = eval Q u v x y := by
   rw [← eval_normalize P, ← eval_normalize Q, h]
 
+
+/-- A ring homomorphism commutes with evaluation. -/
+lemma eval_map {S : Type*} [CommRing S] (f : R →+* S) (P : SPoly) (u v x y : R) :
+    f (eval P u v x y) = eval P (f u) (f v) (f x) (f y) := by
+  induction P with
+  | nil => simp
+  | cons t P ih => simp [map_add, map_mul, map_pow, map_intCast, ih]
+
+
+/-- A factorization certificate on data gives a factorization of values. -/
+lemma eval_factor (P Q₁ Q₂ : SPoly) (h : normalize (mul Q₁ Q₂) = normalize P)
+    (u v x y : R) :
+    eval P u v x y = eval Q₁ u v x y * eval Q₂ u v x y := by
+  rw [← eval_mul]
+  exact (eval_eq_of_normalize_eq h u v x y).symm
+
+/-- A Bezout certificate on data: A·F + B·G = C as normalized lists implies
+the same identity of values. This is the shape of one elimination step of
+the certifier (a resultant with its cofactors). -/
+lemma eval_bezout (A F B G C : SPoly)
+    (h : normalize (mul A F ++ mul B G) = normalize C) (u v x y : R) :
+    eval A u v x y * eval F u v x y + eval B u v x y * eval G u v x y
+      = eval C u v x y := by
+  have h1 := eval_eq_of_normalize_eq h u v x y
+  rwa [eval_append, eval_mul, eval_mul] at h1
+
+/-- Two vanishing inputs and a Bezout certificate kill the output:
+if F and G vanish at the point, the eliminant C vanishes too. Combined
+with a certificate lemma `eval C ≠ 0`, this closes an elimination leaf. -/
+lemma bezout_kill (A F B G C : SPoly) (u v x y : R)
+    (h : normalize (mul A F ++ mul B G) = normalize C)
+    (hF : eval F u v x y = 0) (hG : eval G u v x y = 0) :
+    eval C u v x y = 0 := by
+  have h1 := eval_bezout A F B G C h u v x y
+  rw [hF, hG] at h1
+  simpa using h1.symm
+
 end PolyRefl

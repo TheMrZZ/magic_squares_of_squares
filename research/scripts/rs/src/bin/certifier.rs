@@ -19,6 +19,8 @@ static DONE: AtomicUsize = AtomicUsize::new(0);
 static TOTAL: AtomicUsize = AtomicUsize::new(0);
 const PHASES: [&str; 6] = ["startup", "leaf enumeration", "relation screen",
                            "condition map", "pair verdicts", "elimination"];
+static CHAINDUMP: std::sync::LazyLock<std::sync::Mutex<HashSet<String>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(HashSet::new()));
 static CROSSDUMP: std::sync::LazyLock<std::sync::Mutex<HashSet<String>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(HashSet::new()));
 
@@ -535,6 +537,32 @@ fn main() {
             _ => None,
         }
     };
+    if std::env::var("PRS_PROBE").is_ok() {
+        // Validate the PRS-chain core on the first residual leaf: sizes of
+        // each recorded step, and agreement of the endpoint's q-minimal
+        // layer with the Bareiss route.
+        if let Some((tag, c1, c2)) = residuals.first() {
+            if let (Some(e1), Some(e2)) = (cond_to_p5(c1), cond_to_p5(c2)) {
+                let mut st = Vec::new();
+                let r1 = prs_chain(&e1, &circle, 0, &mut st);
+                let r2 = prs_chain(&e2, &circle, 0, &mut st);
+                if let (Some(r1), Some(r2)) = (r1, r2) {
+                    let rf = prs_chain(&r1, &r2, 1, &mut st);
+                    println!("[PRS PROBE] leaf {tag}: steps (k, terms, maxbits) = {st:?}");
+                    match rf {
+                        Some(rf) => {
+                            let qmin = rf.keys().map(|m| m.2).min().unwrap();
+                            let t0: Vec<String> = rf.iter().filter(|(m, _)| m.2 == qmin)
+                                .map(|(m, c)| format!("{}*r**{}*s**{}", c, m.0, m.1)).collect();
+                            println!("[PRS PROBE] endpoint terms={} qmin={} t0-layer: {}",
+                                     rf.len(), qmin, t0.join(" + "));
+                        }
+                        None => println!("[PRS PROBE] endpoint vanished (common factor)"),
+                    }
+                } else { println!("[PRS PROBE] inner chain vanished"); }
+            }
+        }
+    }
     set_phase(5, residuals.len());
     let evs_par: Vec<(String, Option<String>)> = residuals.par_iter().map(|(tag, c1, c2)| {
         tick();
@@ -542,9 +570,27 @@ fn main() {
             (Some(a), Some(b)) => (a, b),
             _ => { return (format!("{tag}: no-p5 (multi)"), None); }
         };
-        let r1 = match resultant(&e1, &circle, 0) { Some(r) => r, None => return ("div-fail".into(), None) };
-        let r2 = match resultant(&e2, &circle, 0) { Some(r) => r, None => return ("div-fail".into(), None) };
-        let rf = match resultant(&r1, &r2, 1) { Some(r) => r, None => return ("div-fail".into(), None) };
+        // PRS elimination with recorded, exactly-verified steps; the chain
+        // is the Lean certificate for this leaf.
+        let mut steps = Vec::new();
+        let r1 = match prs_chain_rec(&e1, &circle, 0, &mut steps) { Some(r) => r, None => return ("prs-vanish-inner1".into(), None) };
+        let r2 = match prs_chain_rec(&e2, &circle, 0, &mut steps) { Some(r) => r, None => return ("prs-vanish-inner2".into(), None) };
+        let rf = match prs_chain_rec(&r1, &r2, 1, &mut steps) { Some(r) => r, None => {
+            if std::env::var("PRS_DIAG").is_ok() {
+                let br = resultant(&r1, &r2, 1);
+                println!("[PRS DIAG] outer vanish at leaf {tag}: bareiss = {}",
+                    match br { None => "div-fail".into(), Some(p) if p.is_empty() => "ZERO".into(),
+                               Some(p) => format!("nonzero ({} terms)", p.len()) });
+            }
+            return ("prs-vanish-outer".into(), None) } };
+        {
+            let chain: Vec<String> = steps.iter().map(|st| format!(
+                "STEP {} {} {} | {} | {} | {} | {}",
+                st.axis, st.k, st.ct, p5ser(&st.r0), p5ser(&st.r1),
+                p5ser(&st.q), p5ser(&st.r2))).collect();
+            CHAINDUMP.lock().unwrap().insert(format!(
+                "LEAF {} || {} || END {}", chain.len(), chain.join(" ## "), p5ser(&rf)));
+        }
         // dump the q-minimal layer of the final polynomial for the oracle
         let dump = if rf.is_empty() { None } else {
             let qmin = rf.keys().map(|m| m.2).min().unwrap();
@@ -571,6 +617,11 @@ fn main() {
         let cd = CROSSDUMP.lock().unwrap();
         for c in cd.iter() { writeln!(cf, "{c}").unwrap(); }
         println!("cross dump: {} distinct cross forms -> {cname}", cd.len());
+        let hname = format!("chains_{a}_{b}.txt");
+        let mut hf = std::fs::File::create(&hname).unwrap();
+        let hd = CHAINDUMP.lock().unwrap();
+        for c in hd.iter() { writeln!(hf, "{c}").unwrap(); }
+        println!("chain dump: {} distinct PRS chains -> {hname}", hd.len());
     }
     let mut evs: Vec<_> = everdict.iter().collect();
     evs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
@@ -924,6 +975,97 @@ fn resultant(a: &P5, b: &P5, axis: u8) -> Option<P5> {
         prev = mat[k][k].clone();
     }
     Some(mat[n - 1][n - 1].clone())
+}
+
+fn p5ser(p: &P5) -> String {
+    p.iter().map(|(m, c)| format!("{},{},{},{},{},{}", c, m.0, m.1, m.2, m.3, m.4))
+        .collect::<Vec<_>>().join(";")
+}
+
+fn bgcd(a: &BigInt, b: &BigInt) -> BigInt {
+    let (mut a, mut b) = (a.clone(), b.clone());
+    if a.sign() == num_bigint::Sign::Minus { a = -a; }
+    if b.sign() == num_bigint::Sign::Minus { b = -b; }
+    while !b.is_zero() { let t = &a % &b; a = b; b = t; }
+    a
+}
+
+fn p5primitive(p: &P5) -> (BigInt, P5) {
+    let mut g = BigInt::zero();
+    for c in p.values() { g = bgcd(&g, c); }
+    if g.is_zero() || g == BigInt::one() { return (BigInt::one(), p.clone()); }
+    (g.clone(), p.iter().map(|(m, c)| (*m, c / &g)).collect())
+}
+
+/// Pseudo-division w.r.t. the axis (0 = Y, 1 = X):
+/// lc(b)^k * a = Q * b + R with deg_axis(R) < deg_axis(b).
+/// Each application is one Lean-checkable Bezout-type step.
+fn p5pdiv(a: &P5, b: &P5, axis: u8) -> (u32, P5, P5) {
+    let deg = |p: &P5| if axis == 0 { ydeg(p) } else { xdeg(p) };
+    let coef = |p: &P5, k: u16| if axis == 0 { ycoef(p, k) } else { xcoef(p, k) };
+    let shift = |p: &P5, j: u16| -> P5 {
+        p.iter().map(|(m, c)| (if axis == 0 { (m.0, m.1, m.2, m.3, m.4 + j) }
+                               else { (m.0, m.1, m.2, m.3 + j, m.4) }, c.clone())).collect()
+    };
+    let db = deg(b);
+    let c = coef(b, db);
+    let mut rem = a.clone();
+    let mut quo = P5::new();
+    let mut k = 0u32;
+    while !rem.is_empty() && deg(&rem) >= db && db > 0 {
+        let dr = deg(&rem);
+        let lr = coef(&rem, dr);
+        quo = p5add(&p5mul(&c, &quo), &shift(&lr, dr - db));
+        rem = p5add(&p5mul(&c, &rem), &p5neg(&p5mul(&shift(&lr, dr - db), b)));
+        k += 1;
+        if k > 300 { break; }
+    }
+    (k, quo, rem)
+}
+
+/// One recorded PRS step: lc^k * r0 = q * r1 + ct * r2 (exact identity).
+struct PrsStep { axis: u8, k: u32, r0: P5, r1: P5, q: P5, ct: BigInt, r2: P5 }
+
+fn p5scale(p: &P5, c: &BigInt) -> P5 { p.iter().map(|(m, v)| (*m, v * c)).collect() }
+
+/// PRS elimination recording every step, each verified exactly.
+fn prs_chain_rec(f: &P5, g: &P5, axis: u8, steps: &mut Vec<PrsStep>) -> Option<P5> {
+    let deg = |p: &P5| if axis == 0 { ydeg(p) } else { xdeg(p) };
+    let coef = |p: &P5, k: u16| if axis == 0 { ycoef(p, k) } else { xcoef(p, k) };
+    let (mut r0, mut r1) = if deg(f) >= deg(g) { (f.clone(), g.clone()) }
+                           else { (g.clone(), f.clone()) };
+    loop {
+        if r1.is_empty() { return None; }
+        if deg(&r1) == 0 { return Some(r1); }
+        let (k, q, rem) = p5pdiv(&r0, &r1, axis);
+        let (ct, pp) = p5primitive(&rem);
+        // exact self-check: lc^k * r0 == q * r1 + ct * pp
+        let lc = coef(&r1, deg(&r1));
+        let mut lhs = r0.clone();
+        for _ in 0..k { lhs = p5mul(&lhs, &lc); }
+        let rhs = p5add(&p5mul(&q, &r1), &p5scale(&pp, &ct));
+        assert_eq!(lhs, rhs, "PRS step identity failed");
+        steps.push(PrsStep { axis, k, r0: r0.clone(), r1: r1.clone(),
+                             q, ct, r2: pp.clone() });
+        r0 = r1; r1 = pp;
+    }
+}
+
+/// PRS elimination with primitive-part reduction each step.
+/// Returns the axis-free endpoint; pushes (k, terms, maxbits) per step.
+fn prs_chain(f: &P5, g: &P5, axis: u8, stats: &mut Vec<(u32, usize, u64)>) -> Option<P5> {
+    let deg = |p: &P5| if axis == 0 { ydeg(p) } else { xdeg(p) };
+    let (mut r0, mut r1) = if deg(f) >= deg(g) { (f.clone(), g.clone()) }
+                           else { (g.clone(), f.clone()) };
+    loop {
+        if r1.is_empty() { return None; }
+        if deg(&r1) == 0 { return Some(r1); }
+        let (k, _q, rem) = p5pdiv(&r0, &r1, axis);
+        let (_ct, pp) = p5primitive(&rem);
+        let maxbits = pp.values().map(|c| c.bits()).max().unwrap_or(0);
+        stats.push((k, pp.len(), maxbits));
+        r0 = r1; r1 = pp;
+    }
 }
 
 /// Classify an (r, s, q)-polynomial: q-grade then nonvanishing of the
