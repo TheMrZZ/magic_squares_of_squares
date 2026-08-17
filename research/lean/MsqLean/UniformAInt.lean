@@ -1094,4 +1094,117 @@ lemma M7a_classify (q : ℕ) [hq : Fact (Nat.Prime q)]
       rw [hy2, hyq]
       ring
 
+set_option maxHeartbeats 800000 in
+/-- Coefficient-2 M7ₐ chain: 2R₄ₐY = f·q²·I₄ₐ yields 2Y = I₄ₐ·w with
+R₄ₐ·w = f·q². -/
+lemma M7a_chain2 (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ)
+    (hRY : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = f * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) :
+    ∃ w : ℤ, 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * w ∧ ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * w = f * (q : ℤ) ^ 2 := by
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hI0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ≠ 0 := by
+    intro h0
+    exact hpI (h0 ▸ dvd_zero _)
+  have hcop := coprime_coords p hpodd A B hpAB a ha
+  have hIY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ∣ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    have hd : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ∣ (2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) :=
+      ⟨f * (q : ℤ) ^ 2, by linear_combination hRY⟩
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨w, hw⟩ := hIY
+  refine ⟨w, hw, ?_⟩
+  have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * w - f * (q : ℤ) ^ 2) = 0 := by
+    linear_combination hRY - ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * hw
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact absurd h hI0
+  · linarith
+
+set_option maxHeartbeats 800000 in
+/-- Coefficient-2 M7ₐ classification: only R₄ₐ = ±q² survives, with
+2Y = ±f·I₄ₐ. -/
+lemma M7a_classify2 (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (hRY : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = f * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) :
+    ∃ ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) = ε * (q : ℤ) ^ 2
+      ∧ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = ε * f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) := by
+  have hqP : Prime (q : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hq.out
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 :=
+    pow_ne_zero _ (Int.natCast_ne_zero.mpr hq.out.pos.ne')
+  obtain ⟨hqX, hqY⟩ := p_not_dvd_re4_im4 q hqodd C D hqCD
+  obtain ⟨w, hw, hkey⟩ := M7a_chain2 p q hpodd hqodd a ha A B C D hpAB hqCD f hRY
+  have hRq2 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ∣ (q : ℤ) ^ 2 := by
+    have hd1 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ∣ f * (q : ℤ) ^ 2 := ⟨w, by linear_combination -hkey⟩
+    have hff : f * (f * (q : ℤ) ^ 2) = (q : ℤ) ^ 2 := by
+      rcases hf with rfl | rfl <;> ring
+    exact hff ▸ hd1.mul_left f
+  obtain ⟨i, hi, hass⟩ := (dvd_prime_pow hqP 2).mp hRq2
+  interval_cases i
+  · exfalso
+    rw [pow_zero] at hass
+    have hR2 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 = 1 := by
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp hass) with h1 | h1 <;>
+        rw [h1] <;> norm_num
+    exact Ra_unit_kill p hpodd A B hpAB a ha hR2
+  · -- ±q: q ∣ 2Y, q odd → q ∣ Y, dead
+    exfalso
+    rcases Int.associated_iff.mp hass with h1 | h1 <;> simp only [pow_one] at h1
+    · have hwq : w = f * (q : ℤ) := by
+        have h0 : (q : ℤ) * (w - f * (q : ℤ)) = 0 := by
+          linear_combination hkey - w * h1
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h (by
+            intro hq0
+            exact hq.out.pos.ne' (by exact_mod_cast hq0))
+        · linarith
+      have hq2Y : (q : ℤ) ∣ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := ⟨f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)), by rw [hw, hwq]; ring⟩
+      rcases hqP.dvd_mul.mp hq2Y with h | h
+      · have h2 : (q : ℤ) ∣ 2 := h
+        have h2n : q ∣ 2 := by exact_mod_cast h2
+        have := Nat.le_of_dvd (by norm_num) h2n
+        have h2le := hq.out.two_le
+        omega
+      · exact hqY h
+    · have hwq : w = -(f * (q : ℤ)) := by
+        have h0 : (q : ℤ) * (w + f * (q : ℤ)) = 0 := by
+          linear_combination -hkey + w * h1
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h (by
+            intro hq0
+            exact hq.out.pos.ne' (by exact_mod_cast hq0))
+        · linarith
+      have hq2Y : (q : ℤ) ∣ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := ⟨-(f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))), by rw [hw, hwq]; ring⟩
+      rcases hqP.dvd_mul.mp hq2Y with h | h
+      · have h2 : (q : ℤ) ∣ 2 := h
+        have h2n : q ∣ 2 := by exact_mod_cast h2
+        have := Nat.le_of_dvd (by norm_num) h2n
+        have h2le := hq.out.two_le
+        omega
+      · exact hqY h
+  · -- ±q²: residue
+    rcases Int.associated_iff.mp hass with h1 | h1
+    · refine ⟨1, Or.inl rfl, by rw [h1]; ring, ?_⟩
+      have hwq : w = f := by
+        have h0 : (q : ℤ) ^ 2 * (w - f) = 0 := by
+          linear_combination hkey - w * h1
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h hq20
+        · linarith
+      rw [hw, hwq]
+      ring
+    · refine ⟨-1, Or.inr rfl, by rw [h1]; ring, ?_⟩
+      have hwq : w = -f := by
+        have h0 : (q : ℤ) ^ 2 * (w + f) = 0 := by
+          linear_combination -hkey + w * h1
+        rcases mul_eq_zero.mp h0 with h | h
+        · exact absurd h hq20
+        · linarith
+      rw [hw, hwq]
+      ring
+
 end UniformA
