@@ -1,6 +1,6 @@
 // Emit Lean certificate lemmas for the certifier's dumped forms.
 // Every lemma has the uniform shape
-//     PolyRefl.eval <formData> r s 1 1 ≠ 0
+//     PolyRefl.eval <formData> r s 1 1 1 ≠ 0
 // proved through one of four gates, tried in this order:
 //   1. parity  — the r-leading coefficient is odd            (parity_gate_eval)
 //   2. dyadic  — lead = 2^e·odd, all s-terms have s-exp ≥ e+1 (dyadic_gate_eval)
@@ -23,7 +23,7 @@ fn spoly(terms: &[Term]) -> String {
     // is presorted
     let mut ts: Vec<&Term> = terms.iter().collect();
     ts.sort_by_key(|t| (t.1, t.2));
-    ts.iter().map(|(c, a, b)| format!("PolyRefl.mkT {a} {b} 0 0 ({c})"))
+    ts.iter().map(|(c, a, b)| format!("PolyRefl.mkT {a} {b} 0 0 0 ({c})"))
         .collect::<Vec<_>>().join(", ")
 }
 
@@ -463,7 +463,7 @@ fn emit_factored(out: &mut std::fs::File, tag: &str, li: usize,
         let bname = format!("b{k}_{tag}_{li}");
         defs.push((bname.clone(), undense(base)));
         let gate = gate_proof_str(&undense(base)).expect("factor gate checked");
-        haves.push(format!("  have hb{k} : PolyRefl.eval {bname} r s 1 1 ≠ 0 := {}",
+        haves.push(format!("  have hb{k} : PolyRefl.eval {bname} r s 1 1 1 ≠ 0 := {}",
                            gate.replace("{name}", &bname)));
         // squaring ladder up to the highest needed bit
         let bits = 32 - e.leading_zeros();
@@ -476,7 +476,7 @@ fn emit_factored(out: &mut std::fs::File, tag: &str, li: usize,
             let hn = format!("hb{k}p{i}");
             defs.push((nm.clone(), undense(&sq)));
             haves.push(format!(
-                "  have {hn} : PolyRefl.eval {nm} r s 1 1 ≠ 0 := by\n    rw [PolyRefl.eval_factor {nm} {p} {p} (by {dec}) r s 1 1]\n    exact mul_ne_zero {ph} {ph}",
+                "  have {hn} : PolyRefl.eval {nm} r s 1 1 1 ≠ 0 := by\n    rw [PolyRefl.eval_factor {nm} {p} {p} (by {dec}) r s 1 1 1]\n    exact mul_ne_zero {ph} {ph}",
                 p = prev.0, ph = prev.2));
             pows.push((nm, sq, hn));
         }
@@ -490,7 +490,7 @@ fn emit_factored(out: &mut std::fs::File, tag: &str, li: usize,
             let hn = format!("hg{k}a{i}");
             defs.push((nm.clone(), undense(&prod)));
             haves.push(format!(
-                "  have {hn} : PolyRefl.eval {nm} r s 1 1 ≠ 0 := by\n    rw [PolyRefl.eval_factor {nm} {cname} {pn} (by {dec}) r s 1 1]\n    exact mul_ne_zero {chyp} {ph}"));
+                "  have {hn} : PolyRefl.eval {nm} r s 1 1 1 ≠ 0 := by\n    rw [PolyRefl.eval_factor {nm} {cname} {pn} (by {dec}) r s 1 1 1]\n    exact mul_ne_zero {chyp} {ph}"));
             cname = nm; cdata = prod; chyp = hn;
         }
         gdatas.push((format!("({cname}, {chyp})"), cdata));
@@ -517,19 +517,19 @@ fn emit_factored(out: &mut std::fs::File, tag: &str, li: usize,
     }
     writeln!(out, "lemma form_{tag}_{li} (r s : ℤ) (hr : Odd r) (hs : Even s)").unwrap();
     writeln!(out, "    (hco : IsCoprime r s) :").unwrap();
-    writeln!(out, "    PolyRefl.eval p0_{tag}_{li} r s 1 1 ≠ 0 := by").unwrap();
+    writeln!(out, "    PolyRefl.eval p0_{tag}_{li} r s 1 1 1 ≠ 0 := by").unwrap();
     for h in &haves { writeln!(out, "{h}").unwrap(); }
     for (k, (gpair, _)) in gdatas.iter().enumerate() {
         let (gname, ghyp) = gpair.trim_matches(|c| c == '(' || c == ')')
             .split_once(", ").unwrap();
-        writeln!(out, "  rw [PolyRefl.eval_factor {} {gname} {} (by {dec}) r s 1 1]",
+        writeln!(out, "  rw [PolyRefl.eval_factor {} {gname} {} (by {dec}) r s 1 1 1]",
                  chain[k].0, chain[k + 1].0).unwrap();
         writeln!(out, "  refine mul_ne_zero {ghyp} ?_").unwrap();
     }
     let cname = &chain[chain.len() - 1].0;
     if cof.len() == 1 {
         let c0 = &cof[0].0;
-        writeln!(out, "  have hc : PolyRefl.eval {cname} r s 1 1 = ({c0} : ℤ) := by").unwrap();
+        writeln!(out, "  have hc : PolyRefl.eval {cname} r s 1 1 1 = ({c0} : ℤ) := by").unwrap();
         writeln!(out, "    simp [{cname}, PolyRefl.eval, PolyRefl.powF, PolyRefl.mkT]").unwrap();
         writeln!(out, "  rw [hc]; norm_num").unwrap();
     } else {
@@ -593,7 +593,7 @@ fn main() {
     let file = std::fs::File::open(fname).unwrap();
     let mut out = std::fs::File::create(format!("CertForms_{tag}.lean")).unwrap();
     writeln!(out, "/- Generated: nonvanishing of the certifier's minimal-layer forms").unwrap();
-    writeln!(out, "   at grid {tag}. Uniform statements: eval formData r s 1 1 ≠ 0. -/").unwrap();
+    writeln!(out, "   at grid {tag}. Uniform statements: eval formData r s 1 1 1 ≠ 0. -/").unwrap();
     writeln!(out, "import MsqLean.CertKit\nimport MsqLean.PolyRefl\n").unwrap();
     writeln!(out, "set_option maxRecDepth 100000\nset_option maxHeartbeats 2000000\n").unwrap();
     writeln!(out, "namespace CertForms\nopen CertKit\n").unwrap();
@@ -632,7 +632,7 @@ fn main() {
             let pf = gate_proof(&mut out, &name, &terms).unwrap();
             writeln!(out, "lemma form_{tag}_{li} (r s : ℤ) (hr : Odd r) (hs : Even s)").unwrap();
             writeln!(out, "    (hco : IsCoprime r s) :").unwrap();
-            writeln!(out, "    PolyRefl.eval {name} r s 1 1 ≠ 0 :=").unwrap();
+            writeln!(out, "    PolyRefl.eval {name} r s 1 1 1 ≠ 0 :=").unwrap();
             writeln!(out, "  {pf}\n").unwrap();
             n_ok += 1;
             continue;

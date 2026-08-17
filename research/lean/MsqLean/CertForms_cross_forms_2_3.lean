@@ -1,5 +1,5 @@
 /- Generated: nonvanishing of the certifier's minimal-layer forms
-   at grid cross_forms_2_3. Uniform statements: eval formData r s 1 1 ≠ 0. -/
+   at grid cross_forms_2_3. Uniform statements: eval formData r s 1 1 1 ≠ 0. -/
 import MsqLean.CertKit
 import MsqLean.PolyRefl
 
@@ -9,116 +9,116 @@ set_option maxHeartbeats 2000000
 namespace CertForms
 open CertKit
 
-def f_cross_forms_2_3_0 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (5), PolyRefl.mkT 4 2 0 0 (5), PolyRefl.mkT 6 0 0 0 (-1)]
-def f_cross_forms_2_3_0_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (5), PolyRefl.mkT 4 1 0 0 (5)]
+def f_cross_forms_2_3_0 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (5), PolyRefl.mkT 4 2 0 0 0 (5), PolyRefl.mkT 6 0 0 0 0 (-1)]
+def f_cross_forms_2_3_0_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (5), PolyRefl.mkT 4 1 0 0 0 (5)]
 lemma form_cross_forms_2_3_0 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_0 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_0 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-1) f_cross_forms_2_3_0 f_cross_forms_2_3_0_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_1 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (9), PolyRefl.mkT 4 2 0 0 (-19), PolyRefl.mkT 6 0 0 0 (3)]
-def f_cross_forms_2_3_1_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (9), PolyRefl.mkT 4 1 0 0 (-19)]
+def f_cross_forms_2_3_1 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (9), PolyRefl.mkT 4 2 0 0 0 (-19), PolyRefl.mkT 6 0 0 0 0 (3)]
+def f_cross_forms_2_3_1_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (9), PolyRefl.mkT 4 1 0 0 0 (-19)]
 lemma form_cross_forms_2_3_1 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_1 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_1 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (3) f_cross_forms_2_3_1 f_cross_forms_2_3_1_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (-1), PolyRefl.mkT 4 2 0 0 (-5), PolyRefl.mkT 6 0 0 0 (-3)]
-def f_cross_forms_2_3_2_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (-1), PolyRefl.mkT 4 1 0 0 (-5)]
+def f_cross_forms_2_3_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (-1), PolyRefl.mkT 4 2 0 0 0 (-5), PolyRefl.mkT 6 0 0 0 0 (-3)]
+def f_cross_forms_2_3_2_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (-1), PolyRefl.mkT 4 1 0 0 0 (-5)]
 lemma form_cross_forms_2_3_2 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_2 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_2 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-3) f_cross_forms_2_3_2 f_cross_forms_2_3_2_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_3 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (-5), PolyRefl.mkT 4 2 0 0 (-5), PolyRefl.mkT 6 0 0 0 (1)]
-def f_cross_forms_2_3_3_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (-5), PolyRefl.mkT 4 1 0 0 (-5)]
+def f_cross_forms_2_3_3 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (-5), PolyRefl.mkT 4 2 0 0 0 (-5), PolyRefl.mkT 6 0 0 0 0 (1)]
+def f_cross_forms_2_3_3_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (-5), PolyRefl.mkT 4 1 0 0 0 (-5)]
 lemma form_cross_forms_2_3_3 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_3 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_3 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (1) f_cross_forms_2_3_3 f_cross_forms_2_3_3_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_4 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (9), PolyRefl.mkT 4 2 0 0 (5), PolyRefl.mkT 6 0 0 0 (-5)]
-def f_cross_forms_2_3_4_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (9), PolyRefl.mkT 4 1 0 0 (5)]
+def f_cross_forms_2_3_4 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (9), PolyRefl.mkT 4 2 0 0 0 (5), PolyRefl.mkT 6 0 0 0 0 (-5)]
+def f_cross_forms_2_3_4_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (9), PolyRefl.mkT 4 1 0 0 0 (5)]
 lemma form_cross_forms_2_3_4 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_4 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_4 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-5) f_cross_forms_2_3_4 f_cross_forms_2_3_4_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_5 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (-9), PolyRefl.mkT 4 2 0 0 (19), PolyRefl.mkT 6 0 0 0 (-3)]
-def f_cross_forms_2_3_5_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (-9), PolyRefl.mkT 4 1 0 0 (19)]
+def f_cross_forms_2_3_5 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (-9), PolyRefl.mkT 4 2 0 0 0 (19), PolyRefl.mkT 6 0 0 0 0 (-3)]
+def f_cross_forms_2_3_5_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (-9), PolyRefl.mkT 4 1 0 0 0 (19)]
 lemma form_cross_forms_2_3_5 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_5 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_5 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-3) f_cross_forms_2_3_5 f_cross_forms_2_3_5_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_6 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (-3), PolyRefl.mkT 4 2 0 0 (5), PolyRefl.mkT 6 0 0 0 (7)]
-def f_cross_forms_2_3_6_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (-3), PolyRefl.mkT 4 1 0 0 (5)]
+def f_cross_forms_2_3_6 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (-3), PolyRefl.mkT 4 2 0 0 0 (5), PolyRefl.mkT 6 0 0 0 0 (7)]
+def f_cross_forms_2_3_6_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (-3), PolyRefl.mkT 4 1 0 0 0 (5)]
 lemma form_cross_forms_2_3_6 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_6 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_6 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (7) f_cross_forms_2_3_6 f_cross_forms_2_3_6_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_7 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (3), PolyRefl.mkT 4 2 0 0 (-5), PolyRefl.mkT 6 0 0 0 (-7)]
-def f_cross_forms_2_3_7_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (3), PolyRefl.mkT 4 1 0 0 (-5)]
+def f_cross_forms_2_3_7 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (3), PolyRefl.mkT 4 2 0 0 0 (-5), PolyRefl.mkT 6 0 0 0 0 (-7)]
+def f_cross_forms_2_3_7_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (3), PolyRefl.mkT 4 1 0 0 0 (-5)]
 lemma form_cross_forms_2_3_7 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_7 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_7 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-7) f_cross_forms_2_3_7 f_cross_forms_2_3_7_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_8 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (1), PolyRefl.mkT 4 2 0 0 (5), PolyRefl.mkT 6 0 0 0 (3)]
-def f_cross_forms_2_3_8_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (1), PolyRefl.mkT 4 1 0 0 (5)]
+def f_cross_forms_2_3_8 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (1), PolyRefl.mkT 4 2 0 0 0 (5), PolyRefl.mkT 6 0 0 0 0 (3)]
+def f_cross_forms_2_3_8_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (1), PolyRefl.mkT 4 1 0 0 0 (5)]
 lemma form_cross_forms_2_3_8 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_8 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_8 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (3) f_cross_forms_2_3_8 f_cross_forms_2_3_8_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_9 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (19), PolyRefl.mkT 4 2 0 0 (-13), PolyRefl.mkT 6 0 0 0 (1)]
-def f_cross_forms_2_3_9_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (19), PolyRefl.mkT 4 1 0 0 (-13)]
+def f_cross_forms_2_3_9 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (19), PolyRefl.mkT 4 2 0 0 0 (-13), PolyRefl.mkT 6 0 0 0 0 (1)]
+def f_cross_forms_2_3_9_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (19), PolyRefl.mkT 4 1 0 0 0 (-13)]
 lemma form_cross_forms_2_3_9 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_9 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_9 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (1) f_cross_forms_2_3_9 f_cross_forms_2_3_9_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_10 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (-15), PolyRefl.mkT 4 2 0 0 (13), PolyRefl.mkT 6 0 0 0 (-5)]
-def f_cross_forms_2_3_10_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (-15), PolyRefl.mkT 4 1 0 0 (13)]
+def f_cross_forms_2_3_10 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (-15), PolyRefl.mkT 4 2 0 0 0 (13), PolyRefl.mkT 6 0 0 0 0 (-5)]
+def f_cross_forms_2_3_10_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (-15), PolyRefl.mkT 4 1 0 0 0 (13)]
 lemma form_cross_forms_2_3_10 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_10 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_10 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-5) f_cross_forms_2_3_10 f_cross_forms_2_3_10_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_11 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (-5), PolyRefl.mkT 4 2 0 0 (19), PolyRefl.mkT 6 0 0 0 (-7)]
-def f_cross_forms_2_3_11_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (-5), PolyRefl.mkT 4 1 0 0 (19)]
+def f_cross_forms_2_3_11 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (-5), PolyRefl.mkT 4 2 0 0 0 (19), PolyRefl.mkT 6 0 0 0 0 (-7)]
+def f_cross_forms_2_3_11_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (-5), PolyRefl.mkT 4 1 0 0 0 (19)]
 lemma form_cross_forms_2_3_11 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_11 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_11 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-7) f_cross_forms_2_3_11 f_cross_forms_2_3_11_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_12 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (5), PolyRefl.mkT 4 2 0 0 (-19), PolyRefl.mkT 6 0 0 0 (7)]
-def f_cross_forms_2_3_12_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (5), PolyRefl.mkT 4 1 0 0 (-19)]
+def f_cross_forms_2_3_12 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (5), PolyRefl.mkT 4 2 0 0 0 (-19), PolyRefl.mkT 6 0 0 0 0 (7)]
+def f_cross_forms_2_3_12_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (5), PolyRefl.mkT 4 1 0 0 0 (-19)]
 lemma form_cross_forms_2_3_12 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_12 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_12 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (7) f_cross_forms_2_3_12 f_cross_forms_2_3_12_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_13 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (15), PolyRefl.mkT 4 2 0 0 (-13), PolyRefl.mkT 6 0 0 0 (5)]
-def f_cross_forms_2_3_13_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (15), PolyRefl.mkT 4 1 0 0 (-13)]
+def f_cross_forms_2_3_13 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (15), PolyRefl.mkT 4 2 0 0 0 (-13), PolyRefl.mkT 6 0 0 0 0 (5)]
+def f_cross_forms_2_3_13_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (15), PolyRefl.mkT 4 1 0 0 0 (-13)]
 lemma form_cross_forms_2_3_13 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_13 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_13 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (5) f_cross_forms_2_3_13 f_cross_forms_2_3_13_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_14 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (1), PolyRefl.mkT 2 4 0 0 (-9), PolyRefl.mkT 4 2 0 0 (-5), PolyRefl.mkT 6 0 0 0 (5)]
-def f_cross_forms_2_3_14_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (1), PolyRefl.mkT 2 3 0 0 (-9), PolyRefl.mkT 4 1 0 0 (-5)]
+def f_cross_forms_2_3_14 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (1), PolyRefl.mkT 2 4 0 0 0 (-9), PolyRefl.mkT 4 2 0 0 0 (-5), PolyRefl.mkT 6 0 0 0 0 (5)]
+def f_cross_forms_2_3_14_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (1), PolyRefl.mkT 2 3 0 0 0 (-9), PolyRefl.mkT 4 1 0 0 0 (-5)]
 lemma form_cross_forms_2_3_14 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_14 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_14 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (5) f_cross_forms_2_3_14 f_cross_forms_2_3_14_rest (by decide +kernel) (by decide +kernel) hr hs
 
-def f_cross_forms_2_3_15 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 (-1), PolyRefl.mkT 2 4 0 0 (-19), PolyRefl.mkT 4 2 0 0 (13), PolyRefl.mkT 6 0 0 0 (-1)]
-def f_cross_forms_2_3_15_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 (-1), PolyRefl.mkT 2 3 0 0 (-19), PolyRefl.mkT 4 1 0 0 (13)]
+def f_cross_forms_2_3_15 : PolyRefl.SPoly := [PolyRefl.mkT 0 6 0 0 0 (-1), PolyRefl.mkT 2 4 0 0 0 (-19), PolyRefl.mkT 4 2 0 0 0 (13), PolyRefl.mkT 6 0 0 0 0 (-1)]
+def f_cross_forms_2_3_15_rest : PolyRefl.SPoly := [PolyRefl.mkT 0 5 0 0 0 (-1), PolyRefl.mkT 2 3 0 0 0 (-19), PolyRefl.mkT 4 1 0 0 0 (13)]
 lemma form_cross_forms_2_3_15 (r s : ℤ) (hr : Odd r) (hs : Even s)
     (hco : IsCoprime r s) :
-    PolyRefl.eval f_cross_forms_2_3_15 r s 1 1 ≠ 0 :=
+    PolyRefl.eval f_cross_forms_2_3_15 r s 1 1 1 ≠ 0 :=
   parity_gate_eval 6 (-1) f_cross_forms_2_3_15 f_cross_forms_2_3_15_rest (by decide +kernel) (by decide +kernel) hr hs
 
 end CertForms

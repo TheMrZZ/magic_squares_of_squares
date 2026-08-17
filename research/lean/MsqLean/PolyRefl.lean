@@ -8,12 +8,13 @@ import Mathlib
 
 namespace PolyRefl
 
-/-- A monomial: exponents of the four variables. -/
-abbrev Mono := ℕ × ℕ × ℕ × ℕ
+/-- A monomial: exponents of the five variables (r, s, q, X, Y). -/
+abbrev Mono := ℕ × ℕ × ℕ × ℕ × ℕ
 
 /-- Literal-friendly constructor: one plain application per data entry,
 so giant generated lists elaborate without tuple-sugar unification. -/
-def mkT (a b c d : ℕ) (co : ℤ) : (ℕ × ℕ × ℕ × ℕ) × ℤ := ((a, b, c, d), co)
+def mkT (a b c d e : ℕ) (co : ℤ) : (ℕ × ℕ × ℕ × ℕ × ℕ) × ℤ :=
+  ((a, b, c, d, e), co)
 
 /-- A sparse polynomial: a list of (monomial, coefficient) pairs.
 The list need not be normalized; evaluation is the semantics. -/
@@ -47,34 +48,37 @@ lemma powF_eq (fuel : ℕ) (x : R) (n : ℕ) : powF fuel x n = x ^ n := by
         omega
 
 /-- Evaluation at a point of any commutative ring (coefficients cast). -/
-def eval (P : SPoly) (u v x y : R) : R :=
+def eval (P : SPoly) (u v x y z : R) : R :=
   P.foldr (fun t acc =>
     acc + (t.2 : R) * powF t.1.1 u t.1.1 * powF t.1.2.1 v t.1.2.1
-        * powF t.1.2.2.1 x t.1.2.2.1 * powF t.1.2.2.2 y t.1.2.2.2) 0
+        * powF t.1.2.2.1 x t.1.2.2.1 * powF t.1.2.2.2.1 y t.1.2.2.2.1
+        * powF t.1.2.2.2.2 z t.1.2.2.2.2) 0
 
-@[simp] lemma eval_nil (u v x y : R) : eval ([] : SPoly) u v x y = 0 := rfl
+@[simp] lemma eval_nil (u v x y z : R) : eval ([] : SPoly) u v x y z = 0 := rfl
 
-@[simp] lemma eval_cons (t : Mono × ℤ) (P : SPoly) (u v x y : R) :
-    eval (t :: P) u v x y
-      = eval P u v x y + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2 := by
+@[simp] lemma eval_cons (t : Mono × ℤ) (P : SPoly) (u v x y z : R) :
+    eval (t :: P) u v x y z
+      = eval P u v x y z + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1
+        * y ^ t.1.2.2.2.1 * z ^ t.1.2.2.2.2 := by
   simp only [eval, List.foldr_cons, powF_eq]
 
 /-- Concatenation evaluates to the sum. -/
-lemma eval_append (P Q : SPoly) (u v x y : R) :
-    eval (P ++ Q) u v x y = eval P u v x y + eval Q u v x y := by
+lemma eval_append (P Q : SPoly) (u v x y z : R) :
+    eval (P ++ Q) u v x y z = eval P u v x y z + eval Q u v x y z := by
   induction P with
   | nil => simp
   | cons t P ih => simp [ih]; ring
 
 /-- Scalar-monomial multiple of a polynomial, as data. -/
 def mulTerm (t : Mono × ℤ) (P : SPoly) : SPoly :=
-  P.map (fun q => ((q.1.1 + t.1.1, q.1.2.1 + t.1.2.1,
-                    q.1.2.2.1 + t.1.2.2.1, q.1.2.2.2 + t.1.2.2.2), q.2 * t.2))
+  P.map (fun q => ((q.1.1 + t.1.1, q.1.2.1 + t.1.2.1, q.1.2.2.1 + t.1.2.2.1,
+                    q.1.2.2.2.1 + t.1.2.2.2.1, q.1.2.2.2.2 + t.1.2.2.2.2), q.2 * t.2))
 
-lemma eval_mulTerm (t : Mono × ℤ) (P : SPoly) (u v x y : R) :
-    eval (mulTerm t P) u v x y
-      = ((t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2)
-        * eval P u v x y := by
+lemma eval_mulTerm (t : Mono × ℤ) (P : SPoly) (u v x y z : R) :
+    eval (mulTerm t P) u v x y z
+      = ((t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1
+          * y ^ t.1.2.2.2.1 * z ^ t.1.2.2.2.2)
+        * eval P u v x y z := by
   induction P with
   | nil => simp [mulTerm]
   | cons q P ih =>
@@ -88,14 +92,14 @@ lemma eval_mulTerm (t : Mono × ℤ) (P : SPoly) (u v x y : R) :
 def mul (P Q : SPoly) : SPoly :=
   P.foldr (fun t acc => mulTerm t Q ++ acc) []
 
-lemma eval_mul (P Q : SPoly) (u v x y : R) :
-    eval (mul P Q) u v x y = eval P u v x y * eval Q u v x y := by
+lemma eval_mul (P Q : SPoly) (u v x y z : R) :
+    eval (mul P Q) u v x y z = eval P u v x y z * eval Q u v x y z := by
   induction P with
   | nil => simp [mul]
   | cons t P ih =>
     simp only [mul, List.foldr_cons, eval_append, eval_cons]
-    have : eval (P.foldr (fun t acc => mulTerm t Q ++ acc) []) u v x y
-        = eval P u v x y * eval Q u v x y := ih
+    have : eval (P.foldr (fun t acc => mulTerm t Q ++ acc) []) u v x y z
+        = eval P u v x y z * eval Q u v x y z := ih
     rw [eval_mulTerm, this]
     ring
 
@@ -105,7 +109,8 @@ def mlt (a b : Mono) : Bool :=
   if a.1 ≠ b.1 then a.1 < b.1
   else if a.2.1 ≠ b.2.1 then a.2.1 < b.2.1
   else if a.2.2.1 ≠ b.2.2.1 then a.2.2.1 < b.2.2.1
-  else a.2.2.2 < b.2.2.2
+  else if a.2.2.2.1 ≠ b.2.2.2.1 then a.2.2.2.1 < b.2.2.2.1
+  else a.2.2.2.2 < b.2.2.2.2
 
 /-- Insert a term into a sorted-by-monomial list, merging coefficients. -/
 def insertTerm (t : Mono × ℤ) : List (Mono × ℤ) → List (Mono × ℤ)
@@ -115,8 +120,8 @@ def insertTerm (t : Mono × ℤ) : List (Mono × ℤ) → List (Mono × ℤ)
     else if mlt t.1 q.1 then t :: q :: rest
     else q :: insertTerm t rest
 
-lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y : R) :
-    eval (insertTerm t P) u v x y = eval (t :: P) u v x y := by
+lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y z : R) :
+    eval (insertTerm t P) u v x y z = eval (t :: P) u v x y z := by
   induction P with
   | nil => simp [insertTerm]
   | cons q rest ih =>
@@ -137,8 +142,8 @@ lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y : R) :
 def normalize (P : SPoly) : List (Mono × ℤ) :=
   (P.foldr insertTerm []).filter (fun t => t.2 ≠ 0)
 
-lemma eval_filter_ne_zero (P : List (Mono × ℤ)) (u v x y : R) :
-    eval (P.filter (fun t => t.2 ≠ 0)) u v x y = eval P u v x y := by
+lemma eval_filter_ne_zero (P : List (Mono × ℤ)) (u v x y z : R) :
+    eval (P.filter (fun t => t.2 ≠ 0)) u v x y z = eval P u v x y z := by
   induction P with
   | nil => simp
   | cons t rest ih =>
@@ -148,8 +153,8 @@ lemma eval_filter_ne_zero (P : List (Mono × ℤ)) (u v x y : R) :
       simp [List.filter_cons, hd, ih, h]
     · simp [List.filter_cons, h, ih]
 
-lemma eval_normalize (P : SPoly) (u v x y : R) :
-    eval (normalize P) u v x y = eval P u v x y := by
+lemma eval_normalize (P : SPoly) (u v x y z : R) :
+    eval (normalize P) u v x y z = eval P u v x y z := by
   unfold normalize
   rw [eval_filter_ne_zero]
   induction P with
@@ -162,8 +167,8 @@ lemma eval_normalize (P : SPoly) (u v x y : R) :
 /-- The bridge: equal normal forms give equal evaluations everywhere.
 Certificate files check `normalize P = normalize Q` by `decide`. -/
 lemma eval_eq_of_normalize_eq {P Q : SPoly}
-    (h : normalize P = normalize Q) (u v x y : R) :
-    eval P u v x y = eval Q u v x y := by
+    (h : normalize P = normalize Q) (u v x y z : R) :
+    eval P u v x y z = eval Q u v x y z := by
   rw [← eval_normalize P, ← eval_normalize Q, h]
 
 
@@ -175,8 +180,8 @@ def split2 : List (Mono × ℤ) → List (Mono × ℤ) × List (Mono × ℤ)
   | [] => ([], [])
   | x :: rest => let (l, r) := split2 rest; (x :: r, l)
 
-lemma eval_split2 (P : List (Mono × ℤ)) (u v x y : R) :
-    eval (split2 P).1 u v x y + eval (split2 P).2 u v x y = eval P u v x y := by
+lemma eval_split2 (P : List (Mono × ℤ)) (u v x y z : R) :
+    eval (split2 P).1 u v x y z + eval (split2 P).2 u v x y z = eval P u v x y z := by
   induction P with
   | nil => simp [split2]
   | cons t rest ih =>
@@ -193,8 +198,8 @@ def mergeF : ℕ → List (Mono × ℤ) → List (Mono × ℤ) → List (Mono ×
     if mle a.1 b.1 then a :: mergeF fuel l1 (b :: l2)
     else b :: mergeF fuel (a :: l1) l2
 
-lemma eval_mergeF (fuel : ℕ) (P Q : List (Mono × ℤ)) (u v x y : R) :
-    eval (mergeF fuel P Q) u v x y = eval P u v x y + eval Q u v x y := by
+lemma eval_mergeF (fuel : ℕ) (P Q : List (Mono × ℤ)) (u v x y z : R) :
+    eval (mergeF fuel P Q) u v x y z = eval P u v x y z + eval Q u v x y z := by
   induction fuel generalizing P Q with
   | zero => cases P with
     | nil => simp [mergeF]
@@ -222,8 +227,8 @@ def msortF : ℕ → List (Mono × ℤ) → List (Mono × ℤ)
     let (a, b) := split2 l
     mergeF (a.length + b.length) (msortF fuel a) (msortF fuel b)
 
-lemma eval_msortF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y : R) :
-    eval (msortF fuel P) u v x y = eval P u v x y := by
+lemma eval_msortF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y z : R) :
+    eval (msortF fuel P) u v x y z = eval P u v x y z := by
   induction fuel generalizing P with
   | zero => cases P with
     | nil => rfl
@@ -236,7 +241,7 @@ lemma eval_msortF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y : R) :
       | nil => rfl
       | cons t2 rest2 =>
         show eval (mergeF _ (msortF fuel (split2 (t :: t2 :: rest2)).1)
-                            (msortF fuel (split2 (t :: t2 :: rest2)).2)) u v x y = _
+                            (msortF fuel (split2 (t :: t2 :: rest2)).2)) u v x y z = _
         rw [eval_mergeF, ih, ih, eval_split2]
 
 /-- Fueled adjacent-combine of equal monomials (structural). -/
@@ -248,8 +253,8 @@ def combineF : ℕ → List (Mono × ℤ) → List (Mono × ℤ)
     if a.1 = b.1 then combineF fuel ((a.1, a.2 + b.2) :: rest)
     else a :: combineF fuel (b :: rest)
 
-lemma eval_combineF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y : R) :
-    eval (combineF fuel P) u v x y = eval P u v x y := by
+lemma eval_combineF (fuel : ℕ) (P : List (Mono × ℤ)) (u v x y z : R) :
+    eval (combineF fuel P) u v x y z = eval P u v x y z := by
   induction fuel generalizing P with
   | zero => cases P with
     | nil => rfl
@@ -274,20 +279,20 @@ give equal evaluations. -/
 def normalizeFast (P : SPoly) : List (Mono × ℤ) :=
   (combineF P.length (msortF P.length P)).filter (fun t => t.2 ≠ 0)
 
-lemma eval_normalizeFast (P : SPoly) (u v x y : R) :
-    eval (normalizeFast P) u v x y = eval P u v x y := by
+lemma eval_normalizeFast (P : SPoly) (u v x y z : R) :
+    eval (normalizeFast P) u v x y z = eval P u v x y z := by
   unfold normalizeFast
   rw [eval_filter_ne_zero, eval_combineF, eval_msortF]
 
 /-- The fast bridge: equal fast normal forms give equal evaluations. -/
 lemma eval_eq_of_normalizeFast_eq {P Q : SPoly}
-    (h : normalizeFast P = normalizeFast Q) (u v x y : R) :
-    eval P u v x y = eval Q u v x y := by
+    (h : normalizeFast P = normalizeFast Q) (u v x y z : R) :
+    eval P u v x y z = eval Q u v x y z := by
   rw [← eval_normalizeFast P, ← eval_normalizeFast Q, h]
 
 /-- A ring homomorphism commutes with evaluation. -/
-lemma eval_map {S : Type*} [CommRing S] (f : R →+* S) (P : SPoly) (u v x y : R) :
-    f (eval P u v x y) = eval P (f u) (f v) (f x) (f y) := by
+lemma eval_map {S : Type*} [CommRing S] (f : R →+* S) (P : SPoly) (u v x y z : R) :
+    f (eval P u v x y z) = eval P (f u) (f v) (f x) (f y) (f z) := by
   induction P with
   | nil => simp
   | cons t P ih => simp [map_add, map_mul, map_pow, map_intCast, ih]
@@ -295,29 +300,29 @@ lemma eval_map {S : Type*} [CommRing S] (f : R →+* S) (P : SPoly) (u v x y : R
 
 /-- A factorization certificate on data gives a factorization of values. -/
 lemma eval_factor (P Q₁ Q₂ : SPoly) (h : normalizeFast (mul Q₁ Q₂) = normalizeFast P)
-    (u v x y : R) :
-    eval P u v x y = eval Q₁ u v x y * eval Q₂ u v x y := by
+    (u v x y z : R) :
+    eval P u v x y z = eval Q₁ u v x y z * eval Q₂ u v x y z := by
   rw [← eval_mul]
-  exact (eval_eq_of_normalizeFast_eq h u v x y).symm
+  exact (eval_eq_of_normalizeFast_eq h u v x y z).symm
 
 /-- A Bezout certificate on data: A·F + B·G = C as normalized lists implies
 the same identity of values. This is the shape of one elimination step of
 the certifier (a resultant with its cofactors). -/
 lemma eval_bezout (A F B G C : SPoly)
-    (h : normalizeFast (mul A F ++ mul B G) = normalizeFast C) (u v x y : R) :
-    eval A u v x y * eval F u v x y + eval B u v x y * eval G u v x y
-      = eval C u v x y := by
-  have h1 := eval_eq_of_normalizeFast_eq h u v x y
+    (h : normalizeFast (mul A F ++ mul B G) = normalizeFast C) (u v x y z : R) :
+    eval A u v x y z * eval F u v x y z + eval B u v x y z * eval G u v x y z
+      = eval C u v x y z := by
+  have h1 := eval_eq_of_normalizeFast_eq h u v x y z
   rwa [eval_append, eval_mul, eval_mul] at h1
 
 /-- Two vanishing inputs and a Bezout certificate kill the output:
 if F and G vanish at the point, the eliminant C vanishes too. Combined
 with a certificate lemma `eval C ≠ 0`, this closes an elimination leaf. -/
-lemma bezout_kill (A F B G C : SPoly) (u v x y : R)
+lemma bezout_kill (A F B G C : SPoly) (u v x y z : R)
     (h : normalizeFast (mul A F ++ mul B G) = normalizeFast C)
-    (hF : eval F u v x y = 0) (hG : eval G u v x y = 0) :
-    eval C u v x y = 0 := by
-  have h1 := eval_bezout A F B G C h u v x y
+    (hF : eval F u v x y z = 0) (hG : eval G u v x y z = 0) :
+    eval C u v x y z = 0 := by
+  have h1 := eval_bezout A F B G C h u v x y z
   rw [hF, hG] at h1
   simpa using h1.symm
 

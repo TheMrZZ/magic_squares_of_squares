@@ -2742,3 +2742,21 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The stubborn forms all fell to hardcoded Rust factorizations:
   grouped powers with binary squaring ladders, sibling-endpoint gcds,
   and bounded backtracking over divisor choices.
+
+## Round 190: the elimination layer is machine-checked
+
+- The reflection core is five-variable now (r, s, q, X, Y): the same
+  data engine serves the (r,s) certificate forms and the full
+  elimination polynomials.
+- `CertKit.prs_step` certifies one PRS step: the data identity
+  L·r0 = q·r1 + ct·r2 (normal-form check) propagates vanishing from
+  (r0, r1) to r2 over any characteristic-zero domain — the evaluation
+  target is ℤ[i] at the Gaussian point.
+- `chain_emit` interns polynomials and steps across leaves (5x sharing),
+  emits one lemma per distinct step and one lemma per leaf: the three
+  input relations vanish ⟹ the eliminated endpoint vanishes. Grid
+  (2,2): 126 step lemmas + 104 leaf lemmas verify in nine seconds.
+- With the certificate corpus (the endpoints' minimal layers are
+  nonzero) this closes the two ends of the elimination argument in
+  Lean. The remaining ladder: the value bridge (the relations vanish at
+  the Gaussian point), the q-grading router, and the hand lemmas.

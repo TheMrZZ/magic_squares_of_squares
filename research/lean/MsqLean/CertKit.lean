@@ -86,11 +86,11 @@ lemma sq_ne_two_sq {x y : ℤ} (hy : y ≠ 0) : x ^ 2 ≠ 2 * y ^ 2 := by
 `ZMod l`, then coprime integers cannot make it vanish: a zero would force
 `l` to divide both coordinates. Primality is not needed; `2 <= l` is. -/
 lemma sieve_gate (l : ℕ) [NeZero l] (hl : 2 ≤ l) (P : PolyRefl.SPoly)
-    (hno : ∀ a b : ZMod l, PolyRefl.eval P a b 1 1 = 0 → a = 0 ∧ b = 0)
+    (hno : ∀ a b : ZMod l, PolyRefl.eval P a b 1 1 1 = 0 → a = 0 ∧ b = 0)
     {r s : ℤ} (hco : IsCoprime r s) :
-    PolyRefl.eval P r s 1 1 ≠ 0 := by
+    PolyRefl.eval P r s 1 1 1 ≠ 0 := by
   intro h0
-  have hcast : PolyRefl.eval P (r : ZMod l) (s : ZMod l) 1 1 = 0 := by
+  have hcast : PolyRefl.eval P (r : ZMod l) (s : ZMod l) 1 1 1 = 0 := by
     have h := congrArg (Int.castRingHom (ZMod l)) h0
     rw [PolyRefl.eval_map] at h
     simpa using h
@@ -130,12 +130,12 @@ lemma dyadic_gate (N e : ℕ) {c0 r s rest v : ℤ} (hr : Odd r) (hs : Even s)
 `eval P ≠ 0`. Uniform interface for the routers. -/
 lemma parity_gate_eval (N : ℕ) (lead : ℤ) (P rest : PolyRefl.SPoly)
     (h : PolyRefl.normalizeFast P
-       = PolyRefl.normalizeFast (((N, 0, 0, 0), lead)
-           :: PolyRefl.mulTerm ((0, 1, 0, 0), 1) rest))
+       = PolyRefl.normalizeFast (((N, 0, 0, 0, 0), lead)
+           :: PolyRefl.mulTerm ((0, 1, 0, 0, 0), 1) rest))
     (hlead : Odd lead) {r s : ℤ} (hr : Odd r) (hs : Even s) :
-    PolyRefl.eval P r s 1 1 ≠ 0 := by
-  refine parity_gate (rest := PolyRefl.eval rest r s 1 1) N hr hs hlead ?_
-  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s 1 1
+    PolyRefl.eval P r s 1 1 1 ≠ 0 := by
+  refine parity_gate (rest := PolyRefl.eval rest r s 1 1 1) N hr hs hlead ?_
+  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s 1 1 1
   rw [PolyRefl.eval_cons, PolyRefl.eval_mulTerm] at he
   rw [he]; push_cast; ring
 
@@ -143,13 +143,36 @@ lemma parity_gate_eval (N : ℕ) (lead : ℤ) (P rest : PolyRefl.SPoly)
 `P = 2^e·c₀·r^N + s^(e+1)·rest` with c₀ odd gives `eval P ≠ 0`. -/
 lemma dyadic_gate_eval (N e : ℕ) (c0 : ℤ) (P rest : PolyRefl.SPoly)
     (h : PolyRefl.normalizeFast P
-       = PolyRefl.normalizeFast (((N, 0, 0, 0), 2 ^ e * c0)
-           :: PolyRefl.mulTerm ((0, e + 1, 0, 0), 1) rest))
+       = PolyRefl.normalizeFast (((N, 0, 0, 0, 0), 2 ^ e * c0)
+           :: PolyRefl.mulTerm ((0, e + 1, 0, 0, 0), 1) rest))
     (hc : Odd c0) {r s : ℤ} (hr : Odd r) (hs : Even s) :
-    PolyRefl.eval P r s 1 1 ≠ 0 := by
-  refine dyadic_gate (rest := PolyRefl.eval rest r s 1 1) N e hr hs hc ?_
-  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s 1 1
+    PolyRefl.eval P r s 1 1 1 ≠ 0 := by
+  refine dyadic_gate (rest := PolyRefl.eval rest r s 1 1 1) N e hr hs hc ?_
+  have he := PolyRefl.eval_eq_of_normalizeFast_eq h r s 1 1 1
   rw [PolyRefl.eval_cons, PolyRefl.eval_mulTerm] at he
   rw [he]; push_cast; ring
+
+
+/-- One PRS elimination step as a certificate: the data identity
+L·r0 = q·r1 + ct·r2 (checked on normal forms) propagates vanishing.
+The Rust certifier verifies the same identity exactly before dumping. -/
+lemma prs_step {L r0 r1 q r2 : PolyRefl.SPoly} {ct : ℤ} (hct : ct ≠ 0)
+    (h : PolyRefl.normalizeFast (PolyRefl.mul L r0)
+       = PolyRefl.normalizeFast
+           (PolyRefl.mul q r1 ++ PolyRefl.mulTerm ((0, 0, 0, 0, 0), ct) r2))
+    {R : Type*} [CommRing R] [IsDomain R] [CharZero R] (u v x y z : R)
+    (h0 : PolyRefl.eval r0 u v x y z = 0)
+    (h1 : PolyRefl.eval r1 u v x y z = 0) :
+    PolyRefl.eval r2 u v x y z = 0 := by
+  have he := PolyRefl.eval_eq_of_normalizeFast_eq h u v x y z
+  rw [PolyRefl.eval_mul, PolyRefl.eval_append, PolyRefl.eval_mul,
+      PolyRefl.eval_mulTerm, h0, h1] at he
+  simp only [mul_zero, zero_add] at he
+  have hc : (ct : R) ≠ 0 := Int.cast_ne_zero.mpr hct
+  have := he.symm
+  simp only [pow_zero, one_mul, mul_one] at this
+  rcases mul_eq_zero.mp this with h' | h'
+  · exact absurd h' hc
+  · exact h'
 
 end CertKit
