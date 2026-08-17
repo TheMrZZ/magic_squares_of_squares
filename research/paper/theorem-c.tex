@@ -452,6 +452,54 @@ form-level conditions but never the exact divisibility coupling.  And the
 master kill uses only $\pi$-side data, so it is already generic in the
 $\chi$-exponent — the shape the two-exponent induction needs.
 
+\section{Toward all exponents: the balance-form reduction}
+
+The programme's next target is the two-exponent theorem: no center root
+$s\,p^aq^b$ for any $a,b\ge 1$.  Three structural facts, each verified
+computationally at scale, fix its architecture.
+
+First, \emph{saturation in $a$}.  Classify each surviving leaf by the pattern
+of its minimal $p$-layers (the classes and signs at the tying level, shifted
+to a common base).  Over the grids up to $(5,5)$ --- $93{,}625{,}920$ leaves
+--- the pattern universe never grows with $a$ beyond $a=2$, at any $b$; it
+grows only with $b$, linearly.  So the certificates live on the $b$-axis, and
+every cell argument is automatically generic in $a$.
+
+Second, \emph{the balance-form dichotomy}.  At the first new rung $(2,3)$,
+every leaf dies at one of four gates: the unit-certificate resultants; the
+nonzero-factor screen (variable monomials, $u^j\pm v^j$-type coordinate
+forms, and strict pinches); a lone-minimal-valuation monomial with
+coefficient $\pm1$ (the prime would divide $1$); or the remaining factors are
+\emph{balance forms} --- polynomials $F$ with $F=\pm\bar F$ under the
+simultaneous swap $u\leftrightarrow v$, $x\leftrightarrow y$, so that their
+value is forced real or purely imaginary.  All $1{,}120$ unresolved factors
+at $(2,3)$ are balance forms or unit-graded; none is a genuine core.  No
+balance factor vanishes at any point with $p\neq q<300$ ($3.6$ million exact
+evaluations).
+
+Third, \emph{the balance lemma}.  Write a balance form's positive half as
+$G=\sum_t c_t\,\pi^{2a_t}\bar\pi^{2b_t}\chi^{2e_t}\bar\chi^{2f_t}$ with
+$0<|c_t|<q$.  If $\im G=0$ (or $\re G=0$), then $v_\chi(G)=v_{\bar\chi}(G)$.
+Every balance factor in the catalog has \emph{clean} minimal layers: the
+terms at the minimal $\chi$-valuation form a single monomial
+$\chi^{2e^*}\bar\chi^{2f}P(\pi^2,\bar\pi^2)$ (verified for all $1{,}074$
+shapes, on both sides).  When the profile is shifted ($e^*<f^*$), the
+valuation balance forces $\chi^{2\Delta}\mid P$-value with
+$\Delta=f^*-e^*$, hence
+\[
+  q^{2\Delta}\;\bigm|\;N(P),
+\]
+an explicit integer form in $(p,s)$, $s=\im\pi^2$.  The computed $N(P)$
+factorizations are benign throughout the catalog: products of $p$-powers and
+small forms such as $p\pm s$, $p\pm 2s$, $(p^2-2s^2)^2$, $(3p^2-4s^2)^2$
+(the identities $p^2\pm\re\pi^4=2r^2,2s^2$ collapse several families).  Each
+divisibility gives a band $q^\Delta\le C p^k$ plus an exact small-factor
+condition; on the residual thin loci the full balance pins an exact norm
+equation, and the Theorem~\ref{thm:H} splitting argument is the prototype
+finish.  Writing these finishes family by family, and threading them through
+the $q^2$-telescoping induction in $b$, is the remaining content of the
+two-exponent theorem.
+
 \section{The two-prime frontier}
 
 \subsection*{Toward uniformity in the exponent}
