@@ -48,3 +48,6 @@ import MsqLean.CertKit
 import MsqLean.GaussData
 import MsqLean.Exactness
 import MsqLean.RepStructure2
+import MsqLean.LibraryNonzero
+import MsqLean.Router
+import MsqLean.Sqrt5Cell
