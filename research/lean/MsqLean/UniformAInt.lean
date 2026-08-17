@@ -1706,4 +1706,73 @@ lemma two_core_a (q : ℕ) [hq : Fact (Nat.Prime q)]
     · exact two_c2_M7a_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD N1 f g hg hIX hRY
   · exact Srow_M7_kill_a p q hpodd hqodd a ha A B C D hpAB hqCD f hf hIX
 
+/-- Coordinates of the M8ₐ class value. -/
+lemma M8a_coord (A B C D : ℤ) (a : ℕ) :
+    ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+  simp [Zsqrtd.im_mul]
+  try ring
+
+/-- Coordinates of the M9ₐ class value. -/
+lemma M9a_coord (A B C D : ℤ) (a : ℕ) :
+    ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) - ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+  simp only [Zsqrtd.im_mul, ← star_pow, Zsqrtd.re_star, Zsqrtd.im_star]
+  ring
+
+set_option maxHeartbeats 800000 in
+/-- The M8ₐ/M9ₐ pair in the (c, d) slots routes into the mixed core. -/
+lemma dispatch_56_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hKa : (∃ N, Ka = (p : ℤ) ^ 2 * N) ∨ Ka = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hKb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hE1 : e3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)) + e4 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) = 2 * e1 * Ka)
+    (hE2 : e3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)) - e4 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) = 2 * e2 * Kb) : False := by
+  rw [M8a_coord, M9a_coord] at hE1 hE2
+  rcases he3 with rfl | rfl <;> rcases he4 with rfl | rfl
+  · exact mixed_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Ka Kb e1 e2
+      he1 he2 hKa hKb (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Kb Ka e2 e1
+      he2 he1 hKb hKa (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Kb Ka (-e2) (-e1)
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he1 with rfl | rfl <;> norm_num) hKb hKa
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact mixed_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Ka Kb (-e1) (-e2)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he2 with rfl | rfl <;> norm_num) hKa hKb
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+set_option maxHeartbeats 800000 in
+/-- The M8ₐ/M9ₐ pair in the (a, b) slots routes into the two-core. -/
+lemma dispatch_ab56_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hKc : (∃ N, Kc = (p : ℤ) ^ 2 * N) ∨ Kc = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hKd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)))
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))) : False := by
+  rw [M8a_coord] at hE1
+  rw [M9a_coord] at hE2
+  rcases he1 with rfl | rfl <;> rcases he2 with rfl | rfl
+  · exact two_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Kc Kd e3 e4
+      he3 he4 hKc hKd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact two_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Kd Kc e4 e3
+      he4 he3 hKd hKc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact two_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Kd Kc (-e4) (-e3)
+      (by rcases he4 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) hKd hKc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact two_core_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD Kc Kd (-e3) (-e4)
+      (by rcases he3 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) hKc hKd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
 end UniformA
