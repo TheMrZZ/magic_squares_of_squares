@@ -3400,3 +3400,28 @@ theorem no_magic_square_of_squares_spaq_center (q : ℕ) [hq : Fact (Nat.Prime q
     x1 y1 x2 y2 x3 y3 x4 y4 hxy1 hq1 hxy2 hq2 hxy3 hq3 hxy4 hq4'
 
 end UniformA
+
+/-- The combined two-prime corollary. Suppose the center root is s·pᵃ·q^b with
+two distinct useful primes and a rigid cofactor. If a = 1 or b = 1, then no
+magic square of squares exists. The a = 1 case is the uniform theorem with the
+roles of p and q swapped. -/
+theorem no_magic_square_of_squares_two_useful_min_exp_one
+    (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
+    (hp4 : p % 4 = 1) (hq4 : q % 4 = 1) (hpq : p ≠ q)
+    (a b : ℕ) (ha : 1 ≤ a) (hb : 1 ≤ b) (hab : a = 1 ∨ b = 1)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1) (hs0 : 0 < s)
+    (A B C D E F G H I S : ℤ)
+    (sqA : IsSq A) (sqB : IsSq B) (sqC : IsSq C) (sqD : IsSq D) (sqE : IsSq E)
+    (sqF : IsSq F) (sqG : IsSq G) (sqH : IsSq H) (sqI : IsSq I)
+    (r1 : A + B + C = S) (r2 : D + E + F = S) (r3 : G + H + I = S)
+    (c1 : A + D + G = S) (c2 : B + E + H = S) (c3 : C + F + I = S)
+    (d1 : A + E + I = S) (d2 : C + E + G = S)
+    (hE : E = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ (2 * b))
+    (hAE : A ≠ E) (hCE : C ≠ E) (hAC : A ≠ C) (hHE : H ≠ E) : False := by
+  rcases hab with rfl | rfl
+  · exact UniformA.no_magic_square_of_squares_spaq_center q p hq4 hp4 (Ne.symm hpq) b hb
+      s hs hs0 A B C D E F G H I S sqA sqB sqC sqD sqE sqF sqG sqH sqI
+      r1 r2 r3 c1 c2 c3 d1 d2 (by rw [hE]; try ring) hAE hCE hAC hHE
+  · exact UniformA.no_magic_square_of_squares_spaq_center p q hp4 hq4 hpq a ha
+      s hs hs0 A B C D E F G H I S sqA sqB sqC sqD sqE sqF sqG sqH sqI
+      r1 r2 r3 c1 c2 c3 d1 d2 (by rw [hE]; try ring) hAE hCE hAC hHE
