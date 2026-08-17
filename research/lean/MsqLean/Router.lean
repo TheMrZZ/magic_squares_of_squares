@@ -192,4 +192,47 @@ lemma nd_chis_pis (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
 
 end AtomPack
 
+/-- An odd prime does not divide the norm of a power of the other
+split prime's Gaussian factor. -/
+lemma p_ndvd_chi_pow_norm (p q : ℕ) [hp : Fact (Nat.Prime p)]
+    [hq : Fact (Nat.Prime q)] (hpq : p ≠ q) (C D : ℤ)
+    (hqCD : C ^ 2 + D ^ 2 = q) (k : ℕ) :
+    ¬ (p : ℤ) ∣ ((⟨C, D⟩ : GaussianInt) ^ k).norm := by
+  intro hd
+  have hnorm : ((⟨C, D⟩ : GaussianInt) ^ k).norm = (q : ℤ) ^ k := by
+    have h1 : ((⟨C, D⟩ : GaussianInt) ^ k).norm
+        = ((⟨C, D⟩ : GaussianInt).norm) ^ k :=
+      map_pow Zsqrtd.normMonoidHom _ k
+    have h2 : (⟨C, D⟩ : GaussianInt).norm = (q : ℤ) := by
+      have : (⟨C, D⟩ : GaussianInt).norm = C * C + D * D := by simp [Zsqrtd.norm]
+      rw [this]; nlinarith
+    rw [h1, h2]
+  rw [hnorm] at hd
+  have hpZ : Prime ((p : ℕ) : ℤ) := Nat.prime_iff_prime_int.mp hp.out
+  have := hpZ.dvd_of_dvd_pow hd
+  have hnat : p ∣ q := by exact_mod_cast this
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+/-- The star variant. -/
+lemma p_ndvd_chis_pow_norm (p q : ℕ) [hp : Fact (Nat.Prime p)]
+    [hq : Fact (Nat.Prime q)] (hpq : p ≠ q) (C D : ℤ)
+    (hqCD : C ^ 2 + D ^ 2 = q) (k : ℕ) :
+    ¬ (p : ℤ) ∣ ((star (⟨C, D⟩ : GaussianInt)) ^ k).norm := by
+  rw [star_mk]
+  exact p_ndvd_chi_pow_norm p q hpq C (-D) (by nlinarith) k
+
+/-- An odd prime divides neither 1, 2, nor their negatives. -/
+lemma odd_prime_ndvd_small (p : ℕ) [hp : Fact (Nat.Prime p)]
+    (hpodd : p % 2 = 1) (c : ℤ)
+    (hc : c = 1 ∨ c = -1 ∨ c = 2 ∨ c = -2) : ¬ (p : ℤ) ∣ c := by
+  intro hd
+  have h2 := hp.out.two_le
+  have hdn : (p : ℤ) ∣ c.natAbs := (Int.dvd_natAbs).mpr hd
+  have hnat : p ∣ c.natAbs := by exact_mod_cast hdn
+  have hle : c.natAbs ≤ 2 := by rcases hc with rfl | rfl | rfl | rfl <;> simp
+  have hpos : 0 < c.natAbs := by rcases hc with rfl | rfl | rfl | rfl <;> simp
+  have hle2 := Nat.le_of_dvd hpos hnat
+  have h2 := hp.out.two_le
+  omega
+
 end Router
