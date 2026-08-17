@@ -395,6 +395,61 @@ the remaining buckets.
 The induction then assembles both routers for every $a\ge 1$, and the
 four-differences argument and the center reduction give the theorem.
 
+\section{Center roots $s\,p^2q^2$}
+
+\begin{theorem}[Theorem H, paper-level]\label{thm:H}
+There is no magic square of squares whose center root is $s\,p^2q^2$, where
+$p\neq q$ are primes $\equiv 1\pmod 4$ and $s$ is free of such primes.
+\end{theorem}
+
+This is the first case with both exponents $\ge 2$.  Here $|D(e)|=12$, on the
+grading grid $p^{4-2\alpha}q^{4-2\beta}\,|\!\im(\pi^{4\alpha}\chi^{\pm4\beta})|$
+with $\alpha,\beta\in\{0,1,2\}$.  The leaf enumeration has $95{,}040$
+assignments.  The proof has four layers; each is uniform in $p$ and $q$, and
+each is validated numerically over the full prime grid.
+\begin{enumerate}
+\item \emph{Grading.}  A lone minimal $p$- or $q$-layer kills $93.5\%$ of the
+leaves ($88{,}832$), leaving $6{,}208$.
+\item \emph{Unit certificates.}  For a surviving leaf, both relations must
+vanish, so $p$ divides both minimal $p$-layers.  Reduce both mod $\pi$ in the
+orbit basis ($R\equiv\bar\pi^4/2$, $I\equiv i\bar\pi^4/2$, $V=q^4/U$ with
+$U=\chi^4$) and take the resultant in $U$.  For $5{,}088$ leaves the resultant
+is a pure unit monomial, such as $16\,\bar\pi^{32}q^{32}$: simultaneous
+vanishing would force $\pi\mid 16$.  The $q$-side pass kills $864$ more.
+Remaining: $256$ leaves, degenerate on both sides.
+\item \emph{Strict pinch.}  Of these, $192$ factor over $\mathbb{Z}$ with a
+factor $R\mp p^2$, $X\mp q^2$, $R^2-I^2\mp p^4$ or $X^2-Y^2\mp q^4$: the real
+part of a power of $\pi$ or $\chi$ never reaches its norm while the imaginary
+part is nonzero.  Remaining: $64$ leaves in four conjugate-pair families.
+\item \emph{The master quartic kill.}  Every remaining relation states, with
+$u=\pi^2$, $v=\bar\pi^2$, $x=\chi^2$, $y=\bar\chi^2$, that
+$\chi^8 B$ (or symmetrically $\pi^8 C$) is purely real or purely imaginary,
+where $B$ is one of the quartics $u^4+v^4\pm2u^3v$ and their mirrors
+(verified for all $128$ relations by exact multi-point evaluation).  Real or
+imaginary balance forces equal conjugate valuations, so $\bar\chi^8\mid B$ and
+$B=d\,\bar\chi^8$ with $d\in\mathbb{Z}\cup i\mathbb{Z}$.  Taking norms, with
+$(r,s)=(\re\pi^2,\im\pi^2)$, $r^2+s^2=p^2$:
+\[
+  N(B) \;=\; 16s^2\bigl[(3r^2-s^2)^2s^2 + r^2p^4\bigr] \;=\; d^2q^8,
+\]
+so $w^2=\bigl(s(3r^2-s^2)\bigr)^2+(rp^2)^2$ for some $w\in\mathbb{Z}$ — a
+Pythagorean condition with legs $\im(\pi^6)$ and $\re(\pi^2)\,p^2$.  The
+triple is primitive ($r$ odd, $s$ even, all pairwise gcds $1$), so
+$rp^2=(m-n)(m+n)$ with $m-n$, $m+n$ coprime.  Since $m-n\le |r|<p<p^2$, the
+factor $p^2$ sits whole in $m+n$; writing $|r|=r_1r_2$ accordingly,
+$2mn=r_2^2p^4-r_1^2\ge p^4-p^2$, while $2mn=2|s|\,|4r^2-p^2|<6p^3$.  Hence
+$p\le 6$, so $p=5$; there $(r,s)=(\pm3,\pm4)$ gives
+$M=7561$, not a square.  Finally $B\neq 0$, since $|u\mp2v|=p^2$ forces
+$p<3$.  No leaf survives.
+\end{enumerate}
+The four-differences assembly and the center reduction then give the theorem,
+exactly as in Theorems~\ref{thm:F}--\ref{thm:U}.  Two remarks.  The unit
+certificates and the master kill never see the band loci that stopped the
+earlier leaf battery: the coupled disc-form coincidences satisfy the
+form-level conditions but never the exact divisibility coupling.  And the
+master kill uses only $\pi$-side data, so it is already generic in the
+$\chi$-exponent — the shape the two-exponent induction needs.
+
 \section{The two-prime frontier}
 
 \subsection*{Toward uniformity in the exponent}
@@ -520,8 +575,10 @@ Wieferich-type loci per shape, and everything else proven impossible.
 
 \subsection*{Both exponents two: the $(2,2)$ program}
 
-For $e = s\,p^2q^2$ the set $D(e)$ has exactly twelve elements with a
-clean two-dimensional grading,
+Theorem~\ref{thm:H} now closes this case.  The record below is the earlier
+program; its residual band loci were survivors of that method's toolset, and
+Theorem~\ref{thm:H}'s certificates bypass them.  For $e = s\,p^2q^2$ the set
+$D(e)$ has exactly twelve elements with a clean two-dimensional grading,
 \[
 D(e) \;=\; \bigl\{\, p^{4-2\alpha}q^{4-2\beta}s^2\,
 \im\!\bigl(\pi^{4\alpha}\chi^{\pm4\beta}\bigr)
