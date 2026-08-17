@@ -345,7 +345,11 @@ fn main() {
                             }
                         }
                         if allkill { "pair dead (aligned magnitude, all w)" }
-                        else { "clean aligned (residual)" }
+                        else {
+                            eprintln!("[aligned-residual] delta={} Sigma1={:?} om1={:?} | Sigma2={:?} om2={:?}",
+                                      d1, s1, o1, s2, o2);
+                            "clean aligned (residual)"
+                        }
                     }
                     else if nonvanishing_form(&cross) { "pair dead (cross nonvanishing)" }
                     else { "cross unresolved (residual)" }

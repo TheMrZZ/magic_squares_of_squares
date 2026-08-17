@@ -2641,3 +2641,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The aligned kill: shared (X, Y) forces the magnitude identity w̃₂²(Σ₁² + Ω₁²) = w̃₁²(Σ₂² + Ω₂²) over the finite smooth w̃-set — wired into the certifier as a per-pair nonvanishing check; (3,3) reruns.
 - The zsh gotcha behind the earlier corrupted axis loop: unquoted $var does NOT word-split in zsh; ${=var} does. Direct binary runs are authoritative.
 - Oracle dumps per grid (oracle_t0_a_b.txt) now feed the exact-root sympy oracle.
+
+## Round 179: the aligned family is the √−5 cell
+
+- All aligned-residual pairs at (3,3) and (3,4) carry ONE family: Σ = ±2p⁴ = ±2(r²+s²)², Ω-scale = ±16rs(r²−s²) = ±4·Im(π⁸). The smooth w̃ divides p⁴, so w̃ = 1 for p > 5, and the pinning is exact: **χ^{2δ} = ±p⁴ ± (π⁸ − π̄⁸)**, equivalently q^{2δ} = p⁸ + 4S₈² = R₈² + 5S₈² — a norm form of discriminant −20 (the first non-UFD ring in the campaign, class number 2).
+- The finish skeleton: q^{2δ} = W² with W = q^δ gives (W − R₈)(W + R₈) = 5S₈²; parity (R₈ odd, 4 ∣ S₈) and coprimality split the factors as {β², 5α²}-types with S₈ = 2αβ, forcing (R₈, S₈) into a √−5-parametrization and hence **p⁸ = β⁴ − 6α²β² + 25α⁴** — a quartic Thue-type equation against an eighth power. One page of descent expected; the p = 5 stragglers (w̃ ∈ {5, 25}) are finite checks.
+- This is the last open cell on every swept grid: (2,3), (2,4), (2,5) fully closed; (3,3)/(3,4) closed except these 12/16 pairs.
