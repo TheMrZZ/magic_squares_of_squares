@@ -2668,3 +2668,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The pinning generalizes: a live condition pins a product χ^{2δ}ψ^{2ε} (bi-shift) to a π-side z/w̃; the master identity becomes 4w̃²q^{2δ}r^{2ε} = Σ² + 4Ω²; the coprime-masters and cross lemmas extend verbatim (the gcd tables get one more prime to absorb).
 - Known from the old sweeps: (1,1,1) has 137k leaves, 68% grading-killed, zero satisfiable for p,q,r < 300. The certifier should close it the way it closed the two-prime grids — and the residue landscape (the power-law loci) is where the genuinely new mathematics may sit.
 - Plan: extend certifier.rs with the third pair behind a prime-count switch; run (1,1,1); classify; then (2,1,1).
+
+## Round 183: MILESTONE 2 COMPLETE AT THE PAPER LEVEL
+
+- The Rust oracle (`rs/src/bin/oracle.rs`): the parity gate (odd r-leading coefficient excludes every admissible root in one check) plus the mod-ℓ root sieve (a rootless reduction at one odd prime excludes all rational roots). **858 of 862 forms proved in 0.74 seconds**; the 4 sieve-inconclusive stragglers verified OK by exact sympy roots (all rational roots parity-excluded). The sympy oracle's completed files (71/71, 97/97) agree exactly — two independent proofs.
+- **The two-exponent theorem (no center root s·pᵃ·qᵇ, all a, b ≥ 1) is complete at the paper level**: the certifier closes the base grids; the δ-free passage (one-line kills, coprime-masters with the shared-form collapse, δ-free crosses, the aligned magnitude identity with the √−5 cell as its only proportional case) closes every (a, b) through the q²-telescoping; the elimination layer's final forms are all exactly verified.
+- Remaining debt: audit passes of the writeup (same status Theorem H had), and eventually the Lean pass.
+- **Milestone 3 (three primes) is next.**
