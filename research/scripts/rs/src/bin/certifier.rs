@@ -468,7 +468,7 @@ fn main() {
     let t_start = std::time::Instant::now();
     let n_res = residuals.len();
     let prog = AtomicUsize::new(0);
-    let evs_par: Vec<String> = residuals.par_iter().map(|(tag, c1, c2)| {
+    let evs_par: Vec<(String, Option<String>)> = residuals.par_iter().map(|(tag, c1, c2)| {
         let idx = prog.fetch_add(1, Ordering::Relaxed);
         if idx > 0 && idx % 50 == 0 {
             let el = t_start.elapsed().as_secs_f64();
@@ -478,15 +478,33 @@ fn main() {
         }
         let (e1, e2) = match (cond_to_p5(c1), cond_to_p5(c2)) {
             (Some(a), Some(b)) => (a, b),
-            _ => { return format!("{tag}: no-p5 (multi)"); }
+            _ => { return (format!("{tag}: no-p5 (multi)"), None); }
         };
-        let r1 = match resultant(&e1, &circle, 0) { Some(r) => r, None => return "div-fail".into() };
-        let r2 = match resultant(&e2, &circle, 0) { Some(r) => r, None => return "div-fail".into() };
-        let rf = match resultant(&r1, &r2, 1) { Some(r) => r, None => return "div-fail".into() };
-        format!("{tag} -> {}", classify_rsq(&rf))
+        let r1 = match resultant(&e1, &circle, 0) { Some(r) => r, None => return ("div-fail".into(), None) };
+        let r2 = match resultant(&e2, &circle, 0) { Some(r) => r, None => return ("div-fail".into(), None) };
+        let rf = match resultant(&r1, &r2, 1) { Some(r) => r, None => return ("div-fail".into(), None) };
+        // dump the q-minimal layer of the final polynomial for the oracle
+        let dump = if rf.is_empty() { None } else {
+            let qmin = rf.keys().map(|m| m.2).min().unwrap();
+            let t0: Vec<String> = rf.iter().filter(|(m, _)| m.2 == qmin)
+                .map(|(m, c)| format!("{}*r**{}*s**{}", c, m.0, m.1)).collect();
+            Some(t0.join(" + "))
+        };
+        (format!("{tag} -> {}", classify_rsq(&rf)), dump)
     }).collect();
     let mut everdict: HashMap<String, u64> = HashMap::new();
-    for v in evs_par { *everdict.entry(v).or_insert(0) += 1; }
+    let mut oracle: HashSet<String> = HashSet::new();
+    for (v, d) in evs_par {
+        *everdict.entry(v).or_insert(0) += 1;
+        if let Some(t0) = d { oracle.insert(t0); }
+    }
+    {
+        use std::io::Write;
+        let fname = format!("oracle_t0_{a}_{b}.txt");
+        let mut f = std::fs::File::create(&fname).unwrap();
+        for t0 in &oracle { writeln!(f, "{t0}").unwrap(); }
+        println!("oracle dump: {} distinct minimal-layer forms -> {fname}", oracle.len());
+    }
     let mut evs: Vec<_> = everdict.iter().collect();
     evs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
     for (k, c) in evs { println!("  ELIM {c:5}  {k}"); }
