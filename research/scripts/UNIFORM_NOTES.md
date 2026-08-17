@@ -2567,3 +2567,16 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The 216 layered factors form a symmetric sandwich F = Ḡ + D + G (χ̄-heavy bottom, real/imaginary diagonal middle, χ-heavy top) in only **14 layer profiles**. The balance equation is the 3-term S-unit form χ^{2Δ}P − χ̄^{2Δ}P̄ = c·q^{2d}·T with χ-valuations {2Δ, 0, 2d}, d < Δ.
 - The kill chain per profile: the lone minimum (the Ḡ term) must deepen — χ^{2d} ∣ P̄-value (band q^{2d} ≤ N(P̄)); at level 2d the middle ties — an exact congruence between the deepened cofactor and T; iterate to 2Δ; the terminal system is an exact Pell/Pythagorean pair. Fully mechanical and finite.
 - Plan: encode the deepening chain into a certifier (grading → unit certificates → factor screen → monomial valuation → cross → layered chain) usable at any (a, b). Milestone 2 then reads: certifier + the finite family lemmas + the q²-telescoping wrapper.
+
+## Round 169: support bounds — w̃ is {2,3,5,7}-smooth and tiny
+
+- `u2b_support_table.md`: for every family, Res_S(Σ, Ω) = c₁·R^k and Res_R(Σ, Ω) = c₂·S^k with c₁, c₂ ∈ {2^a 3^b 5^c 7^d}-smooth small integers. A prime of w̃ divides both, and gcd(R, S) = 1, so the support of w̃ divides the contents — finite and explicit per family.
+- The (2,3) architecture is now complete at the discovery level. Sectors and their kills:
+  1. grading (lone minimal layer) — unconditional;
+  2. unit-certificate resultants — unconditional;
+  3. factor screen: nonzero library + unit-coefficient grading — unconditional;
+  4. monomial balance families — pure χ-valuation contradiction, unconditional;
+  5. cross layer — 38 polynomials, all factors parity-excluded or irrational-rooted, unconditional;
+  6. single conditions (mismatch sector) — finite w̃-set per family, terminal Pell systems;
+  7. layered sandwich (14 profiles) — 3-term valuation battle with a deepening chain, terminal Pell systems.
+- Remaining proof obligations for the two-exponent theorem: (i) the exactness lemma in its layered/multi-pair form; (ii) the terminal Pell lemma list (finite, from sectors 6–7); (iii) the q²-telescoping wrapper in b; (iv) collect everything into the paper.
