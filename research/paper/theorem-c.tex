@@ -575,10 +575,28 @@ the divisor $q^{2\Delta}$ and its band --- and both only tighten as
 $\Delta$ grows, so every cell argument is monotone in $b$.  The base of
 the induction is Theorem~\ref{thm:H}; the row and column of exponent one
 are Theorem~\ref{thm:U} and its swap; and the saturation census transports
-each cell from $a=2$ to all $a$.  What remains to write is the residual
-obligation list of the certifier audit (the aligned and layered systems
-that the mechanical layers do not already close) and the ninety-five
-inhomogeneous finishes.  Each is an instance of the schema above.
+each cell from $a=2$ to all $a$.  The certifier (the pipeline reimplemented in Rust: library division in
+place of general factoring, the affine model, Bareiss resultants over the
+$\chi^2$-circle) closes the grids $(2,3)$, $(2,4)$, $(2,5)$, $(3,3)$ and
+$(3,4)$ completely, in seconds to minutes each.  Exactly one cell resisted
+the mechanical layers, the \emph{aligned} family at $a=3$: there
+$\Sigma=\pm2p^4$ and $\Omega=\pm2\,\im\pi^8$, the smooth $\tilde w$ divides
+$p^4$, and the pinning is the exact identity
+$\chi^{2\delta}=\pm p^4\pm(\pi^8-\bar\pi^8)$, i.e.
+$q^{2\delta}=R_8^2+5S_8^2$.  The finish is elementary: with $W=q^\delta$,
+the coprime splitting of $(W-R_8)(W+R_8)=5S_8^2$ (the gcd divides $5$, and
+$5$ is excluded by $\gcd(R_8,S_8)=1$) gives $S_8=2\alpha\beta$ and
+$p^8=\beta^4-6\alpha^2\beta^2+25\alpha^4
+     =N\bigl((\beta^2-3\alpha^2)+4i\alpha^2\bigr);$
+the Gaussian integer $z=(\beta^2-3\alpha^2)+4i\alpha^2$ is odd and coprime
+to its conjugate, so $z=u\,\pi^8$; comparing imaginary parts with
+$S_8=2\alpha\beta$ forces $\beta=\pm2\alpha$ (for $u=\pm1$), hence
+$\alpha=1$ and $p^8=17$, absurd, while $u=\pm i$ makes $R_8$ even, absurd.
+The cases $p=5$ and $q=5$ die by direct divisibility.  With this cell
+closed, every swept grid is entirely dead; what remains for the full
+two-exponent theorem is the exact-root oracle pass on the certifier's
+final forms and the $b$-generic statement of the elimination layers along
+the telescoping induction.
 
 \section{The two-prime frontier}
 
