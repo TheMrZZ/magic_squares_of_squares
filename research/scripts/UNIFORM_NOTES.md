@@ -2688,3 +2688,8 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - `CertKit.lean` compiles (0 errors): the parity gate (v = lead·r^N + s·rest with lead odd is odd, hence nonzero — covers every form whose r-leading coefficient is odd), the two-adic gate (x² ≠ 2^e·odd for odd e, by factorization parity), and √2-irrationality as a corollary.
 - `CertForms_2_2.lean` compiles (0 errors): all 22 minimal-layer forms of grid (2,2), emitted by `lean_emit.rs` as parity-gate applications with explicit lead/rest splits, each checked by `decide` + `ring`. **Rust certifies → the emitter writes Lean → Lean re-verifies. The reflection route is proven.**
 - The cross-polynomial dumps are wired into the certifier; the all-grid emission sweep runs. Remaining Lean layers: the relation-kill factorization identities, the value-semantics bridge (symbolic polys ↔ Gaussian coordinate values), the routers, and the δ-free lemmas.
+
+## Round 186: the reflection core is verified
+
+- `PolyRefl.lean` compiles with zero errors: sparse four-variable integer polynomials as data (`SPoly`), evaluation, data-level multiplication with `eval_mul`, insertion-sort normalization with `eval_normalize`, and the bridge `eval_eq_of_normalize_eq` — equal normal forms give equal evaluations everywhere. **Every Rust-computed identity becomes hardcoded Lean data checked by kernel `decide` — no `ring` on giant expressions.**
+- All six grids' cross-form certificates emitted (12 fallback forms at a = 3 await the sieve route); `emit_all.sh` compiles the full set.
