@@ -2362,3 +2362,11 @@ Remaining: the four-diffs step and the induction assembly with base a = 1 (Theor
 - Gotcha: `rw [h]` closes rung-1 class goals by rfl (the literal 2*1 reduces), so a bare `norm_num` after it errors with "No goals". Guard it with `try`.
 
 Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_uniform`) and the capstone statement for the s·pᵃ·q family.
+
+## Round 148: THE UNIFORM THEOREM IS COMPLETE
+
+- `no_four_diffs_spaq`: the four differences u, v, u+v, u−v cannot all lie in D(s·pᵃ·q), for every a ≥ 1. The proof goes through `rep_structure_uniform` (which returns UClass members directly), the ratio router, and the assignment router.
+- `no_magic_square_of_squares_spaq_center`: **the capstone**. No 3×3 fully magic square of nine perfect squares has center entry (s·pᵃ·q)², for every a ≥ 1, distinct primes p, q ≡ 1 (mod 4), and rigid s.
+- Zero sorries. The full build is green (8749 jobs).
+- Gotcha: `rep_structure_uniform` binds q as an auto-bound implicit (its signature starts with `hpq : p ≠ q`). Call it as `rep_structure_uniform p hpq ...`, without an explicit q.
+- This theorem subsumes Theorems E (a=1), F (a=2), and G (a=3) in one induction. The infinite family s·pᵃ·q is now closed for all a at once.
