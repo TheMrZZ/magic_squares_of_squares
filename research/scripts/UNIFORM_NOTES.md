@@ -2612,3 +2612,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - `rs/src/bin/certifier.rs`: sparse (u,v,x,y)-polynomial engine (add, mul, conj, exact division), class/leaf enumeration, grading, relation dedup, and the library-division screen (trial division by the explicit nonzero library replaces general factorization — the pipeline needs nothing more).
 - Runs the whole (2,3) relation screen in about one second (sympy took minutes). Reproduces: 456,960 leaves, 17,184 survivors (exact match), and the central structural claim by an independent implementation: after the screen, **all 1,096 core shapes are balance forms — zero non-balance**.
 - Part 2 next: the (r,s)-Gaussian coefficient engine (Re/Im extraction), the affine model, cross/mismatch/terminal computations, and rational-root classification. SymPy stays as a sampling oracle.
+
+## Round 175: the Rust certifier closes most of the residual in seconds
+
+- Certifier parts 2–3: the (r,s)-Gaussian engine, the affine model, cross/terminal layers, rational-root classification, and the clean-affine elimination — all in Rust; the full (2,3) pipeline runs in ~7 seconds.
+- Verdicts (Rust normalization, 8,592 pairs): 7,336 dead (a relation cannot vanish), 456 affine-affine pairs → **69 distinct terminal polynomials, all single-q-level with nonvanishing minimal forms — dead unconditionally**; 312 clean-affine pairs dead by the q-grade kill; 96 by cross nonvanishing. **Total 8,200 dead; 392 residual** in four level-relation classes: clean-affine level mismatch (208), multi-level sandwiches (128), affine level mismatch (48), affine parallel (8).
+- Next: the base-coordinate elimination — every condition is polynomial in the χ²-coordinates (X₁, Y₁) via (X₁+iY₁)^ℓ; two conditions plus the circle X₁²+Y₁² = q² are three equations in two unknowns; Sylvester/Bareiss resultants over the (r,s,q)-coefficient ring finish the job.
+- The exponent audit found and fixed a q^{2j₂} bug in the circle term before any results were recorded.

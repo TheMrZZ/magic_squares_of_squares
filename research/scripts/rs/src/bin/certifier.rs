@@ -236,15 +236,352 @@ fn main() {
     }
     println!("relations dead by screen/grade: {dead} / {}", relset.len());
     println!("distinct core shapes: {}", cores.len());
-    // balance classification of cores
     let mut bal = 0;
     let mut nonbal = 0;
     for (key, _) in &cores {
         let p: Poly = key.iter().cloned().collect();
         let pc = pconj(&p);
-        let diff = padd(&p, &pneg(&pc));
-        let sum = padd(&p, &pc);
-        if diff.is_empty() || sum.is_empty() { bal += 1; } else { nonbal += 1; }
+        if padd(&p, &pneg(&pc)).is_empty() || padd(&p, &pc).is_empty() { bal += 1; } else { nonbal += 1; }
     }
     println!("core shapes: balance {bal}, non-balance {nonbal}");
+
+    // ---------------- Part 3: pair verdicts ----------------
+    // per-relation conditions (from the screened core; a relation may carry
+    // several library-free factors only if the core splits further — with
+    // library division we keep the single residual core per relation)
+    let mut relcond: HashMap<Vec<(usize, i128)>, Cond> = HashMap::new();
+    for rel in &relset {
+        let mut t = Poly::new();
+        for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
+        let core = screen(t, &lib);
+        let cond = if core.is_empty() || (core.len() == 1 && core.keys().next().unwrap() == &(0, 0, 0, 0)) {
+            Cond::Dead
+        } else { condition_of(&core) };
+        relcond.insert(rel.clone(), cond);
+    }
+    let mut verdict: HashMap<&str, u64> = HashMap::new();
+    let mut terminals: HashMap<Vec<((u16, u16, u16), i128)>, u32> = HashMap::new();
+    for (k1, k2) in &pairset {
+        let c1 = &relcond[k1];
+        let c2 = &relcond[k2];
+        let tag: &str = match (c1, c2) {
+            (Cond::Dead, _) | (_, Cond::Dead) => "pair dead (a relation cannot vanish)",
+            (Cond::Clean { delta: d1, sig: s1, om: o1 }, Cond::Clean { delta: d2, sig: s2, om: o2 }) => {
+                if d1 == d2 {
+                    let cross = radd(&rmul(s1, o2), &rneg(&rmul(s2, o1)));
+                    if cross.is_empty() { "clean aligned (residual)" }
+                    else if nonvanishing_form(&cross) { "pair dead (cross nonvanishing)" }
+                    else { "cross unresolved (residual)" }
+                } else {
+                    let c12 = radd(&rmul(s1, o2), &rneg(&rmul(s2, o1)));
+                    if nonvanishing_form(&c12) { "mismatch cross-band (record)" }
+                    else { "mismatch unresolved (residual)" }
+                }
+            }
+            (Cond::Affine { j2: j1, alpha: a1, beta: b1, eoff: e1, gam: g1 },
+             Cond::Affine { j2: j2_, alpha: a2, beta: b2, eoff: e2, gam: g2 }) => {
+                if j1 == j2_ {
+                    let det = radd(&rmul(a1, b2), &rneg(&rmul(a2, b1)));
+                    if det.is_empty() { "affine parallel (residual)" }
+                    else {
+                        // terminal: (G1 b2 - G2 b1)^2 + (a1 G2 - a2 G1)^2 - q^{2 j2} det^2
+                        // with G_i = -q^{2 e_i} gam_i; represent q-exponent in the key.
+                        let qe1 = (2 * e1.max(&0).clone()) as u16;
+                        let qe2 = (2 * e2.max(&0).clone()) as u16;
+                        let xs_a = rmul(g1, b2);
+                        let xs_b = rmul(g2, b1);
+                        let ys_a = rmul(a1, g2);
+                        let ys_b = rmul(a2, g1);
+                        // T = (q^{qe1} A - q^{qe2} B)^2 + (q^{qe2} C - q^{qe1} D)^2 - q^{2j2} det^2
+                        let mut t: BTreeMap<(u16, u16, u16), i128> = BTreeMap::new();
+                        let addq = |t: &mut BTreeMap<(u16, u16, u16), i128>, p: &RPoly, qe: u16, sc: i128| {
+                            for (m, c) in p {
+                                let e = t.entry((m.0, m.1, qe)).or_insert(0);
+                                *e += c * sc;
+                                if *e == 0 { t.remove(&(m.0, m.1, qe)); }
+                            }
+                        };
+                        // (q^{qe1} A)^2 etc: build squares with q-exponents
+                        let sq = |p: &RPoly| rmul(p, p);
+                        addq(&mut t, &sq(&xs_a), 2 * qe1, 1);
+                        addq(&mut t, &rmul(&xs_a, &xs_b), qe1 + qe2, -2);
+                        addq(&mut t, &sq(&xs_b), 2 * qe2, 1);
+                        addq(&mut t, &sq(&ys_a), 2 * qe2, 1);
+                        addq(&mut t, &rmul(&ys_a, &ys_b), qe1 + qe2, -2);
+                        addq(&mut t, &sq(&ys_b), 2 * qe1, 1);
+                        addq(&mut t, &sq(&det), 2 * *j2_, -1);
+                        let key: Vec<((u16, u16, u16), i128)> = t.iter().map(|(m, c)| (*m, *c)).collect();
+                        *terminals.entry(key).or_insert(0) += 1;
+                        "affine-affine terminal"
+                    }
+                } else { "affine level mismatch (residual)" }
+            }
+            (Cond::Multi, _) | (_, Cond::Multi) => "multi-level (residual)",
+            (Cond::Clean { delta, sig, om }, Cond::Affine { j2, alpha, beta, eoff, gam })
+            | (Cond::Affine { j2, alpha, beta, eoff, gam }, Cond::Clean { delta, sig, om }) => {
+                if 2 * *delta == 2 * *j2 {
+                    // X = Sigma/(2w), Y = om/(2w) with om = 2*Omega convention:
+                    // alpha X + beta Y + q^{2 eoff} gam = 0
+                    //   -> alpha*Sigma + beta*om = -4 w q^{2 eoff} gam  (w in small support)
+                    let d1 = radd(&rmul(alpha, sig), &rmul(beta, om));
+                    if d1.is_empty() { "clean-affine aligned (residual)" }
+                    else if *eoff > 0 {
+                        if nonvanishing_form(&d1) { "pair dead (clean-affine q-grade)" }
+                        else { "clean-affine thin (residual)" }
+                    } else {
+                        // e' = 0: D1 + 4 w gam = 0 for some smooth small w
+                        let mut allkill = true;
+                        let mut ws: Vec<i128> = Vec::new();
+                        for &m2 in &[1i128, 2, 4, 8, 16, 32, 64] {
+                            for &m3 in &[1i128, 3, 9, 27] {
+                                for &m5 in &[1i128, 5, 25] {
+                                    for &m7 in &[1i128, 7] {
+                                        let w = m2 * m3 * m5 * m7;
+                                        ws.push(w); ws.push(-w);
+                                    }
+                                }
+                            }
+                        }
+                        for w in ws {
+                            let cand = radd(&d1, &rscale(gam, 4 * w));
+                            if cand.is_empty() || !nonvanishing_form(&cand) { allkill = false; break; }
+                        }
+                        if allkill { "pair dead (clean-affine exact, all w)" }
+                        else { "clean-affine w-branch (residual)" }
+                    }
+                } else { "clean-affine level mismatch (residual)" }
+            }
+        };
+        *verdict.entry(tag).or_insert(0) += 1;
+    }
+    let mut vs: Vec<_> = verdict.iter().collect();
+    vs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
+    for (k, c) in vs { println!("  {c:6}  {k}"); }
+    println!("distinct terminal polynomials: {}", terminals.len());
+    // terminal classification: q-grade, then nonvanishing of the minimal layer
+    let mut tdead = 0u32;
+    let mut tthin = 0u32;
+    let mut tunres = 0u32;
+    for (key, _cnt) in &terminals {
+        let qmin = key.iter().map(|(m, _)| m.2).min().unwrap();
+        let t0: RPoly = key.iter().filter(|(m, _)| m.2 == qmin)
+            .map(|(m, c)| ((m.0, m.1), *c)).collect();
+        let single = key.iter().all(|(m, _)| m.2 == qmin);
+        if nonvanishing_form(&t0) {
+            if single { tdead += 1; } else { tthin += 1; }
+        } else { tunres += 1; }
+    }
+    println!("terminal classes: single-level dead {tdead}, q-grade thin {tthin}, unresolved {tunres}");
+}
+
+// ===================== Part 2: the (r, s)-engine =====================
+
+type RMono = (u16, u16); // exponents of r, s
+type GPoly = BTreeMap<RMono, (i128, i128)>; // Gaussian coefficients (re, im)
+type RPoly = BTreeMap<RMono, i128>;
+
+fn gadd(a: &GPoly, b: &GPoly) -> GPoly {
+    let mut r = a.clone();
+    for (m, c) in b {
+        let e = r.entry(*m).or_insert((0, 0));
+        e.0 += c.0; e.1 += c.1;
+        if e.0 == 0 && e.1 == 0 { r.remove(m); }
+    }
+    r
+}
+
+fn gmul(a: &GPoly, b: &GPoly) -> GPoly {
+    let mut r = GPoly::new();
+    for (m1, c1) in a {
+        for (m2, c2) in b {
+            let m = (m1.0 + m2.0, m1.1 + m2.1);
+            let c = (c1.0 * c2.0 - c1.1 * c2.1, c1.0 * c2.1 + c1.1 * c2.0);
+            let e = r.entry(m).or_insert((0, 0));
+            e.0 += c.0; e.1 += c.1;
+            if e.0 == 0 && e.1 == 0 { r.remove(&m); }
+        }
+    }
+    r
+}
+
+fn gpow(a: &GPoly, n: u16) -> GPoly {
+    let mut r = GPoly::new();
+    r.insert((0, 0), (1, 0));
+    for _ in 0..n { r = gmul(&r, a); }
+    r
+}
+
+/// Evaluate a (u, v)-polynomial (x=y=0 slots ignored) at u = r + i s, v = r - i s.
+fn uv_to_rs(p: &Poly) -> GPoly {
+    let mut upoly = GPoly::new(); // r + i s
+    upoly.insert((1, 0), (1, 0));
+    upoly.insert((0, 1), (0, 1));
+    let mut vpoly = GPoly::new(); // r - i s
+    vpoly.insert((1, 0), (1, 0));
+    vpoly.insert((0, 1), (0, -1));
+    let mut out = GPoly::new();
+    for (m, c) in p {
+        let t = gmul(&gpow(&upoly, m.0), &gpow(&vpoly, m.1));
+        out = gadd(&out, &t.iter().map(|(mm, cc)| (*mm, (cc.0 * c, cc.1 * c))).collect());
+    }
+    out
+}
+
+fn gre(a: &GPoly) -> RPoly {
+    a.iter().filter(|(_, c)| c.0 != 0).map(|(m, c)| (*m, c.0)).collect()
+}
+
+fn gim(a: &GPoly) -> RPoly {
+    a.iter().filter(|(_, c)| c.1 != 0).map(|(m, c)| (*m, c.1)).collect()
+}
+
+fn radd(a: &RPoly, b: &RPoly) -> RPoly {
+    let mut r = a.clone();
+    for (m, c) in b {
+        let e = r.entry(*m).or_insert(0);
+        *e += c;
+        if *e == 0 { r.remove(m); }
+    }
+    r
+}
+
+fn rmul(a: &RPoly, b: &RPoly) -> RPoly {
+    let mut r = RPoly::new();
+    for (m1, c1) in a {
+        for (m2, c2) in b {
+            let m = (m1.0 + m2.0, m1.1 + m2.1);
+            let e = r.entry(m).or_insert(0);
+            *e += c1 * c2;
+            if *e == 0 { r.remove(&m); }
+        }
+    }
+    r
+}
+
+fn rneg(a: &RPoly) -> RPoly { a.iter().map(|(m, c)| (*m, -c)).collect() }
+fn rscale(a: &RPoly, k: i128) -> RPoly {
+    if k == 0 { return RPoly::new(); }
+    a.iter().map(|(m, c)| (*m, c * k)).collect()
+}
+
+/// Homogeneous-form root classification: does the form have a realizable
+/// rational root ratio r/s = n/d with n odd, d even? Returns true if the
+/// form is NONVANISHING on admissible integers (no realizable root).
+fn nonvanishing_form(p: &RPoly) -> bool {
+    if p.is_empty() { return false; }
+    if p.len() == 1 { return true; } // monomial: r, s nonzero
+    // dehomogenize: t = r/s -> coefficients of t^k
+    let deg = p.keys().map(|m| m.0 + m.1).max().unwrap();
+    if p.keys().any(|m| m.0 + m.1 != deg) {
+        // inhomogeneous in (r, s): fall back conservative
+        return false;
+    }
+    let dmax = p.keys().map(|m| m.0).max().unwrap();
+    let mut coeffs = vec![0i128; dmax as usize + 1];
+    for (m, c) in p { coeffs[m.0 as usize] += c; }
+    while coeffs.len() > 1 && *coeffs.last().unwrap() == 0 { coeffs.pop(); }
+    let lead = *coeffs.last().unwrap();
+    let mut trail_i = 0;
+    while coeffs[trail_i] == 0 { trail_i += 1; }
+    let trail = coeffs[trail_i];
+    let divs = |n: i128| -> Vec<i128> {
+        let n = n.abs();
+        let mut d = Vec::new();
+        let mut i = 1;
+        while i * i <= n {
+            if n % i == 0 { d.push(i); d.push(n / i); }
+            i += 1;
+        }
+        d
+    };
+    for num in divs(trail) {
+        for den in divs(lead) {
+            if num % 2 == 1 && den % 2 == 0 {
+                // realizable parity: test the root exactly
+                for sign in [1i128, -1] {
+                    let mut acc = 0i128;
+                    let mut pw_n = 1i128;
+                    // evaluate sum c_k (num*sign)^{k - trail_i} den^{deg-k...}: use exact eval of
+                    // f(n/d) * d^deg = sum c_k n^k d^{dmax-k}
+                    let mut val = 0i128;
+                    for (k, &c) in coeffs.iter().enumerate() {
+                        let mut t = c;
+                        for _ in 0..k { t = t.saturating_mul(num * sign); }
+                        for _ in 0..(coeffs.len() - 1 - k) { t = t.saturating_mul(den); }
+                        val = val.saturating_add(t);
+                    }
+                    let _ = (&mut acc, &mut pw_n);
+                    if val == 0 { return false; }
+                }
+            }
+        }
+    }
+    true
+}
+
+// ===================== Part 3: sector verdicts =====================
+
+#[derive(Clone)]
+enum Cond {
+    Dead,
+    Clean { delta: u16, sig: RPoly, om: RPoly },
+    Affine { j2: u16, alpha: RPoly, beta: RPoly, eoff: i32, gam: RPoly },
+    Multi,
+}
+
+fn condition_of(core: &Poly) -> Cond {
+    if core.is_empty() { return Cond::Dead; }
+    if grade_unit(core) { return Cond::Dead; }
+    let gt: Vec<_> = core.iter().filter(|(m, _)| m.2 > m.3).collect();
+    let dg: Vec<_> = core.iter().filter(|(m, _)| m.2 == m.3).collect();
+    if gt.is_empty() { return Cond::Dead; }
+    let e0 = gt.iter().map(|(m, _)| m.2).min().unwrap();
+    let layered = !dg.is_empty() && dg.iter().map(|(m, _)| m.2).min().unwrap() < e0;
+    if !layered {
+        let lay: Vec<_> = gt.iter().filter(|(m, _)| m.2 == e0).collect();
+        let f0 = lay.iter().map(|(m, _)| m.3).min().unwrap();
+        let lay: Vec<_> = lay.iter().filter(|(m, _)| m.3 == f0).collect();
+        let pl: Poly = lay.iter().map(|(m, c)| ((m.0, m.1, 0, 0), **c)).collect();
+        if pl.len() == 1 { return Cond::Dead; } // monomial-P valuation
+        let plc = pconj(&pl);
+        let sig_uv = padd(&pl, &plc);
+        let om_uv = padd(&pl, &pneg(&plc));
+        let g_sig = uv_to_rs(&sig_uv);
+        let g_om = uv_to_rs(&om_uv);
+        let sig = gre(&g_sig);          // Sigma = P + conj(P): real
+        let om = gim(&g_om);            // (P - conj P) = 2i Omega -> Omega = im/2... keep 2*Omega
+        let fmin = gt.iter().map(|(m, _)| m.3).min().unwrap();
+        let delta = if e0 > fmin { e0 - fmin } else { fmin - e0 };
+        if sig.is_empty() != om.is_empty() { return Cond::Dead; }
+        return Cond::Clean { delta, sig, om };
+    }
+    // layered: single positive level?
+    let mut levels: BTreeMap<i32, Poly> = BTreeMap::new();
+    for (m, c) in core {
+        let d = m.2 as i32 - m.3 as i32;
+        levels.entry(d).or_insert_with(Poly::new).insert((m.0, m.1, m.2, m.3), *c);
+    }
+    let pos: Vec<i32> = levels.keys().cloned().filter(|&d| d > 0).collect();
+    if pos.len() != 1 { return Cond::Multi; }
+    let j2 = pos[0] as u16;
+    let cpos: Poly = levels[&(j2 as i32)].iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect();
+    let cneg: Poly = levels[&(-(j2 as i32))].iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect();
+    let cposc = pconj(&cpos);
+    let sigma: i128 = if padd(&cneg, &pneg(&cposc)).is_empty() { 1 }
+        else if padd(&cneg, &cposc).is_empty() { -1 }
+        else { return Cond::Multi };
+    let dpoly: Poly = levels.get(&0).map(|l| l.iter().map(|(m, c)| ((m.0, m.1, 0, 0), *c)).collect()).unwrap_or_default();
+    let qpos = levels[&(j2 as i32)].keys().map(|m| m.2.min(m.3)).min().unwrap() as i32;
+    let qdia = levels.get(&0).map(|l| l.keys().map(|m| m.2.min(m.3)).min().unwrap() as i32).unwrap_or(0);
+    let eoff = qdia - qpos;
+    let g_c = uv_to_rs(&cpos);
+    let cre = gre(&g_c);
+    let cim = gim(&g_c);
+    let g_d = uv_to_rs(&dpoly);
+    let (alpha, beta, gam) = if sigma == 1 {
+        (rscale(&cre, 2), rscale(&cim, -2), gre(&g_d))
+    } else {
+        (rscale(&cim, 2), rscale(&cre, 2), gim(&g_d))
+    };
+    Cond::Affine { j2, alpha, beta, eoff, gam }
 }
