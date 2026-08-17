@@ -7,6 +7,7 @@ next power, by the grading lemma), in a p-side and a q-side version.
 import Mathlib
 import MsqLean.GradingLemma
 import MsqLean.CertKit
+import MsqLean.SimplestRelation
 
 namespace Router
 
@@ -84,5 +85,111 @@ lemma prime_not_dvd_unit_mono (π : GaussianInt) (hπ : Prime π)
       · exact h1' hd3
       · exact h2' hd3
     · exact h3' hd2
+
+section AtomPack
+/- The atom pack: the four Gaussian primes of the setup and the twelve
+pairwise nondivisibility facts, with star written literally so the
+generated certificates can name them. All hypotheses are explicit. -/
+
+lemma star_mk (A B : ℤ) : star (⟨A, B⟩ : GaussianInt) = (⟨A, -B⟩ : GaussianInt) := by
+  ext <;> simp
+
+lemma pr_pi (p : ℕ) [Fact (Nat.Prime p)] (A B : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) : Prime (⟨A, B⟩ : GaussianInt) :=
+  prime_pi p A B hpAB
+
+lemma pr_pis (p : ℕ) [Fact (Nat.Prime p)] (A B : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) : Prime (star (⟨A, B⟩ : GaussianInt)) := by
+  rw [star_mk]
+  exact prime_pi p A (-B) (by nlinarith)
+
+lemma nd_pi_pis (p : ℕ) [Fact (Nat.Prime p)] (hpodd : p % 2 = 1) (A B : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ star (⟨A, B⟩ : GaussianInt) :=
+  pi_not_dvd_star p hpodd A B hpAB
+
+lemma nd_pis_pi (p : ℕ) [Fact (Nat.Prime p)] (hpodd : p % 2 = 1) (A B : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) :
+    ¬ star (⟨A, B⟩ : GaussianInt) ∣ (⟨A, B⟩ : GaussianInt) := by
+  rw [star_mk]
+  have h := pi_not_dvd_star p hpodd A (-B) (by nlinarith)
+  rwa [show star (⟨A, -B⟩ : GaussianInt) = (⟨A, B⟩ : GaussianInt) from by ext <;> simp] at h
+
+lemma nd_pi_chi (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ (⟨C, D⟩ : GaussianInt) :=
+  not_dvd_other p q hpq A B C D hpAB hqCD
+
+lemma nd_pi_chis (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨A, B⟩ : GaussianInt) ∣ star (⟨C, D⟩ : GaussianInt) := by
+  rw [star_mk]
+  exact not_dvd_other p q hpq A B C (-D) hpAB (by nlinarith)
+
+lemma nd_pis_chi (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ star (⟨A, B⟩ : GaussianInt) ∣ (⟨C, D⟩ : GaussianInt) := by
+  rw [star_mk]
+  exact not_dvd_other p q hpq A (-B) C D (by nlinarith) hqCD
+
+lemma nd_pis_chis (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ star (⟨A, B⟩ : GaussianInt) ∣ star (⟨C, D⟩ : GaussianInt) := by
+  rw [star_mk, star_mk]
+  exact not_dvd_other p q hpq A (-B) C (-D) (by nlinarith) (by nlinarith)
+
+lemma pr_chi (q : ℕ) [Fact (Nat.Prime q)] (C D : ℤ)
+    (hqCD : C ^ 2 + D ^ 2 = q) : Prime (⟨C, D⟩ : GaussianInt) :=
+  prime_pi q C D hqCD
+
+lemma pr_chis (q : ℕ) [Fact (Nat.Prime q)] (C D : ℤ)
+    (hqCD : C ^ 2 + D ^ 2 = q) : Prime (star (⟨C, D⟩ : GaussianInt)) := by
+  rw [star_mk]
+  exact prime_pi q C (-D) (by nlinarith)
+
+lemma nd_chi_chis (q : ℕ) [Fact (Nat.Prime q)] (hqodd : q % 2 = 1) (C D : ℤ)
+    (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨C, D⟩ : GaussianInt) ∣ star (⟨C, D⟩ : GaussianInt) :=
+  pi_not_dvd_star q hqodd C D hqCD
+
+lemma nd_chis_chi (q : ℕ) [Fact (Nat.Prime q)] (hqodd : q % 2 = 1) (C D : ℤ)
+    (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ star (⟨C, D⟩ : GaussianInt) ∣ (⟨C, D⟩ : GaussianInt) := by
+  rw [star_mk]
+  have h := pi_not_dvd_star q hqodd C (-D) (by nlinarith)
+  rwa [show star (⟨C, -D⟩ : GaussianInt) = (⟨C, D⟩ : GaussianInt) from by ext <;> simp] at h
+
+lemma nd_chi_pi (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨C, D⟩ : GaussianInt) ∣ (⟨A, B⟩ : GaussianInt) :=
+  not_dvd_other q p (Ne.symm hpq) C D A B hqCD hpAB
+
+lemma nd_chi_pis (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ (⟨C, D⟩ : GaussianInt) ∣ star (⟨A, B⟩ : GaussianInt) := by
+  rw [star_mk]
+  exact not_dvd_other q p (Ne.symm hpq) C D A (-B) hqCD (by nlinarith)
+
+lemma nd_chis_pi (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ star (⟨C, D⟩ : GaussianInt) ∣ (⟨A, B⟩ : GaussianInt) := by
+  rw [star_mk]
+  exact not_dvd_other q p (Ne.symm hpq) C (-D) A B (by nlinarith) hpAB
+
+lemma nd_chis_pis (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+    (hpq : p ≠ q) (A B C D : ℤ)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ¬ star (⟨C, D⟩ : GaussianInt) ∣ star (⟨A, B⟩ : GaussianInt) := by
+  rw [star_mk, star_mk]
+  exact not_dvd_other q p (Ne.symm hpq) C (-D) A (-B) (by nlinarith) (by nlinarith)
+
+end AtomPack
 
 end Router

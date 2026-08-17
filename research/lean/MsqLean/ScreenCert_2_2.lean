@@ -17,6 +17,639 @@ variable (p q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)]
 variable (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
 variable (A B C D : ℤ)
 
+def s1_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 1 3 (1), PolyRefl.mkT 3 1 0 2 2 (2)]
+def s1_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (2)]
+def s1_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s1_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (1), PolyRefl.mkT 1 0 0 1 1 (2)]
+def s1_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (1), PolyRefl.mkT 1 0 0 1 1 (2)]
+def s1_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 2 (1)]
+def s1_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 0 1 0 1 0 (-1), PolyRefl.mkT 1 0 0 0 1 (2)]
+
+theorem screen_dead_1_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s1_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s1_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s1_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s1_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s1_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s1_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s1_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s1_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s1_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s1_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s1_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s1_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s1_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s1_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s1_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s1_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s1_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s1_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s1_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s1_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s1_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s1_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s1_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 1 0 2
+  have hcore : PolyRefl.eval (s1_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s1_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s1_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s1_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s1_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s1_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s12_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 2 2 (-2), PolyRefl.mkT 3 1 0 3 1 (-1)]
+def s12_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s12_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s12_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 1 0 0 1 1 (-2), PolyRefl.mkT 1 0 0 2 0 (-1)]
+def s12_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 1 0 0 1 1 (-2), PolyRefl.mkT 1 0 0 2 0 (-1)]
+def s12_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1)]
+def s12_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 1 0 0 0 1 (-2), PolyRefl.mkT 1 0 0 1 0 (-1)]
+
+theorem screen_dead_12_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s12_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s12_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s12_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s12_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s12_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s12_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s12_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s12_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s12_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s12_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s12_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s12_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s12_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s12_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s12_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s12_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s12_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s12_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s12_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s12_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s12_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s12_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s12_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 2
+  have hcore : PolyRefl.eval (s12_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s12_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s12_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s12_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s12_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s12_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s13_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s13_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s13_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s13_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (2)]
+def s13_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (2)]
+def s13_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 4 (1)]
+def s13_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (-2), PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 2 0 0 1 2 (2)]
+
+theorem screen_dead_13_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s13_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s13_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s13_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s13_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s13_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s13_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s13_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s13_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s13_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s13_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s13_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s13_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s13_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s13_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s13_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s13_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s13_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s13_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s13_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s13_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s13_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s13_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s13_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 4
+  have hcore : PolyRefl.eval (s13_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s13_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s13_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s13_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s13_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s13_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s14_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 1 3 (-1), PolyRefl.mkT 4 0 0 2 2 (1)]
+def s14_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (-1), PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (-1), PolyRefl.mkT 4 0 0 1 1 (1)]
+def s14_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s14_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (1)]
+def s14_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (1)]
+def s14_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (1)]
+def s14_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 0 1 (1)]
+
+theorem screen_dead_14_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s14_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s14_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s14_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s14_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s14_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s14_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s14_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s14_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s14_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s14_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s14_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s14_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s14_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s14_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s14_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s14_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s14_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s14_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s14_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s14_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s14_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s14_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s14_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 1 0
+  have hcore : PolyRefl.eval (s14_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s14_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s14_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s14_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s14_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s14_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s17_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 1 3 (1)]
+def s17_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 1 (-1), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 1 3 (1)]
+def s17_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s17_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (1)]
+def s17_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (1)]
+def s17_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (-1)]
+def s17_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 0 3 (1)]
+
+theorem screen_dead_17_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s17_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s17_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s17_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s17_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s17_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s17_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s17_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s17_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s17_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s17_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s17_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s17_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s17_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s17_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s17_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s17_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s17_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s17_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s17_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s17_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s17_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s17_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s17_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 3 0
+  have hcore : PolyRefl.eval (s17_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s17_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s17_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s17_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s17_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s17_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s18_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s18_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s18_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s18_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (-1)]
+def s18_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (-1)]
+def s18_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1)]
+def s18_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (-2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (-2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 3 0 (-1)]
+
+theorem screen_dead_18_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s18_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s18_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s18_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s18_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s18_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s18_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s18_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s18_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s18_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s18_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s18_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s18_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s18_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s18_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s18_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s18_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s18_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s18_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s18_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s18_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s18_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s18_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s18_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 0 3
+  have hcore : PolyRefl.eval (s18_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s18_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s18_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s18_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s18_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s18_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s19_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s19_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s19_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s19_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 1 2 0 4 0 (-1), PolyRefl.mkT 2 1 0 0 4 (1), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (2)]
+def s19_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 1 2 0 4 0 (-1), PolyRefl.mkT 2 1 0 0 4 (1), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (2)]
+def s19_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s19_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (2)]
+def s19_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (2)]
+def s19_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 4 (-1)]
+def s19_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (2), PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 2 0 0 1 2 (2)]
+
+theorem screen_dead_19_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s19_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s19_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s19_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s19_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s19_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s19_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s19_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s19_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s19_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s19_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s19_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s19_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s19_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s19_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s19_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s19_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s19_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s19_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s19_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s19_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s19_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s19_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s19_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s19_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s19_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s19_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s19_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s19_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s19_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s19_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s19_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s19_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 4
+  have hcore : PolyRefl.eval (s19_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s19_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s19_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s19_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s19_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s19_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s19_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s19_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s22_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 2 2 (1)]
+def s22_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-1), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (1)]
+def s22_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s22_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1)]
+def s22_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1)]
+def s22_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (-1)]
+def s22_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 0 2 (1)]
+
+theorem screen_dead_22_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s22_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s22_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s22_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s22_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s22_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s22_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s22_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s22_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s22_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s22_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s22_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s22_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s22_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s22_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s22_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s22_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s22_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s22_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s22_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s22_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s22_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s22_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s22_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 2 0
+  have hcore : PolyRefl.eval (s22_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s22_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s22_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s22_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s22_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s22_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s24_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 2 2 (2)]
+def s24_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (2)]
+def s24_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s24_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (1), PolyRefl.mkT 1 0 0 2 2 (2)]
+def s24_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (1), PolyRefl.mkT 1 0 0 2 2 (2)]
+def s24_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 4 (1)]
+def s24_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 3 0 (-1), PolyRefl.mkT 1 0 0 1 2 (2)]
+
+theorem screen_dead_24_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s24_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s24_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s24_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s24_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s24_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s24_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s24_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s24_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s24_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s24_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s24_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s24_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s24_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s24_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s24_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s24_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s24_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s24_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s24_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s24_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s24_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s24_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s24_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 1 0 4
+  have hcore : PolyRefl.eval (s24_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s24_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s24_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s24_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s24_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s24_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s29_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 3 1 0 1 3 (1), PolyRefl.mkT 3 1 0 2 2 (-2), PolyRefl.mkT 3 1 0 3 1 (1)]
 def s29_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
 def s29_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
@@ -126,6 +759,299 @@ theorem screen_dead_29_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s29_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s36_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 3 1 (-1)]
+def s36_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (-2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s36_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s36_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s36_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s36_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1)]
+def s36_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (2), PolyRefl.mkT 2 0 0 0 1 (-2), PolyRefl.mkT 2 0 0 1 0 (-1)]
+
+theorem screen_dead_36_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s36_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s36_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s36_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s36_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s36_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s36_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s36_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s36_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s36_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s36_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s36_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s36_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s36_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s36_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s36_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s36_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s36_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s36_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s36_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s36_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s36_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s36_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s36_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 2
+  have hcore : PolyRefl.eval (s36_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s36_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s36_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s36_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s36_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s36_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s37_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 1 3 (-1)]
+def s37_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 1 3 (-1)]
+def s37_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s37_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (-1)]
+def s37_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (-1)]
+def s37_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (1)]
+def s37_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 0 3 (-1)]
+
+theorem screen_dead_37_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s37_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s37_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s37_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s37_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s37_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s37_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s37_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s37_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s37_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s37_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s37_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s37_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s37_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s37_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s37_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s37_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s37_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s37_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s37_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s37_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s37_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s37_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s37_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 3 0
+  have hcore : PolyRefl.eval (s37_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s37_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s37_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s37_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s37_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s37_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s46_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 3 1 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 3 1 (-1)]
+def s46_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 1 3 0 0 2 (1), PolyRefl.mkT 3 1 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (-2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s46_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s46_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 1 1 (-2), PolyRefl.mkT 3 0 0 2 0 (-1)]
+def s46_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 1 1 (-2), PolyRefl.mkT 3 0 0 2 0 (-1)]
+def s46_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1)]
+def s46_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (2), PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 2 1 0 0 1 (2), PolyRefl.mkT 3 0 0 0 1 (-2), PolyRefl.mkT 3 0 0 1 0 (-1)]
+
+theorem screen_dead_46_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s46_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s46_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s46_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s46_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s46_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s46_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s46_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s46_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s46_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s46_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s46_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s46_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s46_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s46_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s46_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s46_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s46_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s46_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s46_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s46_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s46_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s46_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s46_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 2
+  have hcore : PolyRefl.eval (s46_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s46_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s46_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s46_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s46_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s46_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s51_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s51_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s51_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s51_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1), PolyRefl.mkT 0 4 0 1 2 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 2 1 (1), PolyRefl.mkT 4 0 0 3 0 (-1)]
+def s51_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1), PolyRefl.mkT 0 4 0 1 2 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 2 1 (1), PolyRefl.mkT 4 0 0 3 0 (-1)]
+def s51_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s51_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s51_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s51_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1)]
+def s51_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (-2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 2 0 (-1)]
+
+theorem screen_dead_51_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s51_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s51_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s51_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s51_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s51_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s51_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s51_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s51_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s51_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s51_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s51_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s51_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s51_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s51_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s51_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s51_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s51_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s51_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s51_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s51_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s51_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s51_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s51_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s51_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s51_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s51_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s51_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s51_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s51_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s51_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s51_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s51_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 0 2
+  have hcore : PolyRefl.eval (s51_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s51_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s51_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s51_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s51_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s51_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s51_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s51_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -285,6 +1211,74 @@ theorem screen_dead_52_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s69_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 2 2 (-1), PolyRefl.mkT 3 1 0 4 0 (-1)]
+def s69_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 2 2 (-1), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s69_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s69_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s69_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s69_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1)]
+def s69_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 2 0 (-1)]
+
+theorem screen_dead_69_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s69_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s69_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s69_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s69_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s69_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s69_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s69_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s69_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s69_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s69_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s69_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s69_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s69_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s69_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s69_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s69_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s69_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s69_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s69_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s69_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s69_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s69_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s69_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s69_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s69_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s69_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s69_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s69_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s69_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s91_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 4 0 (-1)]
 def s91_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 4 0 (-1)]
 def s91_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
@@ -415,6 +1409,74 @@ theorem screen_dead_91_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s91_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s93_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 2 2 (1), PolyRefl.mkT 4 0 0 3 1 (-1)]
+def s93_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 1 1 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 1 1 (1), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s93_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s93_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (-1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (-1)]
+def s93_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (-1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (-1)]
+def s93_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (-1)]
+def s93_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 1 0 (-1)]
+
+theorem screen_dead_93_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s93_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s93_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s93_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s93_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s93_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s93_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s93_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s93_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s93_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s93_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s93_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s93_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s93_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s93_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s93_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s93_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s93_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s93_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s93_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s93_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s93_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s93_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s93_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 0 1
+  have hcore : PolyRefl.eval (s93_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s93_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s93_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s93_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s93_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s93_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -553,6 +1615,210 @@ theorem screen_dead_94_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s95_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 2 2 (-2), PolyRefl.mkT 3 1 0 4 0 (-1)]
+def s95_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s95_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s95_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 1 0 0 2 2 (-2), PolyRefl.mkT 1 0 0 4 0 (-1)]
+def s95_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 1 0 0 2 2 (-2), PolyRefl.mkT 1 0 0 4 0 (-1)]
+def s95_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1)]
+def s95_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (2), PolyRefl.mkT 1 0 0 1 2 (-2), PolyRefl.mkT 1 0 0 3 0 (-1)]
+
+theorem screen_dead_95_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s95_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s95_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s95_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s95_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s95_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s95_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s95_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s95_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s95_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s95_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s95_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s95_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s95_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s95_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s95_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s95_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s95_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s95_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s95_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s95_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s95_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s95_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s95_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 4
+  have hcore : PolyRefl.eval (s95_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s95_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s95_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s95_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s95_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s95_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s101_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 1 3 (-1)]
+def s101_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 1 3 (-1)]
+def s101_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s101_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (-1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (-1)]
+def s101_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (-1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (-1)]
+def s101_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (-1)]
+def s101_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (-2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (-2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 0 3 (-1)]
+
+theorem screen_dead_101_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s101_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s101_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s101_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s101_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s101_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s101_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s101_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s101_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s101_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s101_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s101_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s101_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s101_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s101_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s101_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s101_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s101_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s101_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s101_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s101_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s101_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s101_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s101_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 3 0
+  have hcore : PolyRefl.eval (s101_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s101_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s101_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s101_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s101_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s101_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s102_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 3 1 0 2 2 (2)]
+def s102_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (2)]
+def s102_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s102_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (-1), PolyRefl.mkT 1 0 0 1 1 (2)]
+def s102_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (-1), PolyRefl.mkT 1 0 0 1 1 (2)]
+def s102_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 2 (-1)]
+def s102_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 0 1 0 1 0 (-1), PolyRefl.mkT 1 0 0 0 1 (2)]
+
+theorem screen_dead_102_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s102_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s102_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s102_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s102_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s102_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s102_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s102_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s102_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s102_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s102_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s102_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s102_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s102_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s102_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s102_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s102_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s102_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s102_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s102_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s102_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s102_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s102_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s102_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 1 0 2
+  have hcore : PolyRefl.eval (s102_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s102_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s102_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s102_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s102_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s102_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s109_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 3 1 0 3 1 (1)]
 def s109_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 2 0 (1)]
 def s109_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
@@ -662,6 +1928,775 @@ theorem screen_dead_109_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s109_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s114_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s114_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s114_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s114_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 2 2 (-2), PolyRefl.mkT 3 0 0 4 0 (-1)]
+def s114_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 2 2 (-2), PolyRefl.mkT 3 0 0 4 0 (-1)]
+def s114_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1)]
+def s114_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 2 1 0 1 2 (2), PolyRefl.mkT 3 0 0 1 2 (-2), PolyRefl.mkT 3 0 0 3 0 (-1)]
+
+theorem screen_dead_114_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s114_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s114_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s114_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s114_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s114_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s114_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s114_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s114_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s114_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s114_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s114_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s114_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s114_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s114_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s114_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s114_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s114_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s114_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s114_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s114_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s114_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s114_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s114_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 4
+  have hcore : PolyRefl.eval (s114_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s114_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s114_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s114_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s114_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s114_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s115_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 2 2 (-2)]
+def s115_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (-2)]
+def s115_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s115_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (1), PolyRefl.mkT 1 0 0 2 2 (-2)]
+def s115_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (1), PolyRefl.mkT 1 0 0 2 2 (-2)]
+def s115_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 4 (1)]
+def s115_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (2), PolyRefl.mkT 0 1 0 3 0 (-1), PolyRefl.mkT 1 0 0 1 2 (-2)]
+
+theorem screen_dead_115_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s115_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s115_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s115_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s115_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s115_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s115_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s115_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s115_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s115_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s115_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s115_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s115_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s115_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s115_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s115_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s115_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s115_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s115_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s115_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s115_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s115_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s115_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s115_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 1 0 4
+  have hcore : PolyRefl.eval (s115_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s115_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s115_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s115_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s115_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s115_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s117_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 1 3 (-1), PolyRefl.mkT 4 0 0 2 2 (-1)]
+def s117_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (1), PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (-1), PolyRefl.mkT 4 0 0 1 1 (-1)]
+def s117_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s117_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (-1)]
+def s117_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (-1)]
+def s117_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (1)]
+def s117_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 0 1 (-1)]
+
+theorem screen_dead_117_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s117_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s117_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s117_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s117_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s117_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s117_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s117_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s117_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s117_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s117_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s117_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s117_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s117_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s117_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s117_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s117_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s117_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s117_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s117_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s117_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s117_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s117_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s117_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 1 0
+  have hcore : PolyRefl.eval (s117_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s117_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s117_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s117_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s117_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s117_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s122_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s122_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s122_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s122_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 2 0 0 2 2 (2), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s122_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 2 0 0 2 2 (2), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s122_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1)]
+def s122_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (-2), PolyRefl.mkT 2 0 0 1 2 (2), PolyRefl.mkT 2 0 0 3 0 (-1)]
+
+theorem screen_dead_122_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s122_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s122_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s122_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s122_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s122_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s122_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s122_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s122_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s122_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s122_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s122_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s122_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s122_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s122_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s122_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s122_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s122_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s122_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s122_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s122_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s122_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s122_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s122_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 4
+  have hcore : PolyRefl.eval (s122_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s122_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s122_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s122_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s122_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s122_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s131_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s131_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s131_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s131_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (-2)]
+def s131_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (-2)]
+def s131_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 4 (-1)]
+def s131_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (2), PolyRefl.mkT 0 3 0 3 0 (1), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 2 1 0 1 2 (2), PolyRefl.mkT 3 0 0 1 2 (-2)]
+
+theorem screen_dead_131_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s131_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s131_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s131_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s131_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s131_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s131_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s131_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s131_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s131_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s131_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s131_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s131_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s131_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s131_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s131_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s131_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s131_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s131_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s131_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s131_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s131_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s131_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s131_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 3 0 4
+  have hcore : PolyRefl.eval (s131_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s131_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s131_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s131_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s131_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s131_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s132_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s132_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s132_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s132_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s132_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s132_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1)]
+def s132_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (2), PolyRefl.mkT 2 0 0 1 2 (-2), PolyRefl.mkT 2 0 0 3 0 (-1)]
+
+theorem screen_dead_132_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s132_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s132_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s132_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s132_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s132_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s132_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s132_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s132_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s132_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s132_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s132_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s132_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s132_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s132_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s132_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s132_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s132_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s132_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s132_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s132_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s132_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s132_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s132_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 4
+  have hcore : PolyRefl.eval (s132_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s132_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s132_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s132_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s132_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s132_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s133_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 2 2 (-1), PolyRefl.mkT 4 0 0 3 1 (-1)]
+def s133_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 1 1 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 1 1 (-1), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s133_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s133_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (-1)]
+def s133_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (-1)]
+def s133_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (1)]
+def s133_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 1 0 (-1)]
+
+theorem screen_dead_133_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s133_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s133_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s133_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s133_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s133_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s133_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s133_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s133_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s133_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s133_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s133_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s133_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s133_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s133_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s133_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s133_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s133_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s133_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s133_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s133_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s133_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s133_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s133_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 0 1
+  have hcore : PolyRefl.eval (s133_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s133_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s133_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s133_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s133_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s133_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s143_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 2 2 (2)]
+def s143_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (2)]
+def s143_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s143_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (-1), PolyRefl.mkT 1 0 0 2 2 (2)]
+def s143_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (-1), PolyRefl.mkT 1 0 0 2 2 (2)]
+def s143_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 4 (-1)]
+def s143_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (2), PolyRefl.mkT 0 1 0 3 0 (-1), PolyRefl.mkT 1 0 0 1 2 (2)]
+
+theorem screen_dead_143_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s143_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s143_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s143_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s143_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s143_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s143_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s143_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s143_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s143_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s143_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s143_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s143_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s143_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s143_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s143_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s143_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s143_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s143_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s143_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s143_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s143_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s143_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s143_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 1 0 4
+  have hcore : PolyRefl.eval (s143_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s143_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s143_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s143_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s143_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s143_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s148_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 3 1 0 2 2 (-1)]
+def s148_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (1), PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (-1)]
+def s148_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s148_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (-1)]
+def s148_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (-1)]
+def s148_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (1)]
+def s148_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 0 1 (-1)]
+
+theorem screen_dead_148_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s148_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s148_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s148_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s148_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s148_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s148_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s148_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s148_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s148_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s148_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s148_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s148_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s148_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s148_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s148_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s148_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s148_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s148_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s148_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s148_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s148_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s148_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s148_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 1 0
+  have hcore : PolyRefl.eval (s148_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s148_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s148_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s148_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s148_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s148_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s155_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (-1)]
+def s155_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (1), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (-1)]
+def s155_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s155_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (-1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (-1)]
+def s155_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (-1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (-1)]
+def s155_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (-1)]
+def s155_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 0 1 (-1)]
+
+theorem screen_dead_155_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s155_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s155_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s155_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s155_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s155_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s155_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s155_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s155_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s155_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s155_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s155_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s155_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s155_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s155_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s155_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s155_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s155_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s155_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s155_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s155_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s155_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s155_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s155_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 1 0
+  have hcore : PolyRefl.eval (s155_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s155_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s155_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s155_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s155_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s155_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s157_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 3 1 (1)]
+def s157_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s157_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s157_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (-1), PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 1 2 0 0 2 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 2 1 0 2 0 (-1), PolyRefl.mkT 3 0 0 1 1 (2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s157_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (-1), PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 1 2 0 0 2 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 2 1 0 2 0 (-1), PolyRefl.mkT 3 0 0 1 1 (2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s157_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s157_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 2 0 0 1 1 (2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s157_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 2 0 0 1 1 (2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s157_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1)]
+def s157_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (2), PolyRefl.mkT 2 0 0 0 1 (2), PolyRefl.mkT 2 0 0 1 0 (1)]
+
+theorem screen_dead_157_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s157_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s157_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s157_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s157_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s157_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s157_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s157_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s157_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s157_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s157_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s157_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s157_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s157_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s157_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s157_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s157_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s157_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s157_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s157_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s157_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s157_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s157_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s157_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s157_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s157_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s157_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s157_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s157_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s157_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s157_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s157_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s157_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 2
+  have hcore : PolyRefl.eval (s157_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s157_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s157_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s157_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s157_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s157_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s157_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s157_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -800,6 +2835,456 @@ theorem screen_dead_158_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s164_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s164_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s164_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s164_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s164_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s164_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1)]
+def s164_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 2 0 (1)]
+
+theorem screen_dead_164_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s164_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s164_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s164_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s164_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s164_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s164_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s164_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s164_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s164_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s164_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s164_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s164_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s164_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s164_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s164_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s164_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s164_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s164_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s164_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s164_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s164_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s164_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s164_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 0 2
+  have hcore : PolyRefl.eval (s164_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s164_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s164_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s164_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s164_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s164_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s166_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (1)]
+def s166_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (1)]
+def s166_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s166_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 1 (-1), PolyRefl.mkT 0 4 0 3 0 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (-1), PolyRefl.mkT 4 0 0 1 2 (1)]
+def s166_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 1 (-1), PolyRefl.mkT 0 4 0 3 0 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (-1), PolyRefl.mkT 4 0 0 1 2 (1)]
+def s166_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s166_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1)]
+def s166_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1)]
+def s166_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (1)]
+def s166_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (-2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 0 2 (1)]
+
+theorem screen_dead_166_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s166_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s166_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s166_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s166_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s166_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s166_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s166_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s166_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s166_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s166_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s166_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s166_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s166_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s166_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s166_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s166_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s166_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s166_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s166_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s166_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s166_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s166_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s166_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s166_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s166_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s166_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s166_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s166_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s166_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s166_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s166_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s166_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 2 0
+  have hcore : PolyRefl.eval (s166_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s166_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s166_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s166_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s166_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s166_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s166_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s166_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s182_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 3 1 (1), PolyRefl.mkT 3 1 0 4 0 (-1)]
+def s182_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 1 3 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 3 1 (1), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s182_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s182_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (-1)]
+def s182_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (-1)]
+def s182_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1)]
+def s182_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (-2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (-2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 3 0 (-1)]
+
+theorem screen_dead_182_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s182_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s182_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s182_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s182_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s182_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s182_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s182_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s182_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s182_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s182_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s182_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s182_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s182_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s182_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s182_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s182_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s182_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s182_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s182_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s182_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s182_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s182_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s182_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 3
+  have hcore : PolyRefl.eval (s182_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s182_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s182_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s182_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s182_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s182_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s183_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (-1)]
+def s183_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (-1)]
+def s183_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s183_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 1 (1), PolyRefl.mkT 0 4 0 3 0 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (1), PolyRefl.mkT 4 0 0 1 2 (-1)]
+def s183_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 1 (1), PolyRefl.mkT 0 4 0 3 0 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (1), PolyRefl.mkT 4 0 0 1 2 (-1)]
+def s183_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s183_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (-1)]
+def s183_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (-1)]
+def s183_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (-1)]
+def s183_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (-2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 0 2 (-1)]
+
+theorem screen_dead_183_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s183_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s183_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s183_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s183_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s183_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s183_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s183_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s183_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s183_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s183_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s183_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s183_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s183_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s183_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s183_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s183_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s183_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s183_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s183_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s183_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s183_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s183_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s183_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s183_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s183_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s183_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s183_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s183_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s183_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s183_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s183_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s183_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 2 0
+  have hcore : PolyRefl.eval (s183_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s183_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s183_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s183_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s183_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s183_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s183_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s183_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s184_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (-1), PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 3 1 (1), PolyRefl.mkT 3 1 0 4 0 (1)]
+def s184_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (-1), PolyRefl.mkT 0 2 0 1 3 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 3 1 (1), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s184_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s184_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (1)]
+def s184_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (1)]
+def s184_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1)]
+def s184_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 3 0 (1)]
+
+theorem screen_dead_184_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s184_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s184_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s184_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s184_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s184_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s184_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s184_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s184_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s184_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s184_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s184_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s184_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s184_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s184_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s184_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s184_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s184_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s184_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s184_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s184_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s184_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s184_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s184_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 3
+  have hcore : PolyRefl.eval (s184_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s184_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s184_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s184_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s184_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s184_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s185_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 4 0 0 1 3 (-1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s185_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 1 3 0 2 0 (1), PolyRefl.mkT 3 1 0 0 2 (-1), PolyRefl.mkT 4 0 0 0 2 (-1), PolyRefl.mkT 4 0 0 1 1 (2)]
+def s185_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s185_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (2)]
+def s185_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (2)]
+def s185_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 2 (-1)]
+def s185_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (-2), PolyRefl.mkT 0 3 0 1 0 (1), PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 2 1 0 0 1 (-2), PolyRefl.mkT 3 0 0 0 1 (2)]
+
+theorem screen_dead_185_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s185_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s185_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s185_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s185_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s185_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s185_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s185_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s185_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s185_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s185_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s185_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s185_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s185_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s185_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s185_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s185_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s185_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s185_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s185_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s185_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s185_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s185_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s185_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 3 0 2
+  have hcore : PolyRefl.eval (s185_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s185_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s185_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s185_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s185_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s185_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s190_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1)]
 def s190_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 4 0 (-1)]
 def s190_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
@@ -930,6 +3415,346 @@ theorem screen_dead_190_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s190_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s191_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 1 3 (1), PolyRefl.mkT 3 1 0 2 2 (1)]
+def s191_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-1), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (1)]
+def s191_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s191_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (1)]
+def s191_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (1)]
+def s191_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (-1)]
+def s191_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 0 1 (1)]
+
+theorem screen_dead_191_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s191_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s191_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s191_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s191_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s191_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s191_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s191_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s191_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s191_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s191_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s191_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s191_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s191_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s191_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s191_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s191_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s191_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s191_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s191_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s191_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s191_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s191_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s191_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 1 0
+  have hcore : PolyRefl.eval (s191_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s191_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s191_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s191_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s191_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s191_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s194_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 2 2 (1), PolyRefl.mkT 3 1 0 3 1 (1)]
+def s194_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 0 2 0 1 1 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 1 1 (1), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s194_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s194_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (1)]
+def s194_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (1)]
+def s194_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-1)]
+def s194_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 1 0 (1)]
+
+theorem screen_dead_194_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s194_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s194_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s194_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s194_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s194_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s194_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s194_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s194_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s194_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s194_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s194_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s194_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s194_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s194_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s194_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s194_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s194_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s194_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s194_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s194_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s194_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s194_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s194_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 1
+  have hcore : PolyRefl.eval (s194_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s194_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s194_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s194_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s194_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s194_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s197_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 4 0 0 1 3 (-1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s197_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 1 3 0 2 0 (1), PolyRefl.mkT 3 1 0 0 2 (-1), PolyRefl.mkT 4 0 0 0 2 (-1), PolyRefl.mkT 4 0 0 1 1 (-2)]
+def s197_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s197_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (-2)]
+def s197_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (-2)]
+def s197_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 2 (-1)]
+def s197_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (2), PolyRefl.mkT 0 3 0 1 0 (1), PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 2 1 0 0 1 (2), PolyRefl.mkT 3 0 0 0 1 (-2)]
+
+theorem screen_dead_197_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s197_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s197_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s197_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s197_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s197_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s197_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s197_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s197_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s197_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s197_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s197_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s197_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s197_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s197_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s197_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s197_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s197_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s197_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s197_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s197_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s197_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s197_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s197_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 3 0 2
+  have hcore : PolyRefl.eval (s197_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s197_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s197_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s197_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s197_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s197_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s199_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 3 1 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 3 1 (1)]
+def s199_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 1 3 0 0 2 (1), PolyRefl.mkT 3 1 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s199_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s199_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 1 1 (2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s199_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 1 1 (2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s199_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1)]
+def s199_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (2), PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 2 1 0 0 1 (2), PolyRefl.mkT 3 0 0 0 1 (2), PolyRefl.mkT 3 0 0 1 0 (1)]
+
+theorem screen_dead_199_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s199_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s199_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s199_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s199_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s199_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s199_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s199_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s199_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s199_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s199_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s199_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s199_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s199_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s199_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s199_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s199_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s199_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s199_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s199_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s199_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s199_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s199_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s199_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 2
+  have hcore : PolyRefl.eval (s199_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s199_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s199_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s199_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s199_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s199_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s202_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (-1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s202_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (-1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s202_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s202_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (-1)]
+def s202_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (-1)]
+def s202_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1)]
+def s202_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 3 0 (-1)]
+
+theorem screen_dead_202_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s202_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s202_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s202_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s202_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s202_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s202_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s202_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s202_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s202_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s202_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s202_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s202_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s202_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s202_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s202_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s202_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s202_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s202_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s202_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s202_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s202_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s202_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s202_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 0 3
+  have hcore : PolyRefl.eval (s202_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s202_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s202_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s202_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s202_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s202_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -1068,6 +3893,74 @@ theorem screen_dead_204_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s213_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (-1), PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 2 2 (-2), PolyRefl.mkT 3 1 0 4 0 (1)]
+def s213_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (-1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s213_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s213_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 1 0 0 2 2 (-2), PolyRefl.mkT 1 0 0 4 0 (1)]
+def s213_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 1 0 0 2 2 (-2), PolyRefl.mkT 1 0 0 4 0 (1)]
+def s213_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1)]
+def s213_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 1 0 0 1 2 (-2), PolyRefl.mkT 1 0 0 3 0 (1)]
+
+theorem screen_dead_213_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s213_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s213_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s213_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s213_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s213_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s213_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s213_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s213_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s213_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s213_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s213_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s213_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s213_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s213_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s213_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s213_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s213_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s213_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s213_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s213_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s213_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s213_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s213_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 4
+  have hcore : PolyRefl.eval (s213_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s213_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s213_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s213_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s213_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s213_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s243_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 3 1 (1)]
 def s243_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
 def s243_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
@@ -1202,6 +4095,796 @@ theorem screen_dead_243_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s267_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 3 1 (-1)]
+def s267_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s267_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s267_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 2 0 0 1 1 (2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s267_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 2 0 0 1 1 (2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s267_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1)]
+def s267_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-2), PolyRefl.mkT 2 0 0 0 1 (2), PolyRefl.mkT 2 0 0 1 0 (-1)]
+
+theorem screen_dead_267_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s267_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s267_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s267_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s267_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s267_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s267_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s267_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s267_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s267_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s267_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s267_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s267_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s267_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s267_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s267_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s267_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s267_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s267_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s267_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s267_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s267_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s267_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s267_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 2
+  have hcore : PolyRefl.eval (s267_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s267_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s267_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s267_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s267_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s267_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s277_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s277_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s277_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s277_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 2 2 (2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s277_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 2 2 (2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s277_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1)]
+def s277_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (2), PolyRefl.mkT 1 2 0 1 2 (2), PolyRefl.mkT 2 1 0 1 2 (2), PolyRefl.mkT 3 0 0 1 2 (2), PolyRefl.mkT 3 0 0 3 0 (1)]
+
+theorem screen_dead_277_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s277_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s277_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s277_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s277_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s277_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s277_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s277_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s277_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s277_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s277_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s277_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s277_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s277_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s277_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s277_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s277_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s277_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s277_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s277_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s277_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s277_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s277_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s277_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 4
+  have hcore : PolyRefl.eval (s277_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s277_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s277_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s277_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s277_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s277_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s289_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s289_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s289_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s289_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (-1), PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 1 2 0 0 4 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 2 1 0 4 0 (-1), PolyRefl.mkT 3 0 0 2 2 (2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s289_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (-1), PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 1 2 0 0 4 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 2 1 0 4 0 (-1), PolyRefl.mkT 3 0 0 2 2 (2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s289_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s289_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 2 0 0 2 2 (2), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s289_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 2 0 0 2 2 (2), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s289_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1)]
+def s289_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (2), PolyRefl.mkT 2 0 0 1 2 (2), PolyRefl.mkT 2 0 0 3 0 (1)]
+
+theorem screen_dead_289_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s289_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s289_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s289_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s289_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s289_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s289_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s289_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s289_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s289_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s289_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s289_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s289_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s289_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s289_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s289_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s289_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s289_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s289_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s289_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s289_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s289_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s289_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s289_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s289_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s289_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s289_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s289_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s289_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s289_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s289_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s289_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s289_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 4
+  have hcore : PolyRefl.eval (s289_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s289_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s289_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s289_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s289_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s289_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s289_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s289_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s317_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (1)]
+def s317_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (-1), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (1)]
+def s317_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s317_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (-1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (1)]
+def s317_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (-1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 0 1 (1)]
+def s317_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 0 (-1)]
+def s317_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 0 1 (1)]
+
+theorem screen_dead_317_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s317_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s317_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s317_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s317_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s317_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s317_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s317_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s317_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s317_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s317_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s317_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s317_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s317_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s317_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s317_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s317_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s317_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s317_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s317_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s317_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s317_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s317_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s317_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 1 0
+  have hcore : PolyRefl.eval (s317_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s317_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s317_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s317_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s317_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s317_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s318_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (-1)]
+def s318_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (-1)]
+def s318_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s318_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (-1)]
+def s318_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (-1)]
+def s318_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (1)]
+def s318_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 0 2 (-1)]
+
+theorem screen_dead_318_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s318_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s318_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s318_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s318_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s318_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s318_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s318_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s318_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s318_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s318_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s318_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s318_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s318_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s318_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s318_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s318_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s318_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s318_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s318_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s318_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s318_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s318_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s318_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 2 0
+  have hcore : PolyRefl.eval (s318_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s318_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s318_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s318_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s318_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s318_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s320_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s320_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 1 3 0 2 0 (1), PolyRefl.mkT 3 1 0 0 2 (-1), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (-2)]
+def s320_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s320_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 0 2 (1), PolyRefl.mkT 3 0 0 1 1 (-2)]
+def s320_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 0 2 (1), PolyRefl.mkT 3 0 0 1 1 (-2)]
+def s320_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 2 (1)]
+def s320_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (-2), PolyRefl.mkT 0 3 0 1 0 (1), PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 2 1 0 0 1 (-2), PolyRefl.mkT 3 0 0 0 1 (-2)]
+
+theorem screen_dead_320_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s320_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s320_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s320_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s320_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s320_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s320_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s320_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s320_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s320_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s320_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s320_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s320_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s320_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s320_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s320_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s320_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s320_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s320_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s320_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s320_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s320_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s320_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s320_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 3 0 2
+  have hcore : PolyRefl.eval (s320_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s320_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s320_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s320_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s320_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s320_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s323_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 2 2 (2), PolyRefl.mkT 3 1 0 3 1 (-1)]
+def s323_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 1 1 (2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s323_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s323_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 1 0 0 1 1 (2), PolyRefl.mkT 1 0 0 2 0 (-1)]
+def s323_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 1 0 0 1 1 (2), PolyRefl.mkT 1 0 0 2 0 (-1)]
+def s323_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1)]
+def s323_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 1 0 0 0 1 (2), PolyRefl.mkT 1 0 0 1 0 (-1)]
+
+theorem screen_dead_323_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s323_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s323_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s323_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s323_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s323_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s323_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s323_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s323_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s323_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s323_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s323_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s323_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s323_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s323_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s323_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s323_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s323_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s323_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s323_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s323_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s323_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s323_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s323_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 2
+  have hcore : PolyRefl.eval (s323_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s323_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s323_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s323_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s323_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s323_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s332_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s332_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 1 3 0 2 0 (1), PolyRefl.mkT 3 1 0 0 2 (-1), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (2)]
+def s332_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s332_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 0 2 (1), PolyRefl.mkT 3 0 0 1 1 (2)]
+def s332_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 0 2 (1), PolyRefl.mkT 3 0 0 1 1 (2)]
+def s332_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 2 (1)]
+def s332_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (2), PolyRefl.mkT 0 3 0 1 0 (1), PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 2 1 0 0 1 (2), PolyRefl.mkT 3 0 0 0 1 (2)]
+
+theorem screen_dead_332_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s332_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s332_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s332_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s332_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s332_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s332_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s332_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s332_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s332_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s332_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s332_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s332_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s332_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s332_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s332_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s332_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s332_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s332_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s332_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s332_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s332_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s332_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s332_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 3 0 2
+  have hcore : PolyRefl.eval (s332_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s332_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s332_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s332_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s332_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s332_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s348_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s348_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (-2)]
+def s348_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s348_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (-2)]
+def s348_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (-2)]
+def s348_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 2 (1)]
+def s348_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (2), PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 2 0 0 0 1 (-2)]
+
+theorem screen_dead_348_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s348_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s348_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s348_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s348_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s348_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s348_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s348_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s348_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s348_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s348_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s348_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s348_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s348_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s348_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s348_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s348_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s348_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s348_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s348_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s348_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s348_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s348_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s348_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s348_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s348_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s348_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s348_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s348_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s348_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s354_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 3 1 (1)]
+def s354_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s354_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s354_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (-1), PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 1 2 0 0 2 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 2 1 0 2 0 (-1), PolyRefl.mkT 3 0 0 1 1 (-2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s354_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (-1), PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 1 2 0 0 2 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 2 1 0 2 0 (-1), PolyRefl.mkT 3 0 0 1 1 (-2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s354_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s354_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s354_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s354_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1)]
+def s354_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-2), PolyRefl.mkT 2 0 0 0 1 (-2), PolyRefl.mkT 2 0 0 1 0 (1)]
+
+theorem screen_dead_354_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s354_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s354_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s354_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s354_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s354_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s354_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s354_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s354_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s354_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s354_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s354_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s354_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s354_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s354_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s354_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s354_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s354_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s354_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s354_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s354_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s354_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s354_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s354_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s354_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s354_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s354_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s354_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s354_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s354_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s354_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s354_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s354_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 2
+  have hcore : PolyRefl.eval (s354_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s354_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s354_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s354_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s354_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s354_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s354_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s354_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s361_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 3 1 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 3 1 (-1)]
+def s361_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 1 3 0 0 2 (1), PolyRefl.mkT 3 1 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s361_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s361_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 1 1 (2), PolyRefl.mkT 3 0 0 2 0 (-1)]
+def s361_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 1 1 (2), PolyRefl.mkT 3 0 0 2 0 (-1)]
+def s361_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1)]
+def s361_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (-2), PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 2 1 0 0 1 (-2), PolyRefl.mkT 3 0 0 0 1 (2), PolyRefl.mkT 3 0 0 1 0 (-1)]
+
+theorem screen_dead_361_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s361_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s361_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s361_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s361_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s361_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s361_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s361_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s361_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s361_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s361_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s361_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s361_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s361_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s361_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s361_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s361_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s361_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s361_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s361_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s361_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s361_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s361_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s361_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 2
+  have hcore : PolyRefl.eval (s361_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s361_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s361_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s361_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s361_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s361_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s362_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 1 3 (1), PolyRefl.mkT 3 1 0 3 1 (-1)]
 def s362_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 2 0 (-1)]
 def s362_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
@@ -1311,6 +4994,592 @@ theorem screen_dead_362_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s362_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s367_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 2 2 (-1)]
+def s367_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (1), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (-1)]
+def s367_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s367_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 1 (1), PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (1), PolyRefl.mkT 2 0 0 1 2 (-1)]
+def s367_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 1 (1), PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (1), PolyRefl.mkT 2 0 0 1 2 (-1)]
+def s367_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s367_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1)]
+def s367_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1)]
+def s367_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (-1)]
+def s367_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (-2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 0 2 (-1)]
+
+theorem screen_dead_367_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s367_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s367_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s367_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s367_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s367_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s367_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s367_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s367_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s367_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s367_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s367_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s367_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s367_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s367_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s367_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s367_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s367_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s367_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s367_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s367_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s367_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s367_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s367_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s367_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s367_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s367_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s367_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s367_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s367_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s367_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s367_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s367_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 2 0
+  have hcore : PolyRefl.eval (s367_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s367_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s367_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s367_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s367_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s367_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s367_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s367_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s371_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 1 3 (1)]
+def s371_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 1 3 (1)]
+def s371_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s371_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (1)]
+def s371_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (1)]
+def s371_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (-1)]
+def s371_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 0 3 (1)]
+
+theorem screen_dead_371_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s371_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s371_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s371_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s371_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s371_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s371_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s371_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s371_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s371_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s371_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s371_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s371_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s371_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s371_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s371_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s371_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s371_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s371_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s371_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s371_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s371_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s371_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s371_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 3 0
+  have hcore : PolyRefl.eval (s371_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s371_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s371_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s371_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s371_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s371_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s373_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s373_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s373_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s373_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 0 4 (1), PolyRefl.mkT 3 0 0 2 2 (-2)]
+def s373_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 0 4 (1), PolyRefl.mkT 3 0 0 2 2 (-2)]
+def s373_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 4 (1)]
+def s373_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (-2), PolyRefl.mkT 0 3 0 3 0 (1), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 2 1 0 1 2 (-2), PolyRefl.mkT 3 0 0 1 2 (-2)]
+
+theorem screen_dead_373_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s373_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s373_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s373_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s373_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s373_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s373_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s373_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s373_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s373_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s373_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s373_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s373_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s373_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s373_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s373_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s373_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s373_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s373_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s373_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s373_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s373_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s373_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s373_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 3 0 4
+  have hcore : PolyRefl.eval (s373_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s373_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s373_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s373_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s373_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s373_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s382_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 2 2 (2), PolyRefl.mkT 3 1 0 4 0 (-1)]
+def s382_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 2 2 (2), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s382_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s382_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 1 0 0 2 2 (2), PolyRefl.mkT 1 0 0 4 0 (-1)]
+def s382_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 1 0 0 2 2 (2), PolyRefl.mkT 1 0 0 4 0 (-1)]
+def s382_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1)]
+def s382_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 1 0 0 1 2 (2), PolyRefl.mkT 1 0 0 3 0 (-1)]
+
+theorem screen_dead_382_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s382_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s382_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s382_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s382_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s382_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s382_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s382_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s382_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s382_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s382_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s382_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s382_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s382_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s382_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s382_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s382_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s382_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s382_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s382_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s382_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s382_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s382_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s382_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 4
+  have hcore : PolyRefl.eval (s382_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s382_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s382_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s382_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s382_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s382_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s385_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s385_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s385_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s385_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 1 2 0 4 0 (-1), PolyRefl.mkT 2 1 0 0 4 (1), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (-2)]
+def s385_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 1 2 0 4 0 (-1), PolyRefl.mkT 2 1 0 0 4 (1), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (-2)]
+def s385_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s385_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (-2)]
+def s385_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (-2)]
+def s385_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 4 (-1)]
+def s385_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (-2), PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 2 0 0 1 2 (-2)]
+
+theorem screen_dead_385_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s385_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s385_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s385_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s385_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s385_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s385_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s385_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s385_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s385_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s385_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s385_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s385_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s385_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s385_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s385_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s385_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s385_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s385_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s385_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s385_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s385_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s385_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s385_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s385_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s385_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s385_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s385_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s385_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s385_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s385_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s385_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s385_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 4
+  have hcore : PolyRefl.eval (s385_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s385_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s385_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s385_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s385_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s385_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s385_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s385_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s390_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (-1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s390_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (-1), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s390_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s390_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s390_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (-1)]
+def s390_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1)]
+def s390_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 2 0 (-1)]
+
+theorem screen_dead_390_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s390_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s390_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s390_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s390_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s390_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s390_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s390_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s390_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s390_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s390_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s390_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s390_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s390_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s390_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s390_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s390_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s390_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s390_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s390_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s390_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s390_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s390_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s390_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 0 2
+  have hcore : PolyRefl.eval (s390_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s390_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s390_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s390_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s390_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s390_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s398_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 3 1 0 2 2 (1)]
+def s398_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-1), PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (1)]
+def s398_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s398_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (1)]
+def s398_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (1)]
+def s398_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (1)]
+def s398_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 0 1 (1)]
+
+theorem screen_dead_398_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s398_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s398_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s398_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s398_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s398_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s398_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s398_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s398_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s398_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s398_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s398_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s398_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s398_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s398_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s398_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s398_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s398_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s398_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s398_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s398_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s398_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s398_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s398_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 1 0
+  have hcore : PolyRefl.eval (s398_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s398_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s398_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s398_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s398_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s398_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s402_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 2 2 (2), PolyRefl.mkT 3 1 0 3 1 (1)]
+def s402_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 1 1 (2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s402_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s402_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 1 0 0 1 1 (2), PolyRefl.mkT 1 0 0 2 0 (1)]
+def s402_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 1 0 0 1 1 (2), PolyRefl.mkT 1 0 0 2 0 (1)]
+def s402_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1)]
+def s402_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 1 0 0 0 1 (2), PolyRefl.mkT 1 0 0 1 0 (1)]
+
+theorem screen_dead_402_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s402_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s402_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s402_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s402_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s402_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s402_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s402_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s402_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s402_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s402_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s402_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s402_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s402_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s402_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s402_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s402_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s402_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s402_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s402_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s402_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s402_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s402_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s402_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 2
+  have hcore : PolyRefl.eval (s402_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s402_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s402_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s402_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s402_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s402_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -1449,6 +5718,231 @@ theorem screen_dead_410_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s415_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 1 3 (-1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s415_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 0 2 (-1), PolyRefl.mkT 4 0 0 1 1 (2)]
+def s415_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s415_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 1 2 0 2 0 (-1), PolyRefl.mkT 2 1 0 0 2 (1), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (2)]
+def s415_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (2), PolyRefl.mkT 1 2 0 2 0 (-1), PolyRefl.mkT 2 1 0 0 2 (1), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (2)]
+def s415_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s415_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (2)]
+def s415_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (2)]
+def s415_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 2 (-1)]
+def s415_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (2), PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 2 0 0 0 1 (2)]
+
+theorem screen_dead_415_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s415_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s415_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s415_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s415_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s415_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s415_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s415_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s415_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s415_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s415_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s415_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s415_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s415_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s415_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s415_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s415_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s415_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s415_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s415_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s415_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s415_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s415_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s415_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s415_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s415_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s415_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s415_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s415_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s415_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s415_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s415_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s415_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s415_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s415_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s415_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s415_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s415_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s415_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s415_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s415_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s424_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (-1), PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 3 1 (-1), PolyRefl.mkT 3 1 0 4 0 (1)]
+def s424_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (-1), PolyRefl.mkT 0 2 0 1 3 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 3 1 (-1), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s424_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s424_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (1)]
+def s424_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (1)]
+def s424_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1)]
+def s424_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (-2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (-2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 3 0 (1)]
+
+theorem screen_dead_424_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s424_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s424_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s424_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s424_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s424_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s424_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s424_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s424_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s424_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s424_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s424_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s424_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s424_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s424_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s424_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s424_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s424_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s424_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s424_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s424_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s424_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s424_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s424_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 3
+  have hcore : PolyRefl.eval (s424_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s424_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s424_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s424_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s424_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s424_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s426_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 1 3 (1), PolyRefl.mkT 3 1 0 2 2 (-1)]
+def s426_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (1), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (-1)]
+def s426_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s426_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (-1)]
+def s426_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 0 1 (-1)]
+def s426_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 0 (-1)]
+def s426_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 0 1 (-1)]
+
+theorem screen_dead_426_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s426_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s426_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s426_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s426_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s426_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s426_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s426_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s426_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s426_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s426_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s426_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s426_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s426_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s426_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s426_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s426_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s426_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s426_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s426_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s426_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s426_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s426_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s426_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 1 0
+  have hcore : PolyRefl.eval (s426_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s426_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s426_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s426_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s426_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s426_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s427_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 3 1 (-1)]
 def s427_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 2 0 (-1)]
 def s427_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
@@ -1558,6 +6052,482 @@ theorem screen_dead_427_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s427_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s428_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 3 1 (-1), PolyRefl.mkT 3 1 0 4 0 (-1)]
+def s428_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 1 3 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 3 1 (-1), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s428_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s428_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (-1)]
+def s428_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 3 0 (-1)]
+def s428_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1)]
+def s428_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 3 0 (-1)]
+
+theorem screen_dead_428_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s428_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s428_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s428_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s428_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s428_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s428_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s428_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s428_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s428_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s428_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s428_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s428_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s428_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s428_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s428_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s428_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s428_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s428_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s428_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s428_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s428_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s428_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s428_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 3
+  have hcore : PolyRefl.eval (s428_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s428_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s428_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s428_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s428_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s428_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s437_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 1 3 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (1), PolyRefl.mkT 3 1 0 1 3 (-1)]
+def s437_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 1 (1), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 1 3 (-1)]
+def s437_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s437_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (-1)]
+def s437_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (-1)]
+def s437_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (-1)]
+def s437_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (-2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (-2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 0 3 (-1)]
+
+theorem screen_dead_437_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s437_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s437_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s437_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s437_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s437_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s437_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s437_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s437_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s437_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s437_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s437_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s437_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s437_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s437_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s437_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s437_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s437_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s437_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s437_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s437_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s437_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s437_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s437_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 3 0
+  have hcore : PolyRefl.eval (s437_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s437_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s437_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s437_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s437_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s437_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s438_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 2 2 (1), PolyRefl.mkT 4 0 0 3 1 (1)]
+def s438_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 1 1 (1), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s438_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s438_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (-1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (1)]
+def s438_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (-1), PolyRefl.mkT 2 2 0 0 1 (2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (1)]
+def s438_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (-1)]
+def s438_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 1 0 (1)]
+
+theorem screen_dead_438_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s438_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s438_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s438_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s438_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s438_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s438_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s438_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s438_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s438_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s438_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s438_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s438_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s438_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s438_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s438_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s438_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s438_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s438_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s438_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s438_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s438_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s438_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s438_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 0 1
+  have hcore : PolyRefl.eval (s438_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s438_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s438_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s438_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s438_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s438_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s440_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 2 2 (-2), PolyRefl.mkT 3 1 0 3 1 (1)]
+def s440_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 1 1 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s440_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s440_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 1 0 0 1 1 (-2), PolyRefl.mkT 1 0 0 2 0 (1)]
+def s440_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1), PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 1 0 0 1 1 (-2), PolyRefl.mkT 1 0 0 2 0 (1)]
+def s440_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (1)]
+def s440_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 1 0 0 0 1 (-2), PolyRefl.mkT 1 0 0 1 0 (1)]
+
+theorem screen_dead_440_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s440_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s440_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s440_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s440_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s440_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s440_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s440_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s440_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s440_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s440_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s440_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s440_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s440_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s440_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s440_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s440_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s440_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s440_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s440_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s440_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s440_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s440_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s440_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 2
+  have hcore : PolyRefl.eval (s440_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s440_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s440_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s440_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s440_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s440_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s448_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 1 3 (1)]
+def s448_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 1 3 (1)]
+def s448_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s448_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (1)]
+def s448_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 0 3 (1)]
+def s448_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 3 0 (1)]
+def s448_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (-2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (-2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 0 3 (1)]
+
+theorem screen_dead_448_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s448_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s448_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s448_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s448_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s448_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s448_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s448_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s448_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s448_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s448_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s448_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s448_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s448_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s448_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s448_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s448_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s448_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s448_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s448_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s448_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s448_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s448_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s448_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 3 0
+  have hcore : PolyRefl.eval (s448_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s448_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s448_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s448_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s448_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s448_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s455_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s455_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (1), PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (2), PolyRefl.mkT 4 0 0 4 0 (-1)]
+def s455_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s455_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 2 2 (2), PolyRefl.mkT 3 0 0 4 0 (-1)]
+def s455_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 2 2 (2), PolyRefl.mkT 3 0 0 4 0 (-1)]
+def s455_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1)]
+def s455_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (-2), PolyRefl.mkT 1 2 0 1 2 (2), PolyRefl.mkT 2 1 0 1 2 (-2), PolyRefl.mkT 3 0 0 1 2 (2), PolyRefl.mkT 3 0 0 3 0 (-1)]
+
+theorem screen_dead_455_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s455_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s455_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s455_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s455_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s455_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s455_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s455_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s455_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s455_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s455_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s455_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s455_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s455_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s455_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s455_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s455_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s455_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s455_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s455_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s455_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s455_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s455_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s455_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 4
+  have hcore : PolyRefl.eval (s455_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s455_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s455_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s455_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s455_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s455_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s462_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (1)]
+def s462_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-1), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (1)]
+def s462_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s462_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1)]
+def s462_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 0 2 (1)]
+def s462_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 0 (-1)]
+def s462_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 0 2 (1)]
+
+theorem screen_dead_462_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s462_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s462_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s462_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s462_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s462_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s462_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s462_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s462_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s462_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s462_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s462_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s462_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s462_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s462_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s462_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s462_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s462_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s462_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s462_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s462_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s462_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s462_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s462_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 2 0
+  have hcore : PolyRefl.eval (s462_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s462_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s462_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s462_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s462_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s462_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -1692,6 +6662,74 @@ theorem screen_dead_485_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s485_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s489_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (-1), PolyRefl.mkT 1 3 0 2 2 (-2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 2 2 (2), PolyRefl.mkT 3 1 0 4 0 (1)]
+def s489_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (-1), PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 2 2 (2), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s489_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s489_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 1 0 0 2 2 (2), PolyRefl.mkT 1 0 0 4 0 (1)]
+def s489_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1), PolyRefl.mkT 0 1 0 2 2 (2), PolyRefl.mkT 1 0 0 2 2 (2), PolyRefl.mkT 1 0 0 4 0 (1)]
+def s489_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 4 (1)]
+def s489_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (2), PolyRefl.mkT 1 0 0 1 2 (2), PolyRefl.mkT 1 0 0 3 0 (1)]
+
+theorem screen_dead_489_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s489_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s489_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s489_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s489_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s489_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s489_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s489_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s489_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s489_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s489_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s489_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s489_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s489_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s489_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s489_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s489_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s489_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s489_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s489_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s489_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s489_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s489_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s489_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 1 4
+  have hcore : PolyRefl.eval (s489_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s489_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s489_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s489_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s489_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s489_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
@@ -1964,6 +7002,864 @@ theorem screen_dead_494_2_2
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0
 
+def s497_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 2 2 (-1)]
+def s497_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (1), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (-1)]
+def s497_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s497_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1)]
+def s497_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (-1)]
+def s497_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (1)]
+def s497_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 0 2 (-1)]
+
+theorem screen_dead_497_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s497_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s497_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s497_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s497_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s497_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s497_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s497_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s497_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s497_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s497_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s497_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s497_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s497_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s497_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s497_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s497_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s497_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s497_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s497_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s497_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s497_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s497_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s497_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 2 0
+  have hcore : PolyRefl.eval (s497_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s497_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s497_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s497_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s497_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s497_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s498_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 3 1 0 3 1 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 3 1 (1)]
+def s498_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 1 3 0 0 2 (1), PolyRefl.mkT 3 1 0 2 0 (-1), PolyRefl.mkT 4 0 0 1 1 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s498_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s498_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 1 1 (-2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s498_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1), PolyRefl.mkT 0 3 0 1 1 (-2), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 2 1 0 1 1 (-2), PolyRefl.mkT 3 0 0 1 1 (-2), PolyRefl.mkT 3 0 0 2 0 (1)]
+def s498_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 2 (1)]
+def s498_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 1 (-2), PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 2 1 0 0 1 (-2), PolyRefl.mkT 3 0 0 0 1 (-2), PolyRefl.mkT 3 0 0 1 0 (1)]
+
+theorem screen_dead_498_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s498_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s498_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s498_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s498_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s498_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s498_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s498_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s498_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s498_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s498_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s498_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s498_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s498_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s498_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s498_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s498_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s498_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s498_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s498_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s498_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s498_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s498_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s498_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 2
+  have hcore : PolyRefl.eval (s498_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s498_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s498_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s498_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s498_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s498_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s502_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (-1), PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 2 2 (-1), PolyRefl.mkT 3 1 0 3 1 (1)]
+def s502_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 0 2 0 1 1 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 1 1 (-1), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s502_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s502_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (1)]
+def s502_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (1)]
+def s502_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (1)]
+def s502_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 1 0 (1)]
+
+theorem screen_dead_502_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s502_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s502_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s502_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s502_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s502_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s502_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s502_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s502_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s502_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s502_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s502_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s502_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s502_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s502_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s502_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s502_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s502_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s502_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s502_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s502_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s502_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s502_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s502_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 1
+  have hcore : PolyRefl.eval (s502_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s502_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s502_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s502_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s502_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s502_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s504_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 4 0 0 2 2 (-1), PolyRefl.mkT 4 0 0 3 1 (1)]
+def s504_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (-1), PolyRefl.mkT 0 4 0 1 1 (1), PolyRefl.mkT 2 2 0 0 2 (2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 1 1 (-1), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s504_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s504_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (1)]
+def s504_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (1), PolyRefl.mkT 2 2 0 0 1 (-2), PolyRefl.mkT 2 2 0 1 0 (-2), PolyRefl.mkT 4 0 0 1 0 (1)]
+def s504_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 1 (1)]
+def s504_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 1 (-2), PolyRefl.mkT 1 2 0 1 0 (-2), PolyRefl.mkT 3 0 0 1 0 (1)]
+
+theorem screen_dead_504_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s504_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s504_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s504_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s504_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s504_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s504_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s504_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s504_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s504_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s504_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s504_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s504_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s504_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s504_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s504_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s504_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s504_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s504_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s504_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s504_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s504_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s504_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s504_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 0 1
+  have hcore : PolyRefl.eval (s504_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s504_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s504_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s504_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s504_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s504_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s507_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s507_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 1 3 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s507_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s507_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (1)]
+def s507_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (1)]
+def s507_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1)]
+def s507_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 3 0 (1)]
+
+theorem screen_dead_507_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s507_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s507_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s507_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s507_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s507_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s507_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s507_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s507_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s507_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s507_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s507_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s507_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s507_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s507_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s507_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s507_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s507_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s507_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s507_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s507_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s507_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s507_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s507_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 4 0 3
+  have hcore : PolyRefl.eval (s507_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s507_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s507_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s507_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s507_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s507_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s509_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 2 2 (1), PolyRefl.mkT 3 1 0 3 1 (-1)]
+def s509_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 1 1 (1), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s509_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s509_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (-1)]
+def s509_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-1), PolyRefl.mkT 1 1 0 0 1 (-2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (-1)]
+def s509_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-1)]
+def s509_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 1 0 (-1)]
+
+theorem screen_dead_509_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s509_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s509_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s509_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s509_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s509_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s509_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s509_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s509_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s509_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s509_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s509_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s509_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s509_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s509_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s509_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s509_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s509_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s509_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s509_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s509_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s509_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s509_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s509_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 1
+  have hcore : PolyRefl.eval (s509_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s509_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s509_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s509_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s509_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s509_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s515_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (-1), PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 2 2 (1), PolyRefl.mkT 3 1 0 4 0 (1)]
+def s515_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (-1), PolyRefl.mkT 0 2 0 2 2 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 2 2 (1), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s515_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 2 (1), PolyRefl.mkT 0 0 0 2 0 (1)]
+def s515_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s515_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s515_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1)]
+def s515_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 2 0 (1)]
+
+theorem screen_dead_515_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s515_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s515_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s515_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s515_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s515_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s515_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s515_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s515_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s515_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 2 (by norm_num)
+    linear_combination (norm := (simp only [s515_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s515_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s515_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s515_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s515_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s515_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s515_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s515_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s515_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s515_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s515_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s515_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s515_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s515_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s515_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s515_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s515_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s515_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s515_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s515_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s519_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 1 3 (1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s519_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (-2), PolyRefl.mkT 0 4 0 2 0 (-1), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 0 2 (1), PolyRefl.mkT 4 0 0 1 1 (2)]
+def s519_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s519_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (2)]
+def s519_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (2)]
+def s519_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 2 (1)]
+def s519_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-2), PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 2 0 0 0 1 (2)]
+
+theorem screen_dead_519_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s519_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s519_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s519_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s519_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s519_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s519_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s519_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s519_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s519_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s519_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s519_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s519_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s519_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s519_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s519_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s519_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s519_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s519_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s519_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s519_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s519_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s519_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s519_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s519_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s519_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s519_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s519_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s519_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s519_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s520_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s520_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s520_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 0 (1), PolyRefl.mkT 2 0 0 0 0 (1)]
+def s520_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (-2)]
+def s520_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (1), PolyRefl.mkT 2 0 0 2 2 (-2)]
+def s520_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 4 (1)]
+def s520_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (2), PolyRefl.mkT 0 2 0 3 0 (-1), PolyRefl.mkT 2 0 0 1 2 (-2)]
+
+theorem screen_dead_520_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s520_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s520_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s520_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s520_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s520_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s520_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s520_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s520_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s520_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 2 (by norm_num)
+    linear_combination (norm := (simp only [s520_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s520_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s520_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s520_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s520_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s520_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s520_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s520_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s520_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s520_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s520_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s520_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s520_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s520_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 4
+  have hcore : PolyRefl.eval (s520_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s520_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s520_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s520_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s520_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s520_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s522_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (-1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s522_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 1 3 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 3 1 (-1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s522_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s522_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (1)]
+def s522_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1), PolyRefl.mkT 2 2 0 0 3 (-2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (-2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 3 0 (1)]
+def s522_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (1)]
+def s522_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 3 (-2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 1 2 0 2 1 (-2), PolyRefl.mkT 1 2 0 3 0 (-2), PolyRefl.mkT 3 0 0 3 0 (1)]
+
+theorem screen_dead_522_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s522_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s522_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s522_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s522_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s522_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s522_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s522_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s522_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s522_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s522_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s522_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s522_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s522_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s522_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s522_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s522_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s522_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s522_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s522_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s522_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s522_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) := by
+    simp only [s522_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s522_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 0 3
+  have hcore : PolyRefl.eval (s522_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s522_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s522_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s522_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s522_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s522_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s524_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (-1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s524_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 4 0 0 2 2 (-1), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s524_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s524_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1), PolyRefl.mkT 0 4 0 1 2 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 2 1 (-1), PolyRefl.mkT 4 0 0 3 0 (1)]
+def s524_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 3 (-1), PolyRefl.mkT 0 4 0 1 2 (1), PolyRefl.mkT 2 2 0 0 3 (2), PolyRefl.mkT 2 2 0 1 2 (-2), PolyRefl.mkT 2 2 0 2 1 (2), PolyRefl.mkT 2 2 0 3 0 (-2), PolyRefl.mkT 4 0 0 2 1 (-1), PolyRefl.mkT 4 0 0 3 0 (1)]
+def s524_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s524_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s524_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1), PolyRefl.mkT 2 2 0 0 2 (-2), PolyRefl.mkT 2 2 0 2 0 (-2), PolyRefl.mkT 4 0 0 2 0 (1)]
+def s524_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 2 (1)]
+def s524_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 2 0 0 2 (-2), PolyRefl.mkT 1 2 0 2 0 (-2), PolyRefl.mkT 3 0 0 2 0 (1)]
+
+theorem screen_dead_524_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s524_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s524_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s524_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s524_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s524_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s524_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s524_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s524_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s524_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s524_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s524_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s524_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s524_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s524_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s524_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s524_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s524_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s524_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s524_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s524_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s524_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s524_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s524_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s524_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s524_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s524_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s524_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s524_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s524_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s524_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s524_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s524_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 4 0 2
+  have hcore : PolyRefl.eval (s524_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s524_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s524_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s524_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s524_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s524_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s524_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s524_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s526_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 2 2 (1), PolyRefl.mkT 3 1 0 4 0 (-1)]
+def s526_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (-1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 2 2 (1), PolyRefl.mkT 2 0 0 4 0 (-1)]
+def s526_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s526_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1), PolyRefl.mkT 0 2 0 1 2 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 2 1 (1), PolyRefl.mkT 2 0 0 3 0 (-1)]
+def s526_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (1), PolyRefl.mkT 0 2 0 1 2 (-1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 2 1 (1), PolyRefl.mkT 2 0 0 3 0 (-1)]
+def s526_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s526_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s526_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s526_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (-1)]
+def s526_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (-2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 2 0 (-1)]
+
+theorem screen_dead_526_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s526_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s526_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s526_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s526_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s526_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s526_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s526_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s526_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s526_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s526_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s526_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s526_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s526_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s526_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s526_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s526_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s526_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s526_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s526_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s526_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s526_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s526_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s526_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s526_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s526_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s526_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s526_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s526_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s526_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s526_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s526_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s526_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s526_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s526_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s526_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s526_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s526_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s526_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s526_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s526_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
 def s533_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 2 2 (-2), PolyRefl.mkT 3 1 0 4 0 (-1)]
 def s533_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (-1)]
 def s533_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
@@ -2073,6 +7969,974 @@ theorem screen_dead_533_2_2
     rw [e0f]
     exact mul_ne_zero h0f hbp1
   have hbp0 : PolyRefl.eval (s533_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s537_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (-1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 2 2 (1)]
+def s537_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (-1), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (1)]
+def s537_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s537_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 1 (-1), PolyRefl.mkT 0 2 0 3 0 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (-1), PolyRefl.mkT 2 0 0 1 2 (1)]
+def s537_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 1 (-1), PolyRefl.mkT 0 2 0 3 0 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (-1), PolyRefl.mkT 2 0 0 1 2 (1)]
+def s537_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s537_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1)]
+def s537_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 0 2 (1)]
+def s537_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 0 (1)]
+def s537_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (-2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 0 2 (1)]
+
+theorem screen_dead_537_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s537_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s537_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s537_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s537_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s537_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s537_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s537_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s537_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s537_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s537_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s537_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s537_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s537_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s537_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s537_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s537_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s537_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s537_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s537_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s537_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s537_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s537_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s537_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s537_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s537_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s537_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s537_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s537_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s537_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s537_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s537_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s537_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 2 0
+  have hcore : PolyRefl.eval (s537_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s537_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s537_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s537_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s537_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s537_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s537_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s537_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s539_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s539_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (-1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s539_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s539_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 0 4 (1), PolyRefl.mkT 3 0 0 2 2 (2)]
+def s539_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 3 0 0 0 4 (1), PolyRefl.mkT 3 0 0 2 2 (2)]
+def s539_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 4 (1)]
+def s539_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (2), PolyRefl.mkT 0 3 0 3 0 (1), PolyRefl.mkT 1 2 0 1 2 (2), PolyRefl.mkT 2 1 0 1 2 (2), PolyRefl.mkT 3 0 0 1 2 (2)]
+
+theorem screen_dead_539_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s539_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s539_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s539_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s539_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s539_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s539_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s539_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s539_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s539_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s539_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s539_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s539_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s539_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s539_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s539_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s539_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s539_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s539_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s539_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s539_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s539_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s539_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s539_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 3 0 4
+  have hcore : PolyRefl.eval (s539_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s539_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s539_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s539_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s539_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s539_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s544_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 1 3 (1), PolyRefl.mkT 3 1 0 2 2 (-2)]
+def s544_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (1), PolyRefl.mkT 2 0 0 1 1 (-2)]
+def s544_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s544_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (1), PolyRefl.mkT 1 0 0 1 1 (-2)]
+def s544_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (1), PolyRefl.mkT 1 0 0 1 1 (-2)]
+def s544_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 2 (1)]
+def s544_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 0 1 0 1 0 (-1), PolyRefl.mkT 1 0 0 0 1 (-2)]
+
+theorem screen_dead_544_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s544_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s544_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s544_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s544_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s544_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s544_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s544_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s544_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s544_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s544_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s544_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s544_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s544_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s544_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s544_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s544_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s544_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s544_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s544_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s544_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s544_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s544_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s544_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 1 0 2
+  have hcore : PolyRefl.eval (s544_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s544_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s544_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s544_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s544_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s544_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s547_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 3 1 (-1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 1 3 (1)]
+def s547_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 1 (-1), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 1 3 (1)]
+def s547_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s547_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (1)]
+def s547_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (1), PolyRefl.mkT 1 1 0 0 3 (-2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (-2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (1)]
+def s547_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (1)]
+def s547_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (-2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (-2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 0 3 (1)]
+
+theorem screen_dead_547_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s547_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s547_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s547_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s547_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s547_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s547_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s547_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s547_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s547_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s547_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s547_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s547_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s547_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s547_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s547_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s547_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s547_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s547_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s547_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s547_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s547_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s547_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s547_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 3 0
+  have hcore : PolyRefl.eval (s547_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s547_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s547_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s547_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s547_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s547_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s549_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 0 4 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 4 0 0 1 3 (-1), PolyRefl.mkT 4 0 0 2 2 (-2)]
+def s549_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 1 1 (2), PolyRefl.mkT 0 4 0 2 0 (1), PolyRefl.mkT 2 2 0 0 2 (1), PolyRefl.mkT 2 2 0 2 0 (-1), PolyRefl.mkT 4 0 0 0 2 (-1), PolyRefl.mkT 4 0 0 1 1 (-2)]
+def s549_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s549_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 1 2 0 2 0 (-1), PolyRefl.mkT 2 1 0 0 2 (1), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (-2)]
+def s549_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 1 (2), PolyRefl.mkT 0 3 0 2 0 (1), PolyRefl.mkT 1 2 0 1 1 (-2), PolyRefl.mkT 1 2 0 2 0 (-1), PolyRefl.mkT 2 1 0 0 2 (1), PolyRefl.mkT 2 1 0 1 1 (2), PolyRefl.mkT 3 0 0 0 2 (-1), PolyRefl.mkT 3 0 0 1 1 (-2)]
+def s549_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s549_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (-2)]
+def s549_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (-2), PolyRefl.mkT 0 2 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (-2)]
+def s549_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 2 0 0 0 2 (-1)]
+def s549_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (-2), PolyRefl.mkT 0 2 0 1 0 (-1), PolyRefl.mkT 2 0 0 0 1 (-2)]
+
+theorem screen_dead_549_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s549_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s549_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s549_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s549_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 1, 1), 1) (s549_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s549_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s549_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s549_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s549_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s549_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s549_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s549_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s549_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s549_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s549_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s549_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s549_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s549_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s549_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s549_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s549_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s549_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s549_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s549_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s549_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s549_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s549_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s549_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s549_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s549_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (2 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s549_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s549_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s549_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s549_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s549_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s549_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s549_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s549_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s549_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s549_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s551_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 1 3 (-1)]
+def s551_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 1 (1), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 1 3 (-1)]
+def s551_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s551_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (-1)]
+def s551_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 0 3 (-1)]
+def s551_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 3 0 (1)]
+def s551_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 3 (2), PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 2 1 (2), PolyRefl.mkT 0 1 0 3 0 (-2), PolyRefl.mkT 1 0 0 0 3 (-1)]
+
+theorem screen_dead_551_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s551_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s551_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s551_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s551_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s551_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s551_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s551_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s551_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s551_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s551_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s551_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s551_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s551_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s551_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s551_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s551_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s551_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s551_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s551_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s551_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s551_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) := by
+    simp only [s551_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s551_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 3 0
+  have hcore : PolyRefl.eval (s551_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s551_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s551_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s551_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s551_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s551_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s555_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s555_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s555_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s555_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (-1), PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 1 2 0 0 4 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 2 1 0 4 0 (-1), PolyRefl.mkT 3 0 0 2 2 (-2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s555_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (-1), PolyRefl.mkT 0 3 0 2 2 (2), PolyRefl.mkT 1 2 0 0 4 (1), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (2), PolyRefl.mkT 2 1 0 4 0 (-1), PolyRefl.mkT 3 0 0 2 2 (-2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s555_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s555_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s555_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1), PolyRefl.mkT 0 2 0 2 2 (-2), PolyRefl.mkT 2 0 0 2 2 (-2), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s555_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (1)]
+def s555_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 2 (-2), PolyRefl.mkT 2 0 0 1 2 (-2), PolyRefl.mkT 2 0 0 3 0 (1)]
+
+theorem screen_dead_555_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s555_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s555_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s555_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s555_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s555_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s555_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s555_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s555_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s555_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s555_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s555_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s555_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s555_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s555_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s555_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s555_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s555_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s555_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s555_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s555_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s555_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s555_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s555_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s555_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s555_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s555_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s555_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s555_2l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s555_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s555_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s555_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s555_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 2 4
+  have hcore : PolyRefl.eval (s555_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s555_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s555_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s555_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s555_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s555_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s555_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s555_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s558_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 1 3 0 3 1 (1), PolyRefl.mkT 2 2 0 1 3 (1), PolyRefl.mkT 2 2 0 3 1 (-1), PolyRefl.mkT 3 1 0 1 3 (-1), PolyRefl.mkT 3 1 0 2 2 (-2)]
+def s558_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 1 1 (2), PolyRefl.mkT 0 2 0 2 0 (1), PolyRefl.mkT 1 1 0 0 2 (1), PolyRefl.mkT 1 1 0 2 0 (-1), PolyRefl.mkT 2 0 0 0 2 (-1), PolyRefl.mkT 2 0 0 1 1 (-2)]
+def s558_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s558_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (-1), PolyRefl.mkT 1 0 0 1 1 (-2)]
+def s558_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 1 (-2), PolyRefl.mkT 0 1 0 2 0 (-1), PolyRefl.mkT 1 0 0 0 2 (-1), PolyRefl.mkT 1 0 0 1 1 (-2)]
+def s558_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 2 (-1)]
+def s558_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (-2), PolyRefl.mkT 0 1 0 1 0 (-1), PolyRefl.mkT 1 0 0 0 1 (-2)]
+
+theorem screen_dead_558_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s558_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s558_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s558_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s558_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s558_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s558_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s558_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s558_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s558_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s558_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s558_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s558_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s558_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s558_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s558_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s558_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s558_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s558_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s558_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s558_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s558_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s558_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s558_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 1 0 2
+  have hcore : PolyRefl.eval (s558_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s558_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s558_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s558_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s558_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s558_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s560_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 1 3 (1), PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 2 2 0 1 3 (2), PolyRefl.mkT 2 2 0 3 1 (-2), PolyRefl.mkT 3 1 0 2 2 (-1), PolyRefl.mkT 3 1 0 3 1 (-1)]
+def s560_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 0 2 0 1 1 (1), PolyRefl.mkT 1 1 0 0 2 (2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 1 1 (-1), PolyRefl.mkT 2 0 0 2 0 (-1)]
+def s560_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s560_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (-1)]
+def s560_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (1), PolyRefl.mkT 1 1 0 0 1 (2), PolyRefl.mkT 1 1 0 1 0 (-2), PolyRefl.mkT 2 0 0 1 0 (-1)]
+def s560_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 1 (1)]
+def s560_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 1 (2), PolyRefl.mkT 0 1 0 1 0 (-2), PolyRefl.mkT 1 0 0 1 0 (-1)]
+
+theorem screen_dead_560_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s560_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s560_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 1) * PolyRefl.eval (s560_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s560_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 1, 1), 1) (s560_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s560_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s560_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s560_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s560_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s560_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s560_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s560_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s560_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s560_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s560_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s560_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s560_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s560_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s560_1l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s560_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s560_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (1 : ℕ) := by
+    simp only [s560_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s560_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 1
+  have hcore : PolyRefl.eval (s560_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s560_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s560_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s560_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s560_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s560_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s566_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 0 4 (-1), PolyRefl.mkT 1 3 0 2 2 (1), PolyRefl.mkT 2 2 0 0 4 (2), PolyRefl.mkT 2 2 0 4 0 (-2), PolyRefl.mkT 3 1 0 2 2 (-1), PolyRefl.mkT 3 1 0 4 0 (1)]
+def s566_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 4 (-1), PolyRefl.mkT 0 2 0 2 2 (1), PolyRefl.mkT 1 1 0 0 4 (2), PolyRefl.mkT 1 1 0 4 0 (-2), PolyRefl.mkT 2 0 0 2 2 (-1), PolyRefl.mkT 2 0 0 4 0 (1)]
+def s566_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s566_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1), PolyRefl.mkT 0 2 0 1 2 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 2 1 (-1), PolyRefl.mkT 2 0 0 3 0 (1)]
+def s566_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 3 (-1), PolyRefl.mkT 0 2 0 1 2 (1), PolyRefl.mkT 1 1 0 0 3 (2), PolyRefl.mkT 1 1 0 1 2 (-2), PolyRefl.mkT 1 1 0 2 1 (2), PolyRefl.mkT 1 1 0 3 0 (-2), PolyRefl.mkT 2 0 0 2 1 (-1), PolyRefl.mkT 2 0 0 3 0 (1)]
+def s566_1f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 0 0 0 1 (-1), PolyRefl.mkT 0 0 0 1 0 (1)]
+def s566_2p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s566_2s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1), PolyRefl.mkT 1 1 0 0 2 (-2), PolyRefl.mkT 1 1 0 2 0 (-2), PolyRefl.mkT 2 0 0 2 0 (1)]
+def s566_2l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 0 2 (1)]
+def s566_2r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 2 (-2), PolyRefl.mkT 0 1 0 2 0 (-2), PolyRefl.mkT 1 0 0 2 0 (1)]
+
+theorem screen_dead_566_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s566_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s566_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s566_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s566_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s566_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s566_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s566_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s566_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s566_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne q C D hqodd hqCD 1 (by norm_num)
+    linear_combination (norm := (simp only [s566_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s566_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s566_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s566_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s566_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e1f : PolyRefl.eval (s566_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s566_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s566_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h1f : PolyRefl.eval (s566_1f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne q C D hqodd hqCD 1 (by norm_num)))
+    linear_combination (norm := (simp only [s566_1f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e2s : PolyRefl.eval (s566_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s566_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s566_2p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s566_2s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s566_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨A, B⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s566_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨A, B⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s566_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s566_2s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s566_2l_2_2) ++ PolyRefl.mulTerm ((1, 0, 0, 0, 0), 1) (s566_2r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s566_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (2 : ℕ) := by
+    simp only [s566_2l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨A, B⟩ : GaussianInt) ∣ PolyRefl.eval (s566_2l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_pi_pis p hpodd A B hpAB) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chi p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_pi_chis p q hpq A B C D hpAB hqCD) ((Router.pr_pi p A B hpAB).dvd_of_dvd_pow h))
+      (1) (by norm_num) 2 0 2
+  have hcore : PolyRefl.eval (s566_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨A, B⟩ : GaussianInt) (Router.pr_pi p A B hpAB) (2 * 0) _ ((⟨A, B⟩ : GaussianInt) * PolyRefl.eval (s566_2r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb2 : PolyRefl.eval (s566_2s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp2 : PolyRefl.eval (s566_2p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e2s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb2)
+  have hb1s : PolyRefl.eval (s566_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1f]
+    exact mul_ne_zero h1f hbp2
+  have hbp1 : PolyRefl.eval (s566_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1s)
+  have hb0s : PolyRefl.eval (s566_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s566_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s587_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 3 0 2 2 (2), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 2 2 0 0 4 (1), PolyRefl.mkT 2 2 0 4 0 (-1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 3 1 0 2 2 (-2)]
+def s587_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 2 0 2 2 (2), PolyRefl.mkT 0 2 0 4 0 (1), PolyRefl.mkT 1 1 0 0 4 (1), PolyRefl.mkT 1 1 0 4 0 (-1), PolyRefl.mkT 2 0 0 0 4 (-1), PolyRefl.mkT 2 0 0 2 2 (-2)]
+def s587_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s587_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (-1), PolyRefl.mkT 1 0 0 2 2 (-2)]
+def s587_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 2 2 (-2), PolyRefl.mkT 0 1 0 4 0 (-1), PolyRefl.mkT 1 0 0 0 4 (-1), PolyRefl.mkT 1 0 0 2 2 (-2)]
+def s587_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 1 0 0 0 4 (-1)]
+def s587_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 1 2 (-2), PolyRefl.mkT 0 1 0 3 0 (-1), PolyRefl.mkT 1 0 0 1 2 (-2)]
+
+theorem screen_dead_587_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s587_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s587_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 1 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 1 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s587_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s587_0p_2_2)
+      (Q := PolyRefl.mulTerm ((1, 1, 0, 0, 0), 1) (s587_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s587_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s587_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s587_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s587_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s587_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s587_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s587_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s587_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s587_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s587_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s587_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s587_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s587_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s587_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s587_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s587_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (1 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s587_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s587_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 1 0 4
+  have hcore : PolyRefl.eval (s587_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s587_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s587_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s587_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s587_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s587_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s589_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s589_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 2 2 (-2), PolyRefl.mkT 0 4 0 4 0 (1), PolyRefl.mkT 1 3 0 4 0 (1), PolyRefl.mkT 3 1 0 0 4 (-1), PolyRefl.mkT 4 0 0 0 4 (-1), PolyRefl.mkT 4 0 0 2 2 (2)]
+def s589_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s589_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (2)]
+def s589_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 0 3 0 4 0 (1), PolyRefl.mkT 1 2 0 2 2 (2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 0 4 (-1), PolyRefl.mkT 3 0 0 2 2 (2)]
+def s589_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 3 0 0 0 4 (-1)]
+def s589_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (-2), PolyRefl.mkT 0 3 0 3 0 (1), PolyRefl.mkT 1 2 0 1 2 (2), PolyRefl.mkT 2 1 0 1 2 (-2), PolyRefl.mkT 3 0 0 1 2 (2)]
+
+theorem screen_dead_589_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s589_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s589_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s589_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s589_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s589_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s589_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s589_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s589_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s589_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply LibraryNonzero.lib_sum_ne p A B hpodd hpAB 1 (by norm_num)
+    linear_combination (norm := (simp only [s589_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s589_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s589_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s589_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s589_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s589_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s589_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s589_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s589_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s589_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s589_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s589_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((-1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (3 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (0 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s589_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s589_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (-1) (by norm_num) 3 0 4
+  have hcore : PolyRefl.eval (s589_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s589_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s589_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s589_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s589_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s589_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
+  exact hbp0
+
+def s598_0p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s598_0s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 4 0 0 4 (-1), PolyRefl.mkT 0 4 0 2 2 (2), PolyRefl.mkT 1 3 0 0 4 (1), PolyRefl.mkT 3 1 0 4 0 (-1), PolyRefl.mkT 4 0 0 2 2 (-2), PolyRefl.mkT 4 0 0 4 0 (1)]
+def s598_0f_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 1 0 0 0 (-1), PolyRefl.mkT 1 0 0 0 0 (1)]
+def s598_1p_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 2 2 (-2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s598_1s_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1), PolyRefl.mkT 0 3 0 2 2 (-2), PolyRefl.mkT 1 2 0 2 2 (-2), PolyRefl.mkT 2 1 0 2 2 (-2), PolyRefl.mkT 3 0 0 2 2 (-2), PolyRefl.mkT 3 0 0 4 0 (1)]
+def s598_1l_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 0 4 (1)]
+def s598_1r_2_2 : PolyRefl.SPoly := [PolyRefl.mkT 0 3 0 1 2 (-2), PolyRefl.mkT 1 2 0 1 2 (-2), PolyRefl.mkT 2 1 0 1 2 (-2), PolyRefl.mkT 3 0 0 1 2 (-2), PolyRefl.mkT 3 0 0 3 0 (1)]
+
+theorem screen_dead_598_2_2
+    (hpq : p ≠ q) (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    PolyRefl.eval (s598_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+  have hπ0 : ((⟨A, B⟩ : GaussianInt)) ≠ 0 := (prime_pi p A B hpAB).ne_zero
+  have hχ0 : ((⟨C, D⟩ : GaussianInt)) ≠ 0 := (prime_pi q C D hqCD).ne_zero
+  have hπs0 : (star (⟨A, B⟩ : GaussianInt)) ≠ 0 := fun h => hπ0 (by simpa using congrArg star h)
+  have hχs0 : (star (⟨C, D⟩ : GaussianInt)) ≠ 0 := fun h => hχ0 (by simpa using congrArg star h)
+  have e0s : PolyRefl.eval (s598_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s598_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s598_0p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s598_0s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have e0f : PolyRefl.eval (s598_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = PolyRefl.eval (s598_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) * PolyRefl.eval (s598_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) :=
+    PolyRefl.eval_factor _ _ _ (by native_decide) _ _ _ _ _
+  have h0f : PolyRefl.eval (s598_0f_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    intro h0
+    apply sub_ne_zero.mpr (sub_ne_zero.mp (LibraryNonzero.lib_diff_ne p A B hpodd hpAB 1 (by norm_num)))
+    linear_combination (norm := (simp only [s598_0f_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]; push_cast; ring_nf)) h0
+  have e1s : PolyRefl.eval (s598_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = (((⟨A, B⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ 0 * ((⟨C, D⟩ : GaussianInt) ^ 2) ^ 0 * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ 0) * PolyRefl.eval (s598_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s598_1p_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) (s598_1s_2_2)) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have ecore : PolyRefl.eval (s598_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      = (((⟨C, D⟩ : GaussianInt) ^ 2)) ^ (0 : ℕ) * (PolyRefl.eval (s598_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) + (((⟨C, D⟩ : GaussianInt) ^ 2)) * PolyRefl.eval (s598_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) := by
+    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := s598_1s_2_2)
+      (Q := PolyRefl.mulTerm ((0, 0, 0, 0, 0), 1) ((s598_1l_2_2) ++ PolyRefl.mulTerm ((0, 0, 0, 1, 0), 1) (s598_1r_2_2))) (by native_decide)]
+    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]
+    push_cast
+    ring
+  have hTval : PolyRefl.eval (s598_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) = ((1 : ℤ) : GaussianInt) * ((⟨A, B⟩ : GaussianInt) ^ 2) ^ (0 : ℕ) * ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ^ (3 : ℕ) * ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ^ (4 : ℕ) := by
+    simp only [s598_1l_2_2, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]
+    push_cast
+    ring
+  have hT : ¬ (⟨C, D⟩ : GaussianInt) ∣ PolyRefl.eval (s598_1l_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) := by
+    rw [hTval]
+    exact Router.prime_not_dvd_unit_mono (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)
+      (fun h => (Router.nd_chi_pi p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_pis p q hpq A B C D hpAB hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (fun h => (Router.nd_chi_chis q hqodd C D hqCD) ((Router.pr_chi q C D hqCD).dvd_of_dvd_pow h))
+      (1) (by norm_num) 0 3 4
+  have hcore : PolyRefl.eval (s598_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [ecore]
+    exact Router.gauss_lone_kill (⟨C, D⟩ : GaussianInt) (Router.pr_chi q C D hqCD) (2 * 0) _ ((⟨C, D⟩ : GaussianInt) * PolyRefl.eval (s598_1r_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2)) _ (by ring) hT
+  -- assemble the nonzero product bottom-up
+  have hb1 : PolyRefl.eval (s598_1s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := hcore
+  have hbp1 : PolyRefl.eval (s598_1p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e1s]
+    exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb1)
+  have hb0s : PolyRefl.eval (s598_0s_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
+    rw [e0f]
+    exact mul_ne_zero h0f hbp1
+  have hbp0 : PolyRefl.eval (s598_0p_2_2) ((⟨A, B⟩ : GaussianInt) ^ 2) ((star (⟨A, B⟩ : GaussianInt)) ^ 2) 1 ((⟨C, D⟩ : GaussianInt) ^ 2) ((star (⟨C, D⟩ : GaussianInt)) ^ 2) ≠ 0 := by
     rw [e0s]
     exact mul_ne_zero (Router.mono_ne_zero _ _ _ _ (pow_ne_zero _ hπ0) (pow_ne_zero _ hπs0) (pow_ne_zero _ hχ0) (pow_ne_zero _ hχs0) _ _ _ _) (hb0s)
   exact hbp0

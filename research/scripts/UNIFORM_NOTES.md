@@ -2853,3 +2853,17 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   ride the same pipeline plus the `gauss_lone_kill` dispatch (data is
   already extracted; emission is the next pass); 488 live relations go
   to the condition layer.
+
+## Round 197: the screen layer is complete across all six grids
+
+- Every screen-phase kill — monomial and unit-core, zero skipped — is
+  machine-checked: (2,2) 112, (2,3) ~200, (2,4) 264, (2,5) 320,
+  (3,3) 300, (3,4) 428 theorems, all compiling with zero errors in
+  103–369 s per grid (parallel). The unit-core dispatch goes through
+  the atom pack (the twelve pairwise nondivisibility facts of the four
+  Gaussian primes), `prime_not_dvd_unit_mono`, and `gauss_lone_kill`.
+- The condition bridge's design is pinned: the Clean condition is the
+  pinning-elimination Σ·Im χ^(2Δ) − 2Ω·Re χ^(2Δ) = 0 from the
+  exactness lemma; the core's reality type is trackable through the
+  dumped factor list. The cascade for layered cores is the next
+  mathematical chunk.

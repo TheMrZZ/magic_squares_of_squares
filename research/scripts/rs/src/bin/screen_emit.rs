@@ -193,9 +193,9 @@ fn main() {
             if lib_proof(&fpol).is_none() { ok = false; }
             steps.push((fpol, qpol));
         }
-        // unit-core dispatch data (next pass)
+        // unit-core dispatch data
         let mut unit_data: Option<(usize, u16, (M4, i128), P4)> = None;
-        if false && verdict == "unit" && !core.is_empty() {
+        if verdict == "unit" && !core.is_empty() {
             'ax: for axis in 0..4 {
                 let get = |m: &M4| [m.0, m.1, m.2, m.3][axis];
                 let mn = core.keys().map(&get).min().unwrap();
@@ -214,7 +214,7 @@ fn main() {
             }
             if unit_data.is_none() { ok = false; }
         }
-        if !ok || verdict != "monomial" {
+        if !ok || (verdict != "monomial" && verdict != "unit") {
             n_skip += 1;
             continue;
         }
@@ -263,18 +263,46 @@ fn main() {
                     "  have hcore : PolyRefl.eval ({last_s}) {PT} ≠ 0 := by\n    have hval : PolyRefl.eval ({last_s}) {PT} = (({c} : ℤ) : GaussianInt) := by\n      simp [{last_s}, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF]\n    rw [hval]\n    exact_mod_cast (by norm_num : ({c} : ℤ) ≠ 0)"));
             }
             Some((axis, mn, (lm, lc), rest)) => {
-                let (atom, hpr, nds) = axis_pack(*axis);
+                let bases = ["(⟨A, B⟩ : GaussianInt)",
+                             "(star (⟨A, B⟩ : GaussianInt))",
+                             "(⟨C, D⟩ : GaussianInt)",
+                             "(star (⟨C, D⟩ : GaussianInt))"];
+                let base = bases[*axis];
+                let atom = ATOMS[*axis];
+                let pr = match axis {
+                    0 => "(Router.pr_pi p A B hpAB)".to_string(),
+                    1 => "(Router.pr_pis p A B hpAB)".to_string(),
+                    2 => "(Router.pr_chi q C D hqCD)".to_string(),
+                    _ => "(Router.pr_chis q C D hqCD)".to_string(),
+                };
+                let nd = |other: usize| -> String {
+                    let names = [["", "nd_pi_pis p hpodd A B hpAB",
+                                  "nd_pi_chi p q hpq A B C D hpAB hqCD",
+                                  "nd_pi_chis p q hpq A B C D hpAB hqCD"],
+                                 ["nd_pis_pi p hpodd A B hpAB", "",
+                                  "nd_pis_chi p q hpq A B C D hpAB hqCD",
+                                  "nd_pis_chis p q hpq A B C D hpAB hqCD"],
+                                 ["nd_chi_pi p q hpq A B C D hpAB hqCD",
+                                  "nd_chi_pis p q hpq A B C D hpAB hqCD", "",
+                                  "nd_chi_chis q hqodd C D hqCD"],
+                                 ["nd_chis_pi p q hpq A B C D hpAB hqCD",
+                                  "nd_chis_pis p q hpq A B C D hpAB hqCD",
+                                  "nd_chis_chi q hqodd C D hqCD", ""]];
+                    format!("(Router.{})", names[*axis][other])
+                };
+                let others: Vec<usize> = (0..4).filter(|i| i != axis).collect();
+                let lm4 = [lm.0, lm.1, lm.2, lm.3];
+                let (e1, e2, e3) = (lm4[others[0]], lm4[others[1]], lm4[others[2]]);
+                let (w1, w2, w3) = (ATOMS[others[0]], ATOMS[others[1]], ATOMS[others[2]]);
                 let lone_res: P4 = {
-                    let mut mm = [lm.0, lm.1, lm.2, lm.3];
+                    let mut mm = lm4;
                     mm[*axis] = 0;
                     [((mm[0], mm[1], mm[2], mm[3]), *lc)].into_iter().collect()
                 };
                 let ln = name(idx, "l");
                 let rn = name(idx, "r");
                 stage_defs.push(format!("def {ln} : PolyRefl.SPoly := [{}]", lean_poly(&lone_res)));
-                stage_defs.push(format!("def {rn} : PolyRefl.SPoly := [{}]",
-                    if rest.is_empty() { String::new() } else { lean_poly(rest) }));
-                // core = mulTerm(axis^mn) (lone ++ mulTerm(axis^1) rest)
+                stage_defs.push(format!("def {rn} : PolyRefl.SPoly := [{}]", lean_poly(rest)));
                 let mut axm = [0u16; 4];
                 axm[*axis] = *mn;
                 let mut ax1 = [0u16; 4];
@@ -282,15 +310,13 @@ fn main() {
                 proof.push(format!(
                     "  have ecore : PolyRefl.eval ({last_s}) {PT}\n      = ({atom}) ^ ({mn} : ℕ) * (PolyRefl.eval ({ln}) {PT} + ({atom}) * PolyRefl.eval ({rn}) {PT}) := by\n    rw [PolyRefl.eval_eq_of_normalizeFast_eq (P := {last_s})\n      (Q := PolyRefl.mulTerm (({}, {}, 0, {}, {}), 1) (({ln}) ++ PolyRefl.mulTerm (({}, {}, 0, {}, {}), 1) ({rn}))) (by {dec})]\n    rw [PolyRefl.eval_mulTerm, PolyRefl.eval_append, PolyRefl.eval_mulTerm]\n    push_cast\n    ring",
                     axm[0], axm[1], axm[2], axm[3], ax1[0], ax1[1], ax1[2], ax1[3]));
-                // lone value: unit * product of other atoms' powers
-                let mut om = [lm.0, lm.1, lm.2, lm.3];
-                om[*axis] = 0;
-                let others: Vec<usize> = (0..4).filter(|i| i != axis).collect();
                 proof.push(format!(
-                    "  have hT : ¬ ({atom} / {atom} * {atom}) ∣ PolyRefl.eval ({ln}) {PT} := by\n    sorry"));
-                let _ = (om, others, nds, hpr);
+                    "  have hTval : PolyRefl.eval ({ln}) {PT} = (({lc} : ℤ) : GaussianInt) * {w1} ^ ({e1} : ℕ) * {w2} ^ ({e2} : ℕ) * {w3} ^ ({e3} : ℕ) := by\n    simp only [{ln}, PolyRefl.eval, PolyRefl.mkT, PolyRefl.powF_eq, List.foldr]\n    push_cast\n    ring"));
                 proof.push(format!(
-                    "  have hcore : PolyRefl.eval ({last_s}) {PT} ≠ 0 := by\n    sorry"));
+                    "  have hT : ¬ {base} ∣ PolyRefl.eval ({ln}) {PT} := by\n    rw [hTval]\n    exact Router.prime_not_dvd_unit_mono {base} {pr} {w1} {w2} {w3}\n      (fun h => {} ({pr}.dvd_of_dvd_pow h))\n      (fun h => {} ({pr}.dvd_of_dvd_pow h))\n      (fun h => {} ({pr}.dvd_of_dvd_pow h))\n      ({lc}) (by norm_num) {e1} {e2} {e3}",
+                    nd(others[0]), nd(others[1]), nd(others[2])));
+                proof.push(format!(
+                    "  have hcore : PolyRefl.eval ({last_s}) {PT} ≠ 0 := by\n    rw [ecore]\n    exact Router.gauss_lone_kill {base} {pr} (2 * {mn}) _ ({base} * PolyRefl.eval ({rn}) {PT}) _ (by ring) hT"));
             }
         }
         for d in &stage_defs { writeln!(out, "{d}").unwrap(); }
