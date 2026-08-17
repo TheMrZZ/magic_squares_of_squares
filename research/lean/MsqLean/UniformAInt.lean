@@ -200,4 +200,76 @@ lemma J_mod_form (A B : ℤ) (a : ℕ) (ha : 1 ≤ a) :
   rw [hJ, im4_four A B]
   ring
 
+/-- The class family for center roots s·pᵃ·q: the 1 + 3a admissible
+D-values (up to sign and the global s² factor). -/
+def UClass (p q : ℕ) (A B C D : ℤ) (a : ℕ) (K : ℤ) : Prop :=
+  K = (p : ℤ) ^ (2 * a) * (((⟨C, D⟩ : GaussianInt) ^ 4).im)
+  ∨ ∃ e, 1 ≤ e ∧ e ≤ a ∧
+      (K = (p : ℤ) ^ (2 * (a - e)) * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ (4 * e)).im))
+       ∨ K = (p : ℤ) ^ (2 * (a - e)) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * e)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+       ∨ K = (p : ℤ) ^ (2 * (a - e)) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * e)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))
+
+/-- Telescoping: rung a's classes are p²·(rung a−1 classes) plus the three
+new level-4a classes. -/
+lemma UClass_step (p q : ℕ) (A B C D : ℤ) (a : ℕ) (ha : 2 ≤ a) (K : ℤ) :
+    UClass p q A B C D a K ↔
+      ((∃ K', K = (p : ℤ) ^ 2 * K' ∧ UClass p q A B C D (a - 1) K')
+       ∨ (K = (q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)
+          ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)
+          ∨ K = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im))) := by
+  have hsplit : ∀ e, 1 ≤ e → e ≤ a - 1 →
+      (p : ℤ) ^ (2 * (a - e)) = (p : ℤ) ^ 2 * (p : ℤ) ^ (2 * ((a - 1) - e)) := by
+    intro e he1 hle
+    rw [← pow_add]
+    congr 1
+    omega
+  constructor
+  · rintro (rfl | ⟨e, he1, hea, (rfl | rfl | rfl)⟩)
+    · refine Or.inl ⟨(p : ℤ) ^ (2 * (a - 1)) * (((⟨C, D⟩ : GaussianInt) ^ 4).im), ?_, Or.inl rfl⟩
+      rw [show 2 * a = 2 + 2 * (a - 1) from by omega, pow_add]
+      ring
+    · rcases Nat.lt_or_ge e a with helt | hege
+      · exact Or.inl ⟨(p : ℤ) ^ (2 * ((a - 1) - e)) * ((q : ℤ) ^ 2 * (((⟨A, B⟩ : GaussianInt) ^ (4 * e)).im)),
+          by rw [hsplit e he1 (by omega)]; ring,
+          Or.inr ⟨e, he1, by omega, Or.inl rfl⟩⟩
+      · have hea' : e = a := by omega
+        subst hea'
+        refine Or.inr (Or.inl ?_)
+        rw [show e - e = 0 from by omega]
+        norm_num
+    · rcases Nat.lt_or_ge e a with helt | hege
+      · exact Or.inl ⟨(p : ℤ) ^ (2 * ((a - 1) - e)) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * e)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im),
+          by rw [hsplit e he1 (by omega)]; ring,
+          Or.inr ⟨e, he1, by omega, Or.inr (Or.inl rfl)⟩⟩
+      · have hea' : e = a := by omega
+        subst hea'
+        refine Or.inr (Or.inr (Or.inl ?_))
+        rw [show e - e = 0 from by omega]
+        norm_num
+    · rcases Nat.lt_or_ge e a with helt | hege
+      · exact Or.inl ⟨(p : ℤ) ^ (2 * ((a - 1) - e)) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * e)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im),
+          by rw [hsplit e he1 (by omega)]; ring,
+          Or.inr ⟨e, he1, by omega, Or.inr (Or.inr rfl)⟩⟩
+      · have hea' : e = a := by omega
+        subst hea'
+        refine Or.inr (Or.inr (Or.inr ?_))
+        rw [show e - e = 0 from by omega]
+        norm_num
+  · rintro (⟨K', rfl, (rfl | ⟨e, he1, hea, (rfl | rfl | rfl)⟩)⟩ | (rfl | rfl | rfl))
+    · refine Or.inl ?_
+      rw [show 2 * a = 2 + 2 * (a - 1) from by omega, pow_add]
+      ring
+    · exact Or.inr ⟨e, he1, by omega,
+        Or.inl (by rw [hsplit e he1 hea]; ring)⟩
+    · exact Or.inr ⟨e, he1, by omega,
+        Or.inr (Or.inl (by rw [hsplit e he1 hea]; ring))⟩
+    · exact Or.inr ⟨e, he1, by omega,
+        Or.inr (Or.inr (by rw [hsplit e he1 hea]; ring))⟩
+    · exact Or.inr ⟨a, by omega, le_refl a,
+        Or.inl (by rw [show a - a = 0 from by omega]; norm_num)⟩
+    · exact Or.inr ⟨a, by omega, le_refl a,
+        Or.inr (Or.inl (by rw [show a - a = 0 from by omega]; norm_num))⟩
+    · exact Or.inr ⟨a, by omega, le_refl a,
+        Or.inr (Or.inr (by rw [show a - a = 0 from by omega]; norm_num))⟩
+
 end UniformA
