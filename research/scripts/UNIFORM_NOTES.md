@@ -2693,3 +2693,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 
 - `PolyRefl.lean` compiles with zero errors: sparse four-variable integer polynomials as data (`SPoly`), evaluation, data-level multiplication with `eval_mul`, insertion-sort normalization with `eval_normalize`, and the bridge `eval_eq_of_normalize_eq` — equal normal forms give equal evaluations everywhere. **Every Rust-computed identity becomes hardcoded Lean data checked by kernel `decide` — no `ring` on giant expressions.**
 - All six grids' cross-form certificates emitted (12 fallback forms at a = 3 await the sieve route); `emit_all.sh` compiles the full set.
+
+## Round 187: the full certificate layer is machine-checked
+
+- The polymorphic PolyRefl (evaluation into any CommRing — the same data serves the (r,s)-integer layer and the Gaussian value layer) built into the library with CertKit.
+- The zero-cost emitter (statements in pre-split shape: lead·r^N + s·eval restData; hv = rfl; only `decide (Odd lead)` computes) regenerated everything. **All twelve certificate files compile: 834 oracle-form lemmas + 100+ cross-form lemmas across grids (2,2)–(3,4), about six minutes total.**
+- Remaining Lean ladder: the sieve gate (12 straggler forms at a = 3), the relation layer (factorization identities as normalize-equality decides), the value bridge (eval at Gaussian points ↔ class values), the routers, and the hand lemmas.

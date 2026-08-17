@@ -15,7 +15,7 @@ fn main() {
     let mut out = std::fs::File::create(format!("CertForms_{tag}.lean")).unwrap();
     writeln!(out, "/- Generated: nonvanishing of the certifier's minimal-layer forms").unwrap();
     writeln!(out, "   at grid {tag}, via the parity gate. -/").unwrap();
-    writeln!(out, "import MsqLean.CertKit\n\nnamespace CertForms\nopen CertKit\n").unwrap();
+    writeln!(out, "import MsqLean.CertKit\nimport MsqLean.PolyRefl\n\nnamespace CertForms\nopen CertKit\n").unwrap();
     let mut n_ok = 0;
     let mut fallback = Vec::new();
     for (li, line) in std::io::BufReader::new(file).lines().enumerate() {
@@ -51,15 +51,15 @@ fn main() {
         let lead = &s0[0].0;
         if (lead % 2u8).is_zero() { fallback.push(li); continue; }
         let nn = s0[0].1;
-        // poly and rest strings
-        let poly: Vec<String> = terms.iter().map(|(c, a, b)|
-            format!("({c}) * r ^ {a} * s ^ {b}")).collect();
+        // rest as PolyRefl data (s-exponent already reduced by one);
+        // the lemma states the split shape directly, so hv is rfl and the
+        // only computation is decide (Odd lead).
         let rest: Vec<String> = terms.iter().filter(|t| t.2 > 0).map(|(c, a, b)|
-            format!("({c}) * r ^ {a} * s ^ {}", b - 1)).collect();
+            format!("(({a}, {}, 0, 0), {c})", b - 1)).collect();
+        writeln!(out, "def rest_{tag}_{li} : PolyRefl.SPoly := [{}]", rest.join(", ")).unwrap();
         writeln!(out, "lemma form_{tag}_{li} (r s : ℤ) (hr : Odd r) (hs : Even s) :").unwrap();
-        writeln!(out, "    {} ≠ 0 :=", poly.join(" + ")).unwrap();
-        writeln!(out, "  parity_gate (lead := {lead}) (rest := {}) {nn} hr hs (by decide) (by ring)\n",
-                 rest.join(" + ")).unwrap();
+        writeln!(out, "    ({lead}) * r ^ {nn} + s * PolyRefl.eval rest_{tag}_{li} r s 1 1 ≠ 0 :=").unwrap();
+        writeln!(out, "  parity_gate {nn} hr hs (by decide) rfl\n").unwrap();
         n_ok += 1;
     }
     writeln!(out, "end CertForms").unwrap();

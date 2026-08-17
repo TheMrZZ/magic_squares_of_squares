@@ -15,20 +15,22 @@ abbrev Mono := ℕ × ℕ × ℕ × ℕ
 The list need not be normalized; evaluation is the semantics. -/
 abbrev SPoly := List (Mono × ℤ)
 
-/-- Evaluation at a point. -/
-def eval (P : SPoly) (u v x y : ℤ) : ℤ :=
+variable {R : Type*} [CommRing R]
+
+/-- Evaluation at a point of any commutative ring (coefficients cast). -/
+def eval (P : SPoly) (u v x y : R) : R :=
   P.foldr (fun t acc =>
-    acc + t.2 * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2) 0
+    acc + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2) 0
 
-@[simp] lemma eval_nil (u v x y : ℤ) : eval ([] : SPoly) u v x y = 0 := rfl
+@[simp] lemma eval_nil (u v x y : R) : eval ([] : SPoly) u v x y = 0 := rfl
 
-@[simp] lemma eval_cons (t : Mono × ℤ) (P : SPoly) (u v x y : ℤ) :
+@[simp] lemma eval_cons (t : Mono × ℤ) (P : SPoly) (u v x y : R) :
     eval (t :: P) u v x y
-      = eval P u v x y + t.2 * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2 :=
+      = eval P u v x y + (t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2 :=
   rfl
 
 /-- Concatenation evaluates to the sum. -/
-lemma eval_append (P Q : SPoly) (u v x y : ℤ) :
+lemma eval_append (P Q : SPoly) (u v x y : R) :
     eval (P ++ Q) u v x y = eval P u v x y + eval Q u v x y := by
   induction P with
   | nil => simp
@@ -39,15 +41,16 @@ def mulTerm (t : Mono × ℤ) (P : SPoly) : SPoly :=
   P.map (fun q => ((q.1.1 + t.1.1, q.1.2.1 + t.1.2.1,
                     q.1.2.2.1 + t.1.2.2.1, q.1.2.2.2 + t.1.2.2.2), q.2 * t.2))
 
-lemma eval_mulTerm (t : Mono × ℤ) (P : SPoly) (u v x y : ℤ) :
+lemma eval_mulTerm (t : Mono × ℤ) (P : SPoly) (u v x y : R) :
     eval (mulTerm t P) u v x y
-      = (t.2 * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2)
+      = ((t.2 : R) * u ^ t.1.1 * v ^ t.1.2.1 * x ^ t.1.2.2.1 * y ^ t.1.2.2.2)
         * eval P u v x y := by
   induction P with
   | nil => simp [mulTerm]
   | cons q P ih =>
     simp only [mulTerm, List.map_cons, eval_cons] at *
     rw [ih]
+    push_cast
     simp only [pow_add]
     ring
 
@@ -55,7 +58,7 @@ lemma eval_mulTerm (t : Mono × ℤ) (P : SPoly) (u v x y : ℤ) :
 def mul (P Q : SPoly) : SPoly :=
   P.foldr (fun t acc => mulTerm t Q ++ acc) []
 
-lemma eval_mul (P Q : SPoly) (u v x y : ℤ) :
+lemma eval_mul (P Q : SPoly) (u v x y : R) :
     eval (mul P Q) u v x y = eval P u v x y * eval Q u v x y := by
   induction P with
   | nil => simp [mul]
@@ -82,7 +85,7 @@ def insertTerm (t : Mono × ℤ) : List (Mono × ℤ) → List (Mono × ℤ)
     else if mlt t.1 q.1 then t :: q :: rest
     else q :: insertTerm t rest
 
-lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y : ℤ) :
+lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y : R) :
     eval (insertTerm t P) u v x y = eval (t :: P) u v x y := by
   induction P with
   | nil => simp [insertTerm]
@@ -90,6 +93,7 @@ lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y : ℤ)
     by_cases h1 : t.1 = q.1
     · simp only [insertTerm, if_pos h1, eval_cons]
       rw [h1]
+      push_cast
       ring
     · by_cases h2 : mlt t.1 q.1
       · simp only [insertTerm, if_neg h1, if_pos h2, eval_cons]
@@ -103,7 +107,7 @@ lemma eval_insertTerm (t : Mono × ℤ) (P : List (Mono × ℤ)) (u v x y : ℤ)
 def normalize (P : SPoly) : List (Mono × ℤ) :=
   (P.foldr insertTerm []).filter (fun t => t.2 ≠ 0)
 
-lemma eval_filter_ne_zero (P : List (Mono × ℤ)) (u v x y : ℤ) :
+lemma eval_filter_ne_zero (P : List (Mono × ℤ)) (u v x y : R) :
     eval (P.filter (fun t => t.2 ≠ 0)) u v x y = eval P u v x y := by
   induction P with
   | nil => simp
@@ -114,7 +118,7 @@ lemma eval_filter_ne_zero (P : List (Mono × ℤ)) (u v x y : ℤ) :
       simp [List.filter_cons, hd, ih, h]
     · simp [List.filter_cons, h, ih]
 
-lemma eval_normalize (P : SPoly) (u v x y : ℤ) :
+lemma eval_normalize (P : SPoly) (u v x y : R) :
     eval (normalize P) u v x y = eval P u v x y := by
   unfold normalize
   rw [eval_filter_ne_zero]
@@ -128,7 +132,7 @@ lemma eval_normalize (P : SPoly) (u v x y : ℤ) :
 /-- The bridge: equal normal forms give equal evaluations everywhere.
 Certificate files check `normalize P = normalize Q` by `decide`. -/
 lemma eval_eq_of_normalize_eq {P Q : SPoly}
-    (h : normalize P = normalize Q) (u v x y : ℤ) :
+    (h : normalize P = normalize Q) (u v x y : R) :
     eval P u v x y = eval Q u v x y := by
   rw [← eval_normalize P, ← eval_normalize Q, h]
 

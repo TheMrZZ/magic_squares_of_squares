@@ -7,6 +7,10 @@ import MsqLean.GeneralTheoremC
 import MsqLean.GradingLemma
 import MsqLean.PrimePowerHelpers
 import MsqLean.Reduction
+import MsqLean.DistinctReduction
+import MsqLean.ValuationDescent
+import MsqLean.IncidenceClassifier
+import MsqLean.CorePythagorean
 import MsqLean.RepStructure
 import MsqLean.Rigid
 import MsqLean.TheoremA
@@ -39,3 +43,5 @@ import MsqLean.TheoremGInt
 import MsqLean.TheoremG
 import MsqLean.TheoremGCore
 import MsqLean.UniformAInt
+import MsqLean.PolyRefl
+import MsqLean.CertKit
