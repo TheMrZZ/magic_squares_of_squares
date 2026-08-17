@@ -2507,3 +2507,11 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - `rs/src/bin/u23_vanish.rs`: all 448 shapes evaluated at every rep orientation for p ≠ q < 300 — 1,455,104 exact evaluations, **zero vanishing points**.
 - Consequence: every relation over the 284 degenerate patterns factors into provably- or empirically-nonzero pieces, so all 6,704 degenerate-sector leaf pairs are dead. The proof burden for the paper: one nonvanishing lemma per balance family (the generalized master argument: G real forces a χ-valuation balance, then a norm equation with a small cofactor).
 - Remaining at rung (2,3): the 576 core-pattern sector (p ∣ f(q) certificates). Next: the same factor screen on its leaves — the pattern-level condition is only the resultant's necessary condition; the exact relations may die outright.
+
+## Round 160: rung (2,3) is empirically dead end to end
+
+- Core-sector screen (`u23_core_screen.py`): 4,096 pairs, 3,136 relations; 384 relations and 896 pairs die outright on the nonzero library plus unit-coefficient grading.
+- The 672 unresolved core-sector factors ALL classify as balance forms (574 imaginary, 98 real) — **zero non-balance cores anywhere in rung (2,3)**.
+- `u23_vanish_core`: 2,182,656 exact evaluations over p ≠ q < 300, zero vanishing points.
+- Rung (2,3) status: every leaf dead — 468 unit patterns + full degenerate sector + full core sector. The proof burden is now a single kind of statement: **nonvanishing lemmas for the balance families** (402 + 672 shapes, grouped by their (χ-shift, π-side polynomial) structure). The (2,2) master quartic kill is the prototype lemma.
+- Strategic note: the b-induction's cell library appears to be balance forms at every rung. One general balance lemma (or a small family list) likely covers every b at once — that is the next target, and it is the heart of Milestone 2.
