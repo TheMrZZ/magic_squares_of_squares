@@ -2331,3 +2331,13 @@ juggling dispatchers (56/ab56/unsafe/lone analogs — route into the four
 cores, exponent-free), the low-bucket telescoping via UClass_step + the IH
 hypothesis, then the router; after that ratio-step, four-diffs-step, and
 the induction wrapper with base Theorem E.
+
+## Round 145: the step router is complete
+
+- `lowq_M7a_kill`: p^2 cannot divide a unit multiple of q^2 * im4a. The unit is 1, -1, 2, or -2.
+- `dispatch_lonea_a` .. `dispatch_loned_a`: one chi-class in a slot, three low partners. Direct port of Theorem G's lone12a-d. The split class form makes each port shorter: one `rcases` replaces `lowsplitG` + `low_p2_dvdG`.
+- `dispatch_low_step`: the all-low bucket. All four values p^2-divisible: cancel p^2 with `mul_left_cancel₀` and call the rung a-1 router (the IH hypothesis). One M7a value: `lowq_M7a_kill` with unit 2e or e. Two M7a values: equal values break distinctness.
+- `no_assignment_step`: the sixteen-bucket router at rung a. It takes the rung a-1 router as a hypothesis (IH). `UClass_step` splits each value into low (p^2 * rung a-1 class, or M7a) versus chi (M8a / M9a). The bucket bodies mirror Theorem G's `no_assignment_sp3q` exactly, with the generic dispatchers in place of the concrete ones.
+- Gotcha: the all-chi bucket needs `rcases` on all four slots. A pigeonhole over only two slots misses the mixed cases.
+
+Remaining for the uniform theorem: the ratio-2 step, the four-diffs wrapper, and the induction assembly with base a = 1 (Theorem E).
