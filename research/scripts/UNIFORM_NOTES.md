@@ -2285,3 +2285,14 @@ cells (its norm consequence: X² + p^{4a} = 2q⁴ with Y = ±I₄ₐ — one exp
 Pell-type locus, to be closed with each invoking cell's second equation).
 
 Generic kill inventory now: 12 lemmas, all ∀a, zero sorries.
+
+## Round 141 (2026-08-17) — generic T-core M7ₐ-row CLOSED
+
+`M7row_p2_kill` closes ALL (M7ₐ-row, p²-partner) T-cells in one lemma:
+the pinned residue R₄ₐ = ±q², 2Y = ±f·I₄ₐ turns eq2 into
+2eX ≡ −3fq² (mod p²); squaring against 4X² = 5q⁴ − p^{4a} forces
+p² ∣ 4q⁴ — dead. `M7row_M7_kill` closes the diagonal by parity
+(2eX = (2g−3f)q², even = odd). G needed EIGHT bespoke cells here
+(M7_chain + J-endgame + L34/L56 machinery); the generic residue is strictly
+stronger because R₄ₐ ∣ q² classifies against ±q² directly instead of
+spreading over J-values. Kill inventory: 16 generic lemmas.

@@ -1207,4 +1207,89 @@ lemma M7a_classify2 (q : ℕ) [hq : Fact (Nat.Prime q)]
       rw [hw, hwq]
       ring
 
+set_option maxHeartbeats 800000 in
+/-- T-core (M7ₐ-row, p²-partner) kill, generic in the cofactor. -/
+lemma M7row_p2_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N f g e : ℤ) (hf : f = 1 ∨ f = -1) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = f * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))))
+    (h2 : 3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = g * ((p : ℤ) ^ 2 * N)) : False := by
+  have hf2 : f ^ 2 = 1 := by rcases hf with rfl | rfl <;> norm_num
+  have he2 : e ^ 2 = 1 := by rcases he with rfl | rfl <;> norm_num
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hna := norm_coord p A B hpAB a
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  obtain ⟨ε, hε, hRa, h2Y⟩ := M7a_classify2 p q hpodd hqodd hpq a ha A B C D hpAB hqCD f hf h1
+  have hε2 : ε ^ 2 = 1 := by rcases hε with rfl | rfl <;> norm_num
+  have hRsq : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 = (q : ℤ) ^ 4 := by
+    rw [hRa]
+    linear_combination (q : ℤ) ^ 4 * hε2
+  have hI2 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 = (p : ℤ) ^ (4 * a) - (q : ℤ) ^ 4 := by
+    linear_combination hna - hRsq
+  have hY4 : 4 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 := by
+    have hsq : (2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) ^ 2 = (ε * f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) ^ 2 := by rw [h2Y]
+    linear_combination hsq + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * f ^ 2 * hε2 + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * hf2
+  have hX4 : 4 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = 5 * (q : ℤ) ^ 4 - (p : ℤ) ^ (4 * a) := by
+    linear_combination 4 * hq4c - hY4 - hI2
+  have hIa6 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (3 * f * (q : ℤ) ^ 2 + 2 * e * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = 2 * g * ((p : ℤ) ^ 2 * N) := by
+    linear_combination 2 * h2 - 3 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * h2Y - 3 * f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ε * hRa
+      - 3 * f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (q : ℤ) ^ 2 * hε2
+  have hp2D : (p : ℤ) ^ 2 ∣ (3 * f * (q : ℤ) ^ 2 + 2 * e * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpI).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨2 * g * N, by linear_combination hIa6⟩
+  obtain ⟨d, hd⟩ := hp2D
+  have hp2q4 : (p : ℤ) ^ 2 ∣ 4 * (q : ℤ) ^ 4 := by
+    refine ⟨-((p : ℤ)) ^ 2 * d ^ 2 + 6 * d * f * (q : ℤ) ^ 2 - (p : ℤ) ^ (4 * a - 2), ?_⟩
+    have hpow : (p : ℤ) ^ (4 * a) = (p : ℤ) ^ 2 * (p : ℤ) ^ (4 * a - 2) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    have hsqd : (2 * e * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) ^ 2 = ((p : ℤ) ^ 2 * d - 3 * f * (q : ℤ) ^ 2) ^ 2 := by
+      rw [show 2 * e * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = (p : ℤ) ^ 2 * d - 3 * f * (q : ℤ) ^ 2 from by linarith [hd]]
+    linear_combination -hsqd + 4 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 * he2 + hX4 - hpow
+      - 9 * (q : ℤ) ^ 4 * hf2
+  have hpq4 : (p : ℤ) ∣ 4 * (q : ℤ) ^ 4 :=
+    (dvd_pow_self _ (by norm_num : (2 : ℕ) ≠ 0)).trans hp2q4
+  rcases hpP.dvd_mul.mp hpq4 with h4 | hq4
+  · have h4' : (p : ℤ) ∣ 4 := h4
+    have h4n : p ∣ 4 := by exact_mod_cast h4'
+    have := Nat.le_of_dvd (by norm_num) h4n
+    have h2le := hp.out.two_le
+    interval_cases p <;> omega
+  · have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4
+    have hnat : p ∣ q := by exact_mod_cast hq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+/-- T-core (M7ₐ, M7ₐ) cell: parity. -/
+lemma M7row_M7_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f g e : ℤ) (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = f * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))))
+    (h2 : 3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = g * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) : False := by
+  have hε2' := trivial
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hI0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ≠ 0 := by
+    intro h0
+    exact hpI (h0 ▸ dvd_zero _)
+  obtain ⟨ε, hε, hRa, h2Y⟩ := M7a_classify2 p q hpodd hqodd hpq a ha A B C D hpAB hqCD f hf h1
+  have hε2 : ε ^ 2 = 1 := by rcases hε with rfl | rfl <;> norm_num
+  have hkey : 2 * e * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = (2 * g - 3 * f) * (q : ℤ) ^ 2 := by
+    have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (2 * e * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) - (2 * g - 3 * f) * (q : ℤ) ^ 2) = 0 := by
+      linear_combination 2 * h2 - 3 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * h2Y - 3 * f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ε * hRa
+        - 3 * f * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (q : ℤ) ^ 2 * hε2
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  obtain ⟨m, hm⟩ := (odd_cast q hqodd).pow (n := 2)
+  rw [hm] at hkey
+  rcases hf with rfl | rfl <;> rcases hg with rfl | rfl <;> rcases he with rfl | rfl <;>
+    omega
+
 end UniformA
