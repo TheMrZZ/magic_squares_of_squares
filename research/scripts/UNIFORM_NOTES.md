@@ -2805,3 +2805,21 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   of every (j, k, ε) assignment per grid — the Lean counterpart of the
   certifier's battery (grading kills, elimination chains + oracle
   forms, aligned cross kills), driven by a per-leaf verdict dump.
+
+## Round 194: lone_kill and the √−5 cell are machine-checked
+
+- `Router.lone_kill`: the certifier's phase-2 workhorse as a
+  once-proved dispatcher — a three-term relation whose first term has
+  strictly smaller p-content, unit-like leading coefficient, and a
+  π-power times a p-coprime cofactor in the imaginary part is nonzero
+  (grading lemma + grading_kill).
+- `Sqrt5Cell.sqrt5_cell`: the one family the certifier could not kill
+  mechanically is now fully machine-checked: the coprime splitting of
+  (W−R)(W+R) = 5S² (`five_sq_split`), the Gaussian unit enumeration,
+  the ℤ[i] refactorization z = (β²−3α²)+4iα² with z = unit·π⁸ or
+  unit·π̄⁸ via the two-prime classifier at the auxiliary prime 5, the
+  parity kill of the imaginary units, and the 17-endgame
+  (`p8_ne_17a4`, factorization parity).
+- Hand-lemma scoreboard: exactness ✓, √−5 ✓; remaining: coprime
+  masters, telescoping. Router: lone_kill ✓; remaining: screen/unit
+  kills, pair verdicts, the per-grid dispatch emitters.
