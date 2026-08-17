@@ -1775,4 +1775,182 @@ lemma dispatch_ab56_a (q : ℕ) [hq : Fact (Nat.Prime q)]
       (by rcases he4 with rfl | rfl <;> norm_num) hKc hKd
       (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
 
+set_option maxHeartbeats 1600000 in
+lemma dispatch_ac_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hac : (Ka = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∧ Kc = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) ∨ (Ka = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) ∧ Kc = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)))
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hac with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8a_coord, M9a_coord] at hE1 hE2 <;>
+    rcases he1 with rfl | rfl <;> rcases he3 with rfl | rfl
+  -- Ka = L5, Kc = L6
+  · -- (e1, e3) = (1, 1): T-form, f = −e2, g = e4, e = 1
+    exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd (-e2) e4 1
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (1, −1): S-form, f = −e2, g = e4, e = 1
+    exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd (-e2) e4 1
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, 1): S-form, f = e2, g = −e4, e = 1
+    exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd e2 (-e4) 1
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, −1): T-form, f = e2, g = −e4, e = 1
+    exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd e2 (-e4) 1
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  -- Ka = L6, Kc = L5
+  · -- (1, 1): T-form, f = e2, g = −e4, e = −1
+    exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd e2 (-e4) (-1)
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (1, −1): S-form, f = −e2, g = e4, e = −1
+    exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd (-e2) e4 (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, 1): S-form, f = e2, g = −e4, e = −1
+    exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd e2 (-e4) (-1)
+      he2 (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · -- (−1, −1): T-form, f = −e2, g = e4, e = −1
+    exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kd (-e2) e4 (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num) he4 (Or.inr rfl) hb hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Ka and Kd carry the level-8 classes. -/
+lemma dispatch_ad_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (had : (Ka = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∧ Kd = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) ∨ (Ka = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) ∧ Kd = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)))
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc : (∃ N, Kc = (p : ℤ) ^ 2 * N) ∨ Kc = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases had with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8a_coord, M9a_coord] at hE1 hE2 <;>
+    rcases he1 with rfl | rfl <;> rcases he4 with rfl | rfl
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc e2 e3 1
+      he2 he3 (Or.inl rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc e2 e3 1
+      he2 he3 (Or.inl rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc (-e2) (-e3) 1
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc (-e2) (-e3) 1
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc (-e2) (-e3) (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc e2 e3 (-1)
+      he2 he3 (Or.inr rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc (-e2) (-e3) (-1)
+      (by rcases he2 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) hb hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Kb Kc e2 e3 (-1)
+      he2 he3 (Or.inr rfl) hb hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Kb and Kc carry the level-8 classes. -/
+lemma dispatch_bc_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hbc : (Kb = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∧ Kc = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) ∨ (Kb = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) ∧ Kc = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)))
+    (ha : (∃ N, Ka = (p : ℤ) ^ 2 * N) ∨ Ka = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hbc with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8a_coord, M9a_coord] at hE1 hE2 <;>
+    rcases he2 with rfl | rfl <;> rcases he3 with rfl | rfl
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd (-e1) (-e4) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd (-e1) (-e4) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd e1 e4 1
+      he1 he4 (Or.inl rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd e1 e4 1
+      he1 he4 (Or.inl rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd e1 e4 (-1)
+      he1 he4 (Or.inr rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd (-e1) (-e4) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd e1 e4 (-1)
+      he1 he4 (Or.inr rfl) ha hd (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kd (-e1) (-e4) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he4 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hd
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
+set_option maxHeartbeats 1600000 in
+/-- Cross-position dispatcher: Kb and Kd carry the level-8 classes. -/
+lemma dispatch_bd_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha1 : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hbd : (Kb = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) ∧ Kd = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) ∨ (Kb = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) ∧ Kd = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)))
+    (ha : (∃ N, Ka = (p : ℤ) ^ 2 * N) ∨ Ka = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc : (∃ N, Kc = (p : ℤ) ^ 2 * N) ∨ Kc = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  rcases hbd with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+    simp only [M8a_coord, M9a_coord] at hE1 hE2 <;>
+    rcases he2 with rfl | rfl <;> rcases he4 with rfl | rfl
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc e1 e3 1
+      he1 he3 (Or.inl rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc e1 e3 1
+      he1 he3 (Or.inl rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc (-e1) (-e3) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc (-e1) (-e3) 1
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inl rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc e1 e3 (-1)
+      he1 he3 (Or.inr rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc (-e1) (-e3) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Tcore_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc e1 e3 (-1)
+      he1 he3 (Or.inr rfl) ha hc (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+  · exact Score_a p q hpodd hqodd hpq a ha1 A B C D hpAB hqCD Ka Kc (-e1) (-e3) (-1)
+      (by rcases he1 with rfl | rfl <;> norm_num)
+      (by rcases he3 with rfl | rfl <;> norm_num) (Or.inr rfl) ha hc
+      (by linarith [hE1, hE2]) (by linarith [hE1, hE2])
+
 end UniformA
