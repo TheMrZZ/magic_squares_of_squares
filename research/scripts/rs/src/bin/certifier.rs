@@ -19,6 +19,8 @@ static DONE: AtomicUsize = AtomicUsize::new(0);
 static TOTAL: AtomicUsize = AtomicUsize::new(0);
 const PHASES: [&str; 6] = ["startup", "leaf enumeration", "relation screen",
                            "condition map", "pair verdicts", "elimination"];
+static CROSSDUMP: std::sync::LazyLock<std::sync::Mutex<HashSet<String>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(HashSet::new()));
 
 fn set_phase(p: usize, total: usize) {
     PHASE.store(p, Ordering::Relaxed);
@@ -329,6 +331,11 @@ fn main() {
             (Cond::Clean { delta: d1, sig: s1, om: o1 }, Cond::Clean { delta: d2, sig: s2, om: o2 }) => {
                 if d1 == d2 {
                     let cross = radd(&rmul(s1, o2), &rneg(&rmul(s2, o1)));
+                    if !cross.is_empty() {
+                        CROSSDUMP.lock().unwrap().insert(
+                            cross.iter().map(|(m, c)| format!("{}*r**{}*s**{}", c, m.0, m.1))
+                                .collect::<Vec<_>>().join(" + "));
+                    }
                     if cross.is_empty() {
                         // aligned: shared (X, Y) forces the magnitude identity
                         // w2^2 (Sigma1^2 + om1^2) = w1^2 (Sigma2^2 + om2^2)
@@ -559,6 +566,11 @@ fn main() {
         let mut f = std::fs::File::create(&fname).unwrap();
         for t0 in &oracle { writeln!(f, "{t0}").unwrap(); }
         println!("oracle dump: {} distinct minimal-layer forms -> {fname}", oracle.len());
+        let cname = format!("cross_forms_{a}_{b}.txt");
+        let mut cf = std::fs::File::create(&cname).unwrap();
+        let cd = CROSSDUMP.lock().unwrap();
+        for c in cd.iter() { writeln!(cf, "{c}").unwrap(); }
+        println!("cross dump: {} distinct cross forms -> {cname}", cd.len());
     }
     let mut evs: Vec<_> = everdict.iter().collect();
     evs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
