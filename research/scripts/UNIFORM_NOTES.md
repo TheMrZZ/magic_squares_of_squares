@@ -2601,3 +2601,8 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The 216 layered factors expand in the χ-coordinate basis into just **4 relation signatures** (single-level sandwiches at j = 1, 2, 3, plus 8 five-level factors). Each is an affine condition α(r,s)·X_j + β(r,s)·Y_j = γ on the χ-circle.
 - A worked example decomposes to R₈·Y₄ = p²q²·S₄ — the row-relation class that `row_M7a_kill` and `Srow_M7_kill_a` already killed, machine-checked, in the uniform theorem. The layered sector is solved technology.
 - The exactness lemma is proved and in the paper; the telescoping wrapper subsection is drafted. `u23_endgame.py` computes the terminal Diophantines for all 1,440 residual pairs (2×2 linear systems on the χ-circle, determinant = the verified cross).
+
+## Round 173: the affine model is verified exactly
+
+- `u23_affine_verify.py`: all 208 single-level layered factors match the model F = q^{2qb}[q^{2ep}(c·χ^{2j₂} + σ·conj) + q^{2ed}d] exactly, at multiple Gaussian data points with exact integer arithmetic. (Two bugs found on the way: xy-value = q², so every xy-power scales as q^{2·exp}; and the σ = ±1 symmetry sign selects between the Re- and Im-affine forms.)
+- The corrected endgame computation runs: for each residual pair, the two affine conditions on the χ^{2j₂}-circle solve linearly (determinant = the verified cross class) and the circle equation yields one terminal polynomial T(r, s, q) per pair. T ≠ 0 at data kills the pair outright; the T-classifier (q-grading + band cascade) is next.
