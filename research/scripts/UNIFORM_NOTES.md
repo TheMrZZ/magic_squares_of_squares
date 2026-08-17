@@ -2423,3 +2423,11 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
 - Scoreboard: 5,952 of 6,208 leaves (95.9%) are dead at first order for all p, q. The deep core is **256 shapes, degenerate on both sides** (`u22_deep.pkl`).
 - The artifact now carries the live programme in §7 and the report mirror `research/REPORT.md` follows it.
 - Next: the structure of the 256 — expect the conjugate-pair coincidence families; the kill needs the mod-π² layer (J-chain style) or a second elimination variable.
+
+## Round 154: the pinch screen — (2,2) is down to 64 core leaves
+
+- `u22_deep_pinch.py`: 192 of the 256 deep shapes factor with a strict-pinch factor (R ∓ p², X ∓ q², R²−I² ∓ p⁴, W ∓ q⁴). The pinch is elementary: the real part of a unit power never reaches the norm while the imaginary part is nonzero.
+- **The full (2,2) residue is now 64 leaves in 4 families** (`u22_deep2.pkl`): element sets {(1,2,±), (2,1,±), (2,2,+), (2,2,−)}. Their equations are two-core master systems in the π⁸ coordinates (U₈ = R²−I², V₈ = 2RI):
+  (1) p²(RZ + IW) = U₈·Z and (2) V₈·W = q²(U₈·Y + V₈·X), with sign variants.
+- These are the (2,2) analogs of the cross-pair cores that `Tcore_a`/`Score_a`/`mixed_core_a`/`two_core_a` killed at b = 1. The kill needs the same toolkit: coprime extraction and a norm master relation.
+- Scoreboard for Theorem H: 95,040 leaves → 6,208 (grading) → 256 (unit certificates) → **64 (pinch)**. One cell family stands.
