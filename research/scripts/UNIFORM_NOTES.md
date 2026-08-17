@@ -2377,3 +2377,12 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
 - New probe `u22_probe.py`: enumerates the 95,040 leaves of (2,2) in half-level coordinates (R,I = π⁴; X,Y = χ⁴; W,Z = χ⁸). The grading kill reproduces the old baseline exactly: 93.5% dead, 6,208 survivors, 114 class-multiset shapes.
 - Observation: the sixteen top shapes (192 leaves each) are levelled copies of the Theorem-E class set {q-axis, p-axis, M8/M9 pair}. The dispatcher cores killed exactly these shapes at b = 1. The new frontier is the shapes with a chi-8 twist (β = 2, both signs).
 - Plan: apply the F-style norm-core elimination to all 6,208 survivors. The old battery (mod-32, IA-elimination, rational root) left 82 relations; the norm-core toolkit is independent of it and may close the band cells.
+
+## Round 150: the coupling structure of (2,2)
+
+- Setup: the durable clone is live (`~/Documents/Programming/magic_squares_of_squares`); the Lean cache is warm; `research/AGENTS.md` orients other AI workers. Codex also works in this repo — pull with rebase before each push.
+- Artifact corrections (from review): the reduction now carries the distinctness qualifier; §4 states that its order loci are survivors of the earlier method, not surviving center candidates; the file-count claim is replaced. The report also lives in the repo now: `research/REPORT.md`.
+- `u22_locus_test2.py`: at all 68 disc-12 form-locus pairs below 5000, no relation has both p and q dividing its content-free value. The form-level coincidence does not produce the divisibility coupling.
+- `u22_coupling_scan.py` (p, q < 250, all orientations): 402 of the 600 relations have ZERO joint divisibility events. The 198 others couple only at isolated pairs.
+- `u22_coupling_scan2.py` (p, q < 1000): the joint sets stay thin (one to three pairs per relation; union 44 pairs; max prime 829) but slowly grow — per-relation incompatibility is not absolute.
+- Next: leaf-level coupling. A leaf needs joint divisibility for BOTH its relations at the same point. The per-relation joint sets are thin, so the leaf-level intersection is plausibly empty everywhere. If the scan confirms this, the proof target becomes the first-order incompatibility of the two minimal-layer residues — a resultant computation per leaf shape.

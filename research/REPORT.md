@@ -1,0 +1,71 @@
+<!-- Markdown mirror of the campaign report artifact. Keep in sync with the artifact. -->
+
+An open problem, taken apart
+
+# The Impossible Square
+
+Can nine *different* perfect squares fill a 3×3 grid, so that each row, column, and diagonal has the same sum? Nobody found one. Nobody proved that none exists. This page is the report of a campaign to prove the impossibility. It shows what is settled, what is machine-checked, and what remains.
+
+## §1 Everything hangs on the center
+
+Each 3×3 magic square has the shape above: a center c and the offsets ±u, ±v, ±(u+v), ±(u−v). The magic property is automatic. All eight lines sum to 3c. The problem is only this: can the nine cells all be perfect squares? Write the center as c = e². We call e the *center root*. A two-line lemma shows: c−d and c+d are both squares exactly when d ∈ *D(e)* = {2xy : x²+y²=e²}. So:
+
+> **Theorem — the reduction (Lean-verified, both directions)**
+>
+> A magic square of squares with center e² exists **iff** there are u, v with u, v, u+v, u−v all in D(e). Four numbers must come from one set. The set must contain a pair together with its sum and its difference. That is the full problem.
+>
+> One distinctness qualifier. The verified forward direction builds a fully magic grid of nine squares, but it permits repeated entries. The original problem also asks for nine *different* squares, which needs the four offsets u, v, u+v, u−v distinct and nonzero. The impossibility direction does not feel this: every square with distinct entries yields the four members of D(e), so when no u, v exist, no square exists — distinct or not. All impossibility theorems below stand as stated.
+
+Only the primes p ≡ 1 (mod 4) that divide e feed D(e). These primes split as a² + b² in the Gaussian integers ℤ[i]. Primes ≡ 3 (mod 4) add nothing. They only ride along as a cofactor s.
+
+## §2 One useful prime is never enough
+
+> **Theorem C — machine-checked in Lean 4, zero sorries**
+>
+> At least **two distinct primes ≡ 1 (mod 4)** must divide the center root of a magic square of squares. For e = s·pᵃ, the elements of D(e) have pairwise distinct p-adic valuations. But u±v must share the minimum valuation. This collision cannot occur. The full chain is formal: the reduction, the ℤ[i] classification, the bridge lemma p ∤ Im(πᵐ), and the valuation clash. See `no_magic_square_of_squares_single_prime_center` and its rigid-cofactor companion, in a Lean/mathlib library with no unproven assumptions. As far as we know, this is the first formally verified structural theorem about this problem.
+
+## §3 The two-prime ladder
+
+Set e = s·pᵃ·q. Each rung of the exponent ladder fell to a computer-assisted but rigorous pipeline: assignment enumeration, linear elimination against the norm relations, parity, p-adic and congruence obstructions, and size pinches.
+
+- *Theorem E* — no center root s·p·q. Here |D| = 4 exactly. The four differences must use all of it, and each placement dies. **Fully machine-checked in Lean 4, zero sorries** (`no_magic_square_of_squares_spq_center`). An 18-case Gaussian classification of the D-set feeds a complete assignment analysis: six pair-dispatchers over three certificate tiers, and 1,344 sign-and-class leaves. The hardest leaf ends in a ratio system that coprimality controls. Its terminal quadratic factors as (q²−p²)(q²−2p²). This is the first formally verified two-prime impossibility. The formal frontier then covered all center roots s·pᵃ and s·p·q.
+- *Theorem F* — no center root s·p²·q. This is Bremner's type. The center 425 = 5²·17 carries the only known fully-magic square with seven square entries. No completion is possible — at 425 or at any center of that shape. **Fully machine-checked, zero sorries** (`no_magic_square_of_squares_sp2q_center`). The D-set splits into **seven** Gaussian classes. A router with sixteen buckets sorts them. The low bucket cancels a common p² and reuses Theorem E without change. The level-eight buckets reduce to two 25-cell cross-pair cores. A new structural layer proves that no class value is two times another (49 cells). Its two deepest cells push a factor 3 through coprime chains and reach the equation u⁴ − 4v⁴ = w². This equation dies by **Fermat's right triangle theorem** (mathlib's `not_fermat_42`). Each center of each known Bremner-type near-miss is covered.
+- *Theorem G* — no center root s·p³·q. **Fully machine-checked, zero sorries** (`no_magic_square_of_squares_sp3q_center`). There are **ten** Gaussian classes: the seven Theorem-F classes with a factor p², plus q²·Im π¹² and the two Im(π¹²χ^±4) twists. The proof *telescopes*. The all-low bucket cancels p² and calls the Theorem F router as a black box. The mixed core took a page at level 8, but at level 12 it collapses to a three-line valuation argument. The new classes die when we sort J = 4R₄²−p⁴ against powers of q: units modulo 16, consecutive squares, and one deep p = 5 descent. The hardest ratio cell runs Theorem F's Fermat descent again, through π¹² = (π⁶)² with the base (q, p³). The verified frontier became s·pᵃ, s·p·q, s·p²·q, s·p³·q. The way G *reuses* F is exactly the inductive step that a uniform s·pᵃ·q theorem needs.
+- *The uniform theorem* — no center root s·pᵃ·q, **for every a ≥ 1 at once. Fully machine-checked, zero sorries** (`no_magic_square_of_squares_spaq_center` in `UniformAInt.lean`, ~3,400 lines). One induction on a subsumes Theorems E, F, and G, and closes the whole infinite ladder. The class family `UClass` has 1+3a members. Its telescoping identity — rung a equals p²·rung (a−1) plus three new classes — is the formal skeleton of "G reuses F". The four cross-pair cores and the ten dispatchers hold at *every* rung at the same time, and the generic proofs are *cleaner* than the concrete ones: unit branches die by size, not modulo 16; the residue ±q² plus one congruence kills each partner class. The step routers take the rung a−1 router as a hypothesis. Their all-low bucket cancels p² and recurses. At rung 1 the four classes are concrete, and two low classes cannot fill four distinct slots. The hardest ratio cell factors through π^4a = (π^2a)² and runs the Fermat descent with the base (q, pᵃ), generic in the odd base. The verified frontier is now: **one useful prime (any power) — impossible; two useful primes p·q, p²·q, p³·q, and every pᵃ·q — impossible.**
+
+## §4 Uniform in the exponent: the deep-shape story
+
+A note on scope, so this section does not appear to contradict §3. The uniform theorem of §3 already eliminates **every** s·pᵃ·q center. This section records an earlier, independent proof method for the same family. Its residual loci (the ~19 order loci below) are survivors of *that method's* toolset — they are not surviving center candidates. The section stays because its tools aim past the s·pᵃ·q family, toward the exponent grids of §5.
+
+To attack all s·pᵃ·q at once, the levels of D(e) become exact orbit variables π^4j. One- and two-level templates died unconditionally for *every* exponent. The last 24 relations fell to an *imbalance theorem*: the solved value χ⁴ = Q·N/D has a balanced D but a lone unit monomial in N. This forces a p-adic valuation that χ⁴ cannot have. The three- and four-level sweeps (36,288 + 31,104 leaves) left twenty *deep shapes*. Then the structure collapsed:
+
+- the survival condition loses q completely (the *Q-collapse*: one integer identity c = |A|²−|D|² per shape);
+- an exact-rational simplex certifies that each shape owns a single feasible leading pair. Eight shapes have the coefficients (1,2). Their tie forces 1 ≡ −2 (mod p). **Those eight are impossible for every p, every orbit index, and every q**;
+- the other twelve cancel exactly, and the analysis recurses. The recursion stops by dimension exhaustion. It closes each branch except ~19 explicit *order loci*. On such a locus, survival demands two conditions at the same time: ord_p(2A) must divide an explicit exponent gap, and a Fermat-quotient (Wieferich-type) deepening must outrun each remaining valuation layer — on both sides at once. We conjecture that this double coincidence never occurs. Each computed point refutes it.
+
+## §5 The grading lemma opens every other door
+
+> **Grading lemma — machine-checked (`im_pipow_mul_not_dvd`)**
+>
+> Let p = a²+b² be prime, let k ≥ 1, and let W be a Gaussian integer with p ∤ N(W). Then p never divides Im((a+bi)ᵏ·W). Consequence: take a required relation with a term that stands alone in its minimal p-layer. That term is a p-unit against terms with p² more. The relation is impossible.
+
+This one lemma gives structure to the full remaining landscape, for *any* count of primes and exponents. Its reach grows with complexity:
+
+The certificates also crossed fully into the machine-checked column. **The symbolic census kills fifty-six relations unconditionally at exponent (2,2). All fifty-six are now formally verified in Lean 4 with zero sorries.** The thirty-two double-pinch relations go through a reusable toolkit: two core-extraction lemmas plus one shared pinch-finisher. The twenty-four parity and unit-side relations share a twin structure. This structure collapses each relation over the integers into a nonzero factor times an odd cofactor. No Gaussian arithmetic is necessary. Eleven of the twelve twin-family theorems came from a template, and they compiled on the first attempt. Each theorem is parametric over all sign choices, all odd prime pairs, and all Gaussian representations at once. So the unconditional layer for p²q²-type centers is fully formal.
+
+Then the full layer became *uniform in the exponent*. The four double-pinch families are one corner-triple shape at different anchors. The twin collapse never uses the π-side factor. So six theorems with free exponent parameters now kill these relation shapes at **every** center type s·pᵃ·q^b at once. The certificate engine at higher exponents confirms that the theorems are not only a lower bound. At seven exponents, from (2,2) up through (5,2) and (4,4), each unconditionally-killed relation is an instance — more than one thousand across the censuses. Two higher-exponent surprises fit as well. The result is a *2-adic master rule* for the twin shapes: the collapse kills exactly when v₂(lone) ≠ 1 + v₂(twin), and relation shapes that break the rule provably never occur. The working conjecture: the machine-checked uniform statements are the complete unconditional symbolic layer. The conjecture holds beyond two primes. At the three-prime exponents (1,1,1) and (2,1,1), each unconditionally-killed relation is again an instance. The third prime's factor rides in the theorems' opaque slot. Two short composite variants absorb the rest; they build on the fact that a product of powers of distinct split primes is never real. Twelve exponent grids are censused. They span two, three, and now **four** primes, where triple-composite shapes fell to theorems with an opaque "tail" factor of arbitrary arity. Coverage is 100% at all twelve grids. The formal layer now **beats the census engine itself**: at the grid (2,2,1), the symbolic certificates leave 264 relations alive. These are corner shapes with a spectator prime, and the machine-checked spectator-corner theorem kills them outright. The proof assistant also paid off in the other direction. The attempted mixed-class spectator theorem failed in Lean for a real reason: the extracted core mixes W with its conjugate and stops being small. So those relations are alive on merit, not because the engine is weak. Sharpness audits close the loop. Each alive corner or twin shape fails one nameable hypothesis, and zero alive relations satisfy the theorems. The uniform layer is exactly the boundary between what this mathematics kills and what needs a new idea.
+
+The residual relations are few: 216 for s·p²q² and 600 for s·pqr. Their geometry is now exact. Per-factor certificates killed 134 of the 216 — parity, unit sides, double pinches with strictly-bounded Re(χ²)/Im(χ²) cores, and explicit finite bounds, all ≤ 144. The survivors sit in 18 *Pell-band equations* and 64 wedge relations for two primes, and in explicit power-law prime families (r ~ p² rays) for three.
+
+## §6 The computational floor
+
+- No magic square of squares has a center entry below **10²⁰** (Rust segmented search over all center roots e < 10¹⁰).
+- Bremner's seven-square square is, up to scale, the **only** one with a center root below 10⁹ (all 2,352,941 configurations are multiples of e = 425).
+- The repo's original conjecture (all quasi-magic squares have N = (3kp²)²) is **false**. The first counterexample is N = 10,543,009 = (17·191)², found at 10.5M.
+- A claimed proof of the full impossibility (arXiv 2510.08286) was examined and **refuted** — an equation-vs-identity fallacy at its final step.
+
+## §7 What would actually finish it
+
+The honest map: solutions exist over ℤ[i] and over finite fields. So no purely algebraic argument can close the problem. The full statement is equivalent to the emptiness of families of simultaneous congruent-number-type curves. This campaign fenced the problem into corners with names. A hypothetical square must have a center root with ≥ 2 useful primes. It must avoid each proven family and each computed range. And it must sit on an explicit thin locus: a double Wieferich coincidence, a Pell band, or a power-law prime curve. None of these loci produced one surviving point in some five billion exact checks. The heuristic expected count of solutions is zero. The proof of that zero is still open. Each partial theorem here is durable, pushed, and — where it matters most — machine-checked.
+
+Campaign artifacts: branch `research-campaign` on TheMrZZ/magic_squares_of_squares — paper (`research/paper`), Lean library (`research/lean`, zero sorries), engines and the running ledger (`research/scripts/UNIFORM_NOTES.md`).
