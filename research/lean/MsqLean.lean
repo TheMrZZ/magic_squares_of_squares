@@ -45,3 +45,6 @@ import MsqLean.TheoremGCore
 import MsqLean.UniformAInt
 import MsqLean.PolyRefl
 import MsqLean.CertKit
+import MsqLean.GaussData
+import MsqLean.Exactness
+import MsqLean.RepStructure2

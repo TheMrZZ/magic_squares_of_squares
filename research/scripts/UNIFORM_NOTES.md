@@ -2791,3 +2791,17 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Next: the four-diffs relations turn assignments of four class values
   into the model equations Σ ±εᵢ·Kᵢ = 0; the leaf provenance dump ties
   each certified chain input to those equations.
+
+## Round 193: the model equations are machine-checked
+
+- `four_diffs_model` (RepStructure2): if u, v, u+v, u−v all lie in D(e)
+  at the center s²·p^(2a)·q^(2b), then some assignment of four class
+  data values satisfies the two E-relations
+  ε₃K₃ + ε₄K₄ = 2ε₁K₁ and ε₃K₃ − ε₄K₄ = 2ε₂K₂, where each K is
+  `eval (classPair j (2a−j) k (2b−k)).2` at the half-level coordinates.
+  The s² factor cancels linearly; no nonlinear reasoning needed.
+- The value bridge is now complete from the magic-square side down to
+  the data layer. What remains is the router: the certified refutation
+  of every (j, k, ε) assignment per grid — the Lean counterpart of the
+  certifier's battery (grading kills, elimination chains + oracle
+  forms, aligned cross kills), driven by a per-leaf verdict dump.

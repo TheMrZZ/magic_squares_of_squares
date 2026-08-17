@@ -123,10 +123,86 @@ theorem class_value_data (p q : ℕ)
         * (⟨C ^ 2 - D ^ 2, -(2 * C * D)⟩ : GaussianInt) ^ (2 * b - k) := by
     rw [← hsq, ← hsqs, ← hsqX, ← hsqXs]
     rw [← pow_mul, ← pow_mul, ← pow_mul, ← pow_mul]
-    ring_nf
+    try ring_nf
   rw [hmono]
   congr 1
   exact (GaussData.class_value_bridge j (2 * a - j) k (2 * b - k)
     (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D)).2
+
+/-- The model equations: if the four differences u, v, u+v, u−v all lie
+in D(e) at the center s²·p^(2a)·q^(2b), then some assignment of four
+class data values satisfies the two E-relations. This is the statement
+the certified leaf enumeration refutes case by case. -/
+theorem four_diffs_model (p q : ℕ)
+    [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)] (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1) (hs0 : 0 < s)
+    (a b : ℕ)
+    (u v : ℤ)
+    (x1 y1 x2 y2 x3 y3 x4 y4 : ℤ)
+    (h1 : x1 ^ 2 + y1 ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ (2 * b))
+    (e1 : 2 * x1 * y1 = u)
+    (h2 : x2 ^ 2 + y2 ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ (2 * b))
+    (e2 : 2 * x2 * y2 = v)
+    (h3 : x3 ^ 2 + y3 ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ (2 * b))
+    (e3 : 2 * x3 * y3 = u + v)
+    (h4 : x4 ^ 2 + y4 ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ (2 * b))
+    (e4 : 2 * x4 * y4 = u - v) :
+    ∃ (ε1 ε2 ε3 ε4 : ℤ) (j1 k1 j2 k2 j3 k3 j4 k4 : ℕ),
+      (ε1 = 1 ∨ ε1 = -1) ∧ (ε2 = 1 ∨ ε2 = -1)
+      ∧ (ε3 = 1 ∨ ε3 = -1) ∧ (ε4 = 1 ∨ ε4 = -1)
+      ∧ j1 ≤ 2 * a ∧ k1 ≤ 2 * b ∧ j2 ≤ 2 * a ∧ k2 ≤ 2 * b
+      ∧ j3 ≤ 2 * a ∧ k3 ≤ 2 * b ∧ j4 ≤ 2 * a ∧ k4 ≤ 2 * b
+      ∧ (ε3 * PolyRefl.eval (GaussData.classPair j3 (2 * a - j3) k3 (2 * b - k3)).2
+            (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D)
+          + ε4 * PolyRefl.eval (GaussData.classPair j4 (2 * a - j4) k4 (2 * b - k4)).2
+            (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D)
+          = 2 * ε1 * PolyRefl.eval (GaussData.classPair j1 (2 * a - j1) k1 (2 * b - k1)).2
+            (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D))
+      ∧ (ε3 * PolyRefl.eval (GaussData.classPair j3 (2 * a - j3) k3 (2 * b - k3)).2
+            (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D)
+          - ε4 * PolyRefl.eval (GaussData.classPair j4 (2 * a - j4) k4 (2 * b - k4)).2
+            (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D)
+          = 2 * ε2 * PolyRefl.eval (GaussData.classPair j2 (2 * a - j2) k2 (2 * b - k2)).2
+            (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D)) := by
+  obtain ⟨ε1, j1, k1, hε1, hj1, hk1, hv1⟩ :=
+    class_value_data p q hpq A B C D hpAB hqCD s hs a b x1 y1 h1
+  obtain ⟨ε2, j2, k2, hε2, hj2, hk2, hv2⟩ :=
+    class_value_data p q hpq A B C D hpAB hqCD s hs a b x2 y2 h2
+  obtain ⟨ε3, j3, k3, hε3, hj3, hk3, hv3⟩ :=
+    class_value_data p q hpq A B C D hpAB hqCD s hs a b x3 y3 h3
+  obtain ⟨ε4, j4, k4, hε4, hj4, hk4, hv4⟩ :=
+    class_value_data p q hpq A B C D hpAB hqCD s hs a b x4 y4 h4
+  set K1 := PolyRefl.eval (GaussData.classPair j1 (2 * a - j1) k1 (2 * b - k1)).2
+    (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D) with hK1
+  set K2 := PolyRefl.eval (GaussData.classPair j2 (2 * a - j2) k2 (2 * b - k2)).2
+    (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D) with hK2
+  set K3 := PolyRefl.eval (GaussData.classPair j3 (2 * a - j3) k3 (2 * b - k3)).2
+    (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D) with hK3
+  set K4 := PolyRefl.eval (GaussData.classPair j4 (2 * a - j4) k4 (2 * b - k4)).2
+    (A ^ 2 - B ^ 2) (2 * A * B) (q : ℤ) (C ^ 2 - D ^ 2) (2 * C * D) with hK4
+  have hs2 : ((s : ℕ) : ℤ) ^ 2 ≠ 0 := by positivity
+  refine ⟨ε1, ε2, ε3, ε4, j1, k1, j2, k2, j3, k3, j4, k4,
+    hε1, hε2, hε3, hε4, hj1, hk1, hj2, hk2, hj3, hk3, hj4, hk4, ?_, ?_⟩
+  · -- (u+v) + (u−v) = 2u, and s² cancels
+    have hlin : ((s : ℕ) : ℤ) ^ 2 * (ε3 * K3 + ε4 * K4 - 2 * (ε1 * K1)) = 0 := by
+      have a1 : ε1 * (((s : ℕ) : ℤ) ^ 2 * K1) = u := by rw [← e1, hv1]; ring
+      have a3 : ε3 * (((s : ℕ) : ℤ) ^ 2 * K3) = u + v := by rw [← e3, hv3]; ring
+      have a4 : ε4 * (((s : ℕ) : ℤ) ^ 2 * K4) = u - v := by rw [← e4, hv4]; ring
+      linear_combination a3 + a4 - 2 * a1
+    have := mul_eq_zero.mp hlin
+    rcases this with h | h
+    · exact absurd h hs2
+    · linarith
+  · -- (u+v) − (u−v) = 2v, and s² cancels
+    have hlin : ((s : ℕ) : ℤ) ^ 2 * (ε3 * K3 - ε4 * K4 - 2 * (ε2 * K2)) = 0 := by
+      have a2 : ε2 * (((s : ℕ) : ℤ) ^ 2 * K2) = v := by rw [← e2, hv2]; ring
+      have a3 : ε3 * (((s : ℕ) : ℤ) ^ 2 * K3) = u + v := by rw [← e3, hv3]; ring
+      have a4 : ε4 * (((s : ℕ) : ℤ) ^ 2 * K4) = u - v := by rw [← e4, hv4]; ring
+      linear_combination a3 - a4 - 2 * a2
+    have := mul_eq_zero.mp hlin
+    rcases this with h | h
+    · exact absurd h hs2
+    · linarith
 
 end RepStructure2
