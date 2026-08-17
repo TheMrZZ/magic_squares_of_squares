@@ -2594,3 +2594,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - All 116 live equal-shift crosses verified nonvanishing (parity-excluded or irrational-rooted).
 - The 24 aligned (cross-zero) systems are all monomial families (±u², ±u⁴, ±v², ±v⁴) — dead by the pure χ-valuation kill.
 - **The non-layered sector of rung (2,3) is completely dead**, by seven mechanically verified kill layers. Remaining at this rung: the layered sandwich sector (3,280 pairs, 216 factors, 14 profiles).
+
+## Round 172: the certifier verdict and the layered endgame
+
+- Certifier v1 verdict on rung (2,3): **9,360 of 10,800 pairs proved dead mechanically** (1,856 fully factored + 7,120 all-dead-factor relations + 384 all-combos-killed). All 1,440 residual pairs are layered combos — the only remaining obligation class.
+- The 216 layered factors expand in the χ-coordinate basis into just **4 relation signatures** (single-level sandwiches at j = 1, 2, 3, plus 8 five-level factors). Each is an affine condition α(r,s)·X_j + β(r,s)·Y_j = γ on the χ-circle.
+- A worked example decomposes to R₈·Y₄ = p²q²·S₄ — the row-relation class that `row_M7a_kill` and `Srow_M7_kill_a` already killed, machine-checked, in the uniform theorem. The layered sector is solved technology.
+- The exactness lemma is proved and in the paper; the telescoping wrapper subsection is drafted. `u23_endgame.py` computes the terminal Diophantines for all 1,440 residual pairs (2×2 linear systems on the χ-circle, determinant = the verified cross).
