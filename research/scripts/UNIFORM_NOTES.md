@@ -2885,3 +2885,18 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The exactness lemma stays machine-checked as mathematics; it is no
   longer load-bearing for the router. The full regeneration of the
   oracle and chain dumps under the raw route is running.
+
+## Round 199: the raw-route corpus is re-verified end to end
+
+- The regenerated oracle and chain dumps under raw elimination
+  produce a CLEANER corpus: smaller oracle sets (14 vs 22 forms at
+  (2,2)), zero sieve-unresolved forms anywhere, only 19 factor-route
+  forms total — the condition-processing extraneous factors are gone.
+  The previously chain-less aligned leaves now have chains (960 leaf
+  lemmas at (3,3), 1348 at (3,4)).
+- All twelve certificate and chain files verify with zero errors.
+- The chain dump now carries pair provenance (the two cores and their
+  re/im part choices); the chain parser accepts both formats. The pair
+  emitter is next: one decide per pair ties the chain inputs to
+  reOf/imOf of the cores, then the ChainCert leaf lemma and the
+  oracle-form split close the pair.
