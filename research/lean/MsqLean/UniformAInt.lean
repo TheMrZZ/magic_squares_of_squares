@@ -1517,4 +1517,71 @@ lemma Score_a (q : ℕ) [hq : Fact (Nat.Prime q)]
         N1 f g e hg he h1 h2
   · exact Srow_M7_kill_a p q hpodd hqodd a ha A B C D hpAB hqCD f hf h1
 
+set_option maxHeartbeats 800000 in
+/-- Generic mixed core, M7ₐ in the second slot with a p²-divisible first
+partner: the classification residue gives X² = 2q⁴ − p^(4a), and p² ∣ X
+forces p² ∣ 2q⁴. -/
+lemma mixed_c2_M7a_kill (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N f g : ℤ) (hg : g = 1 ∨ g = -1)
+    (hIX : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * ((p : ℤ) ^ 2 * N))
+    (hRY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) : False := by
+  have hg2 : g ^ 2 = 1 := by rcases hg with rfl | rfl <;> norm_num
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hna := norm_coord p A B hpAB a
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  obtain ⟨ε, hε, hRa, hYe⟩ := M7a_classify p q hpodd hqodd hpq a ha A B C D hpAB hqCD g hg hRY
+  have hε2 : ε ^ 2 = 1 := by rcases hε with rfl | rfl <;> norm_num
+  have hp2X : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpI).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨f * N, by linear_combination hIX⟩
+  have hRsq : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 = (q : ℤ) ^ 4 := by
+    rw [hRa]
+    linear_combination (q : ℤ) ^ 4 * hε2
+  have hYsq : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 := by
+    have hsq : (((((⟨C, D⟩ : GaussianInt) ^ 4).im))) ^ 2 = (ε * g * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) ^ 2 := by rw [hYe]
+    linear_combination hsq + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * g ^ 2 * hε2 + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * hg2
+  have hX2 : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = 2 * (q : ℤ) ^ 4 - (p : ℤ) ^ (4 * a) := by
+    linear_combination hq4c - hYsq - hna + hRsq
+  obtain ⟨x, hx⟩ := hp2X
+  have hp2q4 : (p : ℤ) ^ 2 ∣ 2 * (q : ℤ) ^ 4 := by
+    refine ⟨(p : ℤ) ^ 2 * x ^ 2 + (p : ℤ) ^ (4 * a - 2), ?_⟩
+    have hpow : (p : ℤ) ^ (4 * a) = (p : ℤ) ^ 2 * (p : ℤ) ^ (4 * a - 2) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    linear_combination -hX2 + (((((⟨C, D⟩ : GaussianInt) ^ 4).re)) + (p : ℤ) ^ 2 * x) * hx + hpow
+  have hpq4 : (p : ℤ) ∣ 2 * (q : ℤ) ^ 4 :=
+    (dvd_pow_self _ (by norm_num : (2 : ℕ) ≠ 0)).trans hp2q4
+  rcases hpP.dvd_mul.mp hpq4 with h2' | hq4
+  · have h2n : p ∣ 2 := by exact_mod_cast h2'
+    have := Nat.le_of_dvd (by norm_num) h2n
+    have h2le := hp.out.two_le
+    omega
+  · have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4
+    have hnat : p ∣ q := by exact_mod_cast hq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+set_option maxHeartbeats 800000 in
+/-- The full generic mixed-pair core at rung a. -/
+lemma mixed_core_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kc1 Kc2 f g : ℤ) (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1)
+    (hc1 : (∃ N, Kc1 = (p : ℤ) ^ 2 * N) ∨ Kc1 = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hc2 : (∃ N, Kc2 = (p : ℤ) ^ 2 * N) ∨ Kc2 = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hIX : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * Kc1)
+    (hRY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * Kc2) : False := by
+  rcases hc1 with ⟨N1, rfl⟩ | rfl
+  · rcases hc2 with ⟨N2, rfl⟩ | rfl
+    · exact mixed_p2p2_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD N1 N2 f g hIX hRY
+    · exact mixed_c2_M7a_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD N1 f g hg hIX hRY
+  · exact mixed_c1_M7a p q hpodd hqodd a ha A B C D hpAB hqCD f hf hIX
+
 end UniformA
