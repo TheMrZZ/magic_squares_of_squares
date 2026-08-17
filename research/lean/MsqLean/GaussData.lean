@@ -192,4 +192,93 @@ lemma eval_pSq (r s q X Y : ℤ) : eval pSq r s q X Y = r ^ 2 + s ^ 2 := by
   simp [pSq, eval, mkT, powF]
   ring
 
+/-- Data-level complex multiplication: real part. -/
+def cmulRe (a b : SPoly × SPoly) : SPoly :=
+  normalizeFast (mul a.1 b.1 ++ mulTerm ((0, 0, 0, 0, 0), -1) (mul a.2 b.2))
+
+/-- Data-level complex multiplication: imaginary part. -/
+def cmulIm (a b : SPoly × SPoly) : SPoly :=
+  normalizeFast (mul a.1 b.2 ++ mul a.2 b.1)
+
+/-- The compositional bridge: data pairs tracking (re, im) of Gaussian
+integers stay in correspondence under multiplication. -/
+lemma cmul_bridge {A B : GaussianInt} {a b : SPoly × SPoly}
+    (r s q X Y : ℤ)
+    (hA : A.re = eval a.1 r s q X Y ∧ A.im = eval a.2 r s q X Y)
+    (hB : B.re = eval b.1 r s q X Y ∧ B.im = eval b.2 r s q X Y) :
+    (A * B).re = eval (cmulRe a b) r s q X Y
+    ∧ (A * B).im = eval (cmulIm a b) r s q X Y := by
+  obtain ⟨hAre, hAim⟩ := hA
+  obtain ⟨hBre, hBim⟩ := hB
+  constructor
+  · simp only [Zsqrtd.re_mul, cmulRe]
+    rw [eval_normalizeFast, eval_append, eval_mulTerm, eval_mul, eval_mul,
+        hAre, hAim, hBre, hBim]
+    push_cast
+    try ring
+  · simp only [Zsqrtd.im_mul, cmulIm]
+    rw [eval_normalizeFast, eval_append, eval_mul, eval_mul,
+        hAre, hAim, hBre, hBim]
+    try ring
+
+/-- The (re, im) data pair of ⟨r, s⟩^n. -/
+def pairP (n : ℕ) : SPoly × SPoly := (reP n, imP n)
+
+/-- The (re, im) data pair of ⟨r, −s⟩^n (the conjugate power). -/
+def pairPc (n : ℕ) : SPoly × SPoly := (conjS (reP n), conjS (imP n))
+
+/-- The (re, im) data pair of ⟨X, Y⟩^n. -/
+def pairX (n : ℕ) : SPoly × SPoly := (reX n, imX n)
+
+/-- The (re, im) data pair of ⟨X, −Y⟩^n. -/
+def pairXc (n : ℕ) : SPoly × SPoly := (conjY (reX n), conjY (imX n))
+
+/-- The class-monomial data pair: w^j · w̄^j' · ξ^k · ξ̄^k'. -/
+def classPair (j j' k k' : ℕ) : SPoly × SPoly :=
+  let a := (cmulRe (pairP j) (pairPc j'), cmulIm (pairP j) (pairPc j'))
+  let bp := (cmulRe (pairX k) (pairXc k'), cmulIm (pairX k) (pairXc k'))
+  (cmulRe a bp, cmulIm a bp)
+
+open GaussianInt in
+/-- The class-value bridge: the imaginary (and real) part of every
+half-level class monomial is its data polynomial evaluated at the
+coordinates. -/
+theorem class_value_bridge (j j' k k' : ℕ) (r s q X Y : ℤ) :
+    (((⟨r, s⟩ : GaussianInt) ^ j * (⟨r, -s⟩ : GaussianInt) ^ j'
+      * (⟨X, Y⟩ : GaussianInt) ^ k * (⟨X, -Y⟩ : GaussianInt) ^ k')).re
+      = eval (classPair j j' k k').1 r s q X Y
+    ∧ (((⟨r, s⟩ : GaussianInt) ^ j * (⟨r, -s⟩ : GaussianInt) ^ j'
+      * (⟨X, Y⟩ : GaussianInt) ^ k * (⟨X, -Y⟩ : GaussianInt) ^ k')).im
+      = eval (classPair j j' k k').2 r s q X Y := by
+  have hP : ((⟨r, s⟩ : GaussianInt) ^ j).re = eval (pairP j).1 r s q X Y
+      ∧ ((⟨r, s⟩ : GaussianInt) ^ j).im = eval (pairP j).2 r s q X Y :=
+    eval_reP_imP j r s q X Y
+  have hPc : ((⟨r, -s⟩ : GaussianInt) ^ j').re = eval (pairPc j').1 r s q X Y
+      ∧ ((⟨r, -s⟩ : GaussianInt) ^ j').im = eval (pairPc j').2 r s q X Y := by
+    obtain ⟨h1, h2⟩ := eval_reP_imP j' r (-s) q X Y
+    exact ⟨by rw [h1, pairPc]; exact (eval_conjS (reP j') r s q X Y).symm,
+           by rw [h2, pairPc]; exact (eval_conjS (imP j') r s q X Y).symm⟩
+  have hX : ((⟨X, Y⟩ : GaussianInt) ^ k).re = eval (pairX k).1 r s q X Y
+      ∧ ((⟨X, Y⟩ : GaussianInt) ^ k).im = eval (pairX k).2 r s q X Y :=
+    eval_reX_imX k r s q X Y
+  have hXc : ((⟨X, -Y⟩ : GaussianInt) ^ k').re = eval (pairXc k').1 r s q X Y
+      ∧ ((⟨X, -Y⟩ : GaussianInt) ^ k').im = eval (pairXc k').2 r s q X Y := by
+    obtain ⟨h1, h2⟩ := eval_reX_imX k' r s q X (-Y)
+    exact ⟨by rw [h1, pairXc]; exact (eval_conjY (reX k') r s q X Y).symm,
+           by rw [h2, pairXc]; exact (eval_conjY (imX k') r s q X Y).symm⟩
+  have hA := cmul_bridge r s q X Y hP hPc
+  have hB := cmul_bridge r s q X Y hX hXc
+  have hAB := cmul_bridge
+    (a := (cmulRe (pairP j) (pairPc j'), cmulIm (pairP j) (pairPc j')))
+    (b := (cmulRe (pairX k) (pairXc k'), cmulIm (pairX k) (pairXc k')))
+    r s q X Y hA hB
+  have hassoc : (⟨r, s⟩ : GaussianInt) ^ j * (⟨r, -s⟩ : GaussianInt) ^ j'
+      * (⟨X, Y⟩ : GaussianInt) ^ k * (⟨X, -Y⟩ : GaussianInt) ^ k'
+      = ((⟨r, s⟩ : GaussianInt) ^ j * (⟨r, -s⟩ : GaussianInt) ^ j')
+        * ((⟨X, Y⟩ : GaussianInt) ^ k * (⟨X, -Y⟩ : GaussianInt) ^ k') := by
+    ring
+  rw [hassoc]
+  simp only [classPair]
+  exact hAB
+
 end GaussData

@@ -2774,3 +2774,20 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The hand-lemma ladder continues: the balance-condition derivation
   (magic square ⟹ the leaf input relations vanish), coprime masters,
   the √−5 cell, and the telescoping wrapper.
+
+## Round 192: the top of the value bridge is machine-checked
+
+- `rep_structure_two`: every D(e) element at the center s²·p^(2a)·q^(2b)
+  is, up to sign, s² times the imaginary part of a half-level class
+  monomial π^(2j)·π̄^(2(2a−j))·χ^(2k)·χ̄^(2(2b−k)) — the two-exponent
+  generalization of the uniform representation lemma, via the generic
+  norm classifier.
+- `class_value_bridge` (GaussData): the (re, im) parts of every class
+  monomial are data polynomials, through compositional data-level
+  complex multiplication (`cmulRe`/`cmulIm` with `cmul_bridge`).
+- `class_value_data` composes the two: 2xy = ±s²·eval(classPair ...) at
+  (Re π², Im π², q, Re χ², Im χ²). The chains' evaluation point is now
+  reachable from the magic-square side.
+- Next: the four-diffs relations turn assignments of four class values
+  into the model equations Σ ±εᵢ·Kᵢ = 0; the leaf provenance dump ties
+  each certified chain input to those equations.
