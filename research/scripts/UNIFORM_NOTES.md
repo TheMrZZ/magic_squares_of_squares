@@ -2305,3 +2305,16 @@ close via Tcore_p2p2_a / row_M7a_kill / M7row_p2_kill / M7row_M7_kill.
 What took a 64-cell assembly at rung 3 (Theorem G) is four generic lemmas
 plus a four-line router at every rung simultaneously. The S-core generic
 analog is next, then the χₐ-pair machinery and the step router.
+
+## Round 143 (2026-08-17) — GENERIC S-CORE COMPLETE: both cores done
+
+`Score_a` closes the S-form cross-pair core at every rung with just three
+kills: Score_p2p2_a (double p²-extraction), Srow_M7_kill_a (parity, h1
+only), and **S_M7_kill_a** — the master relation
+2(4X² − 3gq²X + q⁴) = p^{4a}w² (from squaring eR₄ₐw = gq² − 3X against
+both norms) reduced mod p² by p² ∣ X kills ALL p²-divisible partners at
+once. G's five bespoke S-cells (L0-quadratic, L1-parity, L2-J-endgame,
+L34/L56 sform_M7_J_core) were all unnecessary at this level of generality —
+the uniform argument was hiding in plain sight. Both generic cores now
+stand; remaining: generic χₐ-machinery (the mixed cores mostly exist),
+step router, ratio-step, four-diffs-step, wrapper.

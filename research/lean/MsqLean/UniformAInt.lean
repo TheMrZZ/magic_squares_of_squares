@@ -1363,4 +1363,158 @@ lemma Tcore_a (q : ℕ) [hq : Fact (Nat.Prime q)]
     · exact M7row_M7_kill p q hpodd hqodd hpq a ha A B C D hpAB hqCD
         f g e hf hg he h1 h2
 
+set_option maxHeartbeats 800000 in
+/-- Generic S-core, both partners p²-divisible. -/
+lemma Score_p2p2_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N1 N2 f g e : ℤ) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * ((p : ℤ) ^ 2 * N1))
+    (h2 : 3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = g * ((p : ℤ) ^ 2 * N2)) : False := by
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2X : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpI)).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨f * N1, by linear_combination h1⟩
+  have hp2Y : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    obtain ⟨x, hx⟩ := hp2X
+    have hd : (p : ℤ) ^ 2 ∣ e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) :=
+      ⟨g * N2 - 3 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * x, by linear_combination h2 - 3 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * hx⟩
+    have hde : (p : ℤ) ^ 2 ∣ ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+      have hee : e * (e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)))) = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+        rcases he with rfl | rfl <;> ring
+      exact hee ▸ hd.mul_left e
+    have hc : IsCoprime ((p : ℤ) ^ 2) (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re))) :=
+      ((hpP.coprime_iff_not_dvd).mpr hpR).pow_left
+    exact hc.dvd_of_dvd_mul_left hde
+  obtain ⟨x, hx⟩ := hp2X
+  obtain ⟨y, hy⟩ := hp2Y
+  have hdq : (p : ℤ) ∣ (q : ℤ) ^ 4 := by
+    refine (dvd_pow_self _ (by norm_num : (4 : ℕ) ≠ 0)).trans ?_
+    exact ⟨x ^ 2 + y ^ 2, by rw [← hq4c, hx, hy]; ring⟩
+  have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hdq
+  have hnat : p ∣ q := by exact_mod_cast hq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+/-- Generic S-core, M7ₐ in the first slot: 2X = f·q², even = odd. -/
+lemma Srow_M7_kill_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (f : ℤ) (hf : f = 1 ∨ f = -1)
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) : False := by
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hI0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ≠ 0 := by
+    intro h0
+    exact hpI (h0 ▸ dvd_zero _)
+  have h2X : 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = f * (q : ℤ) ^ 2 := by
+    have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) - f * (q : ℤ) ^ 2) = 0 := by linear_combination h1
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  obtain ⟨m, hm⟩ := (odd_cast q hqodd).pow (n := 2)
+  rw [hm] at h2X
+  rcases hf with rfl | rfl <;> omega
+
+set_option maxHeartbeats 800000 in
+/-- Generic S-core (p²-partner, M7ₐ): squaring the reduced relation against
+the norms gives 2(4X² − 3gq²X + q⁴) = p^(4a)w², and p² ∣ X forces
+p² ∣ 2q⁴. -/
+lemma S_M7_kill_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (N f g e : ℤ) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * ((p : ℤ) ^ 2 * N))
+    (h2 : 3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = g * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) : False := by
+  have he2 : e ^ 2 = 1 := by rcases he with rfl | rfl <;> norm_num
+  have hg2 : g ^ 2 = 1 := by rcases hg with rfl | rfl <;> norm_num
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hI0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ≠ 0 := by
+    intro h0
+    exact hpI (h0 ▸ dvd_zero _)
+  have hcop := coprime_coords p hpodd A B hpAB a ha
+  have hna := norm_coord p A B hpAB a
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 := norm4_coord q C D hqCD
+  have hc2 : IsCoprime ((p : ℤ)) 2 :=
+    (hpP.coprime_iff_not_dvd).mpr (fun hd' => by
+      have h2' : p ∣ 2 := by exact_mod_cast hd'
+      have := Nat.le_of_dvd (by norm_num) h2'
+      have := hp.out.two_le
+      omega)
+  have hp2X : (p : ℤ) ^ 2 ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) := by
+    have hc : IsCoprime ((p : ℤ) ^ 2) (2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im))) :=
+      (hc2.mul_right ((hpP.coprime_iff_not_dvd).mpr hpI)).pow_left
+    exact hc.dvd_of_dvd_mul_left ⟨f * N, by linear_combination h1⟩
+  have hIY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    have hd : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) := by
+      refine ⟨e * (g * (q : ℤ) ^ 2 - 3 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))), ?_⟩
+      linear_combination e * h2 - ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) * he2
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨w, hw⟩ := hIY
+  have hkey : 3 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * w) = g * (q : ℤ) ^ 2 := by
+    have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((3 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * w)) - g * (q : ℤ) ^ 2) = 0 := by
+      linear_combination h2 - e * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * hw
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact absurd h hI0
+    · linarith
+  have hmaster : 2 * (4 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 - 3 * g * (q : ℤ) ^ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) + (q : ℤ) ^ 4)
+      = (p : ℤ) ^ (4 * a) * w ^ 2 := by
+    have hsq : (e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * w)) ^ 2 = (g * (q : ℤ) ^ 2 - 3 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) ^ 2 := by
+      rw [show e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * w) = g * (q : ℤ) ^ 2 - 3 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) from by linarith [hkey]]
+    have hYw : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ^ 2 * w ^ 2 := by rw [hw]; ring
+    linear_combination -hsq + ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 * w ^ 2 * he2 + w ^ 2 * hna + hYw - hq4c
+      - (q : ℤ) ^ 4 * hg2
+  obtain ⟨x, hx⟩ := hp2X
+  have hp2q4 : (p : ℤ) ^ 2 ∣ 2 * (q : ℤ) ^ 4 := by
+    refine ⟨(p : ℤ) ^ (4 * a - 2) * w ^ 2 - 8 * (p : ℤ) ^ 2 * x ^ 2 + 6 * g * (q : ℤ) ^ 2 * x, ?_⟩
+    have hpow : (p : ℤ) ^ (4 * a) = (p : ℤ) ^ 2 * (p : ℤ) ^ (4 * a - 2) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    linear_combination hmaster - (8 * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) + 8 * (p : ℤ) ^ 2 * x - 6 * g * (q : ℤ) ^ 2) * hx
+      + w ^ 2 * hpow
+  have hpq4 : (p : ℤ) ∣ 2 * (q : ℤ) ^ 4 :=
+    (dvd_pow_self _ (by norm_num : (2 : ℕ) ≠ 0)).trans hp2q4
+  rcases hpP.dvd_mul.mp hpq4 with h2' | hq4
+  · have h2n : p ∣ 2 := by exact_mod_cast h2'
+    have := Nat.le_of_dvd (by norm_num) h2n
+    have h2le := hp.out.two_le
+    omega
+  · have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hq4
+    have hnat : p ∣ q := by exact_mod_cast hq'
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+set_option maxHeartbeats 800000 in
+/-- The generic S-form cross-pair core at rung a. -/
+lemma Score_a (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Kb Kd f g e : ℤ)
+    (hf : f = 1 ∨ f = -1) (hg : g = 1 ∨ g = -1) (he : e = 1 ∨ e = -1)
+    (hb : (∃ N, Kb = (p : ℤ) ^ 2 * N) ∨ Kb = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (hd : (∃ N, Kd = (p : ℤ) ^ 2 * N) ∨ Kd = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))
+    (h1 : 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = f * Kb)
+    (h2 : 3 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) + e * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) = g * Kd) : False := by
+  rcases hb with ⟨N1, rfl⟩ | rfl
+  · rcases hd with ⟨N2, rfl⟩ | rfl
+    · exact Score_p2p2_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD
+        N1 N2 f g e he h1 h2
+    · exact S_M7_kill_a p q hpodd hqodd hpq a ha A B C D hpAB hqCD
+        N1 f g e hg he h1 h2
+  · exact Srow_M7_kill_a p q hpodd hqodd a ha A B C D hpAB hqCD f hf h1
+
 end UniformA
