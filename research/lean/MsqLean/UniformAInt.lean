@@ -966,4 +966,52 @@ lemma mixed_c1_M7a (q : ℕ) [hq : Fact (Nat.Prime q)]
   have hY2 : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = 0 := by linarith
   exact hY0 (pow_eq_zero_iff two_ne_zero |>.mp hY2)
 
+/-- z² + 1 = w² is impossible for w ≥ 2 (uniform copy). -/
+lemma consec_sq_kill_u (z w : ℤ) (hw : 2 ≤ w) (h : z ^ 2 + 1 = w ^ 2) : False := by
+  have hfact : (w - z) * (w + z) = 1 := by linear_combination -h
+  rcases Int.eq_one_or_neg_one_of_mul_eq_one' hfact with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> omega
+
+/-- R₄ₐ is never ±1 for a ≥ 1: I₄ₐ² + 1 = (p^(2a))² is a consecutive-square
+collision. -/
+lemma Ra_unit_kill
+    (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p)
+    (a : ℕ) (ha : 1 ≤ a)
+    (h : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) ^ 2 = 1) : False := by
+  have hna := norm_coord p A B hpAB a
+  have hsq : (p : ℤ) ^ (4 * a) = ((p : ℤ) ^ (2 * a)) ^ 2 := by
+    rw [← pow_mul]; ring_nf
+  have hp1 : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+  have hP2 : (2 : ℤ) ≤ (p : ℤ) ^ (2 * a) := by
+    calc (2 : ℤ) ≤ (p : ℤ) := hp1
+    _ = (p : ℤ) ^ 1 := (pow_one _).symm
+    _ ≤ (p : ℤ) ^ (2 * a) := pow_le_pow_right₀ (by omega) (by omega)
+  exact consec_sq_kill_u ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ((p : ℤ) ^ (2 * a)) hP2
+    (by rw [← hsq]; linear_combination hna - h)
+
+/-- The M7ₐ chain: R₄ₐY = g·q²·I₄ₐ yields Y = I₄ₐ·y with R₄ₐ·y = g·q². -/
+lemma M7a_chain (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1)
+    (a : ℕ) (ha : 1 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (g : ℤ)
+    (hRY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = g * ((q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)))) :
+    ∃ y2 : ℤ, ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) = ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * y2 ∧ ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * y2 = g * (q : ℤ) ^ 2 := by
+  obtain ⟨hpR, hpI⟩ := p_not_dvd_coords p hpodd A B hpAB a ha
+  have hI0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ≠ 0 := by
+    intro h0
+    exact hpI (h0 ▸ dvd_zero _)
+  have hcop := coprime_coords p hpodd A B hpAB a ha
+  have hIY : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    have hd : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) :=
+      ⟨g * (q : ℤ) ^ 2, by linear_combination hRY⟩
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨y2, hy2⟩ := hIY
+  refine ⟨y2, hy2, ?_⟩
+  have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) * (((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * y2 - g * (q : ℤ) ^ 2) = 0 := by
+    linear_combination hRY - ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re)) * hy2
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact absurd h hI0
+  · linarith
+
 end UniformA
