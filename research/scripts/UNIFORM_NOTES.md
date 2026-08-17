@@ -2652,3 +2652,11 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 
 - The finish, in full: the aligned pinning gives q^{2δ} = R₈² + 5S₈²; the coprime Pell splitting yields S₈ = 2αβ and p⁸ = β⁴ − 6α²β² + 25α⁴ = N(z), z = (β²−3α²) + 4iα²; z is odd and coprime to its conjugate, so z = u·π⁸; the imaginary-part comparison against S₈ = 2αβ forces β = ±2α (u = ±1), hence α = 1 and p⁸ = 17 — absurd; u = ±i makes R₈ even — absurd. p = 5 and q = 5 die by direct divisibility. In the paper.
 - **Status: grids (2,3), (2,4), (2,5), (3,3), (3,4) are entirely dead.** Remaining for the two-exponent theorem: the exact-root oracle pass (dumps exist per grid) and the b-generic statement of the elimination layers threaded through the q²-telescoping induction.
+
+## Round 181: the delta-free architecture for all (a, b)
+
+- **The 58-family norm classification**: 28 families die in one line (N(P) has a mandatory p-factor; a q-power equal to it forces p ∣ w̃ against smoothness); 2 are squared forms; 28 are Pell forms — but the Pell finishes are needed only for aligned singles, and the aligned catalog is tiny (below).
+- **Aligned candidates** (cross ≡ 0 over the whole catalog): 60 pairs, dominated by self-pairs. Self-pairs reduce to w̃₂z₁ = ±w̃₁z₂ — the magnitude identity, nonvanishing except in proportional-z cases; the swept grids found exactly one such family (the √−5 cell, killed).
+- **Master gcd table** (all 1,653 pairs): gcds are smooth constants, p-powers, s-powers, (p ± s) — plus a handful sharing (p²+8s²) or (9p²−8s²). For shared-form pairs, dividing the two master equations gives q^{2(δ₁−δ₂)} = smooth·p-powers, forcing δ₁ = δ₂ — they collapse into the same-δ case. **The coprime-masters lemma survives with this refinement, and every route is δ-free.**
+- Oracle progress: (2,3) 71/71 OK, (2,4) 97/97 OK; (2,5)/(3,3)/(3,4) running.
+- M2 status: reduced to the paper writeup of the δ-free architecture + finishing the oracle pass.
