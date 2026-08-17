@@ -2839,3 +2839,17 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Next: full screen emission (strip steps + factor chains + unit-core
   dispatch), then the condition bridge (Clean/Affine/Multi through the
   exactness lemma), then the per-grid leaf dispatch.
+
+## Round 196: the screen emission pipeline verifies end-to-end
+
+- `ScreenCert_2_2.lean` compiles with zero errors (25 s): each
+  monomial-verdict relation becomes a theorem that its value at the
+  Gaussian point is nonzero, through emitted strip steps
+  (`eval_mulTerm` + `mono_ne_zero`), factor steps (`eval_factor` with
+  a `native_decide` data check and a LibraryNonzero instance through a
+  shape-independent `linear_combination` with a `powF_eq` normalizer),
+  and the constant core (cast nonzero).
+- Sizing at (2,2): 16 monomial kills emitted; the 96 unit-core kills
+  ride the same pipeline plus the `gauss_lone_kill` dispatch (data is
+  already extracted; emission is the next pass); 488 live relations go
+  to the condition layer.
