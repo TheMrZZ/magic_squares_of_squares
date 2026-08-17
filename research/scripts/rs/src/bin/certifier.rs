@@ -10,6 +10,8 @@
 // so every vanishing statement carries an overall factor 2i that we ignore.
 
 use std::collections::{BTreeMap, HashMap, HashSet};
+use rayon::prelude::*;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 type Mono = (u16, u16, u16, u16); // exponents of u, v, x, y
 type Poly = BTreeMap<Mono, i128>;
@@ -189,52 +191,66 @@ fn main() {
         false
     };
     // leaf enumeration and grading
+    let chunks: Vec<(u64, u64, HashSet<Vec<(usize, i128)>>, HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)>)> =
+        (0..n).into_par_iter().map(|ia| {
+            let mut total = 0u64;
+            let mut surv = 0u64;
+            let mut relset: HashSet<Vec<(usize, i128)>> = HashSet::new();
+            let mut pairset: HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)> = HashSet::new();
+            for ib in 0..n { for ic in 0..n { for id in 0..n {
+                if ia == ib || ia == ic || ia == id || ib == ic || ib == id || ic == id { continue; }
+                for e2 in [1i128, -1] { for e3 in [1i128, -1] { for e4 in [1i128, -1] {
+                    total += 1;
+                    let mut r1 = vec![(ic, e3), (id, e4), (ia, -2)];
+                    let mut r2 = vec![(ic, e3), (id, -e4), (ib, -2 * e2)];
+                    if lone(&r1) || lone(&r2) { continue; }
+                    surv += 1;
+                    r1.sort(); r2.sort();
+                    let norm = |r: &Vec<(usize, i128)>| -> Vec<(usize, i128)> {
+                        let neg: Vec<(usize, i128)> = {
+                            let mut t: Vec<_> = r.iter().map(|&(i, c)| (i, -c)).collect();
+                            t.sort(); t
+                        };
+                        if *r <= neg { r.clone() } else { neg }
+                    };
+                    let k1 = norm(&r1);
+                    let k2 = norm(&r2);
+                    relset.insert(k1.clone());
+                    relset.insert(k2.clone());
+                    pairset.insert((k1, k2));
+                }}}
+            }}}
+            (total, surv, relset, pairset)
+        }).collect();
     let mut total = 0u64;
     let mut surv = 0u64;
     let mut relset: HashSet<Vec<(usize, i128)>> = HashSet::new();
     let mut pairset: HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)> = HashSet::new();
-    for ia in 0..n { for ib in 0..n { for ic in 0..n { for id in 0..n {
-        if ia == ib || ia == ic || ia == id || ib == ic || ib == id || ic == id { continue; }
-        for e2 in [1i128, -1] { for e3 in [1i128, -1] { for e4 in [1i128, -1] {
-            total += 1;
-            let mut r1 = vec![(ic, e3), (id, e4), (ia, -2)];
-            let mut r2 = vec![(ic, e3), (id, -e4), (ib, -2 * e2)];
-            if lone(&r1) || lone(&r2) { continue; }
-            surv += 1;
-            r1.sort(); r2.sort();
-            let norm = |r: &Vec<(usize, i128)>| -> Vec<(usize, i128)> {
-                let neg: Vec<(usize, i128)> = {
-                    let mut t: Vec<_> = r.iter().map(|&(i, c)| (i, -c)).collect();
-                    t.sort(); t
-                };
-                if *r <= neg { r.clone() } else { neg }
-            };
-            let k1 = norm(&r1);
-            let k2 = norm(&r2);
-            relset.insert(k1.clone());
-            relset.insert(k2.clone());
-            pairset.insert((k1, k2));
-        }}}
-    }}}}
+    for (t, sv, rs_, ps_) in chunks {
+        total += t; surv += sv;
+        relset.extend(rs_); pairset.extend(ps_);
+    }
     println!("({a},{b}): {total} leaves, survivors {surv}, distinct relations {}, pairs {}",
              relset.len(), pairset.len());
     // factor screen per relation
     let lib = library((2 * b.max(a) + 2) as u16);
-    let mut dead = 0u64;
-    let mut cores: HashMap<Vec<(Mono, i128)>, u32> = HashMap::new();
-    for rel in &relset {
+    let screened: Vec<Option<Vec<(Mono, i128)>>> = relset.par_iter().map(|rel| {
         let mut t = Poly::new();
-        for &(i, c) in rel {
-            t = padd(&t, &pscale(&ep[i], c));
-        }
+        for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
         let core = screen(t, &lib);
         if core.is_empty() || (core.len() == 1 && core.keys().next().unwrap() == &(0, 0, 0, 0)) {
-            dead += 1;
-            continue;
+            return None;
         }
-        if grade_unit(&core) { dead += 1; continue; }
-        let key: Vec<(Mono, i128)> = core.iter().map(|(m, c)| (*m, *c)).collect();
-        *cores.entry(key).or_insert(0) += 1;
+        if grade_unit(&core) { return None; }
+        Some(core.iter().map(|(m, c)| (*m, *c)).collect())
+    }).collect();
+    let mut dead = 0u64;
+    let mut cores: HashMap<Vec<(Mono, i128)>, u32> = HashMap::new();
+    for sc in &screened {
+        match sc {
+            None => dead += 1,
+            Some(key) => { *cores.entry(key.clone()).or_insert(0) += 1; }
+        }
     }
     println!("relations dead by screen/grade: {dead} / {}", relset.len());
     println!("distinct core shapes: {}", cores.len());
@@ -251,16 +267,15 @@ fn main() {
     // per-relation conditions (from the screened core; a relation may carry
     // several library-free factors only if the core splits further — with
     // library division we keep the single residual core per relation)
-    let mut relcond: HashMap<Vec<(usize, i128)>, Cond> = HashMap::new();
-    for rel in &relset {
+    let relcond: HashMap<Vec<(usize, i128)>, Cond> = relset.par_iter().map(|rel| {
         let mut t = Poly::new();
         for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
         let core = screen(t, &lib);
         let cond = if core.is_empty() || (core.len() == 1 && core.keys().next().unwrap() == &(0, 0, 0, 0)) {
             Cond::Dead
         } else { condition_of(&core) };
-        relcond.insert(rel.clone(), cond);
-    }
+        (rel.clone(), cond)
+    }).collect();
     let mut verdict: HashMap<&str, u64> = HashMap::new();
     let mut terminals: HashMap<Vec<((u16, u16, u16), i128)>, u32> = HashMap::new();
     let mut residuals: Vec<(&'static str, Cond, Cond)> = Vec::new();
@@ -450,11 +465,12 @@ fn main() {
             _ => None,
         }
     };
-    let mut everdict: HashMap<String, u64> = HashMap::new();
     let t_start = std::time::Instant::now();
     let n_res = residuals.len();
-    for (idx, (tag, c1, c2)) in residuals.iter().enumerate() {
-        if idx > 0 && idx % 25 == 0 {
+    let prog = AtomicUsize::new(0);
+    let evs_par: Vec<String> = residuals.par_iter().map(|(tag, c1, c2)| {
+        let idx = prog.fetch_add(1, Ordering::Relaxed);
+        if idx > 0 && idx % 50 == 0 {
             let el = t_start.elapsed().as_secs_f64();
             let eta = el / idx as f64 * (n_res - idx) as f64;
             eprintln!("[elim] {idx}/{n_res} ({:.0}%)  elapsed {el:.0}s  ETA {eta:.0}s",
@@ -462,14 +478,15 @@ fn main() {
         }
         let (e1, e2) = match (cond_to_p5(c1), cond_to_p5(c2)) {
             (Some(a), Some(b)) => (a, b),
-            _ => { *everdict.entry(format!("{tag}: no-p5 (multi)")).or_insert(0) += 1; continue; }
+            _ => { return format!("{tag}: no-p5 (multi)"); }
         };
-        let r1 = match resultant(&e1, &circle, 0) { Some(r) => r, None => { *everdict.entry("div-fail".into()).or_insert(0) += 1; continue; } };
-        let r2 = match resultant(&e2, &circle, 0) { Some(r) => r, None => { *everdict.entry("div-fail".into()).or_insert(0) += 1; continue; } };
-        let rf = match resultant(&r1, &r2, 1) { Some(r) => r, None => { *everdict.entry("div-fail".into()).or_insert(0) += 1; continue; } };
-        let v = classify_rsq(&rf);
-        *everdict.entry(format!("{tag} -> {v}")).or_insert(0) += 1;
-    }
+        let r1 = match resultant(&e1, &circle, 0) { Some(r) => r, None => return "div-fail".into() };
+        let r2 = match resultant(&e2, &circle, 0) { Some(r) => r, None => return "div-fail".into() };
+        let rf = match resultant(&r1, &r2, 1) { Some(r) => r, None => return "div-fail".into() };
+        format!("{tag} -> {}", classify_rsq(&rf))
+    }).collect();
+    let mut everdict: HashMap<String, u64> = HashMap::new();
+    for v in evs_par { *everdict.entry(v).or_insert(0) += 1; }
     let mut evs: Vec<_> = everdict.iter().collect();
     evs.sort_by_key(|(_, c)| std::cmp::Reverse(**c));
     for (k, c) in evs { println!("  ELIM {c:5}  {k}"); }

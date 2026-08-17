@@ -2626,3 +2626,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Rung (2,3) verdict: **all 8,592 pairs dead** — 8,200 by the mechanical layers, 392 by the elimination. Pending for full rigor: the exact-oracle pass on the distinct final elimination polynomials (replace the data-nonvanishing check by root arguments), and the paper writeup.
 - The certifier is grid-parameterized; the b-axis validation runs at (2,4), (2,5), (3,3).
 - Progress reporting added to the elimination loop (percent, elapsed, ETA) — standard for all long-running scripts from now on.
+
+## Round 177: rayon from scratch, and grid (2,4) closes
+
+- Rayon parallelism wired into all four hot loops of the certifier (leaf enumeration, relation screen, condition map, elimination) with atomic progress counters. The (2,3) front section now runs in 0.3 seconds.
+- **Grid (2,4) closes completely**: every pair dead; the elimination handled its own residual structure (272 clean-affine mismatch + 208 multi-level + 56 affine mismatch + 8 parallel = 544, all DEAD, single-level nonvanishing on data).
+- Correction: an earlier b-axis loop printed (2,3)-identical numbers for the higher grids — an argument-forwarding artifact of `cargo run` inside the loop. Direct binary invocations are authoritative and show per-grid structures.
+- The axis sweep at (2,5), (3,3), (3,4) runs with the rayon build.
