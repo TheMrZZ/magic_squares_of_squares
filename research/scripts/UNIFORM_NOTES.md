@@ -2535,3 +2535,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - With the a-saturation census, this is the keystone of Milestone 2: **the entire two-exponent landscape reduces to 58 P-families.** Each family's kill is the exact equation N(P) = w²·q^{2Δ} (for single-pair balance shapes: χ^{2Δ}·P real forces P = w·χ̄^{2Δ} with w ∈ ℤ), and larger Δ tightens the band — higher rungs are easier.
 - Structural reason: the P's live on the j ≤ 2 grid (a-saturation), which does not see b.
 - Next: the 58-family table with norm formulas and single-/multi-pair statistics; then the finishes.
+
+## Round 164: the family table and the prototype MIXED finish
+
+- `u2b_family_table.md`: the 58 families with N(P) factorizations and finish classes. The MIXED class (odd-multiplicity non-monomial factors — the deep finishes) has ~25-35 members with N of the shapes p²(p² ± 8s²), products of (p ± s)(p ± 2s), and irreducible sextics/octics.
+- Prototype MIXED finish, family P = v(v − 2u): the balance forces the exact Gaussian factorization π̄² − 2π² = w̃·χ̄^{2Δ} with w̃ ∈ ℤ. Adding and subtracting the conjugate equation: w̃·Re(χ^{2Δ}) = −r and w̃·Im(χ^{2Δ}) = 3s. Then 9p² = w̃²(9q^{2Δ} − 8·Im²), and mod-9 descent: 3 ∣ w̃·Im; the 3 ∣ Im branch collapses to X² + Y'² = p² with 8Y'² = q^{2Δ} − p² — a constrained Pythagorean pair, dead by the splitting argument; the 3 ∣ w̃ branch mirrors. This is the template for the linear-combination finishes: **the balance equation linearizes into w̃·(χ-coordinates) = (π-coordinates), and the norm circle closes the system.**
+- The linearization trick (add/subtract the conjugate equations to express r and s in terms of w̃ and χ^{2Δ}-coordinates) applies to every 2-term P — a large slice of the 58.
