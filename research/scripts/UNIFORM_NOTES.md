@@ -2619,3 +2619,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Verdicts (Rust normalization, 8,592 pairs): 7,336 dead (a relation cannot vanish), 456 affine-affine pairs → **69 distinct terminal polynomials, all single-q-level with nonvanishing minimal forms — dead unconditionally**; 312 clean-affine pairs dead by the q-grade kill; 96 by cross nonvanishing. **Total 8,200 dead; 392 residual** in four level-relation classes: clean-affine level mismatch (208), multi-level sandwiches (128), affine level mismatch (48), affine parallel (8).
 - Next: the base-coordinate elimination — every condition is polynomial in the χ²-coordinates (X₁, Y₁) via (X₁+iY₁)^ℓ; two conditions plus the circle X₁²+Y₁² = q² are three equations in two unknowns; Sylvester/Bareiss resultants over the (r,s,q)-coefficient ring finish the job.
 - The exponent audit found and fixed a q^{2j₂} bug in the circle term before any results were recorded.
+
+## Round 176: THE CERTIFIER CLOSES RUNG (2,3) COMPLETELY
+
+- The base-coordinate elimination (part 4, BigInt Bareiss resultants over the χ²-circle) killed all four residual classes: clean-affine level mismatch (208), multi-level sandwiches (128, through the generic per-level power-map expansion), affine level mismatch (48), affine parallel (8). **Every final resultant is single-q-level and never vanishes on Gaussian data.**
+- Rung (2,3) verdict: **all 8,592 pairs dead** — 8,200 by the mechanical layers, 392 by the elimination. Pending for full rigor: the exact-oracle pass on the distinct final elimination polynomials (replace the data-nonvanishing check by root arguments), and the paper writeup.
+- The certifier is grid-parameterized; the b-axis validation runs at (2,4), (2,5), (3,3).
+- Progress reporting added to the elimination loop (percent, elapsed, ETA) — standard for all long-running scripts from now on.
