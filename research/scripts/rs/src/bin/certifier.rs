@@ -365,7 +365,7 @@ fn main() {
     // several library-free factors only if the core splits further — with
     // library division we keep the single residual core per relation)
     set_phase(3, relset.len());
-    let relcond: HashMap<Vec<(usize, i128)>, Cond> = relset.par_iter().map(|rel| {
+    let relcond: HashMap<Vec<(usize, i128)>, (Cond, Poly)> = relset.par_iter().map(|rel| {
         tick();
         let mut t = Poly::new();
         for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
@@ -373,16 +373,16 @@ fn main() {
         let cond = if core.is_empty() || (core.len() == 1 && core.keys().next().unwrap() == &(0, 0, 0, 0)) {
             Cond::Dead
         } else { condition_of(&core) };
-        (rel.clone(), cond)
+        (rel.clone(), (cond, core))
     }).collect();
     let mut verdict: HashMap<&str, u64> = HashMap::new();
     let mut terminals: HashMap<Vec<((u16, u16, u16), i128)>, u32> = HashMap::new();
-    let mut residuals: Vec<(&'static str, Cond, Cond)> = Vec::new();
+    let mut residuals: Vec<(&'static str, Cond, Cond, Poly, Poly)> = Vec::new();
     set_phase(4, pairset.len());
     for (k1, k2) in &pairset {
         tick();
-        let c1 = &relcond[k1];
-        let c2 = &relcond[k2];
+        let (c1, core1) = &relcond[k1];
+        let (c2, core2) = &relcond[k2];
         let tag: &str = match (c1, c2) {
             (Cond::Dead, _) | (_, Cond::Dead) => "pair dead (a relation cannot vanish)",
             (Cond::Clean { delta: d1, sig: s1, om: o1 }, Cond::Clean { delta: d2, sig: s2, om: o2 }) => {
@@ -499,7 +499,7 @@ fn main() {
         };
         *verdict.entry(tag).or_insert(0) += 1;
         if tag.contains("residual") {
-            residuals.push((tag, c1.clone(), c2.clone()));
+            residuals.push((tag, c1.clone(), c2.clone(), core1.clone(), core2.clone()));
         }
     }
     let mut vs: Vec<_> = verdict.iter().collect();
@@ -596,7 +596,7 @@ fn main() {
         // Validate the PRS-chain core on the first residual leaf: sizes of
         // each recorded step, and agreement of the endpoint's q-minimal
         // layer with the Bareiss route.
-        if let Some((tag, c1, c2)) = residuals.first() {
+        if let Some((tag, c1, c2, _, _)) = residuals.first() {
             if let (Some(e1), Some(e2)) = (cond_to_p5(c1), cond_to_p5(c2)) {
                 let mut st = Vec::new();
                 let r1 = prs_chain(&e1, &circle, 0, &mut st);
@@ -619,11 +619,28 @@ fn main() {
         }
     }
     set_phase(5, residuals.len());
-    let evs_par: Vec<(String, Option<String>)> = residuals.par_iter().map(|(tag, c1, c2)| {
+    let raw_elim = !std::env::var("COND_ELIM").is_ok();
+    let evs_par: Vec<(String, Option<String>)> = residuals.par_iter().map(|(tag, c1, c2, core1, core2)| {
         tick();
-        let (e1, e2) = match (cond_to_p5(c1), cond_to_p5(c2)) {
-            (Some(a), Some(b)) => (a, b),
-            _ => { return (format!("{tag}: no-p5 (multi)"), None); }
+        let pick = |core: &Poly| -> Option<P5> {
+            let (re, im) = core_to_reim(core);
+            match (re.is_empty(), im.is_empty()) {
+                (false, true) => Some(re),
+                (true, false) => Some(im),
+                (false, false) => Some(re),
+                (true, true) => None,
+            }
+        };
+        let (e1, e2) = if raw_elim {
+            match (pick(core1), pick(core2)) {
+                (Some(a), Some(b)) => (a, b),
+                _ => { return (format!("{tag}: raw part empty"), None); }
+            }
+        } else {
+            match (cond_to_p5(c1), cond_to_p5(c2)) {
+                (Some(a), Some(b)) => (a, b),
+                _ => { return (format!("{tag}: no-p5 (multi)"), None); }
+            }
         };
         // PRS elimination with recorded, exactly-verified steps; the chain
         // is the Lean certificate for this leaf.
@@ -841,6 +858,32 @@ enum Cond {
     Clean { delta: u16, sig: RPoly, om: RPoly },
     Affine { j2: u16, alpha: RPoly, beta: RPoly, eoff: i32, gam: RPoly },
     Multi { core: Vec<(Mono, i128)> },
+}
+
+/// The raw Re/Im parts of a core value as (r,s,q,X,Y)-polynomials:
+/// u^a v^b evaluates through the (r,s)-Gaussian engine; x^e y^f is
+/// (X+iY)^e (X-iY)^f expanded over (X,Y).
+fn core_to_reim(core: &Poly) -> (P5, P5) {
+    let mut re_acc = P5::new();
+    let mut im_acc = P5::new();
+    for (m, c) in core {
+        // (r,s)-side complex parts of u^a v^b
+        let mut single = Poly::new();
+        single.insert((m.0, m.1, 0, 0), *c);
+        let g = uv_to_rs(&single);
+        let pre = p5from_r(&gre(&g));
+        let pim = p5from_r(&gim(&g));
+        // (X,Y)-side: (X+iY)^e (X-iY)^f
+        let (xe_re, xe_im) = powmap(m.2);
+        let (xf_re, xf_im_pos) = powmap(m.3);
+        let xf_im = p5neg(&xf_im_pos);
+        let xre = p5add(&p5mul(&xe_re, &xf_re), &p5neg(&p5mul(&xe_im, &xf_im)));
+        let xim = p5add(&p5mul(&xe_re, &xf_im), &p5mul(&xe_im, &xf_re));
+        // total = (pre + i pim)(xre + i xim)
+        re_acc = p5add(&re_acc, &p5add(&p5mul(&pre, &xre), &p5neg(&p5mul(&pim, &xim))));
+        im_acc = p5add(&im_acc, &p5add(&p5mul(&pre, &xim), &p5mul(&pim, &xre)));
+    }
+    (re_acc, im_acc)
 }
 
 fn condition_of(core: &Poly) -> Cond {

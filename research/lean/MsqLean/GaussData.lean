@@ -281,4 +281,66 @@ theorem class_value_bridge (j j' k k' : ℕ) (r s q X Y : ℤ) :
   simp only [classPair]
   exact hAB
 
+/-- The real part of a data polynomial's Gaussian value, as data:
+each term c·u^a·v^b·q^g·x^e·y^f contributes c·q^g times the real part
+of the class monomial. -/
+def reOf : SPoly → SPoly
+  | [] => []
+  | t :: rest =>
+    mulTerm ((0, 0, t.1.2.2.1, 0, 0), t.2)
+      (classPair t.1.1 t.1.2.1 t.1.2.2.2.1 t.1.2.2.2.2).1 ++ reOf rest
+
+/-- The imaginary part, as data. -/
+def imOf : SPoly → SPoly
+  | [] => []
+  | t :: rest =>
+    mulTerm ((0, 0, t.1.2.2.1, 0, 0), t.2)
+      (classPair t.1.1 t.1.2.1 t.1.2.2.2.1 t.1.2.2.2.2).2 ++ imOf rest
+
+open GaussianInt in
+/-- The full bridge: the (re, im) parts of a data polynomial evaluated
+at the Gaussian point are the evaluations of `reOf`/`imOf` at the
+integer point. This is the whole condition bridge in one induction. -/
+theorem re_im_of_bridge (P : SPoly) (r s q X Y : ℤ) :
+    ((PolyRefl.eval P (⟨r, s⟩ : GaussianInt) (⟨r, -s⟩ : GaussianInt)
+        (((q : ℤ)) : GaussianInt) (⟨X, Y⟩ : GaussianInt) (⟨X, -Y⟩ : GaussianInt)).re
+      = eval (reOf P) r s q X Y)
+    ∧ ((PolyRefl.eval P (⟨r, s⟩ : GaussianInt) (⟨r, -s⟩ : GaussianInt)
+        (((q : ℤ)) : GaussianInt) (⟨X, Y⟩ : GaussianInt) (⟨X, -Y⟩ : GaussianInt)).im
+      = eval (imOf P) r s q X Y) := by
+  induction P with
+  | nil => constructor <;> rfl
+  | cons t rest ih =>
+    obtain ⟨ihre, ihim⟩ := ih
+    obtain ⟨hcre, hcim⟩ :=
+      class_value_bridge t.1.1 t.1.2.1 t.1.2.2.2.1 t.1.2.2.2.2 r s q X Y
+    have hterm : ((t.2 : GaussianInt) * (⟨r, s⟩ : GaussianInt) ^ t.1.1
+          * (⟨r, -s⟩ : GaussianInt) ^ t.1.2.1
+          * (((q : ℤ)) : GaussianInt) ^ t.1.2.2.1
+          * (⟨X, Y⟩ : GaussianInt) ^ t.1.2.2.2.1
+          * (⟨X, -Y⟩ : GaussianInt) ^ t.1.2.2.2.2)
+        = (((t.2 * (q : ℤ) ^ t.1.2.2.1 : ℤ)) : GaussianInt)
+          * ((⟨r, s⟩ : GaussianInt) ^ t.1.1 * (⟨r, -s⟩ : GaussianInt) ^ t.1.2.1
+            * (⟨X, Y⟩ : GaussianInt) ^ t.1.2.2.2.1
+            * (⟨X, -Y⟩ : GaussianInt) ^ t.1.2.2.2.2) := by
+      push_cast
+      ring
+    have hsc_re : ∀ (n : ℤ) (w : GaussianInt),
+        (((n : GaussianInt)) * w).re = n * w.re := by
+      intro n w
+      simp [Zsqrtd.re_mul]
+    have hsc_im : ∀ (n : ℤ) (w : GaussianInt),
+        (((n : GaussianInt)) * w).im = n * w.im := by
+      intro n w
+      simp [Zsqrtd.im_mul]
+    constructor
+    · rw [eval_cons, Zsqrtd.re_add, hterm, hsc_re, hcre, ihre]
+      simp only [reOf, eval_append, eval_mulTerm]
+      push_cast
+      ring
+    · rw [eval_cons, Zsqrtd.im_add, hterm, hsc_im, hcim, ihim]
+      simp only [imOf, eval_append, eval_mulTerm]
+      push_cast
+      ring
+
 end GaussData

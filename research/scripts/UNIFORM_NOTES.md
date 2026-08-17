@@ -2867,3 +2867,21 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   exactness lemma; the core's reality type is trackable through the
   dumped factor list. The cascade for layered cores is the next
   mathematical chunk.
+
+## Round 198: the raw-elimination architecture — the router loses its special cases
+
+- The insight: a live core's Gaussian value has explicit re/im part
+  polynomials in (r, s, q, X, Y). Eliminating from those raw parts,
+  instead of the condition-processed forms, the certifier kills EVERY
+  residual pair at EVERY grid — including the multi-level, aligned,
+  and parallel classes that previously needed the condition machinery,
+  the aligned magnitude identity, and the cross forms. Raw elimination
+  is now the certifier default (COND_ELIM restores the old route).
+- `GaussData.re_im_of_bridge` (machine-checked, one induction over the
+  term list through `class_value_bridge`): the re/im parts of any data
+  polynomial's Gaussian value are the evaluations of the data-level
+  `reOf`/`imOf`. The pair-level router therefore needs only one decide
+  per pair: the chain-input data equals `reOf`/`imOf` of the core.
+- The exactness lemma stays machine-checked as mathematics; it is no
+  longer load-bearing for the router. The full regeneration of the
+  oracle and chain dumps under the raw route is running.
