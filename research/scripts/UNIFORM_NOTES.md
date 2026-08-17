@@ -2682,3 +2682,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The certifier closes (2,2) with the same pipeline (all 3,104 pairs dead; 22 oracle forms) — so ONE certificate generator serves Theorem H and every grid.
 - Architecture: (i) `CertKit.lean` — the kill-primitive lemmas: the parity gate (a homogeneous form with odd r-leading coefficient has ODD value at admissible points — even simpler than the root argument), the 2-adic descent kills for the biquadratic library forms, the pinch and coordinate lemmas (mostly existing in UniformAInt), and a mod-ℓ sieve lemma; (ii) Rust emits per-grid certificate data; a generator writes Lean lemma files applying the kit; (iii) the hand lemmas (exactness, coprime-masters, √−5 cell, telescoping) are ported by hand — Codex's kit files (CorePythagorean, ValuationDescent, DistinctReduction, IncidenceClassifier) supply ingredients.
 - Sequencing: CertKit → Theorem H end-to-end as the template → the swept grids → the δ-free lemmas → the telescoping wrapper.
+
+## Round 185: the Lean reflection pipeline works end to end
+
+- `CertKit.lean` compiles (0 errors): the parity gate (v = lead·r^N + s·rest with lead odd is odd, hence nonzero — covers every form whose r-leading coefficient is odd), the two-adic gate (x² ≠ 2^e·odd for odd e, by factorization parity), and √2-irrationality as a corollary.
+- `CertForms_2_2.lean` compiles (0 errors): all 22 minimal-layer forms of grid (2,2), emitted by `lean_emit.rs` as parity-gate applications with explicit lead/rest splits, each checked by `decide` + `ring`. **Rust certifies → the emitter writes Lean → Lean re-verifies. The reflection route is proven.**
+- The cross-polynomial dumps are wired into the certifier; the all-grid emission sweep runs. Remaining Lean layers: the relation-kill factorization identities, the value-semantics bridge (symbolic polys ↔ Gaussian coordinate values), the routers, and the δ-free lemmas.
