@@ -2341,3 +2341,14 @@ the induction wrapper with base Theorem E.
 - Gotcha: the all-chi bucket needs `rcases` on all four slots. A pigeonhole over only two slots misses the mixed cases.
 
 Remaining for the uniform theorem: the ratio-2 step, the four-diffs wrapper, and the induction assembly with base a = 1 (Theorem E).
+
+## Round 146: the ratio-2 step is complete
+
+- Level-2a layer: `re4a_eq_2a`, `im4a_eq_2a` (π^(4a) = (π^(2a))² coordinates), `norm_2a`, `im_2a_even`, `re_2a_odd`, `coprime_2a`, `coords_2a_ne_zero`, `im4a_ne_zero`. All are ports of Theorem G's level-6 layer with 12 → 4a and 6 → 2a.
+- `chi_not_dvd_star_paw4`, `q2_not_dvd_M8a_u`, `q2_not_dvd_M9a_u`: the q²-residue kills at rung a, through `p2_extract_kill`. The uniform kills state the hypothesis on the im-product value, so the ratio cells need no coordinate bridge.
+- `M8a_ne_zero_u`: the chi-class coordinate combination R₄ₐY + εI₄ₐX does not vanish.
+- `ratio_M8_M9_kill_gen`: Theorem G's M8/M9 ratio kill, generic in the odd base s. The descent runs on (q, s) with s = pᵃ. This removes the hard-coded p³.
+- `no_ratio2_step`: the ratio-2 router at rung a. Both values low: cancel p² and use the rung a−1 hypothesis. One new class: p²- or q²-residue kills. Two new classes: nine cells, with the M8ₐ↔M9ₐ pair in the generic descent kill.
+- The whole layer compiled on the first build.
+
+Remaining: the four-diffs step and the induction assembly with base a = 1 (Theorem E).

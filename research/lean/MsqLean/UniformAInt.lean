@@ -2419,4 +2419,487 @@ lemma no_assignment_step (q : ℕ) [hq : Fact (Nat.Prime q)]
         | exact hac rfl
         | exact hbc rfl
 
+/-- Level 4a through level 2a: real part. -/
+lemma re4a_eq_2a (A B : ℤ) (a : ℕ) :
+    (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) = (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ^ 2 := by
+  have hsplit : (⟨A, B⟩ : GaussianInt) ^ (4 * a) = (⟨A, B⟩ : GaussianInt) ^ (2 * a) * (⟨A, B⟩ : GaussianInt) ^ (2 * a) := by
+    rw [← pow_add]; congr 1; omega
+  rw [hsplit]
+  simp [Zsqrtd.re_mul]
+  try ring
+
+/-- Level 4a through level 2a: imaginary part. -/
+lemma im4a_eq_2a (A B : ℤ) (a : ℕ) :
+    (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) = 2 * (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) * (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) := by
+  have hsplit : (⟨A, B⟩ : GaussianInt) ^ (4 * a) = (⟨A, B⟩ : GaussianInt) ^ (2 * a) * (⟨A, B⟩ : GaussianInt) ^ (2 * a) := by
+    rw [← pow_add]; congr 1; omega
+  rw [hsplit]
+  simp [Zsqrtd.im_mul]
+  try ring
+
+/-- The norm of the half-level power. -/
+lemma norm_2a (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) :
+    (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ^ 2 = (p : ℤ) ^ (2 * a) := by
+  have hnorm := norm_coord p A B hpAB a
+  have hre := re4a_eq_2a A B a
+  have him := im4a_eq_2a A B a
+  have hpp : ((p : ℤ) ^ (2 * a)) ^ 2 = (p : ℤ) ^ (4 * a) := by
+    rw [← pow_mul]; congr 1; omega
+  have hsq : ((((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ^ 2) ^ 2 = ((p : ℤ) ^ (2 * a)) ^ 2 := by
+    linear_combination hnorm - ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) + (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ^ 2 - (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ^ 2) * hre
+      - ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) + 2 * (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) * (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im)) * him - hpp
+  have hnn : 0 ≤ (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ^ 2 := by positivity
+  have hnn2 : (0 : ℤ) ≤ (p : ℤ) ^ (2 * a) := by positivity
+  nlinarith [hsq, hnn, hnn2]
+
+/-- The imaginary part of an even power is even. -/
+lemma im_2a_even (A B : ℤ) (a : ℕ) : Even (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) := by
+  have hsplit : (⟨A, B⟩ : GaussianInt) ^ (2 * a) = (⟨A, B⟩ : GaussianInt) ^ a * (⟨A, B⟩ : GaussianInt) ^ a := by
+    rw [← pow_add]; congr 1; omega
+  rw [hsplit]
+  exact ⟨(((⟨A, B⟩ : GaussianInt) ^ a).re) * (((⟨A, B⟩ : GaussianInt) ^ a).im), by simp [Zsqrtd.im_mul]; try ring⟩
+
+/-- The imaginary part at rung a does not vanish. -/
+lemma im4a_ne_zero (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) (ha : 1 ≤ a) :
+    (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ≠ 0 := by
+  intro h0
+  exact (p_not_dvd_coords p hpodd A B hpAB a ha).2 (by rw [h0]; exact dvd_zero _)
+
+/-- Both half-level coordinates do not vanish. -/
+lemma coords_2a_ne_zero (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) (ha : 1 ≤ a) :
+    (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ≠ 0 ∧ (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ≠ 0 := by
+  have h4 := im4a_ne_zero p hpodd A B hpAB a ha
+  have heq := im4a_eq_2a A B a
+  constructor <;> intro h0 <;> apply h4 <;> rw [heq, h0] <;> ring
+
+/-- The half-level real part is odd. -/
+lemma re_2a_odd (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) : Odd (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) := by
+  have hn := norm_2a p A B hpAB a
+  obtain ⟨k, hk⟩ := im_2a_even A B a
+  obtain ⟨d, hd⟩ := odd_cast p hpodd
+  obtain ⟨t, ht⟩ := Int.even_mul_succ_self d
+  have hp2 : (p : ℤ) ^ 2 = 8 * t + 1 := by rw [hd]; linear_combination 4 * ht
+  have hpa : (p : ℤ) ^ (2 * a) = (8 * t + 1) ^ a := by rw [pow_mul, hp2]
+  have h81 : ((8 * t + 1 : ℤ)) ≡ 1 [ZMOD 8] := by
+    show (8 * t + 1 : ℤ) % 8 = 1 % 8
+    omega
+  have h1 : (8 * t + 1 : ℤ) ^ a % 8 = 1 := by
+    have hm := h81.pow a
+    have hm' : (8 * t + 1 : ℤ) ^ a % 8 = 1 ^ a % 8 := hm
+    simpa using hm'
+  rcases Int.even_or_odd (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) with ⟨m, hm⟩ | ho
+  · exfalso
+    rw [hm, hk] at hn
+    have hexp : 4 * m ^ 2 + 4 * k ^ 2 = (8 * t + 1) ^ a := by
+      rw [← hpa]; linear_combination hn
+    generalize m ^ 2 = M2 at hexp
+    generalize k ^ 2 = K2 at hexp
+    generalize hg : (8 * t + 1 : ℤ) ^ a = P at hexp h1
+    omega
+  · exact ho
+
+/-- The half-level coordinates are coprime. -/
+lemma coprime_2a (hpodd : p % 2 = 1)
+    (A B : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (a : ℕ) (ha : 1 ≤ a) :
+    IsCoprime (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) := by
+  have hsum := norm_2a p A B hpAB a
+  rw [Int.isCoprime_iff_gcd_eq_one]
+  by_contra hg
+  obtain ⟨r, hrprime, hrdvd⟩ := Nat.exists_prime_and_dvd hg
+  have hrR : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) :=
+    (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_left _ _)
+  have hrI : (r : ℤ) ∣ (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) :=
+    (Int.natCast_dvd_natCast.mpr hrdvd).trans (Int.gcd_dvd_right _ _)
+  have hrP : Prime (r : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hrprime
+  have hr2a : (r : ℤ) ∣ (p : ℤ) ^ (2 * a) := by
+    rw [← hsum]
+    exact dvd_add (dvd_pow hrR (by norm_num)) (dvd_pow hrI (by norm_num))
+  have hrp : (r : ℤ) ∣ (p : ℤ) := hrP.dvd_of_dvd_pow hr2a
+  have hrpn : r = p := by
+    have hnat : r ∣ p := by exact_mod_cast hrp
+    exact (Nat.prime_dvd_prime_iff_eq hrprime hp.out).mp hnat
+  rw [hrpn] at hrR hrI
+  obtain ⟨u, hu⟩ := hrR
+  obtain ⟨v, hv⟩ := hrI
+  refine (p_not_dvd_coords p hpodd A B hpAB a ha).1 ?_
+  have hre := re4a_eq_2a A B a
+  exact ⟨(p : ℤ) * u ^ 2 - (p : ℤ) * v ^ 2, by rw [hre, hu, hv]; ring⟩
+
+/-- χ does not divide the conjugate of π^(4a)·χ⁴. -/
+lemma chi_not_dvd_star_paw4 (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) (a : ℕ) :
+    ¬ (⟨C, D⟩ : GaussianInt) ∣ star (((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)) := by
+  intro h
+  rw [star_mul, star_pow, star_pow] at h
+  have hχprime : Prime (⟨C, D⟩ : GaussianInt) := prime_pi q C D hqCD
+  rcases hχprime.dvd_mul.mp h with h1 | h1
+  · exact pi_not_dvd_star q hqodd C D hqCD (hχprime.dvd_of_dvd_pow h1)
+  · have h2 := hχprime.dvd_of_dvd_pow h1
+    have hstar : star (⟨A, B⟩ : GaussianInt) = (⟨A, -B⟩ : GaussianInt) := by
+      ext <;> simp
+    rw [hstar] at h2
+    have hpAB2 : A ^ 2 + (-B) ^ 2 = p := by rw [neg_pow]; ring_nf; linarith [hpAB]
+    exact not_dvd_other q p (fun hh => hpq hh.symm) C D A (-B) hqCD hpAB2 h2
+
+/-- q² never divides c·M8ₐ for q ∤ c. -/
+lemma q2_not_dvd_M8a_u (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (a : ℕ) (c m : ℤ) (hc : ¬ (q : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) = (q : ℤ) ^ 2 * m) : False :=
+  p2_extract_kill q hqodd C D hqCD (((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_left (dvd_pow_self _ (by norm_num)) _)
+    (chi_not_dvd_star_paw4 p q hqodd hpq A B C D hpAB hqCD a) h
+
+/-- q² never divides c·M9ₐ for q ∤ c. -/
+lemma q2_not_dvd_M9a_u (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (a : ℕ) (c m : ℤ) (hc : ¬ (q : ℤ) ∣ c)
+    (h : c * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) = (q : ℤ) ^ 2 * m) : False := by
+  have hstar : (star (⟨C, D⟩ : GaussianInt)) = (⟨C, -D⟩ : GaussianInt) := by ext <;> simp
+  have hqCD2 : C ^ 2 + (-D) ^ 2 = q := by rw [neg_pow]; ring_nf; linarith [hqCD]
+  rw [hstar] at h
+  exact p2_extract_kill q hqodd C (-D) hqCD2
+    (((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, -D⟩ : GaussianInt) ^ 4)) c m hc
+    (Dvd.dvd.mul_left (dvd_pow_self _ (by norm_num)) _)
+    (chi_not_dvd_star_paw4 p q hqodd hpq A B C (-D) hpAB hqCD2 a) h
+
+/-- The chi-class coordinate combination R₄ₐY + ε·I₄ₐX does not vanish. -/
+lemma M8a_ne_zero_u (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (a : ℕ) (ha : 1 ≤ a)
+    (ε : ℤ) (hε : ε = 1 ∨ ε = -1)
+    (h : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) + ε * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = 0) : False := by
+  have hε2 : ε ^ 2 = 1 := by rcases hε with rfl | rfl <;> norm_num
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hcop := coprime_coords p hpodd A B hpAB a ha
+  have hY0 : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hI40 : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ≠ 0 := im4a_ne_zero p hpodd A B hpAB a ha
+  have hq4c : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 + ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (q : ℤ) ^ 4 :=
+    norm4_coord q C D hqCD
+  have hp4ac : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ^ 2 = (p : ℤ) ^ (4 * a) := norm_coord p A B hpAB a
+  have hIY : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) := by
+    have hd : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ∣ ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) :=
+      ⟨-(ε * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))), by linear_combination h⟩
+    exact (hcop.symm).dvd_of_dvd_mul_right hd
+  obtain ⟨u, hu⟩ := hIY
+  have hX : ε * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) = -((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * u) := by
+    have h0 : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * u + ε * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) = 0 := by
+      linear_combination h - (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) * hu
+    rcases mul_eq_zero.mp h0 with h' | h'
+    · exact absurd h' hI40
+    · linarith
+  have hXsq : (ε * ((((⟨C, D⟩ : GaussianInt) ^ 4).re))) ^ 2 = (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) ^ 2 * u ^ 2 := by rw [hX]; ring
+  have hX2 : ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 = (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).re) ^ 2 * u ^ 2 := by
+    linear_combination hXsq - ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ^ 2 * hε2
+  have hY2 : ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ^ 2 = (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ^ 2 * u ^ 2 := by rw [hu]; ring
+  have hkey : u ^ 2 * (p : ℤ) ^ (4 * a) = (q : ℤ) ^ 4 := by
+    linear_combination hq4c - hX2 - hY2 - u ^ 2 * hp4ac
+  have hdq : (p : ℤ) ∣ (q : ℤ) ^ 4 :=
+    (dvd_pow_self _ (show 4 * a ≠ 0 by omega)).trans ⟨u ^ 2, by linear_combination -hkey⟩
+  have hq' : (p : ℤ) ∣ (q : ℤ) := hpP.dvd_of_dvd_pow hdq
+  have hnat : p ∣ q := by exact_mod_cast hq'
+  exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hnat)
+
+set_option maxHeartbeats 1600000 in
+/-- The M8/M9 ratio kill, generic in the odd base s: the coordinate relation
+forces q⁴ − s⁴ = 8T², which the descent refutes. -/
+lemma ratio_M8_M9_kill_gen (q s : ℕ) [hq : Fact (Nat.Prime q)]
+    (hqodd : q % 2 = 1) (hsodd : s % 2 = 1)
+    (hcop : Nat.Coprime q s) (hqnes : q ≠ s) (hq0 : 0 < q) (hs0 : 0 < s)
+    (R I X Y δ : ℤ) (hδ : δ = 1 ∨ δ = -1)
+    (hp4 : R ^ 2 + I ^ 2 = (s : ℤ) ^ 2)
+    (hq4 : X ^ 2 + Y ^ 2 = (q : ℤ) ^ 4)
+    (hcopRI : IsCoprime R I) (hcopXY : IsCoprime X Y)
+    (hRodd : Odd R)
+    (hR0 : R ≠ 0) (hI0 : I ≠ 0) (hX0 : X ≠ 0) (hY0 : Y ≠ 0)
+    (h : (R ^ 2 - I ^ 2) * Y + (2 * R * I) * X
+      = 2 * δ * ((2 * R * I) * X - (R ^ 2 - I ^ 2) * Y)) : False := by
+  have hP3 : Prime (3 : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; norm_num
+  have hoddp4 : Odd ((s : ℤ) ^ 2) := (odd_cast s hsodd).pow
+  obtain ⟨c4, hc4⟩ := hoddp4
+  obtain ⟨r, hr⟩ := hRodd
+  have hIeven : Even I := by
+    rcases Int.even_or_odd I with he | ho
+    · exact he
+    · exfalso
+      obtain ⟨i, hi⟩ := ho
+      have hpar : (2 * r + 1) ^ 2 + (2 * i + 1) ^ 2 = 2 * c4 + 1 := by
+        rw [← hr, ← hi, ← hc4]; exact hp4
+      have hexp : 4 * r ^ 2 + 4 * r + 4 * i ^ 2 + 4 * i + 2 = 2 * c4 + 1 := by
+        linear_combination hpar
+      generalize r ^ 2 = R2 at hexp
+      generalize i ^ 2 = I2 at hexp
+      omega
+  obtain ⟨iv, hiv⟩ := hIeven
+  have hR8odd : Odd (R ^ 2 - I ^ 2) :=
+    ⟨2 * r ^ 2 + 2 * r - 2 * iv ^ 2, by rw [hr, hiv]; ring⟩
+  have hR80 : R ^ 2 - I ^ 2 ≠ 0 := odd_ne_zero hR8odd
+  have hI80 : 2 * R * I ≠ 0 := by
+    intro h0
+    rcases mul_eq_zero.mp h0 with h' | h'
+    · rcases mul_eq_zero.mp h' with h'' | h''
+      · norm_num at h''
+      · exact hR0 h''
+    · exact hI0 h'
+  have hRR8 : IsCoprime R (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime R (I ^ 2) := hcopRI.pow_right
+    have h1'' := (h0.neg_right).add_mul_right_right R
+    have heq : -I ^ 2 + R * R = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hIR8 : IsCoprime I (R ^ 2 - I ^ 2) := by
+    have h0 : IsCoprime I (R ^ 2) := hcopRI.symm.pow_right
+    have h1'' := h0.add_mul_right_right (-I)
+    have heq : R ^ 2 + -I * I = R ^ 2 - I ^ 2 := by ring
+    rwa [heq] at h1''
+  have hcop2 : IsCoprime (R ^ 2 - I ^ 2) (2 : ℤ) := by
+    have hP2 : Prime (2 : ℤ) := Int.prime_two
+    refine ((hP2.coprime_iff_not_dvd).mpr ?_).symm
+    intro hd
+    obtain ⟨k, hk⟩ := hd
+    obtain ⟨m, hm⟩ := hR8odd
+    omega
+  have hcopR8I8 : IsCoprime (R ^ 2 - I ^ 2) (2 * R * I) :=
+    (hcop2.mul_right hRR8.symm).mul_right hIR8.symm
+  have hnorm8 : (R ^ 2 - I ^ 2) ^ 2 + (2 * R * I) ^ 2 = (s : ℤ) ^ 4 := by
+    have hs4 : (R ^ 2 + I ^ 2) ^ 2 = (s : ℤ) ^ 4 := by rw [hp4]; ring
+    linear_combination hs4
+  rcases hδ with rfl | rfl
+  · -- 3R₈Y = I₈X
+    have h3 : 3 * ((R ^ 2 - I ^ 2) * Y) = (2 * R * I) * X := by linarith
+    have hR8X : (R ^ 2 - I ^ 2) ∣ X := by
+      refine hcopR8I8.dvd_of_dvd_mul_right ?_
+      exact ⟨3 * Y, by linear_combination -h3⟩
+    obtain ⟨xh, hxh⟩ := hR8X
+    subst hxh
+    have hYI8 : Y ∣ 2 * R * I := by
+      refine (hcopXY.symm).dvd_of_dvd_mul_right ?_
+      exact ⟨3 * (R ^ 2 - I ^ 2), by linear_combination -h3⟩
+    obtain ⟨ih, hih⟩ := hYI8
+    have h3c : ih * xh = 3 := by
+      have h0 : (R ^ 2 - I ^ 2) * Y * (3 - ih * xh) = 0 := by
+        linear_combination h3 + (R ^ 2 - I ^ 2) * xh * hih
+      rcases mul_eq_zero.mp h0 with h' | h'
+      · exact absurd h' (mul_ne_zero hR80 hY0)
+      · linarith
+    have hihd : ih ∣ 3 := ⟨xh, h3c.symm⟩
+    have hcases : (ih = 1 ∧ xh = 3) ∨ (ih = -1 ∧ xh = -3)
+        ∨ (ih = 3 ∧ xh = 1) ∨ (ih = -3 ∧ xh = -1) := by
+      obtain ⟨i, hi, ha⟩ := (dvd_prime_pow hP3 1).mp (by simpa using hihd)
+      interval_cases i
+      rotate_left
+      · rw [pow_one] at ha
+        rcases Int.associated_iff.mp ha with rfl | rfl
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl, by linarith⟩))
+        · exact Or.inr (Or.inr (Or.inr ⟨rfl, by linarith⟩))
+      rw [pow_zero] at ha
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp ha) with rfl | rfl
+      · exact Or.inl ⟨rfl, by linarith⟩
+      · exact Or.inr (Or.inl ⟨rfl, by linarith⟩)
+    rcases hcases with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · have hsq : (2 * R * I) ^ 2 = Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' q s hqodd hsodd hcop hqnes hq0 hs0
+        (R ^ 2 - I ^ 2) (by linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (2 * R * I) ^ 2 = Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' q s hqodd hsodd hcop hqnes hq0 hs0
+        (R ^ 2 - I ^ 2) (by linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (2 * R * I) ^ 2 = 9 * Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' s q hsodd hqodd hcop.symm (Ne.symm hqnes) hs0 hq0
+        Y (by linear_combination hq4 - hnorm8 + hsq)
+    · have hsq : (2 * R * I) ^ 2 = 9 * Y ^ 2 := by rw [hih]; ring
+      exact descent_norm4' s q hsodd hqodd hcop.symm (Ne.symm hqnes) hs0 hq0
+        Y (by linear_combination hq4 - hnorm8 + hsq)
+  · -- R₈Y = 3I₈X
+    have h3 : (R ^ 2 - I ^ 2) * Y = 3 * ((2 * R * I) * X) := by linarith
+    have hI8Y : (2 * R * I) ∣ Y := by
+      refine hcopR8I8.symm.dvd_of_dvd_mul_right ?_
+      exact ⟨3 * X, by linear_combination h3⟩
+    obtain ⟨yh, hyh⟩ := hI8Y
+    subst hyh
+    have hXR8 : X ∣ (R ^ 2 - I ^ 2) := by
+      refine (hcopXY).dvd_of_dvd_mul_right ?_
+      exact ⟨3 * (2 * R * I), by linear_combination h3⟩
+    obtain ⟨rh, hrh⟩ := hXR8
+    have h3c : rh * yh = 3 := by
+      have h0 : (2 * R * I) * X * (rh * yh - 3) = 0 := by
+        linear_combination h3 - (2 * R * I) * yh * hrh
+      rcases mul_eq_zero.mp h0 with h' | h'
+      · exact absurd h' (mul_ne_zero hI80 hX0)
+      · linarith
+    have hrhd : rh ∣ 3 := ⟨yh, h3c.symm⟩
+    have hcases : (rh = 1 ∧ yh = 3) ∨ (rh = -1 ∧ yh = -3)
+        ∨ (rh = 3 ∧ yh = 1) ∨ (rh = -3 ∧ yh = -1) := by
+      obtain ⟨i, hi, ha⟩ := (dvd_prime_pow hP3 1).mp (by simpa using hrhd)
+      interval_cases i
+      rotate_left
+      · rw [pow_one] at ha
+        rcases Int.associated_iff.mp ha with rfl | rfl
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl, by linarith⟩))
+        · exact Or.inr (Or.inr (Or.inr ⟨rfl, by linarith⟩))
+      rw [pow_zero] at ha
+      rcases Int.isUnit_iff.mp (associated_one_iff_isUnit.mp ha) with rfl | rfl
+      · exact Or.inl ⟨rfl, by linarith⟩
+      · exact Or.inr (Or.inl ⟨rfl, by linarith⟩)
+    rcases hcases with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' q s hqodd hsodd hcop hqnes hq0 hs0
+        (2 * R * I) (by linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' q s hqodd hsodd hcop hqnes hq0 hs0
+        (2 * R * I) (by linear_combination -hq4 + hnorm8 - hsq)
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = 9 * X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' s q hsodd hqodd hcop.symm (Ne.symm hqnes) hs0 hq0
+        X (by linear_combination hq4 - hnorm8 + hsq)
+    · have hsq : (R ^ 2 - I ^ 2) ^ 2 = 9 * X ^ 2 := by rw [hrh]; ring
+      exact descent_norm4' s q hsodd hqodd hcop.symm (Ne.symm hqnes) hs0 hq0
+        X (by linear_combination hq4 - hnorm8 + hsq)
+
+set_option maxHeartbeats 1600000 in
+/-- The ratio-2 step. If rung a−1 has no ratio-2 pair, then rung a has none. -/
+lemma no_ratio2_step (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (a : ℕ) (ha2 : 2 ≤ a)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (IHr : ∀ W V δ : ℤ, (δ = 1 ∨ δ = -1) →
+      UClass p q A B C D (a - 1) W → UClass p q A B C D (a - 1) V →
+      W = 2 * δ * V → False)
+    (W V δ : ℤ) (hδ : δ = 1 ∨ δ = -1)
+    (hW : UClass p q A B C D a W) (hV : UClass p q A B C D a V)
+    (h : W = 2 * δ * V) : False := by
+  have ha1 : 1 ≤ a := by omega
+  have hpP : Prime (p : ℤ) := by
+    rw [Int.prime_iff_natAbs_prime]; simpa using hp.out
+  have hp20 : ((p : ℤ) ^ 2) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hp.out.ne_zero)
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hq.out.ne_zero)
+  have hI40 : (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) ≠ 0 := im4a_ne_zero p hpodd A B hpAB a ha1
+  have hpn2δ : ¬ (p : ℤ) ∣ (2 * δ) := by
+    intro hd
+    have h2 : (p : ℤ) ∣ 2 := by
+      rcases hδ with rfl | rfl
+      · simpa using hd
+      · exact dvd_neg.mp (by simpa using hd)
+    have := Int.le_of_dvd (by norm_num) h2
+    have h2' : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+    omega
+  have hqn2δ : ¬ (q : ℤ) ∣ (2 * δ) := by
+    intro hd
+    have h2 : (q : ℤ) ∣ 2 := by
+      rcases hδ with rfl | rfl
+      · simpa using hd
+      · exact dvd_neg.mp (by simpa using hd)
+    have := Int.le_of_dvd (by norm_num) h2
+    have h2' : (2 : ℤ) ≤ (q : ℤ) := by exact_mod_cast hq.out.two_le
+    omega
+  have hpn1 : ¬ (p : ℤ) ∣ 1 := by
+    intro hd
+    have := Int.le_of_dvd (by norm_num) hd
+    have h2' : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+    omega
+  have hqn1 : ¬ (q : ℤ) ∣ 1 := by
+    intro hd
+    have := Int.le_of_dvd (by norm_num) hd
+    have h2' : (2 : ℤ) ≤ (q : ℤ) := by exact_mod_cast hq.out.two_le
+    omega
+  have hM8c := M8a_coord A B C D a
+  have hM9c := M9a_coord A B C D a
+  have hre := re4a_eq_2a A B a
+  have him := im4a_eq_2a A B a
+  have HCXY := coprime_re4_im4 q hqodd C D hqCD
+  have HY0 := im4_ne_zero q hqodd C D hqCD
+  have hsodd : p ^ a % 2 = 1 := by
+    have hm := Nat.pow_mod p a 2
+    rw [hpodd] at hm
+    simpa using hm
+  have hcopqs : Nat.Coprime q (p ^ a) :=
+    Nat.Coprime.pow_right a ((Nat.coprime_primes hq.out hp.out).mpr (Ne.symm hpq))
+  have hqnes : q ≠ p ^ a := by
+    intro hqe
+    have hpd : p ∣ q := by rw [hqe]; exact dvd_pow_self p (by omega)
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hpd)
+  have hq0 : 0 < q := hq.out.pos
+  have hs0 : 0 < p ^ a := pow_pos hp.out.pos a
+  have hnorm2a : (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) ^ 2 = ((p ^ a : ℕ) : ℤ) ^ 2 := by
+    have hcast : ((p ^ a : ℕ) : ℤ) ^ 2 = (p : ℤ) ^ (2 * a) := by
+      push_cast
+      rw [← pow_mul]
+      congr 1
+      omega
+    rw [hcast]
+    exact norm_2a p A B hpAB a
+  have hcop2a := coprime_2a p hpodd A B hpAB a ha1
+  have hodd2a := re_2a_odd p hpodd A B hpAB a
+  obtain ⟨hR20, hI20⟩ := coords_2a_ne_zero p hpodd A B hpAB a ha1
+  rcases (UClass_step p q A B C D a ha2 W).mp hW with ⟨W', rfl, hWm⟩ | hWZ
+  · rcases (UClass_step p q A B C D a ha2 V).mp hV with ⟨V', rfl, hVm⟩ | hVZ
+    · exact IHr W' V' δ hδ hWm hVm (mul_left_cancel₀ hp20 (by linear_combination h))
+    · rcases hVZ with heq | heq | heq <;> rw [heq] at h
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 (2 * δ) W'
+          (by rcases hδ with rfl | rfl <;> norm_num)
+          (by linear_combination -h)
+      · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * δ) W' hpn2δ
+          (by linear_combination -h)
+      · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD a ha1 (2 * δ) W' hpn2δ
+          (by linear_combination -h)
+  · rcases (UClass_step p q A B C D a ha2 V).mp hV with ⟨V', rfl, hVm⟩ | hVZ
+    · rcases hWZ with rfl | rfl | rfl
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB a ha1 1 (2 * δ * V')
+          (by norm_num)
+          (by linear_combination h)
+      · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD a ha1 1 (2 * δ * V') hpn1
+          (by linear_combination h)
+      · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD a ha1 1 (2 * δ * V') hpn1
+          (by linear_combination h)
+    · rcases hWZ with rfl | rfl | rfl <;> rcases hVZ with heq | heq | heq <;> rw [heq] at h
+      · -- M7ₐ = 2δ·M7ₐ
+        have h0 : (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) * (1 - 2 * δ)) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · exact absurd h' hq20
+        · rcases mul_eq_zero.mp h' with h'' | h''
+          · exact hI40 h''
+          · rcases hδ with rfl | rfl <;> omega
+      · exact q2_not_dvd_M8a_u p q hqodd hpq A B C D hpAB hqCD a (2 * δ) (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) hqn2δ
+          (by linear_combination -h)
+      · exact q2_not_dvd_M9a_u p q hqodd hpq A B C D hpAB hqCD a (2 * δ) (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im) hqn2δ
+          (by linear_combination -h)
+      · exact q2_not_dvd_M8a_u p q hqodd hpq A B C D hpAB hqCD a 1 (2 * δ * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) hqn1
+          (by linear_combination h)
+      · -- M8ₐ = 2δ·M8ₐ
+        refine M8a_ne_zero_u p q hpodd hqodd hpq A B C D hpAB hqCD a ha1 1 (Or.inl rfl) ?_
+        have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im) * (1 - 2 * δ) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · linear_combination h' - hM8c
+        · exfalso; rcases hδ with rfl | rfl <;> omega
+      · -- M8ₐ = 2δ·M9ₐ
+        exact ratio_M8_M9_kill_gen q (p ^ a) hqodd hsodd hcopqs hqnes hq0 hs0
+          (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) (((⟨C, D⟩ : GaussianInt) ^ 4).re) (((⟨C, D⟩ : GaussianInt) ^ 4).im) δ hδ hnorm2a (norm4_coord q C D hqCD)
+          hcop2a HCXY hodd2a hR20 hI20
+          (odd_ne_zero (re4_odd' q hqodd C D hqCD)) HY0
+          (by linear_combination h - hM8c + 2 * δ * hM9c
+            - (1 + 2 * δ) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * hre - (1 - 2 * δ) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * him)
+      · exact q2_not_dvd_M9a_u p q hqodd hpq A B C D hpAB hqCD a 1 (2 * δ * (((⟨A, B⟩ : GaussianInt) ^ (4 * a)).im)) hqn1
+          (by linear_combination h)
+      · -- M9ₐ = 2δ·M8ₐ
+        exact ratio_M8_M9_kill_gen q (p ^ a) hqodd hsodd hcopqs hqnes hq0 hs0
+          (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).re) (((⟨A, B⟩ : GaussianInt) ^ (2 * a)).im) (((⟨C, D⟩ : GaussianInt) ^ 4).re) (-(((⟨C, D⟩ : GaussianInt) ^ 4).im)) δ hδ hnorm2a
+          (by linear_combination norm4_coord q C D hqCD)
+          hcop2a (HCXY.neg_right) hodd2a hR20 hI20
+          (odd_ne_zero (re4_odd' q hqodd C D hqCD)) (neg_ne_zero.mpr HY0)
+          (by linear_combination h - hM9c + 2 * δ * hM8c
+            + (1 + 2 * δ) * (((⟨C, D⟩ : GaussianInt) ^ 4).im) * hre - (1 - 2 * δ) * (((⟨C, D⟩ : GaussianInt) ^ 4).re) * him)
+      · -- M9ₐ = 2δ·M9ₐ
+        refine M8a_ne_zero_u p q hpodd hqodd hpq A B C D hpAB hqCD a ha1 (-1) (Or.inr rfl) ?_
+        have h0 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * a)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im) * (1 - 2 * δ) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · linear_combination hM9c - h'
+        · exfalso; rcases hδ with rfl | rfl <;> omega
+
 end UniformA
