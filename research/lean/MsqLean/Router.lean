@@ -39,4 +39,17 @@ theorem lone_kill (p : ℕ) [hp : Fact (Nat.Prime p)] (hp4 : p % 4 = 1)
   push_cast
   ring
 
+/-- The Gaussian lone-layer kill: E = π^e·(T + π·R) with π prime and
+π ∤ T is nonzero. The dispatcher for the certifier's unit-core
+verdicts (the minimal π-adic layer of the core has a unit
+coefficient). -/
+theorem gauss_lone_kill (π : GaussianInt) (hπ : Prime π) (e : ℕ)
+    (T R E : GaussianInt) (hE : E = π ^ e * (T + π * R))
+    (hT : ¬ π ∣ T) : E ≠ 0 := by
+  intro h0
+  rw [hE] at h0
+  rcases mul_eq_zero.mp h0 with h | h
+  · exact hπ.ne_zero (pow_eq_zero_iff'.mp h).1
+  · exact hT ⟨-R, by linear_combination h⟩
+
 end Router

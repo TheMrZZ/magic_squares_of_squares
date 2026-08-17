@@ -172,6 +172,40 @@ fn library(maxdeg: u16) -> Vec<Poly> {
 
 /// Strip variable monomial content and divide out library factors
 /// repeatedly. Returns the remaining core polynomial (possibly 1).
+fn ser4(p: &Poly) -> String {
+    p.iter().map(|(m, c)| format!("{},{},{},{},{}", c, m.0, m.1, m.2, m.3))
+        .collect::<Vec<_>>().join(";")
+}
+
+/// Screen with a recorded division chain: each step is
+/// (library factor, quotient) with the running polynomial. The final
+/// entry of `chain` is not pushed; the return value is the core.
+fn screen_rec(mut p: Poly, lib: &[Poly], chain: &mut Vec<(Poly, Poly)>) -> Poly {
+    if p.is_empty() { return p; }
+    let strip = |p: &Poly| -> Poly {
+        let mu = p.keys().map(|m| m.0).min().unwrap();
+        let mv = p.keys().map(|m| m.1).min().unwrap();
+        let mx = p.keys().map(|m| m.2).min().unwrap();
+        let my = p.keys().map(|m| m.3).min().unwrap();
+        p.iter().map(|(m, c)| ((m.0 - mu, m.1 - mv, m.2 - mx, m.3 - my), *c)).collect()
+    };
+    p = strip(&p);
+    let mut changed = true;
+    while changed {
+        changed = false;
+        for fpol in lib {
+            if let Some(q) = pdiv(&p, fpol) {
+                if !q.is_empty() {
+                    chain.push((fpol.clone(), q.clone()));
+                    p = strip(&q);
+                    changed = true;
+                }
+            }
+        }
+    }
+    p
+}
+
 fn screen(mut p: Poly, lib: &[Poly]) -> Poly {
     // strip monomial content in each variable
     if p.is_empty() { return p; }
@@ -277,17 +311,36 @@ fn main() {
     // factor screen per relation
     let lib = library((2 * b.max(a) + 2) as u16);
     set_phase(2, relset.len());
+    let screen_dump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
     let screened: Vec<Option<Vec<(Mono, i128)>>> = relset.par_iter().map(|rel| {
         tick();
         let mut t = Poly::new();
         for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
-        let core = screen(t, &lib);
-        if core.is_empty() || (core.len() == 1 && core.keys().next().unwrap() == &(0, 0, 0, 0)) {
-            return None;
+        let mut chain: Vec<(Poly, Poly)> = Vec::new();
+        let core = screen_rec(t.clone(), &lib, &mut chain);
+        let verdict = if core.is_empty()
+            || (core.len() == 1 && core.keys().next().unwrap() == &(0, 0, 0, 0)) {
+            "monomial"
+        } else if grade_unit(&core) { "unit" } else { "live" };
+        {
+            let relser: Vec<String> = rel.iter()
+                .map(|(i, c)| format!("{i},{c}")).collect();
+            let steps: Vec<String> = chain.iter()
+                .map(|(fpol, q)| format!("F {} | {}", ser4(fpol), ser4(q))).collect();
+            screen_dump.lock().unwrap().push(format!(
+                "REL {} | {} || {} || CORE {} | {verdict}",
+                relser.join(" "), ser4(&t), steps.join(" ## "), ser4(&core)));
         }
-        if grade_unit(&core) { return None; }
+        if verdict != "live" { return None; }
         Some(core.iter().map(|(m, c)| (*m, *c)).collect())
     }).collect();
+    {
+        use std::io::Write as _;
+        let sname = format!("screen_{a}_{b}.txt");
+        let mut sf = std::fs::File::create(&sname).unwrap();
+        for l in screen_dump.lock().unwrap().iter() { writeln!(sf, "{l}").unwrap(); }
+        println!("screen dump: {} relations -> {sname}", relset.len());
+    }
     let mut dead = 0u64;
     let mut cores: HashMap<Vec<(Mono, i128)>, u32> = HashMap::new();
     for sc in &screened {
