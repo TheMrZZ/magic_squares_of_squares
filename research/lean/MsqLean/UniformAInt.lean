@@ -6,6 +6,7 @@ facts about (π^{4a}).re/.im proved by induction on a via the recurrence
 import Mathlib
 import MsqLean.TheoremGInt
 import MsqLean.TheoremFCore
+import MsqLean.PrimePowerHelpers
 
 open Zsqrtd
 
@@ -305,5 +306,378 @@ lemma im_int_mul (n : ℤ) (w : GaussianInt) : (((n : GaussianInt)) * w).im = n 
 /-- The imaginary part of a conjugate. -/
 lemma im_star_eq (w : GaussianInt) : (star w).im = -w.im := by
   simp
+
+set_option maxHeartbeats 1600000 in
+/-- Generic representation structure: any rep of s²·p^(2a)·q² with
+nonvanishing product lands (up to sign and s²) in the UClass family. -/
+theorem rep_structure_uniform
+    (hpq : p ≠ q) [hq : Fact (Nat.Prime q)]
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1)
+    (a : ℕ) (ha : 1 ≤ a)
+    (x y : ℤ) (hxy : x ^ 2 + y ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ 2)
+    (hne : 2 * x * y ≠ 0) :
+    ∃ ε K : ℤ, (ε = 1 ∨ ε = -1) ∧ UClass p q A B C D a K
+      ∧ 2 * x * y = ε * (((s : ℕ) : ℤ) ^ 2 * K) := by
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  set z : GaussianInt := ⟨x, y⟩ with hzdef
+  have hπnorm : π.norm = (p : ℤ) := by
+    have h : π.norm = A * A + B * B := by simp [hπdef, Zsqrtd.norm]
+    rw [h]; nlinarith [hpAB]
+  have hχnorm : χ.norm = (q : ℤ) := by
+    have h : χ.norm = C * C + D * D := by simp [hχdef, Zsqrtd.norm]
+    rw [h]; nlinarith [hqCD]
+  have hznorm : z.norm = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ 2 := by
+    have h : z.norm = x * x + y * y := by simp [hzdef, Zsqrtd.norm]
+    rw [h]; nlinarith [hxy]
+  obtain ⟨u, j, k, hu, hj, hk, hzeq⟩ :=
+    norm_two_prime_classify p q hpq π χ hπnorm hχnorm s hs 2 (2 * a) z hznorm
+  have hz2 : z ^ 2 = u ^ 2 * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+      * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ (2 * k) * (star χ) ^ (2 * (2 - k)))) := by
+    rw [hzeq]
+    have hscast : ((s : GaussianInt)) ^ 2 = ((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt) := by
+      push_cast; ring
+    rw [← hscast]
+    have h1 : 2 * (2 * a - j) = (2 * a - j) + (2 * a - j) := by omega
+    have h2 : 2 * j = j + j := by omega
+    have h3 : 2 * (2 - k) = (2 - k) + (2 - k) := by omega
+    have h4 : 2 * k = k + k := by omega
+    rw [h1, h2, h3, h4]
+    simp only [pow_add]
+    ring
+  have h2xy : 2 * x * y = (z ^ 2).im := by
+    rw [sq_im, hzdef]
+  have hχsplit : χ * star χ = (((q : ℤ)) : GaussianInt) := by
+    rw [hχdef, pi_mul_star, hqCD]
+  obtain hu2 | hu2 := gaussian_unit_sq u hu <;> interval_cases k
+  -- u² = 1 branches ------------------------------------------------
+  · -- u² = 1, k = 0
+    rcases Nat.lt_or_ge j a with hja | hja
+    · have hfold := fold_le p A B hpAB a j (by omega)
+      refine ⟨-1, (p : ℤ) ^ (2 * j) * ((π ^ (4 * (a - j)) * χ ^ 4).im),
+        Or.inr rfl, Or.inr ⟨a - j, by omega, by omega,
+          Or.inr (Or.inl (by rw [show a - (a - j) = j from by omega]))⟩, ?_⟩
+      rw [h2xy, hz2, hu2]
+      have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 0 * (star χ) ^ 4))
+          = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * j) : ℤ) : GaussianInt)
+          * star (π ^ (4 * (a - j)) * χ ^ 4) := by
+        rw [star_mul, star_pow, star_pow]
+        simp only [pow_zero, mul_one]
+        rw [hfold]
+        push_cast
+        ring
+      rw [hassemble, im_int_mul, im_star_eq]
+      push_cast
+      ring
+    · rcases Nat.eq_or_lt_of_le hja with hje | hja'
+      · subst hje
+        have hfold := fold_le p A B hpAB a a le_rfl
+        rw [show a - a = 0 from by omega] at hfold
+        refine ⟨-1, (p : ℤ) ^ (2 * a) * ((χ ^ 4).im),
+          Or.inr rfl, Or.inl rfl, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 0 * (star χ) ^ 4))
+            = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) : ℤ) : GaussianInt)
+            * star (χ ^ 4) := by
+          rw [star_pow]
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, im_int_mul, im_star_eq]
+        push_cast
+        ring
+      · have hfold := fold_gt p A B hpAB a j hja' hj
+        refine ⟨1, (p : ℤ) ^ (2 * (2 * a - j)) * ((π ^ (4 * (j - a)) * (star χ) ^ 4).im),
+          Or.inl rfl, Or.inr ⟨j - a, by omega, by omega,
+            Or.inr (Or.inr (by rw [show a - (j - a) = 2 * a - j from by omega]))⟩, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 0 * (star χ) ^ 4))
+            = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (2 * a - j)) : ℤ) : GaussianInt)
+            * (π ^ (4 * (j - a)) * (star χ) ^ 4) := by
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, im_int_mul]
+        push_cast
+        ring
+  · -- k = 1 : χχ̄ = q, pure π-classes
+    have hχq : χ ^ 2 * (star χ) ^ 2 = ((((q : ℤ) ^ 2 : ℤ)) : GaussianInt) := by
+      rw [← mul_pow, hχsplit]
+      push_cast
+      ring
+    rcases Nat.lt_or_ge j a with hja | hja
+    · -- j < a: conjugate side, e = a − j ≥ 1
+      have hfold := fold_le p A B hpAB a j (by omega)
+      refine ⟨-1, (p : ℤ) ^ (2 * j) * ((q : ℤ) ^ 2 * ((π ^ (4 * (a - j))).im)),
+        Or.inr rfl, Or.inr ⟨a - j, by omega, by omega,
+          Or.inl (by rw [show a - (a - j) = j from by omega])⟩, ?_⟩
+      rw [h2xy, hz2, hu2]
+      have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 2 * (star χ) ^ 2))
+          = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * j) * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * star (π ^ (4 * (a - j))) := by
+        rw [star_pow, mul_assoc (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j))), hfold, hχq]
+        push_cast
+        ring
+      rw [hassemble, im_int_mul, im_star_eq]
+      push_cast
+      ring
+    · -- j ≥ a: direct side, e = j − a; e = 0 excluded by hne
+      rcases Nat.eq_or_lt_of_le hja with hje | hja'
+      · -- j = a: the real case, 2xy = 0
+        exfalso
+        subst hje
+        have hfold := fold_le p A B hpAB a a le_rfl
+        rw [show a - a = 0 from by omega] at hfold
+        apply hne
+        rw [h2xy, hz2, hu2]
+        have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 2 * (star χ) ^ 2))
+            = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ 2 : ℤ) : GaussianInt) := by
+          rw [show π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 2 * (star χ) ^ 2
+            = (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a))) * (χ ^ 2 * (star χ) ^ 2) from by ring]
+          rw [hfold, hχq]
+          push_cast
+          ring
+        rw [hassemble]
+        exact Zsqrtd.im_intCast _
+      · have hfold := fold_gt p A B hpAB a j hja' hj
+        refine ⟨1, (p : ℤ) ^ (2 * (2 * a - j)) * ((q : ℤ) ^ 2 * ((π ^ (4 * (j - a))).im)),
+          Or.inl rfl, Or.inr ⟨j - a, by omega, by omega,
+            Or.inl (by rw [show a - (j - a) = 2 * a - j from by omega])⟩, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 2 * (star χ) ^ 2))
+            = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (2 * a - j)) * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+              * (π ^ (4 * (j - a))) := by
+          rw [show π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 2 * (star χ) ^ 2
+            = (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j))) * (χ ^ 2 * (star χ) ^ 2) from by ring]
+          rw [hfold, hχq]
+          push_cast
+          ring
+        rw [hassemble, im_int_mul]
+        push_cast
+        ring
+  · -- u² = 1, k = 2
+    rcases Nat.lt_or_ge j a with hja | hja
+    · have hfold := fold_le p A B hpAB a j (by omega)
+      refine ⟨-1, (p : ℤ) ^ (2 * j) * ((π ^ (4 * (a - j)) * (star χ) ^ 4).im),
+        Or.inr rfl, Or.inr ⟨a - j, by omega, by omega,
+          Or.inr (Or.inr (by rw [show a - (a - j) = j from by omega]))⟩, ?_⟩
+      rw [h2xy, hz2, hu2]
+      have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 4 * (star χ) ^ 0))
+          = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * j) : ℤ) : GaussianInt)
+          * star (π ^ (4 * (a - j)) * (star χ) ^ 4) := by
+        rw [star_mul, star_pow, star_pow, star_star]
+        simp only [pow_zero, mul_one]
+        rw [hfold]
+        push_cast
+        ring
+      rw [hassemble, im_int_mul, im_star_eq]
+      push_cast
+      ring
+    · rcases Nat.eq_or_lt_of_le hja with hje | hja'
+      · subst hje
+        have hfold := fold_le p A B hpAB a a le_rfl
+        rw [show a - a = 0 from by omega] at hfold
+        refine ⟨1, (p : ℤ) ^ (2 * a) * ((χ ^ 4).im),
+          Or.inl rfl, Or.inl rfl, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 4 * (star χ) ^ 0))
+            = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) : ℤ) : GaussianInt)
+            * χ ^ 4 := by
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, im_int_mul]
+        push_cast
+        ring
+      · have hfold := fold_gt p A B hpAB a j hja' hj
+        refine ⟨1, (p : ℤ) ^ (2 * (2 * a - j)) * ((π ^ (4 * (j - a)) * χ ^ 4).im),
+          Or.inl rfl, Or.inr ⟨j - a, by omega, by omega,
+            Or.inr (Or.inl (by rw [show a - (j - a) = 2 * a - j from by omega]))⟩, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 4 * (star χ) ^ 0))
+            = ((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (2 * a - j)) : ℤ) : GaussianInt)
+            * (π ^ (4 * (j - a)) * χ ^ 4) := by
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, im_int_mul]
+        push_cast
+        ring
+  · -- u² = -1, k = 0
+    rcases Nat.lt_or_ge j a with hja | hja
+    · have hfold := fold_le p A B hpAB a j (by omega)
+      refine ⟨1, (p : ℤ) ^ (2 * j) * ((π ^ (4 * (a - j)) * χ ^ 4).im),
+        Or.inl rfl, Or.inr ⟨a - j, by omega, by omega,
+          Or.inr (Or.inl (by rw [show a - (a - j) = j from by omega]))⟩, ?_⟩
+      rw [h2xy, hz2, hu2]
+      have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 0 * (star χ) ^ 4))
+          = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * j) : ℤ) : GaussianInt)
+          * star (π ^ (4 * (a - j)) * χ ^ 4)) := by
+        rw [star_mul, star_pow, star_pow]
+        simp only [pow_zero, mul_one]
+        rw [hfold]
+        push_cast
+        ring
+      rw [hassemble, Zsqrtd.im_neg, im_int_mul, im_star_eq]
+      push_cast
+      ring
+    · rcases Nat.eq_or_lt_of_le hja with hje | hja'
+      · subst hje
+        have hfold := fold_le p A B hpAB a a le_rfl
+        rw [show a - a = 0 from by omega] at hfold
+        refine ⟨1, (p : ℤ) ^ (2 * a) * ((χ ^ 4).im),
+          Or.inl rfl, Or.inl rfl, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 0 * (star χ) ^ 4))
+            = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) : ℤ) : GaussianInt)
+            * star (χ ^ 4)) := by
+          rw [star_pow]
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, Zsqrtd.im_neg, im_int_mul, im_star_eq]
+        push_cast
+        ring
+      · have hfold := fold_gt p A B hpAB a j hja' hj
+        refine ⟨-1, (p : ℤ) ^ (2 * (2 * a - j)) * ((π ^ (4 * (j - a)) * (star χ) ^ 4).im),
+          Or.inr rfl, Or.inr ⟨j - a, by omega, by omega,
+            Or.inr (Or.inr (by rw [show a - (j - a) = 2 * a - j from by omega]))⟩, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 0 * (star χ) ^ 4))
+            = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (2 * a - j)) : ℤ) : GaussianInt)
+            * (π ^ (4 * (j - a)) * (star χ) ^ 4)) := by
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, Zsqrtd.im_neg, im_int_mul]
+        push_cast
+        ring
+  · -- u² = -1, k = 1
+    have hχq : χ ^ 2 * (star χ) ^ 2 = ((((q : ℤ) ^ 2 : ℤ)) : GaussianInt) := by
+      rw [← mul_pow, hχsplit]
+      push_cast
+      ring
+    rcases Nat.lt_or_ge j a with hja | hja
+    · have hfold := fold_le p A B hpAB a j (by omega)
+      refine ⟨1, (p : ℤ) ^ (2 * j) * ((q : ℤ) ^ 2 * ((π ^ (4 * (a - j))).im)),
+        Or.inl rfl, Or.inr ⟨a - j, by omega, by omega,
+          Or.inl (by rw [show a - (a - j) = j from by omega])⟩, ?_⟩
+      rw [h2xy, hz2, hu2]
+      have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 2 * (star χ) ^ 2))
+          = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * j) * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * star (π ^ (4 * (a - j)))) := by
+        rw [star_pow, mul_assoc (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j))), hfold, hχq]
+        push_cast
+        ring
+      rw [hassemble, Zsqrtd.im_neg, im_int_mul, im_star_eq]
+      push_cast
+      ring
+    · rcases Nat.eq_or_lt_of_le hja with hje | hja'
+      · subst hje
+        have hfold := fold_le p A B hpAB a a le_rfl
+        rw [show a - a = 0 from by omega] at hfold
+        exfalso
+        apply hne
+        rw [h2xy, hz2, hu2]
+        have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 2 * (star χ) ^ 2))
+            = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ 2 : ℤ) : GaussianInt)) := by
+          rw [show π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 2 * (star χ) ^ 2
+            = (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a))) * (χ ^ 2 * (star χ) ^ 2) from by ring]
+          rw [hfold, hχq]
+          push_cast
+          ring
+        rw [hassemble, Zsqrtd.im_neg, Zsqrtd.im_intCast]
+        ring
+      · have hfold := fold_gt p A B hpAB a j hja' hj
+        refine ⟨-1, (p : ℤ) ^ (2 * (2 * a - j)) * ((q : ℤ) ^ 2 * ((π ^ (4 * (j - a))).im)),
+          Or.inr rfl, Or.inr ⟨j - a, by omega, by omega,
+            Or.inl (by rw [show a - (j - a) = 2 * a - j from by omega])⟩, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 2 * (star χ) ^ 2))
+            = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (2 * a - j)) * (q : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (4 * (j - a)))) := by
+          rw [show π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 2 * (star χ) ^ 2
+            = (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j))) * (χ ^ 2 * (star χ) ^ 2) from by ring]
+          rw [hfold, hχq]
+          push_cast
+          ring
+        rw [hassemble, Zsqrtd.im_neg, im_int_mul]
+        push_cast
+        ring
+  · -- u² = -1, k = 2
+    rcases Nat.lt_or_ge j a with hja | hja
+    · have hfold := fold_le p A B hpAB a j (by omega)
+      refine ⟨1, (p : ℤ) ^ (2 * j) * ((π ^ (4 * (a - j)) * (star χ) ^ 4).im),
+        Or.inl rfl, Or.inr ⟨a - j, by omega, by omega,
+          Or.inr (Or.inr (by rw [show a - (a - j) = j from by omega]))⟩, ?_⟩
+      rw [h2xy, hz2, hu2]
+      have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+          * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 4 * (star χ) ^ 0))
+          = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * j) : ℤ) : GaussianInt)
+          * star (π ^ (4 * (a - j)) * (star χ) ^ 4)) := by
+        rw [star_mul, star_pow, star_pow, star_star]
+        simp only [pow_zero, mul_one]
+        rw [hfold]
+        push_cast
+        ring
+      rw [hassemble, Zsqrtd.im_neg, im_int_mul, im_star_eq]
+      push_cast
+      ring
+    · rcases Nat.eq_or_lt_of_le hja with hje | hja'
+      · subst hje
+        have hfold := fold_le p A B hpAB a a le_rfl
+        rw [show a - a = 0 from by omega] at hfold
+        refine ⟨-1, (p : ℤ) ^ (2 * a) * ((χ ^ 4).im),
+          Or.inr rfl, Or.inl rfl, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * a) * (star π) ^ (2 * (2 * a - a)) * χ ^ 4 * (star χ) ^ 0))
+            = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) : ℤ) : GaussianInt)
+            * χ ^ 4) := by
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, Zsqrtd.im_neg, im_int_mul]
+        push_cast
+        ring
+      · have hfold := fold_gt p A B hpAB a j hja' hj
+        refine ⟨-1, (p : ℤ) ^ (2 * (2 * a - j)) * ((π ^ (4 * (j - a)) * χ ^ 4).im),
+          Or.inr rfl, Or.inr ⟨j - a, by omega, by omega,
+            Or.inr (Or.inl (by rw [show a - (j - a) = 2 * a - j from by omega]))⟩, ?_⟩
+        rw [h2xy, hz2, hu2]
+        have hassemble : (-1 : GaussianInt) * (((((s : ℕ) : ℤ) ^ 2 : ℤ) : GaussianInt)
+            * (π ^ (2 * j) * (star π) ^ (2 * (2 * a - j)) * χ ^ 4 * (star χ) ^ 0))
+            = -(((((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (2 * a - j)) : ℤ) : GaussianInt)
+            * (π ^ (4 * (j - a)) * χ ^ 4)) := by
+          simp only [pow_zero, mul_one]
+          rw [hfold]
+          push_cast
+          ring
+        rw [hassemble, Zsqrtd.im_neg, im_int_mul]
+        push_cast
+        ring
 
 end UniformA

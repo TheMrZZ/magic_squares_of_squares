@@ -2238,3 +2238,18 @@ Phase-1 status: UniformAInt.lean has norm/p∤coords/J_chain/im_four/re_odd/
 coprime_coords/J_mod_form, all generic in a, zero sorries. Remaining phase-1:
 generic rep_structure into UClass (the UFD argument, hardest piece), then
 phase 2 (abstract-step routers).
+
+## Round 138 (2026-08-17) — PHASE 1 COMPLETE: generic rep classification
+
+`rep_structure_uniform` is machine-checked: for EVERY a ≥ 1, any (x, y) with
+x² + y² = s²p^(2a)q² and 2xy ≠ 0 has 2xy = ±s²·K with K in the UClass
+family. The 42-case enumeration of Theorem G's rep_structure is replaced by
+TWO symbolic fold lemmas (j ≤ a / j > a) — the proof is 12 symbolic branches
+(u² × k × side), each ~20 lines, with the e = 0 real cases handled per k.
+UniformAInt.lean now holds the complete generic layer, zero sorries:
+recurrences, norm, p∤coords, J-chain invariant (J ≡ a·R₄^(a−1) mod 16t²),
+parity, coprimality, UClass + telescoping, folds, rep classification.
+
+Phase 2 next: the abstract-step routers — no_assignment and no_ratio2 at
+rung a as consequences of rung a−1's routers (taken as hypotheses over the
+telescoped UClass (a−1)) plus generic kills for the three new classes.
