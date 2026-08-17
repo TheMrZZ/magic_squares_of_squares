@@ -2515,3 +2515,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - `u23_vanish_core`: 2,182,656 exact evaluations over p ≠ q < 300, zero vanishing points.
 - Rung (2,3) status: every leaf dead — 468 unit patterns + full degenerate sector + full core sector. The proof burden is now a single kind of statement: **nonvanishing lemmas for the balance families** (402 + 672 shapes, grouped by their (χ-shift, π-side polynomial) structure). The (2,2) master quartic kill is the prototype lemma.
 - Strategic note: the b-induction's cell library appears to be balance forms at every rung. One general balance lemma (or a small family list) likely covers every b at once — that is the next target, and it is the heart of Milestone 2.
+
+## Round 161: the balance-family norm formulas
+
+- `u23_family_kill.py`: for every distinct π-side polynomial P in the (2,3) master catalog, N(P) in the coordinates (r, s) = (Re π², Im π²) factors into p-powers times small explicit forms: (p ± s), (p ± 2s), (p² − 2s²)², (3p² − 4s²)², s-powers, and a few irreducible sextics/octics in (p, s).
+- The family kill template: the balance condition forces q^{2Δ} ∣ N(P)-value with Δ the χ-shift; every factor of N(P) is bounded by C·p^k, so the condition gives a band q^Δ ≤ C·p^k plus an exact divisibility of a small factor (q^m ∣ p ± s and relatives) — descent territory, with the (2,2) Pythagorean splitting as the deepest case.
+- Notable identities that trivialize several families: p² + Re π⁴ = 2r², p² − Re π⁴ = 2s² (so P = u(u ± v) gives N = 4p²·(2r² or 2s²) — the divisibility collapses to q-power ∣ 2r or 2s).
+- Discovery layer for rung (2,3) is complete. Next: write the general balance lemma and the per-family finishes into the paper — the b-generic step of Milestone 2.
