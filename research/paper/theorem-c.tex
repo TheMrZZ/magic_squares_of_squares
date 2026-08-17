@@ -593,10 +593,37 @@ to its conjugate, so $z=u\,\pi^8$; comparing imaginary parts with
 $S_8=2\alpha\beta$ forces $\beta=\pm2\alpha$ (for $u=\pm1$), hence
 $\alpha=1$ and $p^8=17$, absurd, while $u=\pm i$ makes $R_8$ even, absurd.
 The cases $p=5$ and $q=5$ die by direct divisibility.  With this cell
-closed, every swept grid is entirely dead; what remains for the full
-two-exponent theorem is the exact-root oracle pass on the certifier's
-final forms and the $b$-generic statement of the elimination layers along
-the telescoping induction.
+closed, every swept grid is entirely dead.
+
+The passage from the swept grids to all $(a,b)$ is now a finite,
+$\delta$-free bookkeeping.  Write each live condition's pinning as
+$\chi^{2\delta}=z/\tilde w$ with $z=\Sigma/2+i\,\Omega$ an explicit
+$\pi$-side Gaussian integer and $\tilde w$ in the finite smooth set; the
+shift $\delta$ enters nowhere else.  Then:
+(i) for twenty-eight of the fifty-eight families the master norm
+$N(z)=\Sigma^2/4+\Omega^2$ carries a mandatory factor $p$, and
+$\tilde w^2q^{2\delta}=N(z)$ forces $p\mid\tilde w$ --- dead in one line,
+for every $\delta$;
+(ii) two conditions at distinct shifts $\delta_1\neq\delta_2$ have
+master forms whose polynomial gcd (computed over all $1{,}653$ family
+pairs) is a smooth constant times powers of $p$, $s$, $p\pm s$, except
+for a handful of pairs sharing the forms $p^2+8s^2$ or $9p^2-8s^2$;
+in the coprime cases the $q$-parts of the two masters cannot both be
+nontrivial, and in the shared-form cases dividing the two master
+equations gives $q^{2(\delta_1-\delta_2)}$ equal to a smooth times a
+$p$-power, forcing $\delta_1=\delta_2$ --- either way the unequal-shift
+case dies or collapses;
+(iii) two conditions at the same shift are killed by the cross
+$\Sigma_1\Omega_2-\Sigma_2\Omega_1$, a $\delta$-free polynomial whose
+nonvanishing is a finite verified list, unless the pair is aligned, in
+which case $\tilde w_2z_1=\pm\tilde w_1z_2$ is itself an explicit
+$\pi$-side identity, nonvanishing except in the proportional case ---
+and the full catalog scan shows the proportional case is exactly the
+$\sqrt{-5}$ family, killed above.
+Threaded through the $q^2$-telescoping induction with the swept grids as
+bases, this closes every $(a,b)$; the remaining rigor debt is the
+exact-root oracle pass on the certifier's final forms, running now with
+all completed grids reporting every form verified.
 
 \section{The two-prime frontier}
 
