@@ -2760,3 +2760,17 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   nonzero) this closes the two ends of the elimination argument in
   Lean. The remaining ladder: the value bridge (the relations vanish at
   the Gaussian point), the q-grading router, and the hand lemmas.
+
+## Round 191: the exactness lemma is machine-checked
+
+- `Exactness.lean` compiles with zero errors: `exact_real` (M real
+  forces P = w·χ^(2Δ), w ∈ ℤ, by unique factorization and χ ∤ χ̄),
+  `exact_imaginary` (w ∈ i·ℤ), and the `pinning` corollary (the
+  coordinates of P are w times the coordinates of χ^(2Δ), and
+  P.re² + P.im² = w²·q^(2Δ)). Reuses `prime_pi` / `pi_not_dvd_star`
+  from the uniform development.
+- `GaussData.lean` (previous commit) supplies the data side: class
+  values as sparse polynomials with once-proved eval bridges.
+- The hand-lemma ladder continues: the balance-condition derivation
+  (magic square ⟹ the leaf input relations vanish), coprime masters,
+  the √−5 cell, and the telescoping wrapper.
