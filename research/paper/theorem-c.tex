@@ -361,12 +361,49 @@ and the three new classes are dispatched by arguments whose shape is
 independent of the exponent.  This is precisely the inductive step one
 would want for a uniform theorem covering all center roots $s\,p^aq$.
 
+\section{Center roots $s\,p^aq$: the uniform theorem}
+
+\begin{theorem}\label{thm:U}
+There is no magic square of squares whose center root is $s\,p^aq$, for any
+$a\ge 1$, where $p\neq q$ are primes $\equiv 1\pmod 4$ and $s$ is free of
+such primes.
+\end{theorem}
+
+This theorem subsumes Theorems~\ref{thm:E}, \ref{thm:F} and~\ref{thm:G} in
+one induction on $a$.  The formal proof (\texttt{UniformAInt.lean}, zero
+\texttt{sorry}s) makes the telescoping of the concrete proofs exact.  The
+class family $\mathrm{UClass}(a)$ has $1+3a$ members: rung $a$ equals
+$p^2\cdot\mathrm{UClass}(a-1)$ plus the three new classes
+$q^2\im\pi^{4a}$ and $\im(\pi^{4a}\chi^{\pm4})$.  The proof has four layers.
+\begin{itemize}
+\item \emph{Generic cores and dispatchers.}  The four cross-pair cores and
+the ten dispatchers of the concrete proofs hold at every rung $a$
+simultaneously.  The generic arguments are simpler than the concrete ones:
+the unit branches die by size and by consecutive squares, and the residue
+$\pm q^2$ plus one congruence kills each partner class.
+\item \emph{The assignment step.}  The sixteen-bucket router at rung $a$
+takes the rung $a-1$ router as a hypothesis.  Its all-low bucket cancels
+$p^2$ and recurses; the other buckets route into the generic dispatchers.
+\item \emph{The ratio step.}  The ratio-$2$ router telescopes the same way.
+Its hardest cell, $\im(\pi^{4a}\chi^4)=\pm2\im(\pi^{4a}\bar\chi^4)$, factors
+through $\pi^{4a}=(\pi^{2a})^2$ and runs the Fermat descent with base pair
+$(q,p^a)$, generic in the odd base.
+\item \emph{The base.}  At rung $1$ the four classes are concrete; two low
+classes cannot fill four distinct slots, and the generic dispatchers close
+the remaining buckets.
+\end{itemize}
+The induction then assembles both routers for every $a\ge 1$, and the
+four-differences argument and the center reduction give the theorem.
+
 \section{The two-prime frontier}
 
 \subsection*{Toward uniformity in the exponent}
 
-The certificates for $(a,b)=(1,1),(2,1),(3,1)$ suggest a uniform theorem for
-all $s\,p^aq$.  Abstracting the levels of $D(e)$ into free circle variables
+Theorem~\ref{thm:U} now closes the family $s\,p^aq$ for all $a$ at once.
+The analytic program below preceded that proof; it retains independent
+interest, because its tools aim past the $b=1$ column toward the
+$(a,b\ge2)$ grids.  The certificates for $(a,b)=(1,1),(2,1),(3,1)$
+suggested the uniform theorem.  Abstracting the levels of $D(e)$ into free circle variables
 linked by a chain map (the enriched relaxation), $95.8\%$ of the $9{,}216$
 uniform two-level leaf systems die by mechanisms independent of $a$ ---
 positivity pinches, parities, $p$-adic patterns and congruence obstructions.
