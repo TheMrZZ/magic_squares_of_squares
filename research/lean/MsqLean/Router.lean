@@ -52,4 +52,37 @@ theorem gauss_lone_kill (π : GaussianInt) (hπ : Prime π) (e : ℕ)
   · exact hπ.ne_zero (pow_eq_zero_iff'.mp h).1
   · exact hT ⟨-R, by linear_combination h⟩
 
+/-- A product of powers of nonzero elements of a domain is nonzero. -/
+lemma mono_ne_zero {R : Type*} [CommRing R] [IsDomain R]
+    (z1 z2 z3 z4 : R) (h1 : z1 ≠ 0) (h2 : z2 ≠ 0) (h3 : z3 ≠ 0) (h4 : z4 ≠ 0)
+    (a b c d : ℕ) : z1 ^ a * z2 ^ b * z3 ^ c * z4 ^ d ≠ 0 :=
+  mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ h1) (pow_ne_zero _ h2))
+    (pow_ne_zero _ h3)) (pow_ne_zero _ h4)
+
+/-- A prime that divides none of three elements does not divide a unit
+times a product of their powers. -/
+lemma prime_not_dvd_unit_mono (π : GaussianInt) (hπ : Prime π)
+    (w1 w2 w3 : GaussianInt) (h1 : ¬ π ∣ w1) (h2 : ¬ π ∣ w2) (h3 : ¬ π ∣ w3)
+    (c0 : ℤ) (hc0 : c0 = 1 ∨ c0 = -1) (a b c : ℕ) :
+    ¬ π ∣ ((c0 : GaussianInt)) * w1 ^ a * w2 ^ b * w3 ^ c := by
+  intro hd
+  have hu : IsUnit ((c0 : GaussianInt)) := by
+    rcases hc0 with rfl | rfl
+    · simpa using isUnit_one
+    · exact ⟨⟨-1, -1, by ext <;> simp, by ext <;> simp⟩, by push_cast; rfl⟩
+  have h1' : ¬ π ∣ w1 ^ a := fun h => h1 (hπ.dvd_of_dvd_pow h)
+  have h2' : ¬ π ∣ w2 ^ b := fun h => h2 (hπ.dvd_of_dvd_pow h)
+  have h3' : ¬ π ∣ w3 ^ c := fun h => h3 (hπ.dvd_of_dvd_pow h)
+  have hX : π ∣ ((c0 : GaussianInt)) * (w1 ^ a * w2 ^ b * w3 ^ c) := by
+    have hassoc : ((c0 : GaussianInt)) * w1 ^ a * w2 ^ b * w3 ^ c
+        = ((c0 : GaussianInt)) * (w1 ^ a * w2 ^ b * w3 ^ c) := by ring
+    rwa [hassoc] at hd
+  rcases hπ.dvd_mul.mp hX with hd1 | hd1
+  · exact hπ.not_unit (isUnit_of_dvd_unit hd1 hu)
+  · rcases hπ.dvd_mul.mp hd1 with hd2 | hd2
+    · rcases hπ.dvd_mul.mp hd2 with hd3 | hd3
+      · exact h1' hd3
+      · exact h2' hd3
+    · exact h3' hd2
+
 end Router
