@@ -2675,3 +2675,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - **The two-exponent theorem (no center root s·pᵃ·qᵇ, all a, b ≥ 1) is complete at the paper level**: the certifier closes the base grids; the δ-free passage (one-line kills, coprime-masters with the shared-form collapse, δ-free crosses, the aligned magnitude identity with the √−5 cell as its only proportional case) closes every (a, b) through the q²-telescoping; the elimination layer's final forms are all exactly verified.
 - Remaining debt: audit passes of the writeup (same status Theorem H had), and eventually the Lean pass.
 - **Milestone 3 (three primes) is next.**
+
+## Round 184: the Lean campaign for Milestone 2 begins
+
+- New goal: formalize all work through Milestone 2 (Theorem H + the two-exponent theorem) in Lean.
+- The certifier closes (2,2) with the same pipeline (all 3,104 pairs dead; 22 oracle forms) — so ONE certificate generator serves Theorem H and every grid.
+- Architecture: (i) `CertKit.lean` — the kill-primitive lemmas: the parity gate (a homogeneous form with odd r-leading coefficient has ODD value at admissible points — even simpler than the root argument), the 2-adic descent kills for the biquadratic library forms, the pinch and coordinate lemmas (mostly existing in UniformAInt), and a mod-ℓ sieve lemma; (ii) Rust emits per-grid certificate data; a generator writes Lean lemma files applying the kit; (iii) the hand lemmas (exactness, coprime-masters, √−5 cell, telescoping) are ported by hand — Codex's kit files (CorePythagorean, ValuationDescent, DistinctReduction, IncidenceClassifier) supply ingredients.
+- Sequencing: CertKit → Theorem H end-to-end as the template → the swept grids → the δ-free lemmas → the telescoping wrapper.
