@@ -2416,3 +2416,10 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
 - Result: **5,088 shapes (82%) have a pure unit-monomial resultant** (example: 16·Pb⁸·q³²). If both first-order conditions held, π would divide 16 — impossible for p ≥ 5. These leaves are impossible for ALL p, q, by one uniform two-page argument.
 - 1,120 shapes have an identically zero p-side resultant (the two conditions coincide at first order). The q-side engine (`u22_cert_qside.py`) now runs on those.
 - Rigor points for the writeup: (1) the resultant argument needs the leading U-coefficients to be p-units — verify per shape; (2) U-values are p-units since π ∤ χ; (3) π | integer n forces p | n by the norm.
+
+## Round 153: the q-side pass and the 256-shape deep core
+
+- `u22_cert_qside.py` on the 1,120 p-side-degenerate shapes: 864 get a q-side unit certificate (example factor 6i·Cb³·p¹⁰ → χ | 6, impossible for q ≥ 5).
+- Scoreboard: 5,952 of 6,208 leaves (95.9%) are dead at first order for all p, q. The deep core is **256 shapes, degenerate on both sides** (`u22_deep.pkl`).
+- The artifact now carries the live programme in §7 and the report mirror `research/REPORT.md` follows it.
+- Next: the structure of the 256 — expect the conjugate-pair coincidence families; the kill needs the mod-π² layer (J-chain style) or a second elimination variable.

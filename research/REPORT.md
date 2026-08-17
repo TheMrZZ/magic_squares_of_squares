@@ -64,7 +64,18 @@ The residual relations are few: 216 for s·p²q² and 600 for s·pqr. Their geom
 - The repo's original conjecture (all quasi-magic squares have N = (3kp²)²) is **false**. The first counterexample is N = 10,543,009 = (17·191)², found at 10.5M.
 - A claimed proof of the full impossibility (arXiv 2510.08286) was examined and **refuted** — an equation-vs-identity fallacy at its final step.
 
-## §7 What would actually finish it
+## §7 The programme: the approved path to full impossibility
+
+This is the live master plan (approved 2026-08-17; paper proofs first, Lean after; any rigorous tool allowed). The strategy: convert every residual coincidence locus into a norm or unit equation in an explicit ring and kill it there; make each kill generic in the exponents; then induct — first on exponents, then on the number of primes.
+
+- **Milestone 1 — Theorem H: no center root s·p²·q².** *In progress, and moving fast.* The 95,040 leaves reduce to 6,208 survivors (grading). The new *unit-certificate engine* reduces both minimal layers of a leaf mod π into the orbit basis and takes a resultant. For 5,088 leaves the p-side resultant is a pure unit monomial (such as 16·π̄³²q³²): the two conditions would force π | 16 — impossible. The q-side pass kills 864 more the same way. **Status: 5,952 of 6,208 leaves (95.9%) are dead at first order for all p, q. The deep core is 256 shapes, degenerate on both sides; they need the mod-π² layer.** Then: assemble the router, write the paper section.
+- **Milestone 2 — no s·pᵃ·q^b for all a, b ≥ 1.** Two-parameter class family with p²- and q²-telescoping; every Milestone-1 kill restated generically in the exponents; double induction with the uniform theorem as the base row and column. Closes two useful primes entirely.
+- **Milestone 3 — three useful primes.** Start at s·p·q·r (13 classes, 3-D grading; exact sweeps already clear p,q,r < 300). Same locus-to-ring conversion; prime-generic routers; then telescope exponents.
+- **Milestone 4 — the master induction on the number of primes.** The step adds one useful prime; the new-prime classes play the role that the three new classes played in the uniform theorem. Deliverable: no magic square of squares, period.
+
+Risks, honestly. A locus may resist structurally and reduce to an open Wieferich-type statement — then the programme delivers "impossibility modulo one clean conjecture" and the conjecture becomes the target. And a counterexample above 10²⁰ would end the programme correctly. Each milestone is a durable theorem on its own.
+
+## §8 What would actually finish it
 
 The honest map: solutions exist over ℤ[i] and over finite fields. So no purely algebraic argument can close the problem. The full statement is equivalent to the emptiness of families of simultaneous congruent-number-type curves. This campaign fenced the problem into corners with names. A hypothetical square must have a center root with ≥ 2 useful primes. It must avoid each proven family and each computed range. And it must sit on an explicit thin locus: a double Wieferich coincidence, a Pell band, or a power-law prime curve. None of these loci produced one surviving point in some five billion exact checks. The heuristic expected count of solutions is zero. The proof of that zero is still open. Each partial theorem here is durable, pushed, and — where it matters most — machine-checked.
 
