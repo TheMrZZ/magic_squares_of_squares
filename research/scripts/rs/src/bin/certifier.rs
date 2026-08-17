@@ -13,6 +13,39 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 use rayon::prelude::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
+// ---- heartbeat progress: phase + work counter, printed every 30 s ----
+static PHASE: AtomicUsize = AtomicUsize::new(0);
+static DONE: AtomicUsize = AtomicUsize::new(0);
+static TOTAL: AtomicUsize = AtomicUsize::new(0);
+const PHASES: [&str; 6] = ["startup", "leaf enumeration", "relation screen",
+                           "condition map", "pair verdicts", "elimination"];
+
+fn set_phase(p: usize, total: usize) {
+    PHASE.store(p, Ordering::Relaxed);
+    DONE.store(0, Ordering::Relaxed);
+    TOTAL.store(total, Ordering::Relaxed);
+}
+
+fn tick() { DONE.fetch_add(1, Ordering::Relaxed); }
+
+fn start_heartbeat() {
+    let t0 = std::time::Instant::now();
+    std::thread::spawn(move || loop {
+        std::thread::sleep(std::time::Duration::from_secs(30));
+        let p = PHASE.load(Ordering::Relaxed);
+        let d = DONE.load(Ordering::Relaxed);
+        let t = TOTAL.load(Ordering::Relaxed);
+        let el = t0.elapsed().as_secs();
+        if t > 0 && d > 0 {
+            let eta = el as f64 / d as f64 * (t - d.min(t)) as f64;
+            eprintln!("[heartbeat {el}s] phase: {} — {d}/{t} ({:.0}%), ETA {eta:.0}s",
+                      PHASES[p.min(5)], 100.0 * d as f64 / t as f64);
+        } else {
+            eprintln!("[heartbeat {el}s] phase: {}", PHASES[p.min(5)]);
+        }
+    });
+}
+
 type Mono = (u16, u16, u16, u16); // exponents of u, v, x, y
 type Poly = BTreeMap<Mono, i128>;
 
@@ -177,6 +210,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let a: u16 = args.get(1).and_then(|x| x.parse().ok()).unwrap_or(2);
     let b: u16 = args.get(2).and_then(|x| x.parse().ok()).unwrap_or(3);
+    start_heartbeat();
     let els = classes(a, b);
     let n = els.len();
     let ep: Vec<Poly> = els.iter().map(|&e| elem_poly(a, b, e)).collect();
@@ -191,8 +225,10 @@ fn main() {
         false
     };
     // leaf enumeration and grading
+    set_phase(1, n);
     let chunks: Vec<(u64, u64, HashSet<Vec<(usize, i128)>>, HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)>)> =
         (0..n).into_par_iter().map(|ia| {
+            tick();
             let mut total = 0u64;
             let mut surv = 0u64;
             let mut relset: HashSet<Vec<(usize, i128)>> = HashSet::new();
@@ -234,7 +270,9 @@ fn main() {
              relset.len(), pairset.len());
     // factor screen per relation
     let lib = library((2 * b.max(a) + 2) as u16);
+    set_phase(2, relset.len());
     let screened: Vec<Option<Vec<(Mono, i128)>>> = relset.par_iter().map(|rel| {
+        tick();
         let mut t = Poly::new();
         for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
         let core = screen(t, &lib);
@@ -267,7 +305,9 @@ fn main() {
     // per-relation conditions (from the screened core; a relation may carry
     // several library-free factors only if the core splits further — with
     // library division we keep the single residual core per relation)
+    set_phase(3, relset.len());
     let relcond: HashMap<Vec<(usize, i128)>, Cond> = relset.par_iter().map(|rel| {
+        tick();
         let mut t = Poly::new();
         for &(i, c) in rel { t = padd(&t, &pscale(&ep[i], c)); }
         let core = screen(t, &lib);
@@ -279,7 +319,9 @@ fn main() {
     let mut verdict: HashMap<&str, u64> = HashMap::new();
     let mut terminals: HashMap<Vec<((u16, u16, u16), i128)>, u32> = HashMap::new();
     let mut residuals: Vec<(&'static str, Cond, Cond)> = Vec::new();
+    set_phase(4, pairset.len());
     for (k1, k2) in &pairset {
+        tick();
         let c1 = &relcond[k1];
         let c2 = &relcond[k2];
         let tag: &str = match (c1, c2) {
@@ -468,7 +510,9 @@ fn main() {
     let t_start = std::time::Instant::now();
     let n_res = residuals.len();
     let prog = AtomicUsize::new(0);
+    set_phase(5, residuals.len());
     let evs_par: Vec<(String, Option<String>)> = residuals.par_iter().map(|(tag, c1, c2)| {
+        tick();
         let idx = prog.fetch_add(1, Ordering::Relaxed);
         if idx > 0 && idx % 50 == 0 {
             let el = t_start.elapsed().as_secs_f64();
