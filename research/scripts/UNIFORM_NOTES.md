@@ -2352,3 +2352,13 @@ Remaining for the uniform theorem: the ratio-2 step, the four-diffs wrapper, and
 - The whole layer compiled on the first build.
 
 Remaining: the four-diffs step and the induction assembly with base a = 1 (Theorem E).
+
+## Round 147: the induction is closed at the router level
+
+- `UClass_one`: rung 1 unfolds into four concrete classes (p²Y₄, q²I₄, M8₁, M9₁).
+- `no_assignment_base`: the rung-1 assignment router. The all-low bucket is a pigeonhole: two low classes cannot fill four distinct slots. The other fifteen buckets reuse the generic dispatchers at a = 1.
+- `no_ratio2_base`: the rung-1 ratio router, from the same generic cells at a = 1.
+- `no_ratio2_uniform` and `no_assignment_uniform`: induction wrappers over a. Base at a = 1, step through `no_ratio2_step` / `no_assignment_step`. Both hold for every a ≥ 1.
+- Gotcha: `rw [h]` closes rung-1 class goals by rfl (the literal 2*1 reduces), so a bare `norm_num` after it errors with "No goals". Guard it with `try`.
+
+Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_uniform`) and the capstone statement for the s·pᵃ·q family.

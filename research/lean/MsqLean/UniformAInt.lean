@@ -2902,4 +2902,334 @@ lemma no_ratio2_step (q : ℕ) [hq : Fact (Nat.Prime q)]
         · linear_combination hM9c - h'
         · exfalso; rcases hδ with rfl | rfl <;> omega
 
+/-- Unfold rung 1 of the class family into its four concrete classes. -/
+lemma UClass_one (q : ℕ) (A B C D : ℤ) (K : ℤ)
+    (hK : UClass p q A B C D 1 K) :
+    ((K = (p : ℤ) ^ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ∨ K = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im)))
+     ∨ (K = (((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)) ∨ K = (((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)))) := by
+  rcases hK with h | ⟨e, he1, he2, h⟩
+  · left; left
+    rw [h]; try norm_num
+  · have he : e = 1 := by omega
+    subst he
+    rcases h with h | h | h
+    · left; right
+      rw [h]; try norm_num
+    · right; left
+      rw [h]; try norm_num
+    · right; right
+      rw [h]; try norm_num
+
+set_option maxHeartbeats 1600000 in
+/-- The assignment router at rung 1: the base of the induction. -/
+lemma no_assignment_base (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (Ka Kb Kc Kd e1 e2 e3 e4 : ℤ)
+    (he1 : e1 = 1 ∨ e1 = -1) (he2 : e2 = 1 ∨ e2 = -1)
+    (he3 : e3 = 1 ∨ e3 = -1) (he4 : e4 = 1 ∨ e4 = -1)
+    (hKa : UClass p q A B C D 1 Ka) (hKb : UClass p q A B C D 1 Kb)
+    (hKc : UClass p q A B C D 1 Kc) (hKd : UClass p q A B C D 1 Kd)
+    (hab : Ka ≠ Kb) (hac : Ka ≠ Kc) (had : Ka ≠ Kd)
+    (hbc : Kb ≠ Kc) (hbd : Kb ≠ Kd) (hcd : Kc ≠ Kd)
+    (hE1 : e3 * Kc + e4 * Kd = 2 * e1 * Ka)
+    (hE2 : e3 * Kc - e4 * Kd = 2 * e2 * Kb) : False := by
+  have ha1 : 1 ≤ 1 := le_refl 1
+  have wk : ∀ K : ℤ, (K = (p : ℤ) ^ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) ∨ K = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im))) →
+      ((∃ N, K = (p : ℤ) ^ 2 * N) ∨ K = (q : ℤ) ^ 2 * ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im))) := by
+    intro K h
+    rcases h with h | h
+    · exact Or.inl ⟨(((⟨C, D⟩ : GaussianInt) ^ 4).im), h⟩
+    · exact Or.inr h
+  rcases UClass_one p q A B C D Ka hKa with haL | ha8 <;>
+    rcases UClass_one p q A B C D Kb hKb with hbL | hb8 <;>
+    rcases UClass_one p q A B C D Kc hKc with hcL | hc8 <;>
+    rcases UClass_one p q A B C D Kd hKd with hdL | hd8
+  · -- all four low: only two low classes at rung 1, so two values are equal
+    rcases haL with rfl | rfl <;> rcases hbL with rfl | rfl <;>
+      rcases hcL with rfl | rfl <;> rcases hdL with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact hac rfl
+        | exact had rfl
+        | exact hbc rfl
+        | exact hbd rfl
+        | exact hcd rfl
+  · exact dispatch_loned_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka Kb Kc Kd
+      e1 e2 e3 e4 he1 he2 he3 he4 hd8 (wk _ haL) (wk _ hbL) (wk _ hcL) hab hac hbc hE1 hE2
+  · exact dispatch_lonec_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka Kb Kc Kd
+      e1 e2 e3 e4 he1 he2 he3 he4 hc8 (wk _ haL) (wk _ hbL) (wk _ hdL) hab had hbd hE1 hE2
+  · -- c, d both chi
+    rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact hcd rfl
+    · exact dispatch_56_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka Kb e1 e2 e3 e4
+        he1 he2 he3 he4 (wk _ haL) (wk _ hbL) hE1 hE2
+    · exact dispatch_56_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka Kb e1 (-e2) e4 e3
+        he1 (by rcases he2 with rfl | rfl <;> norm_num) he4 he3 (wk _ haL) (wk _ hbL)
+        (by linarith [hE1]) (by linarith [hE2])
+    · exact hcd rfl
+  · exact dispatch_loneb_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka Kb Kc Kd
+      e1 e2 e3 e4 he1 he2 he3 he4 hb8 (wk _ haL) (wk _ hcL) (wk _ hdL) hac had hcd hE1 hE2
+  · -- b, d both chi
+    rcases hb8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact hbd rfl
+    · exact dispatch_bd_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka _ Kc _
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) (wk _ haL) (wk _ hcL) hE1 hE2
+    · exact dispatch_bd_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka _ Kc _
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) (wk _ haL) (wk _ hcL) hE1 hE2
+    · exact hbd rfl
+  · -- b, c both chi
+    rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl
+    · exact hbc rfl
+    · exact dispatch_bc_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka _ _ Kd
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) (wk _ haL) (wk _ hdL) hE1 hE2
+    · exact dispatch_bc_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka _ _ Kd
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) (wk _ haL) (wk _ hdL) hE1 hE2
+    · exact hbc rfl
+  · -- b, c, d all chi: pigeonhole
+    rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hbc rfl
+        | exact hbd rfl
+        | exact hcd rfl
+  · exact dispatch_lonea_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Ka Kb Kc Kd
+      e1 e2 e3 e4 he1 he2 he3 he4 ha8 (wk _ hbL) (wk _ hcL) (wk _ hdL) hbc hbd hcd hE1 hE2
+  · -- a, d both chi
+    rcases ha8 with rfl | rfl <;> rcases hd8 with rfl | rfl
+    · exact had rfl
+    · exact dispatch_ad_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD _ Kb Kc _
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) (wk _ hbL) (wk _ hcL) hE1 hE2
+    · exact dispatch_ad_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD _ Kb Kc _
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) (wk _ hbL) (wk _ hcL) hE1 hE2
+    · exact had rfl
+  · -- a, c both chi
+    rcases ha8 with rfl | rfl <;> rcases hc8 with rfl | rfl
+    · exact hac rfl
+    · exact dispatch_ac_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD _ Kb _ Kd
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inl ⟨rfl, rfl⟩) (wk _ hbL) (wk _ hdL) hE1 hE2
+    · exact dispatch_ac_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD _ Kb _ Kd
+        e1 e2 e3 e4 he1 he2 he3 he4 (Or.inr ⟨rfl, rfl⟩) (wk _ hbL) (wk _ hdL) hE1 hE2
+    · exact hac rfl
+  · -- a, c, d all chi: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hac rfl
+        | exact had rfl
+        | exact hcd rfl
+  · -- a, b both chi
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl
+    · exact hab rfl
+    · exact dispatch_ab56_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Kc Kd e1 e2 e3 e4
+        he1 he2 he3 he4 (wk _ hcL) (wk _ hdL) hE1 hE2
+    · exact dispatch_ab56_a p q hpodd hqodd hpq 1 ha1 A B C D hpAB hqCD Kc Kd e2 e1 e3 (-e4)
+        he2 he1 he3 (by rcases he4 with rfl | rfl <;> norm_num) (wk _ hcL) (wk _ hdL)
+        (by linarith [hE2]) (by linarith [hE1])
+    · exact hab rfl
+  · -- a, b, d all chi: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact had rfl
+        | exact hbd rfl
+  · -- a, b, c all chi: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;> rcases hc8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact hac rfl
+        | exact hbc rfl
+  · -- all four chi: pigeonhole
+    rcases ha8 with rfl | rfl <;> rcases hb8 with rfl | rfl <;>
+      rcases hc8 with rfl | rfl <;> rcases hd8 with rfl | rfl <;>
+      first
+        | exact hab rfl
+        | exact hac rfl
+        | exact hbc rfl
+
+set_option maxHeartbeats 1600000 in
+/-- The ratio-2 router at rung 1: the base of the induction. -/
+lemma no_ratio2_base (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (W V δ : ℤ) (hδ : δ = 1 ∨ δ = -1)
+    (hW : UClass p q A B C D 1 W) (hV : UClass p q A B C D 1 V)
+    (h : W = 2 * δ * V) : False := by
+  have ha1 : 1 ≤ 1 := le_refl 1
+  have hp20 : ((p : ℤ) ^ 2) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hp.out.ne_zero)
+  have hq20 : ((q : ℤ) ^ 2) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hq.out.ne_zero)
+  have hY0 : (((⟨C, D⟩ : GaussianInt) ^ 4).im) ≠ 0 := im4_ne_zero q hqodd C D hqCD
+  have hI40 : ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im)) ≠ 0 := im4a_ne_zero p hpodd A B hpAB 1 ha1
+  have hpn2δ : ¬ (p : ℤ) ∣ (2 * δ) := by
+    intro hd
+    have h2 : (p : ℤ) ∣ 2 := by
+      rcases hδ with rfl | rfl
+      · simpa using hd
+      · exact dvd_neg.mp (by simpa using hd)
+    have := Int.le_of_dvd (by norm_num) h2
+    have h2' : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+    omega
+  have hqn2δ : ¬ (q : ℤ) ∣ (2 * δ) := by
+    intro hd
+    have h2 : (q : ℤ) ∣ 2 := by
+      rcases hδ with rfl | rfl
+      · simpa using hd
+      · exact dvd_neg.mp (by simpa using hd)
+    have := Int.le_of_dvd (by norm_num) h2
+    have h2' : (2 : ℤ) ≤ (q : ℤ) := by exact_mod_cast hq.out.two_le
+    omega
+  have hpn1 : ¬ (p : ℤ) ∣ 1 := by
+    intro hd
+    have := Int.le_of_dvd (by norm_num) hd
+    have h2' : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.out.two_le
+    omega
+  have hqn1 : ¬ (q : ℤ) ∣ 1 := by
+    intro hd
+    have := Int.le_of_dvd (by norm_num) hd
+    have h2' : (2 : ℤ) ≤ (q : ℤ) := by exact_mod_cast hq.out.two_le
+    omega
+  have hM8c := M8a_coord A B C D 1
+  have hM9c := M9a_coord A B C D 1
+  have hre := re4a_eq_2a A B 1
+  have him := im4a_eq_2a A B 1
+  have HCXY := coprime_re4_im4 q hqodd C D hqCD
+  have hsodd : p ^ 1 % 2 = 1 := by simpa using hpodd
+  have hcopqs : Nat.Coprime q (p ^ 1) :=
+    Nat.Coprime.pow_right 1 ((Nat.coprime_primes hq.out hp.out).mpr (Ne.symm hpq))
+  have hqnes : q ≠ p ^ 1 := by
+    intro hqe
+    have hpd : p ∣ q := by rw [hqe]; exact dvd_pow_self p (by omega)
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp.out hq.out).mp hpd)
+  have hq0 : 0 < q := hq.out.pos
+  have hs0 : 0 < p ^ 1 := pow_pos hp.out.pos 1
+  have hnorm2a : (((⟨A, B⟩ : GaussianInt) ^ (2 * 1)).re) ^ 2 + (((⟨A, B⟩ : GaussianInt) ^ (2 * 1)).im) ^ 2 = ((p ^ 1 : ℕ) : ℤ) ^ 2 := by
+    have hcast : ((p ^ 1 : ℕ) : ℤ) ^ 2 = (p : ℤ) ^ (2 * 1) := by
+      push_cast
+      ring
+    rw [hcast]
+    exact norm_2a p A B hpAB 1
+  have hcop2a := coprime_2a p hpodd A B hpAB 1 ha1
+  have hodd2a := re_2a_odd p hpodd A B hpAB 1
+  obtain ⟨hR20, hI20⟩ := coords_2a_ne_zero p hpodd A B hpAB 1 ha1
+  rcases UClass_one p q A B C D W hW with hWL | hWZ
+  · rcases UClass_one p q A B C D V hV with hVL | hVZ
+    · rcases hWL with rfl | rfl <;> rcases hVL with rfl | rfl
+      · -- p²Y = 2δ·p²Y
+        have h0 : (p : ℤ) ^ 2 * ((((⟨C, D⟩ : GaussianInt) ^ 4).im) * (1 - 2 * δ)) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · exact absurd h' hp20
+        · rcases mul_eq_zero.mp h' with h'' | h''
+          · exact hY0 h''
+          · rcases hδ with rfl | rfl <;> omega
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB 1 ha1 (2 * δ) ((((⟨C, D⟩ : GaussianInt) ^ 4).im))
+          (by rcases hδ with rfl | rfl <;> norm_num)
+          (by linear_combination -h)
+      · exact lowq_M7a_kill p q hpodd hpq A B hpAB 1 ha1 1 (2 * δ * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)))
+          (by norm_num)
+          (by linear_combination h)
+      · -- q²I = 2δ·q²I
+        have h0 : (q : ℤ) ^ 2 * (((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im)) * (1 - 2 * δ)) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · exact absurd h' hq20
+        · rcases mul_eq_zero.mp h' with h'' | h''
+          · exact hI40 h''
+          · rcases hδ with rfl | rfl <;> omega
+    · rcases hWL with rfl | rfl <;> rcases hVZ with heq | heq <;> rw [heq] at h
+      · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD 1 ha1 (2 * δ) ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) hpn2δ
+          (by linear_combination -h)
+      · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD 1 ha1 (2 * δ) ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) hpn2δ
+          (by linear_combination -h)
+      · exact q2_not_dvd_M8a_u p q hqodd hpq A B C D hpAB hqCD 1 (2 * δ) ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im)) hqn2δ
+          (by linear_combination -h)
+      · exact q2_not_dvd_M9a_u p q hqodd hpq A B C D hpAB hqCD 1 (2 * δ) ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im)) hqn2δ
+          (by linear_combination -h)
+  · rcases UClass_one p q A B C D V hV with hVL | hVZ
+    · rcases hWZ with rfl | rfl <;> rcases hVL with heq | heq <;> rw [heq] at h
+      · exact p2_not_dvd_M8a p q hpodd hpq A B C D hpAB hqCD 1 ha1 1 (2 * δ * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) hpn1
+          (by linear_combination h)
+      · exact q2_not_dvd_M8a_u p q hqodd hpq A B C D hpAB hqCD 1 1 (2 * δ * ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im))) hqn1
+          (by linear_combination h)
+      · exact p2_not_dvd_M9a p q hpodd hpq A B C D hpAB hqCD 1 ha1 1 (2 * δ * ((((⟨C, D⟩ : GaussianInt) ^ 4).im))) hpn1
+          (by linear_combination h)
+      · exact q2_not_dvd_M9a_u p q hqodd hpq A B C D hpAB hqCD 1 1 (2 * δ * ((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)).im))) hqn1
+          (by linear_combination h)
+    · rcases hWZ with rfl | rfl <;> rcases hVZ with heq | heq <;> rw [heq] at h
+      · -- M8₁ = 2δ·M8₁
+        refine M8a_ne_zero_u p q hpodd hqodd hpq A B C D hpAB hqCD 1 ha1 1 (Or.inl rfl) ?_
+        have h0 : (((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)) * ((⟨C, D⟩ : GaussianInt) ^ 4)).im)) * (1 - 2 * δ) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · linear_combination h' - hM8c
+        · exfalso; rcases hδ with rfl | rfl <;> omega
+      · -- M8₁ = 2δ·M9₁
+        exact ratio_M8_M9_kill_gen q (p ^ 1) hqodd hsodd hcopqs hqnes hq0 hs0
+          (((⟨A, B⟩ : GaussianInt) ^ (2 * 1)).re) (((⟨A, B⟩ : GaussianInt) ^ (2 * 1)).im) ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) δ hδ hnorm2a (norm4_coord q C D hqCD)
+          hcop2a HCXY hodd2a hR20 hI20
+          (odd_ne_zero (re4_odd' q hqodd C D hqCD)) hY0
+          (by linear_combination h - hM8c + 2 * δ * hM9c
+            - (1 + 2 * δ) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) * hre - (1 - 2 * δ) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) * him)
+      · -- M9₁ = 2δ·M8₁
+        exact ratio_M8_M9_kill_gen q (p ^ 1) hqodd hsodd hcopqs hqnes hq0 hs0
+          (((⟨A, B⟩ : GaussianInt) ^ (2 * 1)).re) (((⟨A, B⟩ : GaussianInt) ^ (2 * 1)).im) ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) (-((((⟨C, D⟩ : GaussianInt) ^ 4).im))) δ hδ hnorm2a
+          (by linear_combination norm4_coord q C D hqCD)
+          hcop2a (HCXY.neg_right) hodd2a hR20 hI20
+          (odd_ne_zero (re4_odd' q hqodd C D hqCD)) (neg_ne_zero.mpr hY0)
+          (by linear_combination h - hM9c + 2 * δ * hM8c
+            + (1 + 2 * δ) * ((((⟨C, D⟩ : GaussianInt) ^ 4).im)) * hre - (1 - 2 * δ) * ((((⟨C, D⟩ : GaussianInt) ^ 4).re)) * him)
+      · -- M9₁ = 2δ·M9₁
+        refine M8a_ne_zero_u p q hpodd hqodd hpq A B C D hpAB hqCD 1 ha1 (-1) (Or.inr rfl) ?_
+        have h0 : (((((⟨A, B⟩ : GaussianInt) ^ (4 * 1)) * ((star (⟨C, D⟩ : GaussianInt)) ^ 4)).im)) * (1 - 2 * δ) = 0 := by linear_combination h
+        rcases mul_eq_zero.mp h0 with h' | h'
+        · linear_combination hM9c - h'
+        · exfalso; rcases hδ with rfl | rfl <;> omega
+
+set_option maxHeartbeats 1600000 in
+/-- No two rung-a class values have ratio 2, for every a ≥ 1. -/
+lemma no_ratio2_uniform (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ∀ a : ℕ, 1 ≤ a → ∀ W V δ : ℤ, (δ = 1 ∨ δ = -1) →
+      UClass p q A B C D a W → UClass p q A B C D a V →
+      W = 2 * δ * V → False := by
+  intro a
+  induction a with
+  | zero => omega
+  | succ n ih =>
+    intro _ W V δ hδ hW hV h
+    rcases Nat.lt_or_ge n 1 with hn | hn
+    · interval_cases n
+      exact no_ratio2_base p q hpodd hqodd hpq A B C D hpAB hqCD W V δ hδ hW hV h
+    · exact no_ratio2_step p q hpodd hqodd hpq (n + 1) (by omega) A B C D hpAB hqCD
+        (fun W' V' δ' hδ' hW' hV' h' => ih hn W' V' δ' hδ' hW' hV' h')
+        W V δ hδ hW hV h
+
+set_option maxHeartbeats 1600000 in
+/-- No assignment of four distinct rung-a class values satisfies the two
+E-relations, for every a ≥ 1. -/
+lemma no_assignment_uniform (q : ℕ) [hq : Fact (Nat.Prime q)]
+    (hpodd : p % 2 = 1) (hqodd : q % 2 = 1) (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q) :
+    ∀ a : ℕ, 1 ≤ a → ∀ Ka Kb Kc Kd e1 e2 e3 e4 : ℤ,
+      (e1 = 1 ∨ e1 = -1) → (e2 = 1 ∨ e2 = -1) →
+      (e3 = 1 ∨ e3 = -1) → (e4 = 1 ∨ e4 = -1) →
+      UClass p q A B C D a Ka → UClass p q A B C D a Kb →
+      UClass p q A B C D a Kc → UClass p q A B C D a Kd →
+      Ka ≠ Kb → Ka ≠ Kc → Ka ≠ Kd → Kb ≠ Kc → Kb ≠ Kd → Kc ≠ Kd →
+      e3 * Kc + e4 * Kd = 2 * e1 * Ka →
+      e3 * Kc - e4 * Kd = 2 * e2 * Kb → False := by
+  intro a
+  induction a with
+  | zero => omega
+  | succ n ih =>
+    intro _ Ka Kb Kc Kd e1 e2 e3 e4 he1 he2 he3 he4 hKa hKb hKc hKd
+      hab hac had hbc hbd hcd hE1 hE2
+    rcases Nat.lt_or_ge n 1 with hn | hn
+    · interval_cases n
+      exact no_assignment_base p q hpodd hqodd hpq A B C D hpAB hqCD Ka Kb Kc Kd
+        e1 e2 e3 e4 he1 he2 he3 he4 hKa hKb hKc hKd hab hac had hbc hbd hcd hE1 hE2
+    · exact no_assignment_step p q hpodd hqodd hpq (n + 1) (by omega) A B C D hpAB hqCD
+        (fun Ka' Kb' Kc' Kd' e1' e2' e3' e4' he1' he2' he3' he4' hKa' hKb' hKc' hKd'
+            hab' hac' had' hbc' hbd' hcd' hE1' hE2' =>
+          ih hn Ka' Kb' Kc' Kd' e1' e2' e3' e4' he1' he2' he3' he4' hKa' hKb' hKc' hKd'
+            hab' hac' had' hbc' hbd' hcd' hE1' hE2')
+        Ka Kb Kc Kd e1 e2 e3 e4 he1 he2 he3 he4 hKa hKb hKc hKd
+        hab hac had hbc hbd hcd hE1 hE2
+
 end UniformA
