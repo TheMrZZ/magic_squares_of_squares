@@ -2606,3 +2606,9 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 
 - `u23_affine_verify.py`: all 208 single-level layered factors match the model F = q^{2qb}[q^{2ep}(c·χ^{2j₂} + σ·conj) + q^{2ed}d] exactly, at multiple Gaussian data points with exact integer arithmetic. (Two bugs found on the way: xy-value = q², so every xy-power scales as q^{2·exp}; and the σ = ±1 symmetry sign selects between the Re- and Im-affine forms.)
 - The corrected endgame computation runs: for each residual pair, the two affine conditions on the χ^{2j₂}-circle solve linearly (determinant = the verified cross class) and the circle equation yields one terminal polynomial T(r, s, q) per pair. T ≠ 0 at data kills the pair outright; the T-classifier (q-grading + band cascade) is next.
+
+## Round 174: the Rust certifier, part 1
+
+- `rs/src/bin/certifier.rs`: sparse (u,v,x,y)-polynomial engine (add, mul, conj, exact division), class/leaf enumeration, grading, relation dedup, and the library-division screen (trial division by the explicit nonzero library replaces general factorization — the pipeline needs nothing more).
+- Runs the whole (2,3) relation screen in about one second (sympy took minutes). Reproduces: 456,960 leaves, 17,184 survivors (exact match), and the central structural claim by an independent implementation: after the screen, **all 1,096 core shapes are balance forms — zero non-balance**.
+- Part 2 next: the (r,s)-Gaussian coefficient engine (Re/Im extraction), the affine model, cross/mismatch/terminal computations, and rational-root classification. SymPy stays as a sampling oracle.
