@@ -2393,3 +2393,26 @@ Remaining: the four-diffs theorem (port of Theorem G's, through `rep_structure_u
 - This sharpens the Theorem-H target into one clean statement: for every surviving leaf, the two first-order residue conditions exclude each other. The proof shape per leaf: reduce both minimal-layer residues mod π (they become phase sums in the orbit variable), eliminate the shared coordinates, and show that simultaneous vanishing forces p to divide a bounded nonzero quantity — then the same on the q side.
 - Care point: the 296 zero-side relations have an identically vanishing minimal layer on one side. For leaves that carry them, the first-order condition is vacuous on that side and the incompatibility must run at the mod-π² layer (J-chain toolkit).
 - Next: the certificate engine — symbolic residue pairs per leaf shape, automatic elimination, one certificate per shape.
+
+## Round 152: exact reduction and abstract valuation descent
+
+- New Lean file `MsqLean/DistinctReduction.lean`: the theorem
+  `exists_distinct_positive_magic_square_iff_reduction` states the exact
+  reduction for the original problem. It keeps positivity and pairwise
+  distinctness. The older reduction API stays unchanged.
+- `magicGrid_pairwise_nondegenerate` derives `u != 0`, `v != 0`, `u != v`,
+  and `u != -v` from pairwise distinct grid entries. These are the four
+  hypotheses used by the existing `no_four_diffs` theorems.
+- New Lean file `MsqLean/ValuationDescent.lean`: `lone_layer_impossible` and
+  `lone_layer_coeff_two_impossible` package the minimal-layer contradiction.
+- `fourDiffs_descend_square` is the abstract common-square descent rule. A
+  class-specific telescoping hypothesis supplies the arithmetic step. The
+  theorem preserves the four-difference pattern and all nondegeneracy facts.
+- Focused checks pass. The full `lake build MsqLean` passes with 8751 jobs.
+
+## Round 152: THE UNIT CERTIFICATES — 82% of (2,2) dies at first order
+
+- `u22_cert_engine.py`: for each of the 6,208 leaf relation-pairs, reduce both minimal p-layers mod π into the orbit basis (Pb = π̄⁴ with R ≡ Pb/2, I ≡ iPb/2; U = χ⁴ with V = q⁴/U), clear denominators, and take the resultant in U.
+- Result: **5,088 shapes (82%) have a pure unit-monomial resultant** (example: 16·Pb⁸·q³²). If both first-order conditions held, π would divide 16 — impossible for p ≥ 5. These leaves are impossible for ALL p, q, by one uniform two-page argument.
+- 1,120 shapes have an identically zero p-side resultant (the two conditions coincide at first order). The q-side engine (`u22_cert_qside.py`) now runs on those.
+- Rigor points for the writeup: (1) the resultant argument needs the leading U-coefficients to be p-units — verify per shape; (2) U-values are p-units since π ∤ χ; (3) π | integer n forces p | n by the norm.
