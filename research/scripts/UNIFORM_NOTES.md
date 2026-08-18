@@ -3040,3 +3040,10 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Exponent-≤-2-and-3 sweep so far: (1,1,1), (2,1,1), (2,2,1),
   (3,1,1), (2,2,2) all closed with zero survivors and the same
   three-layer verdict structure.
+
+## Round 209: the (3,2,1) grid is closed — sixth Milestone-3 rung
+
+- Every leaf of s·p³·q²·r is dead: 51,979,200 leaves, 96.4% by the
+  triple lone screen; 446,612 distinct live core pairs. The fast
+  route kills 445,948; all 664 suspicious pairs die by the direct
+  data evaluation. Zero survivors. Wall time under 40 minutes.
