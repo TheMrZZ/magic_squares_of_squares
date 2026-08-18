@@ -343,6 +343,36 @@ fn prs3(f: &P8, g: &P8, i: usize) -> Option<P8> {
     }
 }
 
+fn split_primes3(bound: i64) -> Vec<(i64, i64, i64)> {
+    let mut out = Vec::new();
+    for t in (5..=bound).step_by(4) {
+        let is_prime = (2..t).take_while(|d| d * d <= t).all(|d| t % d != 0);
+        if !is_prime { continue; }
+        for bb in (2..t).step_by(2) {
+            let aa2 = t - bb * bb;
+            if aa2 <= 0 { break; }
+            let aa = (aa2 as f64).sqrt().round() as i64;
+            if aa * aa == aa2 && aa % 2 == 1 {
+                out.push((t, aa * aa - bb * bb, 2 * aa * bb));
+                break;
+            }
+        }
+    }
+    out
+}
+
+fn modpow3(mut b: i128, mut e: u32, m: i128) -> i128 {
+    let mut r = 1i128;
+    b %= m;
+    if b < 0 { b += m; }
+    while e > 0 {
+        if e & 1 == 1 { r = r * b % m; }
+        b = b * b % m;
+        e >>= 1;
+    }
+    r
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let a: u16 = args.get(1).and_then(|x| x.parse().ok()).unwrap_or(1);
@@ -484,24 +514,101 @@ fn main() {
             (true, true) => None,
         }
     };
-    let stats: Vec<String> = pairlist.par_iter().map(|(c1, c2)| {
+    let p8ser = |p: &P8| -> String {
+        p.iter().map(|(m, c)| format!("{c},{},{},{},{},{},{},{},{}",
+            m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]))
+            .collect::<Vec<_>>().join(";")
+    };
+    let dump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
+    let vdump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
+    let stats: Vec<String> = pairlist.par_iter().enumerate().map(|(pi, (c1, c2))| {
         tick();
         let (Some(e1), Some(e2)) = (pick(c1), pick(c2)) else {
             return "empty-part".to_string();
         };
-        // eliminate V (7) against circle W, then Y (4) against circle Q,
-        // then U (6) across the pair, keeping X (3) for the eliminant
         let f1 = match prs3(&e1, &circle_w, 7) { Some(x) => x, None => return "vanish-V1".into() };
         let f2 = match prs3(&e2, &circle_w, 7) { Some(x) => x, None => return "vanish-V2".into() };
         let g1 = match prs3(&f1, &circle_q, 4) { Some(x) => x, None => return "vanish-Y1".into() };
         let g2 = match prs3(&f2, &circle_q, 4) { Some(x) => x, None => return "vanish-Y2".into() };
-        let h = match prs3(&g1, &g2, 6) { Some(x) => x, None => return "vanish-U".into() };
+        let h = match prs3(&g1, &g2, 6) {
+            Some(x) => x,
+            None => {
+                vdump.lock().unwrap().push(format!(
+                    "VPAIR {pi} | {} | {} | G1 {} | G2 {}",
+                    pser(c1), pser(c2), p8ser(&g1), p8ser(&g2)));
+                return "vanish-U".into();
+            }
+        };
         if h.is_empty() { return "empty-eliminant".into() }
+        // the inline data check: h must be nonzero at all admissible
+        // prime data (single-modulus screen + exact recheck)
+        let md: i128 = (1 << 61) - 1;
+        let cmods: Vec<i128> = h.values().map(|c| {
+            let r = c % md;
+            let mut v: i128 = r.to_string().parse().unwrap();
+            if v < 0 { v += md; }
+            v
+        }).collect();
+        let hterms: Vec<[u16; 8]> = h.keys().cloned().collect();
+        let ddata = split_primes3(40);
+        let mut nzero = 0u32;
+        for &(pp, rr, ss) in &ddata {
+            for &(qq, xx, _) in &ddata {
+                if qq == pp { continue; }
+                for &(ww, _, _) in &ddata {
+                    if ww == pp || ww == qq { continue; }
+                    for sx in [1i128, -1] {
+                        for sg in [1i128, -1] {
+                            let vals: [i128; 8] = [rr as i128, sg * ss as i128,
+                                qq as i128, sx * xx as i128, 0, ww as i128, 0, 0];
+                            let mut acc = 0i128;
+                            for (mm, cm) in hterms.iter().zip(&cmods) {
+                                let mut t = *cm;
+                                for i in [0usize, 1, 2, 3, 5] {
+                                    if mm[i] > 0 {
+                                        t = t * modpow3(vals[i], mm[i] as u32, md) % md;
+                                    }
+                                }
+                                acc = (acc + t) % md;
+                            }
+                            if acc == 0 {
+                                // exact recheck
+                                let mut ex = BigInt::zero();
+                                for (mm, c) in h.iter() {
+                                    let mut t = c.clone();
+                                    for i in 0..8 {
+                                        for _ in 0..mm[i] { t *= vals[i]; }
+                                    }
+                                    ex += t;
+                                }
+                                if ex.is_zero() { nzero += 1; }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         let dx = vdeg(&h, 3);
         let terms = h.len();
         let maxbits = h.values().map(|c| c.bits()).max().unwrap_or(0);
+        if nzero > 0 {
+            return format!("DATA-ZERO x{nzero} Xdeg={dx} terms={terms}");
+        }
+        if terms <= 1200 {
+            dump.lock().unwrap().push(format!(
+                "PAIR {pi} | {} | {} | ELIM {}", pser(c1), pser(c2), p8ser(&h)));
+        }
         format!("Xdeg={dx} terms={terms} bits={maxbits}")
     }).collect();
+    {
+        use std::io::Write as _;
+        let mut df = std::fs::File::create(format!("elim3_{a}_{b}_{c}.txt")).unwrap();
+        for l in dump.lock().unwrap().iter() { writeln!(df, "{l}").unwrap(); }
+        let mut vf = std::fs::File::create(format!("elim3v_{a}_{b}_{c}.txt")).unwrap();
+        for l in vdump.lock().unwrap().iter() { writeln!(vf, "{l}").unwrap(); }
+        println!("dumped {} small eliminants, {} vanish-U pairs",
+            dump.lock().unwrap().len(), vdump.lock().unwrap().len());
+    }
     let mut scount: HashMap<String, u32> = HashMap::new();
     for st in &stats { *scount.entry(st.clone()).or_insert(0) += 1; }
     let mut sc: Vec<_> = scount.iter().collect();
