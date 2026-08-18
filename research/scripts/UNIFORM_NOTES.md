@@ -2954,3 +2954,16 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   blow up): the ρ-side exactness pinning reduces every M3 leaf to an
   M2-type locus system with masters 4w̃²·r^(2Δ) = Σ² + 4Ω², Σ and Ω
   now (r,s,X,Y)-forms.
+
+## Round 203: the (1,1,1) grid is closed — the first Milestone-3 rung
+
+- Every leaf of s·p·q·r is dead: 137,280 leaves → 68.4% by the triple
+  lone screen → screen kills → all 9,492 standard eliminants nonzero
+  on prime data → 24 by the alternate elimination order → all 96
+  aligned special cells by the direct g-data check (every variable of
+  the shared constraint is data-determined). Zero survivors; 9,612
+  verdicts cached.
+- Pipeline wall time about 35 minutes; the verdict cache makes reruns
+  near-instant. Next rung: (2,1,1) — 22 classes, ~1.4M leaves,
+  estimated 6-18 h under the current engine; the per-core memo and, if
+  needed, the pinning reduction control the cost.
