@@ -2917,3 +2917,20 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   emission (screen_emit extension), the leaf dispatch (generic
   symbolic lone-kill + enumerated tie residue), and the
   UClass2/telescoping assembly.
+
+## Round 201: pivot to Milestone 3 — the three-prime certifier in Rust
+
+- Directive 2026-08-18: pause the Lean campaign; work toward M3
+  (no center root s·pᵃ·qᵇ·rᶜ) in Rust. The uncommitted five-grid
+  Pair/Screen regenerations stay in the tree, reproducible via
+  pipeline.sh; their verification resumes when the Lean campaign does.
+- The three-prime model: classes are the nonzero (j,k,l) ≤ (a,b,c)
+  with relative-orientation flags (2^(nonzero−1) each) — 13 classes at
+  (1,1,1); leaves are ordered distinct class 4-tuples with sign
+  combinations — 137,280 at (1,1,1). Validation targets from the old
+  sweeps: ~68% lone-valuation kill at (1,1,1), zero satisfiable
+  assignments for p,q,r < 300.
+- certifier3 phases: class/leaf enumeration + triple lone screen →
+  relation dedup + library screen (three sides) → raw Re/Im parts in
+  (r,s,X,Y,U,V) with two circle relations → PRS elimination → oracle
+  forms in (r,s) with q,w-graded layers.
