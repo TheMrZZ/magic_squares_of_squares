@@ -3047,3 +3047,16 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   triple lone screen; 446,612 distinct live core pairs. The fast
   route kills 445,948; all 664 suspicious pairs die by the direct
   data evaluation. Zero survivors. Wall time under 40 minutes.
+
+## Rounds 210-211: the (3,2,2) and (3,3,1) grids are closed
+
+- (3,2,2) — s·p³·q²·r²: 427,371,840 leaves, 98.3% by the triple lone
+  screen; 1,811,360 distinct live core pairs. The fast route kills
+  1,809,664; all 1,696 suspicious pairs die by the direct data
+  evaluation. Zero survivors.
+- (3,3,1) — s·p³·q³·r: 208,978,560 leaves, 97.8% screened; 1,106,268
+  live core pairs; 1,105,284 by the fast route, 984 by direct
+  evaluation. Zero survivors.
+- Eight grids total now closed at three primes, with the same
+  two-layer verdict structure at every grid. Combined: about 800
+  million leaves.
