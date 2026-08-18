@@ -762,6 +762,71 @@ fn main() {
     let n_fast_dead = pair_susp.iter().zip(&cached_pair)
         .filter(|(&sp, &ca)| !sp && !ca).count();
     println!("fast route: {n_fast_dead} uncached pairs dead by specialized resultants");
+    // pass 2 — direct data evaluation. X and U are both data-determined
+    // (by q and w, up to sign), so a pair is dead when at every data
+    // point and every sign combination at least one of g1, g2 is
+    // nonzero. Nonzero mod one prime is a proof; a double mod-zero
+    // gets an exact BigInt recheck.
+    let susp_idx: Vec<usize> = (0..pairlist.len())
+        .filter(|&pi| pair_susp[pi] && !cached_pair[pi]).collect();
+    let mut fast2_dead: Vec<bool> = vec![false; pairlist.len()];
+    if !susp_idx.is_empty() {
+        println!("pass 2 (direct evaluation): {} suspicious pairs", susp_idx.len());
+        set_phase(2, susp_idx.len());
+        let exact_zero = |g: &P8, vals: &[i64; 8]| -> bool {
+            let mut ex = BigInt::zero();
+            for (mm, cc) in g.iter() {
+                let mut t = cc.clone();
+                for i in 0..8 {
+                    for _ in 0..mm[i] { t *= vals[i]; }
+                }
+                ex += t;
+            }
+            ex.is_zero()
+        };
+        let dead2: Vec<(usize, bool)> = susp_idx.par_iter().map(|&pi| {
+            tick();
+            let (i1c, i2c) = paircores[pi];
+            let (Some(gv1), Some(gv2)) = (&gviews[i1c], &gviews[i2c]) else {
+                return (pi, false);
+            };
+            let evalg = |gv: &(Vec<[u16; 8]>, Vec<[i64; 2]>), vals: &[i64; 8],
+                         mi: usize, md: i64| -> i64 {
+                let (terms, cm) = gv;
+                let mut acc = 0i64;
+                for (m, c2) in terms.iter().zip(cm) {
+                    let mut t = c2[mi];
+                    for i in [0usize, 1, 2, 3, 5, 6] {
+                        if m[i] > 0 { t = t * modpow64(vals[i], m[i] as u64, md) % md; }
+                    }
+                    acc = (acc + t) % md;
+                }
+                acc
+            };
+            for pt in &fpoints {
+                let xq = xof[&pt[2]];
+                let uw = xof[&pt[3]];
+                for sx in [1i64, -1] {
+                    for su in [1i64, -1] {
+                        let vals: [i64; 8] = [pt[0], pt[1], pt[2], sx * xq, 0,
+                            pt[3], su * uw, 0];
+                        // soluble here only if both g's vanish exactly
+                        let z1 = (0..2).all(|mi| evalg(gv1, &vals, mi, fmods[mi]) == 0)
+                            && exact_zero(gtable[i1c].as_ref().unwrap(), &vals);
+                        if !z1 { continue; }
+                        let z2 = (0..2).all(|mi| evalg(gv2, &vals, mi, fmods[mi]) == 0)
+                            && exact_zero(gtable[i2c].as_ref().unwrap(), &vals);
+                        if z2 { return (pi, false); } // genuinely soluble point
+                    }
+                }
+            }
+            (pi, true)
+        }).collect();
+        for (pi, d) in dead2 { if d { fast2_dead[pi] = true; } }
+        let n2 = fast2_dead.iter().filter(|&&x| x).count();
+        println!("pass 2: {n2} of {} suspicious pairs dead by direct evaluation",
+            susp_idx.len());
+    }
     set_phase(3, pairlist.len());
     let stats: Vec<String> = pairlist.par_iter().enumerate().map(|(pi, (c1, c2))| {
         tick();
@@ -785,6 +850,9 @@ fn main() {
         // the point-outer fast route already tested this pair
         if !pair_susp[pi] {
             return record("dead (specialized resultant)".into());
+        }
+        if fast2_dead[pi] {
+            return record("dead (direct data evaluation)".into());
         }
         // the alternate order still needs the raw parts
         let (Some(e1), Some(e2)) = (pick(c1), pick(c2)) else {
