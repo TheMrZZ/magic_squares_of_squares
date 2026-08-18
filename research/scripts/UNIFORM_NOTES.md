@@ -2990,3 +2990,14 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   route; the 120 suspicious pairs are exactly the 24 alt-order and
   96 aligned pairs, killed by the existing exact routes. Zero
   survivors, verdict multiset unchanged.
+
+## Round 205: the (2,1,1) grid is closed — second Milestone-3 rung
+
+- Every leaf of s·p²·q·r is dead: 1,404,480 leaves → 86.9% by the
+  triple lone screen → screen kills (256 unit, 20 monomial) → 42,220
+  distinct live core pairs. The fast route kills 41,988; the 232
+  suspicious pairs split exactly as at (1,1,1): 48 by the alternate
+  elimination order, 184 aligned special cells by the direct g-data
+  check. Zero survivors; verdicts cached.
+- Wall time about 5 minutes with the Round-204 fast route. The old
+  symbolic engine had an estimated 6.5 hours for the same grid.
