@@ -701,14 +701,24 @@ fn main() {
             (terms, cm)
         })
     }).collect();
+    // the fat BigInt table is only needed for the few suspicious
+    // cores later; recompute those on demand and free the table now
+    let gof = |i: usize| -> Option<P8> {
+        let e = pick(&coreset[i])?;
+        let ff = prs3(&e, &circle_w, 7)?;
+        prs3(&ff, &circle_q, 4)
+    };
+    let gnone: Vec<bool> = gtable.iter().map(|g| g.is_none()).collect();
+    drop(gtable);
     println!("fast route: {} cores x {} points", coreset.len(), fpoints.len());
     set_phase(2, fpoints.len());
     for pt in &fpoints {
         tick();
-        type Biv = [HashMap<(u16, u16), i64>; 2];
+        type Biv = [Vec<((u16, u16), i64)>; 2];
+        type BivM = [HashMap<(u16, u16), i64>; 2];
         let bv: Vec<Option<Biv>> = gviews.par_iter().map(|gv| {
             let (terms, cm) = gv.as_ref()?;
-            let mut out: Biv = [HashMap::new(), HashMap::new()];
+            let mut out: BivM = [HashMap::new(), HashMap::new()];
             for (mi, &md) in fmods.iter().enumerate() {
                 // power tables for the four data values, up to the max
                 // exponent in this g
@@ -731,7 +741,7 @@ fn main() {
                     *e = (*e + t) % md;
                 }
             }
-            Some(out)
+            Some([out[0].drain().collect(), out[1].drain().collect()])
         }).collect();
         let xq = xof[&pt[2]];
         let updates: Vec<bool> = paircores.par_iter().enumerate().map(|(pi, (i1c, i2c))| {
@@ -741,10 +751,10 @@ fn main() {
                 let xv = sx * xq;
                 let mut share_all = true;
                 for (mi, &md) in fmods.iter().enumerate() {
-                    let touni = |bmap: &HashMap<(u16, u16), i64>| -> Vec<i64> {
-                        let du = bmap.keys().map(|k| k.1).max().unwrap_or(0) as usize;
+                    let touni = |bmap: &Vec<((u16, u16), i64)>| -> Vec<i64> {
+                        let du = bmap.iter().map(|k| k.0.1).max().unwrap_or(0) as usize;
                         let mut cv = vec![0i64; du + 1];
-                        for (&(xe, ue), &cc) in bmap {
+                        for &((xe, ue), cc) in bmap {
                             let t = cc * modpow64(xv, xe as u64, md) % md;
                             cv[ue as usize] = (cv[ue as usize] + t) % md;
                         }
@@ -814,10 +824,10 @@ fn main() {
                             pt[3], su * uw, 0];
                         // soluble here only if both g's vanish exactly
                         let z1 = (0..2).all(|mi| evalg(gv1, &vals, mi, fmods[mi]) == 0)
-                            && exact_zero(gtable[i1c].as_ref().unwrap(), &vals);
+                            && exact_zero(&gof(i1c).unwrap(), &vals);
                         if !z1 { continue; }
                         let z2 = (0..2).all(|mi| evalg(gv2, &vals, mi, fmods[mi]) == 0)
-                            && exact_zero(gtable[i2c].as_ref().unwrap(), &vals);
+                            && exact_zero(&gof(i2c).unwrap(), &vals);
                         if z2 { return (pi, false); } // genuinely soluble point
                     }
                 }
@@ -847,8 +857,10 @@ fn main() {
         let _ = &record;
         let i1c = coreidx[&pser(c1)];
         let i2c = coreidx[&pser(c2)];
-        let Some(g1) = gtable[i1c].clone() else { return record("vanish-early-1".into()) };
-        let Some(g2) = gtable[i2c].clone() else { return record("vanish-early-2".into()) };
+        if gnone[i1c] { return record("vanish-early-1".into()) }
+        if gnone[i2c] { return record("vanish-early-2".into()) }
+        let Some(g1) = gof(i1c) else { return record("vanish-early-1".into()) };
+        let Some(g2) = gof(i2c) else { return record("vanish-early-2".into()) };
         // the point-outer fast route already tested this pair
         if !pair_susp[pi] {
             return record("dead (specialized resultant)".into());
