@@ -319,4 +319,125 @@ lemma class_fold_mm (z ξ : GaussianInt) (P Q : ℤ)
   rw [him, hT]
   rw [hpp]
 
+/-- The folded normal form: every D(e) element at the center is, up to
+sign, s² times a content p^(2(a−dj))·q^(2(b−dk)) times the imaginary
+part of a pure class monomial π^(4dj)·χ^(4dk) or π^(4dj)·χ̄^(4dk).
+This is the certifier's class space, and the leaf dispatch works on it
+symbolically. -/
+theorem class_value_folded (p q : ℕ)
+    [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)] (hpq : p ≠ q)
+    (A B C D : ℤ) (hpAB : A ^ 2 + B ^ 2 = p) (hqCD : C ^ 2 + D ^ 2 = q)
+    (s : ℕ) (hs : ∀ r : ℕ, r.Prime → r ∣ s → r % 4 ≠ 1)
+    (a b : ℕ)
+    (x y : ℤ)
+    (hxy : x ^ 2 + y ^ 2 = ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * a) * (q : ℤ) ^ (2 * b)) :
+    ∃ (σ : ℤ) (dj dk : ℕ) (w : GaussianInt),
+      (σ = 1 ∨ σ = -1) ∧ dj ≤ a ∧ dk ≤ b ∧
+      (w = (⟨A, B⟩ : GaussianInt) ^ (4 * dj) * (⟨C, D⟩ : GaussianInt) ^ (4 * dk)
+        ∨ w = (⟨A, B⟩ : GaussianInt) ^ (4 * dj)
+            * (star (⟨C, D⟩ : GaussianInt)) ^ (4 * dk)) ∧
+      2 * x * y = σ * ((s : ℕ) : ℤ) ^ 2 * (p : ℤ) ^ (2 * (a - dj))
+        * (q : ℤ) ^ (2 * (b - dk)) * w.im := by
+  obtain ⟨ε, j, k, hε, hj, hk, hval⟩ :=
+    rep_structure_two p q hpq A B C D hpAB hqCD s hs a b x y hxy
+  set π : GaussianInt := ⟨A, B⟩ with hπdef
+  set χ : GaussianInt := ⟨C, D⟩ with hχdef
+  have hzz : π ^ 2 * star (π ^ 2) = (((p : ℤ) ^ 2 : ℤ) : GaussianInt) := by
+    rw [show star (π ^ 2) = (star π) ^ 2 from star_pow π 2]
+    have h1 : π * star π = ((A ^ 2 + B ^ 2 : ℤ) : GaussianInt) := pi_mul_star A B
+    rw [hpAB] at h1
+    calc π ^ 2 * (star π) ^ 2 = (π * star π) ^ 2 := by ring
+      _ = (((p : ℤ)) : GaussianInt) ^ 2 := by rw [h1]
+      _ = (((p : ℤ) ^ 2 : ℤ) : GaussianInt) := by push_cast; ring
+  have hξξ : χ ^ 2 * star (χ ^ 2) = (((q : ℤ) ^ 2 : ℤ) : GaussianInt) := by
+    rw [show star (χ ^ 2) = (star χ) ^ 2 from star_pow χ 2]
+    have h1 : χ * star χ = ((C ^ 2 + D ^ 2 : ℤ) : GaussianInt) := pi_mul_star C D
+    rw [hqCD] at h1
+    calc χ ^ 2 * (star χ) ^ 2 = (χ * star χ) ^ 2 := by ring
+      _ = (((q : ℤ)) : GaussianInt) ^ 2 := by rw [h1]
+      _ = (((q : ℤ) ^ 2 : ℤ) : GaussianInt) := by push_cast; ring
+  have hmono : π ^ (2 * j) * (star π) ^ (2 * (2 * a - j))
+      * χ ^ (2 * k) * (star χ) ^ (2 * (2 * b - k))
+      = (π ^ 2) ^ j * (star (π ^ 2)) ^ (2 * a - j)
+        * (χ ^ 2) ^ k * (star (χ ^ 2)) ^ (2 * b - k) := by
+    rw [show star (π ^ 2) = (star π) ^ 2 from star_pow π 2,
+        show star (χ ^ 2) = (star χ) ^ 2 from star_pow χ 2]
+    rw [← pow_mul, ← pow_mul, ← pow_mul, ← pow_mul]
+    try ring_nf
+  rw [hmono] at hval
+  have hpow2 : ∀ (z : GaussianInt) (d : ℕ), (z ^ 2) ^ (2 * d) = z ^ (4 * d) := by
+    intro z d
+    rw [← pow_mul]
+    congr 1
+    ring
+  have hstar2 : ∀ (z : GaussianInt) (d : ℕ),
+      (star (z ^ 2)) ^ (2 * d) = (star z) ^ (4 * d) := by
+    intro z d
+    rw [show star (z ^ 2) = (star z) ^ 2 from star_pow z 2, ← pow_mul]
+    congr 1
+    ring
+  rcases Nat.lt_or_ge j a with hja | hja <;> rcases Nat.lt_or_ge k b with hkb | hkb
+  · -- (−,−): σ = −ε, orientation χ
+    have hf := class_fold_mm (π ^ 2) (χ ^ 2) ((p : ℤ) ^ 2) ((q : ℤ) ^ 2)
+      hzz hξξ a b j k (le_of_lt hja) (le_of_lt hkb)
+    have hσ : (-ε = 1 ∨ -ε = -1) := by rcases hε with rfl | rfl <;> simp
+    refine ⟨-ε, a - j, b - k, π ^ (4 * (a - j)) * χ ^ (4 * (b - k)),
+      hσ, by omega, by omega, Or.inl rfl, ?_⟩
+    rw [hval, hf]
+    rw [show 2 * a - j - j = 2 * (a - j) from by omega,
+        show 2 * b - k - k = 2 * (b - k) from by omega,
+        hpow2 π (a - j), hpow2 χ (b - k),
+        show a - (a - j) = j from by omega,
+        show b - (b - k) = k from by omega]
+    push_cast
+    ring
+
+  · -- (−,+): σ = −ε, orientation χ̄ after global conjugation
+    have hf := class_fold_mp (π ^ 2) (χ ^ 2) ((p : ℤ) ^ 2) ((q : ℤ) ^ 2)
+      hzz hξξ a b j k (le_of_lt hja) hkb hk
+    have hσ : (-ε = 1 ∨ -ε = -1) := by rcases hε with rfl | rfl <;> simp
+    refine ⟨-ε, a - j, k - b, π ^ (4 * (a - j)) * (star χ) ^ (4 * (k - b)),
+      hσ, by omega, by omega, Or.inr rfl, ?_⟩
+    rw [hval, hf]
+    rw [show 2 * a - j - j = 2 * (a - j) from by omega,
+        show k - (2 * b - k) = 2 * (k - b) from by omega,
+        hstar2 π (a - j), hpow2 χ (k - b),
+        show a - (a - j) = j from by omega,
+        show 2 * b - k = b - (k - b) from by omega]
+    have hconj : ((star π) ^ (4 * (a - j)) * χ ^ (4 * (k - b))).im
+        = -((π ^ (4 * (a - j)) * (star χ) ^ (4 * (k - b))).im) := by
+      have h1 : (star π) ^ (4 * (a - j)) * χ ^ (4 * (k - b))
+          = star (π ^ (4 * (a - j)) * (star χ) ^ (4 * (k - b))) := by
+        rw [star_mul, star_pow, star_pow, star_star]
+        ring
+      rw [h1, Zsqrtd.im_star]
+    rw [hconj]
+    push_cast
+    ring
+  · -- (+,−): σ = ε, orientation χ̄
+    have hf := class_fold_pm (π ^ 2) (χ ^ 2) ((p : ℤ) ^ 2) ((q : ℤ) ^ 2)
+      hzz hξξ a b j k hja hj (le_of_lt hkb)
+    refine ⟨ε, j - a, b - k, π ^ (4 * (j - a)) * (star χ) ^ (4 * (b - k)),
+      hε, by omega, by omega, Or.inr rfl, ?_⟩
+    rw [hval, hf]
+    rw [show j - (2 * a - j) = 2 * (j - a) from by omega,
+        show 2 * b - k - k = 2 * (b - k) from by omega,
+        hpow2 π (j - a), hstar2 χ (b - k),
+        show 2 * a - j = a - (j - a) from by omega,
+        show b - (b - k) = k from by omega]
+    push_cast
+    ring
+  · -- (+,+): σ = ε, orientation χ
+    have hf := class_fold_pp (π ^ 2) (χ ^ 2) ((p : ℤ) ^ 2) ((q : ℤ) ^ 2)
+      hzz hξξ a b j k hja hj hkb hk
+    refine ⟨ε, j - a, k - b, π ^ (4 * (j - a)) * χ ^ (4 * (k - b)),
+      hε, by omega, by omega, Or.inl rfl, ?_⟩
+    rw [hval, hf]
+    rw [show j - (2 * a - j) = 2 * (j - a) from by omega,
+        show k - (2 * b - k) = 2 * (k - b) from by omega,
+        hpow2 π (j - a), hpow2 χ (k - b),
+        show 2 * a - j = a - (j - a) from by omega,
+        show 2 * b - k = b - (k - b) from by omega]
+    push_cast
+    ring
 end RepStructure2
