@@ -2967,3 +2967,26 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   near-instant. Next rung: (2,1,1) — 22 classes, ~1.4M leaves,
   estimated 6-18 h under the current engine; the per-core memo and, if
   needed, the pinning reduction control the cost.
+
+## Round 204: the specialized-resultant fast route
+
+- The slow part of the (1,1,1) closure was the symbolic cross
+  resultant per pair. The fast route replaces it: at each of the 120
+  admissible data points, substitute (r, ±s, q, w) into each core's
+  post-elimination constraint g once (X and U stay symbolic), then
+  test each pair's two univariate polynomials in U for a common root
+  with a modular Euclid pass (two 31-bit prime moduli).
+- Soundness: an integer common root survives reduction mod each
+  prime. A pair with no common root at any data point is dead. A
+  suspicious pair falls through to the exact symbolic routes.
+- Two bugs made the first version hang: the per-pair loop redid the
+  full multivariate substitution 960 times per pair, and the inverse
+  in the Euclid step truncated the exponent md-2 to u32 for the
+  61-bit modulus — the leading coefficient never canceled and the
+  inner loop spun forever. The point-outer restructure plus 31-bit
+  i64 arithmetic fixed both.
+- Result on (1,1,1): the full closure now reruns from an empty cache
+  in about 2 minutes (was ~35 minutes). 9,492 pairs die by the fast
+  route; the 120 suspicious pairs are exactly the 24 alt-order and
+  96 aligned pairs, killed by the existing exact routes. Zero
+  survivors, verdict multiset unchanged.

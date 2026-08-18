@@ -361,6 +361,102 @@ fn split_primes3(bound: i64) -> Vec<(i64, i64, i64)> {
     out
 }
 
+/// Specialize a P8 polynomial at data (all vars except position `keep`)
+/// into a univariate coefficient vector mod md.
+fn specialize_mod(p: &P8, vals: &[i128; 8], keep: usize, md: i128) -> Vec<i128> {
+    let d = p.keys().map(|m| m[keep]).max().unwrap_or(0) as usize;
+    let mut cv = vec![0i128; d + 1];
+    for (m, c) in p {
+        let mut t = {
+            let r = c % md;
+            let mut v: i128 = r.to_string().parse().unwrap();
+            if v < 0 { v += md; }
+            v
+        };
+        for i in 0..8 {
+            if i != keep && m[i] > 0 {
+                t = t * modpow3(vals[i], m[i] as u32, md) % md;
+            }
+        }
+        cv[m[keep] as usize] = (cv[m[keep] as usize] + t) % md;
+    }
+    while cv.len() > 1 && *cv.last().unwrap() == 0 { cv.pop(); }
+    cv
+}
+
+/// Common-root test mod md: true when the two univariate polynomials
+/// can share a root modulo md (gcd degree >= 1, or a zero reduction —
+/// the inconclusive case counts as "maybe" and the caller rechecks).
+fn share_root_mod(f0: &[i128], g0: &[i128], md: i128) -> bool {
+    let trim = |v: &mut Vec<i128>| { while v.len() > 1 && *v.last().unwrap() == 0 { v.pop(); } };
+    let mut f = f0.to_vec();
+    let mut g = g0.to_vec();
+    trim(&mut f);
+    trim(&mut g);
+    let iszero = |v: &Vec<i128>| v.len() == 1 && v[0] == 0;
+    if iszero(&f) || iszero(&g) { return true; }
+    let mut guard = 0usize;
+    let cap = 4 * (f.len() + g.len()) + 64;
+    loop {
+        guard += 1;
+        if guard > cap { return true; } // bail as suspicious
+        if f.len() < g.len() { std::mem::swap(&mut f, &mut g); }
+        if g.len() == 1 { return false; } // nonzero constant gcd: coprime
+        let gl = modpow3(*g.last().unwrap(), (md - 2) as u32, md);
+        while f.len() >= g.len() {
+            let k = f.len() - g.len();
+            let c = *f.last().unwrap() % md * gl % md;
+            for i in 0..g.len() {
+                f[k + i] = ((f[k + i] - c * g[i]) % md + md) % md;
+            }
+            trim(&mut f);
+            if iszero(&f) { return true; } // g divides f: gcd = g, deg >= 1
+        }
+        std::mem::swap(&mut f, &mut g);
+    }
+}
+
+fn modpow64(mut b: i64, mut e: u64, m: i64) -> i64 {
+    let mut r = 1i64;
+    b %= m;
+    if b < 0 { b += m; }
+    while e > 0 {
+        if e & 1 == 1 { r = r * b % m; }
+        b = b * b % m;
+        e >>= 1;
+    }
+    r
+}
+
+fn share_root_mod64(f0: &[i64], g0: &[i64], md: i64) -> bool {
+    let trim = |v: &mut Vec<i64>| { while v.len() > 1 && *v.last().unwrap() == 0 { v.pop(); } };
+    let mut f = f0.to_vec();
+    let mut g = g0.to_vec();
+    trim(&mut f);
+    trim(&mut g);
+    let iszero = |v: &Vec<i64>| v.len() == 1 && v[0] == 0;
+    if iszero(&f) || iszero(&g) { return true; }
+    let mut guard = 0usize;
+    let cap = 4 * (f.len() + g.len()) + 64;
+    loop {
+        guard += 1;
+        if guard > cap { return true; } // bail as suspicious
+        if f.len() < g.len() { std::mem::swap(&mut f, &mut g); }
+        if g.len() == 1 { return false; } // nonzero constant gcd: coprime
+        let gl = modpow64(*g.last().unwrap(), (md - 2) as u64, md);
+        while f.len() >= g.len() {
+            let k = f.len() - g.len();
+            let c = *f.last().unwrap() % md * gl % md;
+            for i in 0..g.len() {
+                f[k + i] = ((f[k + i] - c * g[i]) % md + md) % md;
+            }
+            trim(&mut f);
+            if iszero(&f) { return true; } // g divides f: gcd = g, deg >= 1
+        }
+        std::mem::swap(&mut f, &mut g);
+    }
+}
+
 fn modpow3(mut b: i128, mut e: u32, m: i128) -> i128 {
     let mut r = 1i128;
     b %= m;
@@ -560,6 +656,112 @@ fn main() {
         let ff = prs3(&e, &circle_w, 7)?;
         prs3(&ff, &circle_q, 4)
     }).collect();
+    // the fast route, point-outer: per data point, substitute
+    // (r, ±s, q, w) into every core's g once (X, U stay symbolic),
+    // then test each pair's univariate polynomials for a common root.
+    // A pair with no suspicious point at all is dead.
+    let fmods: [i64; 2] = [2147483647, 2147483629];
+    let fdata = split_primes3(40);
+    let mut fpoints: Vec<[i64; 4]> = Vec::new();
+    for &(pp, rr, ss) in &fdata {
+        for &(qq, _, _) in &fdata {
+            if qq == pp { continue; }
+            for &(ww, _, _) in &fdata {
+                if ww == pp || ww == qq { continue; }
+                for sg in [1i64, -1] {
+                    fpoints.push([rr as i64, sg * ss as i64, qq as i64, ww as i64]);
+                }
+            }
+        }
+    }
+    let xof: HashMap<i64, i64> = fdata.iter()
+        .map(|&(t, x, _)| (t as i64, x as i64)).collect();
+    let paircores: Vec<(usize, usize)> = pairlist.iter()
+        .map(|(c1, c2)| (coreidx[&pser(c1)], coreidx[&pser(c2)])).collect();
+    // pairs with a cache verdict skip the fast route entirely
+    let cached_pair: Vec<bool> = pairlist.iter().map(|(c1, c2)| {
+        cache.contains_key(&format!("{}||{}", pser(c1), pser(c2)))
+    }).collect();
+    let mut pair_susp: Vec<bool> = cached_pair.clone();
+    let gviews: Vec<Option<(Vec<[u16; 8]>, Vec<[i64; 2]>)>> = gtable.iter().map(|go| {
+        go.as_ref().map(|g| {
+            let terms: Vec<[u16; 8]> = g.keys().cloned().collect();
+            let cm: Vec<[i64; 2]> = g.values().map(|cc| {
+                let mut out = [0i64; 2];
+                for (mi, &md) in fmods.iter().enumerate() {
+                    let r = cc % md;
+                    let mut v: i64 = r.to_string().parse().unwrap();
+                    if v < 0 { v += md; }
+                    out[mi] = v;
+                }
+                out
+            }).collect();
+            (terms, cm)
+        })
+    }).collect();
+    println!("fast route: {} cores x {} points", coreset.len(), fpoints.len());
+    set_phase(2, fpoints.len());
+    for pt in &fpoints {
+        tick();
+        type Biv = [HashMap<(u16, u16), i64>; 2];
+        let bv: Vec<Option<Biv>> = gviews.par_iter().map(|gv| {
+            let (terms, cm) = gv.as_ref()?;
+            let mut out: Biv = [HashMap::new(), HashMap::new()];
+            for (mi, &md) in fmods.iter().enumerate() {
+                // power tables for the four data values, up to the max
+                // exponent in this g
+                let emax = terms.iter().map(|m| *m.iter().max().unwrap())
+                    .max().unwrap_or(0) as usize;
+                let mut powt = [vec![1i64; emax + 1], vec![1i64; emax + 1],
+                    vec![1i64; emax + 1], vec![1i64; emax + 1]];
+                for vi in 0..4 {
+                    let mut base = pt[vi] % md;
+                    if base < 0 { base += md; }
+                    for e in 1..=emax { powt[vi][e] = powt[vi][e - 1] * base % md; }
+                }
+                for (m, c2) in terms.iter().zip(cm) {
+                    let mut t = c2[mi];
+                    if m[0] > 0 { t = t * powt[0][m[0] as usize] % md; }
+                    if m[1] > 0 { t = t * powt[1][m[1] as usize] % md; }
+                    if m[2] > 0 { t = t * powt[2][m[2] as usize] % md; }
+                    if m[5] > 0 { t = t * powt[3][m[5] as usize] % md; }
+                    let e = out[mi].entry((m[3], m[6])).or_insert(0);
+                    *e = (*e + t) % md;
+                }
+            }
+            Some(out)
+        }).collect();
+        let xq = xof[&pt[2]];
+        let updates: Vec<bool> = paircores.par_iter().enumerate().map(|(pi, (i1c, i2c))| {
+            if pair_susp[pi] { return true; }
+            let (Some(b1), Some(b2)) = (&bv[*i1c], &bv[*i2c]) else { return true; };
+            for sx in [1i64, -1] {
+                let xv = sx * xq;
+                let mut share_all = true;
+                for (mi, &md) in fmods.iter().enumerate() {
+                    let touni = |bmap: &HashMap<(u16, u16), i64>| -> Vec<i64> {
+                        let du = bmap.keys().map(|k| k.1).max().unwrap_or(0) as usize;
+                        let mut cv = vec![0i64; du + 1];
+                        for (&(xe, ue), &cc) in bmap {
+                            let t = cc * modpow64(xv, xe as u64, md) % md;
+                            cv[ue as usize] = (cv[ue as usize] + t) % md;
+                        }
+                        while cv.len() > 1 && *cv.last().unwrap() == 0 { cv.pop(); }
+                        cv
+                    };
+                    let fv = touni(&b1[mi]);
+                    let gvv = touni(&b2[mi]);
+                    if !share_root_mod64(&fv, &gvv, md) { share_all = false; break; }
+                }
+                if share_all { return true; }
+            }
+            false
+        }).collect();
+        pair_susp = updates;
+    }
+    let n_fast_dead = pair_susp.iter().zip(&cached_pair)
+        .filter(|(&sp, &ca)| !sp && !ca).count();
+    println!("fast route: {n_fast_dead} uncached pairs dead by specialized resultants");
     set_phase(3, pairlist.len());
     let stats: Vec<String> = pairlist.par_iter().enumerate().map(|(pi, (c1, c2))| {
         tick();
@@ -578,8 +780,12 @@ fn main() {
         let _ = &record;
         let i1c = coreidx[&pser(c1)];
         let i2c = coreidx[&pser(c2)];
-        let Some(g1) = gtable[i1c].clone() else { return "vanish-early-1".into() };
-        let Some(g2) = gtable[i2c].clone() else { return "vanish-early-2".into() };
+        let Some(g1) = gtable[i1c].clone() else { return record("vanish-early-1".into()) };
+        let Some(g2) = gtable[i2c].clone() else { return record("vanish-early-2".into()) };
+        // the point-outer fast route already tested this pair
+        if !pair_susp[pi] {
+            return record("dead (specialized resultant)".into());
+        }
         // the alternate order still needs the raw parts
         let (Some(e1), Some(e2)) = (pick(c1), pick(c2)) else {
             return "empty-part".to_string();
