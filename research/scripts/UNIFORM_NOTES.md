@@ -3022,3 +3022,21 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   272 aligned special cells by the direct g-data check. Zero
   survivors. The suspicious pairs again split exactly into the two
   known special shapes.
+
+## Round 208: the (2,2,2) grid is closed — fifth Milestone-3 rung
+
+- Every leaf of s·p²·q²·r² is dead: 107,106,240 leaves, 97.2% by the
+  triple lone screen; 734,064 distinct live core pairs. The fast
+  route kills 732,848. The 1,201 remaining suspicious pairs all die
+  by the Pass-2 direct data evaluation (X and U are data-determined
+  up to sign; one of g1, g2 is nonzero at every data point — nonzero
+  mod one 31-bit prime is the proof, with an exact BigInt recheck on
+  double mod-zeros). Zero survivors.
+- The symbolic alternate-order route had stalled here (an hour with
+  no verdict on the giant (2,2,2) eliminations); the direct
+  evaluation replaces it in minutes and is strictly simpler: pure
+  necessity — vanishing of the eliminated constraints at the
+  data-determined point.
+- Exponent-≤-2-and-3 sweep so far: (1,1,1), (2,1,1), (2,2,1),
+  (3,1,1), (2,2,2) all closed with zero survivors and the same
+  three-layer verdict structure.
