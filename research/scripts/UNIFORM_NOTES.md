@@ -2934,3 +2934,23 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   relation dedup + library screen (three sides) → raw Re/Im parts in
   (r,s,X,Y,U,V) with two circle relations → PRS elimination → oracle
   forms in (r,s) with q,w-graded layers.
+
+## Round 202: the (1,1,1) eliminant endgame passes the full data check
+
+- The M3 endgame is validated end to end at (1,1,1): all 9,492
+  computable eliminants (of 9,612 distinct live core pairs) are
+  NONZERO at every admissible prime data point — split primes up to
+  40, both X-signs, both s-signs, single-modulus screen with exact
+  recheck. Zero data-zeros. The small-eliminant standalone check
+  (elim3_check, 2.8M evaluations over primes ≤ 60) agrees.
+- The key structural fact: X = Re χ² is determined by q up to sign
+  (the unique two-square representation), so eliminant nonvanishing on
+  data closes a leaf — the three-prime analog of the oracle route.
+- Remaining at (1,1,1): the 120 vanish-U pairs — 56 aligned (identical
+  constraints after elimination, the special-cell analog) and 64 with
+  a shared factor. The alternate elimination order (keep U, project X)
+  is running on them.
+- The next mathematical layer (for the general grids where eliminants
+  blow up): the ρ-side exactness pinning reduces every M3 leaf to an
+  M2-type locus system with masters 4w̃²·r^(2Δ) = Σ² + 4Ω², Σ and Ω
+  now (r,s,X,Y)-forms.
