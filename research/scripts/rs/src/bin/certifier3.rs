@@ -630,10 +630,65 @@ fn main() {
                         return "dead (alt order, data-nonzero)".into();
                     }
                     _ => {
-                        vdump.lock().unwrap().push(format!(
-                            "VPAIR {pi} | {} | {} | G1 {} | G2 {}",
-                            pser(c1), pser(c2), p8ser(&g1), p8ser(&g2)));
-                        return "vanish-both-orders".into();
+                        // the aligned special cells: every variable of the
+                        // shared constraint g1 is data-determined (X by q,
+                        // U by w, up to signs) — check g1 directly
+                        let md: i128 = (1 << 61) - 1;
+                        let cmods: Vec<i128> = g1.values().map(|cc| {
+                            let rr = cc % md;
+                            let mut v: i128 = rr.to_string().parse().unwrap();
+                            if v < 0 { v += md; }
+                            v
+                        }).collect();
+                        let hterms: Vec<[u16; 8]> = g1.keys().cloned().collect();
+                        let ddata = split_primes3(40);
+                        let mut nzero = 0u32;
+                        for &(pp, rr, ss) in &ddata {
+                            for &(qq, xx, _) in &ddata {
+                                if qq == pp { continue; }
+                                for &(ww, uu, _) in &ddata {
+                                    if ww == pp || ww == qq { continue; }
+                                    for sx in [1i128, -1] {
+                                        for su in [1i128, -1] {
+                                            for sg in [1i128, -1] {
+                                                let vals: [i128; 8] = [rr as i128,
+                                                    sg * ss as i128, qq as i128,
+                                                    sx * xx as i128, 0, ww as i128,
+                                                    su * uu as i128, 0];
+                                                let mut acc = 0i128;
+                                                for (mm, cm) in hterms.iter().zip(&cmods) {
+                                                    let mut t = *cm;
+                                                    for i in [0usize, 1, 2, 3, 5, 6] {
+                                                        if mm[i] > 0 {
+                                                            t = t * modpow3(vals[i], mm[i] as u32, md) % md;
+                                                        }
+                                                    }
+                                                    acc = (acc + t) % md;
+                                                }
+                                                if acc == 0 {
+                                                    let mut ex = BigInt::zero();
+                                                    for (mm, cc) in g1.iter() {
+                                                        let mut t = cc.clone();
+                                                        for i in 0..8 {
+                                                            for _ in 0..mm[i] { t *= vals[i]; }
+                                                        }
+                                                        ex += t;
+                                                    }
+                                                    if ex.is_zero() { nzero += 1; }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if nzero > 0 {
+                            vdump.lock().unwrap().push(format!(
+                                "VPAIR {pi} | {} | {} | G1 {} | G2 {}",
+                                pser(c1), pser(c2), p8ser(&g1), p8ser(&g2)));
+                            return format!("aligned G-DATA-ZERO x{nzero}");
+                        }
+                        return "dead (aligned, g-data-nonzero)".into();
                     }
                 }
             }
