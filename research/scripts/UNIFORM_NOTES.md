@@ -3013,3 +3013,12 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   The suspicious counts keep the exact (1,1,1)/(2,1,1) pattern:
   every suspicious pair is an alt-order or aligned cell, never a
   genuine shared root.
+
+## Round 207: the (3,1,1) grid is closed — fourth Milestone-3 rung
+
+- Every leaf of s·p³·q·r is dead: 6,041,280 leaves, 92.4% by the
+  triple lone screen; 107,756 distinct live core pairs. The fast
+  route kills 107,412; 72 die by the alternate elimination order and
+  272 aligned special cells by the direct g-data check. Zero
+  survivors. The suspicious pairs again split exactly into the two
+  known special shapes.
