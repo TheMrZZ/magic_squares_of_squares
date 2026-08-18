@@ -3060,3 +3060,17 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Eight grids total now closed at three primes, with the same
   two-layer verdict structure at every grid. Combined: about 800
   million leaves.
+
+## Rounds 212-213: the (4,1,1) and (3,3,2) grids are closed
+
+- (4,1,1) — s·p⁴·q·r: 17,546,880 leaves, 94.8% screened; 216,012
+  live core pairs; 215,556 by the fast route, 456 by direct
+  evaluation. Zero survivors.
+- (3,3,2) — s·p³·q³·r²: 1,686,410,880 leaves, 98.9% screened;
+  4,436,716 live core pairs; 4,434,332 by the fast route, 2,384 by
+  direct evaluation. Zero survivors. The verdict cache is 880 MB
+  (144 MB gzipped) — above the GitHub file limit, so it stays local
+  only; the run reproduces it from scratch.
+- Ten grids closed at three primes: every (a,b,c) with a ≥ b ≥ c,
+  a ≤ 3 except (3,3,3), plus (4,1,1). About 2.5 billion leaves in
+  total, all dead, same two-layer verdict structure everywhere.
