@@ -505,6 +505,19 @@ fn main() {
     let mut mu2 = [0u16; 8]; mu2[6] = 2;
     let mut mv2 = [0u16; 8]; mv2[7] = 2;
     let circle_w = p8add(&p8add(&p8mono(mu2, 1), &p8mono(mv2, 1)), &p8mono(mw2, -1));
+    // per-core memo of the shared early elimination stages
+    let mut coreset: Vec<Poly> = Vec::new();
+    let mut coreidx: HashMap<String, usize> = HashMap::new();
+    for (c1, c2) in &pairlist {
+        for cc in [c1, c2] {
+            let k = pser(cc);
+            if !coreidx.contains_key(&k) {
+                coreidx.insert(k, coreset.len());
+                coreset.push((*cc).clone());
+            }
+        }
+    }
+    println!("distinct live cores: {}", coreset.len());
     let pick = |core: &Poly| -> Option<P8> {
         let (re, im) = core_to_reim3(core);
         match (re.is_empty(), im.is_empty()) {
@@ -514,6 +527,16 @@ fn main() {
             (true, true) => None,
         }
     };
+    // verdict cache: "corepair-key<TAB>verdict" per line; a hit skips
+    // the whole elimination + data check for that pair
+    let cache_path = format!("elim_cache_{a}_{b}_{c}.txt");
+    let cache: HashMap<String, String> = match std::fs::read_to_string(&cache_path) {
+        Ok(txt) => txt.lines().filter_map(|l| {
+            l.split_once('\t').map(|(k, v)| (k.to_string(), v.to_string()))
+        }).collect(),
+        Err(_) => HashMap::new(),
+    };
+    let cache_new: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
     let p8ser = |p: &P8| -> String {
         p.iter().map(|(m, c)| format!("{c},{},{},{},{},{},{},{},{}",
             m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]))
@@ -521,22 +544,98 @@ fn main() {
     };
     let dump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
     let vdump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
+    set_phase(2, coreset.len());
+    let gtable: Vec<Option<P8>> = coreset.par_iter().map(|core| {
+        tick();
+        let e = pick(core)?;
+        let ff = prs3(&e, &circle_w, 7)?;
+        prs3(&ff, &circle_q, 4)
+    }).collect();
+    set_phase(3, pairlist.len());
     let stats: Vec<String> = pairlist.par_iter().enumerate().map(|(pi, (c1, c2))| {
         tick();
+        let ckey = format!("{}||{}", pser(c1), pser(c2));
+        if let Some(v) = cache.get(&ckey) {
+            return v.clone();
+        }
+        let i1c = coreidx[&pser(c1)];
+        let i2c = coreidx[&pser(c2)];
+        let Some(g1) = gtable[i1c].clone() else { return "vanish-early-1".into() };
+        let Some(g2) = gtable[i2c].clone() else { return "vanish-early-2".into() };
+        // the alternate order still needs the raw parts
         let (Some(e1), Some(e2)) = (pick(c1), pick(c2)) else {
             return "empty-part".to_string();
         };
-        let f1 = match prs3(&e1, &circle_w, 7) { Some(x) => x, None => return "vanish-V1".into() };
-        let f2 = match prs3(&e2, &circle_w, 7) { Some(x) => x, None => return "vanish-V2".into() };
-        let g1 = match prs3(&f1, &circle_q, 4) { Some(x) => x, None => return "vanish-Y1".into() };
-        let g2 = match prs3(&f2, &circle_q, 4) { Some(x) => x, None => return "vanish-Y2".into() };
         let h = match prs3(&g1, &g2, 6) {
             Some(x) => x,
             None => {
-                vdump.lock().unwrap().push(format!(
-                    "VPAIR {pi} | {} | {} | G1 {} | G2 {}",
-                    pser(c1), pser(c2), p8ser(&g1), p8ser(&g2)));
-                return "vanish-U".into();
+                // alternate order: Y first, then V, then X across
+                let a1 = match prs3(&e1, &circle_q, 4) { Some(x) => x, None => return "vanish2-Y1".into() };
+                let a2 = match prs3(&e2, &circle_q, 4) { Some(x) => x, None => return "vanish2-Y2".into() };
+                let b1 = match prs3(&a1, &circle_w, 7) { Some(x) => x, None => return "vanish2-V1".into() };
+                let b2 = match prs3(&a2, &circle_w, 7) { Some(x) => x, None => return "vanish2-V2".into() };
+                match prs3(&b1, &b2, 3) {
+                    Some(h2) if !h2.is_empty() => {
+                        // data check on the U-eliminant (X eliminated):
+                        // live positions (0,1,2,5,6)
+                        let md: i128 = (1 << 61) - 1;
+                        let cmods: Vec<i128> = h2.values().map(|cc| {
+                            let r = cc % md;
+                            let mut v: i128 = r.to_string().parse().unwrap();
+                            if v < 0 { v += md; }
+                            v
+                        }).collect();
+                        let hterms: Vec<[u16; 8]> = h2.keys().cloned().collect();
+                        let ddata = split_primes3(40);
+                        let mut nzero = 0u32;
+                        for &(pp, rr, ss) in &ddata {
+                            for &(qq, _, _) in &ddata {
+                                if qq == pp { continue; }
+                                for &(ww, uu, _) in &ddata {
+                                    if ww == pp || ww == qq { continue; }
+                                    for su in [1i128, -1] {
+                                        for sg in [1i128, -1] {
+                                            let vals: [i128; 8] = [rr as i128,
+                                                sg * ss as i128, qq as i128, 0, 0,
+                                                ww as i128, su * uu as i128, 0];
+                                            let mut acc = 0i128;
+                                            for (mm, cm) in hterms.iter().zip(&cmods) {
+                                                let mut t = *cm;
+                                                for i in [0usize, 1, 2, 5, 6] {
+                                                    if mm[i] > 0 {
+                                                        t = t * modpow3(vals[i], mm[i] as u32, md) % md;
+                                                    }
+                                                }
+                                                acc = (acc + t) % md;
+                                            }
+                                            if acc == 0 {
+                                                let mut ex = BigInt::zero();
+                                                for (mm, cc) in h2.iter() {
+                                                    let mut t = cc.clone();
+                                                    for i in 0..8 {
+                                                        for _ in 0..mm[i] { t *= vals[i]; }
+                                                    }
+                                                    ex += t;
+                                                }
+                                                if ex.is_zero() { nzero += 1; }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if nzero > 0 {
+                            return format!("alt-order DATA-ZERO x{nzero}");
+                        }
+                        return "dead (alt order, data-nonzero)".into();
+                    }
+                    _ => {
+                        vdump.lock().unwrap().push(format!(
+                            "VPAIR {pi} | {} | {} | G1 {} | G2 {}",
+                            pser(c1), pser(c2), p8ser(&g1), p8ser(&g2)));
+                        return "vanish-both-orders".into();
+                    }
+                }
             }
         };
         if h.is_empty() { return "empty-eliminant".into() }
@@ -608,6 +707,24 @@ fn main() {
         for l in vdump.lock().unwrap().iter() { writeln!(vf, "{l}").unwrap(); }
         println!("dumped {} small eliminants, {} vanish-U pairs",
             dump.lock().unwrap().len(), vdump.lock().unwrap().len());
+    }
+    {
+        use std::io::Write as _;
+        let mut lines: Vec<String> = Vec::new();
+        for (i, st) in stats.iter().enumerate() {
+            let (c1, c2) = &pairlist[i];
+            let ckey = format!("{}||{}", pser(c1), pser(c2));
+            if !cache.contains_key(&ckey) {
+                lines.push(format!("{ckey}\t{st}"));
+            }
+        }
+        if !lines.is_empty() {
+            let mut cf = std::fs::OpenOptions::new().create(true).append(true)
+                .open(&cache_path).unwrap();
+            for l in &lines { writeln!(cf, "{l}").unwrap(); }
+            println!("cached {} new verdicts -> {cache_path}", lines.len());
+        }
+        drop(cache_new);
     }
     let mut scount: HashMap<String, u32> = HashMap::new();
     for st in &stats { *scount.entry(st.clone()).or_insert(0) += 1; }
