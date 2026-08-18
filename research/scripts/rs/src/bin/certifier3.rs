@@ -492,8 +492,8 @@ fn main() {
     };
     // phase 1: leaves
     set_phase(1, n);
-    let chunks: Vec<(u64, u64, HashSet<Vec<(usize, i128)>>,
-                     HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)>)> =
+    let (total, surv, relset, pairset): (u64, u64, HashSet<Vec<(usize, i128)>>,
+                     HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)>) =
         (0..n).into_par_iter().map(|ia| {
             tick();
             let mut total = 0u64;
@@ -525,15 +525,15 @@ fn main() {
                 }}}
             }}}
             (total, surv, relset, pairset)
-        }).collect();
-    let mut total = 0u64;
-    let mut surv = 0u64;
-    let mut relset: HashSet<Vec<(usize, i128)>> = HashSet::new();
-    let mut pairset: HashSet<(Vec<(usize, i128)>, Vec<(usize, i128)>)> = HashSet::new();
-    for (t, sv, rs_, ps_) in chunks {
-        total += t; surv += sv;
-        relset.extend(rs_); pairset.extend(ps_);
-    }
+        }).reduce(|| (0u64, 0u64, HashSet::new(), HashSet::new()), |mut acc, x| {
+            acc.0 += x.0; acc.1 += x.1;
+            // extend the larger set with the smaller one
+            if acc.2.len() < x.2.len() { let t = acc.2; acc.2 = x.2; acc.2.extend(t); }
+            else { acc.2.extend(x.2); }
+            if acc.3.len() < x.3.len() { let t = acc.3; acc.3 = x.3; acc.3.extend(t); }
+            else { acc.3.extend(x.3); }
+            acc
+        });
     println!("({a},{b},{c}): {total} leaves, lone-survivors {surv} ({:.1}% killed), \
               distinct relations {}, pairs {}",
         100.0 * (total - surv) as f64 / total as f64, relset.len(), pairset.len());
@@ -590,6 +590,8 @@ fn main() {
         corepairs.insert(key);
         pairlist.push((c1, c2));
     }
+    drop(relmap); drop(coremap); drop(corepairs);
+    drop(pairset); drop(relset); drop(screened); drop(relvec);
     println!("distinct live core pairs: {}", pairlist.len());
     set_phase(3, pairlist.len());
     // circles: Q at (X,Y,q) = positions (3,4,2); W at (U,V,w) = (6,7,5)
