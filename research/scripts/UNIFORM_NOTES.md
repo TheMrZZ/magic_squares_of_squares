@@ -3001,3 +3001,15 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   check. Zero survivors; verdicts cached.
 - Wall time about 5 minutes with the Round-204 fast route. The old
   symbolic engine had an estimated 6.5 hours for the same grid.
+
+## Round 206: the (2,2,1) grid is closed — third Milestone-3 rung
+
+- Every leaf of s·p²·q²·r is dead: 18,480 live relations after the
+  library screen; 178,464 distinct live core pairs. The fast route
+  kills 178,016; 80 die by the alternate elimination order and 368
+  aligned special cells by the direct g-data check. Zero survivors.
+- Wall time about 61 minutes; the suspicious-pair tail (448 pairs
+  with vanishing standard eliminant) carries almost all of it.
+  The suspicious counts keep the exact (1,1,1)/(2,1,1) pattern:
+  every suspicious pair is an alt-order or aligned cell, never a
+  genuine shared root.
