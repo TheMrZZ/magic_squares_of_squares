@@ -651,13 +651,6 @@ fn main() {
     };
     let dump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
     let vdump: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
-    set_phase(2, coreset.len());
-    let gtable: Vec<Option<P8>> = coreset.par_iter().map(|core| {
-        tick();
-        let e = pick(core)?;
-        let ff = prs3(&e, &circle_w, 7)?;
-        prs3(&ff, &circle_q, 4)
-    }).collect();
     // the fast route, point-outer: per data point, substitute
     // (r, ±s, q, w) into every core's g once (X, U stay symbolic),
     // then test each pair's univariate polynomials for a common root.
@@ -685,7 +678,17 @@ fn main() {
         cache.contains_key(&format!("{}||{}", pser(c1), pser(c2)))
     }).collect();
     let mut pair_susp: Vec<bool> = cached_pair.clone();
-    let gviews: Vec<Option<(Vec<[u16; 8]>, Vec<[i64; 2]>)>> = gtable.iter().map(|go| {
+    // fused: compute each core's g, reduce it to the compact modular
+    // view at once, and discard the exact polynomial — the full BigInt
+    // table never materializes
+    set_phase(2, coreset.len());
+    let gviews: Vec<Option<(Vec<[u16; 8]>, Vec<[i64; 2]>)>> = coreset.par_iter().map(|core| {
+        tick();
+        let go: Option<P8> = (|| {
+            let e = pick(core)?;
+            let ff = prs3(&e, &circle_w, 7)?;
+            prs3(&ff, &circle_q, 4)
+        })();
         go.as_ref().map(|g| {
             let terms: Vec<[u16; 8]> = g.keys().cloned().collect();
             let cm: Vec<[i64; 2]> = g.values().map(|cc| {
@@ -708,8 +711,7 @@ fn main() {
         let ff = prs3(&e, &circle_w, 7)?;
         prs3(&ff, &circle_q, 4)
     };
-    let gnone: Vec<bool> = gtable.iter().map(|g| g.is_none()).collect();
-    drop(gtable);
+    let gnone: Vec<bool> = gviews.iter().map(|g| g.is_none()).collect();
     println!("fast route: {} cores x {} points", coreset.len(), fpoints.len());
     set_phase(2, fpoints.len());
     for pt in &fpoints {
