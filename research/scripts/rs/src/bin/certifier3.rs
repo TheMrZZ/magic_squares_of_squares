@@ -537,6 +537,15 @@ fn main() {
         Err(_) => HashMap::new(),
     };
     let cache_new: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
+    let flush = |buf: &std::sync::Mutex<Vec<String>>, path: &str| {
+        use std::io::Write as _;
+        let mut g = buf.lock().unwrap();
+        if g.is_empty() { return; }
+        let mut cf = std::fs::OpenOptions::new().create(true).append(true)
+            .open(path).unwrap();
+        for l in g.iter() { writeln!(cf, "{l}").unwrap(); }
+        g.clear();
+    };
     let p8ser = |p: &P8| -> String {
         p.iter().map(|(m, c)| format!("{c},{},{},{},{},{},{},{},{}",
             m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]))
@@ -558,6 +567,15 @@ fn main() {
         if let Some(v) = cache.get(&ckey) {
             return v.clone();
         }
+        let record = |st: String| -> String {
+            {
+                let mut g = cache_new.lock().unwrap();
+                g.push(format!("{ckey}\t{st}"));
+                if g.len() >= 500 { drop(g); flush(&cache_new, &cache_path); }
+            }
+            st
+        };
+        let _ = &record;
         let i1c = coreidx[&pser(c1)];
         let i2c = coreidx[&pser(c2)];
         let Some(g1) = gtable[i1c].clone() else { return "vanish-early-1".into() };
@@ -625,9 +643,9 @@ fn main() {
                             }
                         }
                         if nzero > 0 {
-                            return format!("alt-order DATA-ZERO x{nzero}");
+                            return record(format!("alt-order DATA-ZERO x{nzero}"));
                         }
-                        return "dead (alt order, data-nonzero)".into();
+                        return record("dead (alt order, data-nonzero)".into());
                     }
                     _ => {
                         // the aligned special cells: every variable of the
@@ -688,7 +706,7 @@ fn main() {
                                 pser(c1), pser(c2), p8ser(&g1), p8ser(&g2)));
                             return format!("aligned G-DATA-ZERO x{nzero}");
                         }
-                        return "dead (aligned, g-data-nonzero)".into();
+                        return record("dead (aligned, g-data-nonzero)".into());
                     }
                 }
             }
@@ -746,13 +764,13 @@ fn main() {
         let terms = h.len();
         let maxbits = h.values().map(|c| c.bits()).max().unwrap_or(0);
         if nzero > 0 {
-            return format!("DATA-ZERO x{nzero} Xdeg={dx} terms={terms}");
+            return record(format!("DATA-ZERO x{nzero} Xdeg={dx} terms={terms}"));
         }
         if terms <= 1200 {
             dump.lock().unwrap().push(format!(
                 "PAIR {pi} | {} | {} | ELIM {}", pser(c1), pser(c2), p8ser(&h)));
         }
-        format!("Xdeg={dx} terms={terms} bits={maxbits}")
+        record(format!("Xdeg={dx} terms={terms} bits={maxbits}"))
     }).collect();
     {
         use std::io::Write as _;
@@ -763,24 +781,8 @@ fn main() {
         println!("dumped {} small eliminants, {} vanish-U pairs",
             dump.lock().unwrap().len(), vdump.lock().unwrap().len());
     }
-    {
-        use std::io::Write as _;
-        let mut lines: Vec<String> = Vec::new();
-        for (i, st) in stats.iter().enumerate() {
-            let (c1, c2) = &pairlist[i];
-            let ckey = format!("{}||{}", pser(c1), pser(c2));
-            if !cache.contains_key(&ckey) {
-                lines.push(format!("{ckey}\t{st}"));
-            }
-        }
-        if !lines.is_empty() {
-            let mut cf = std::fs::OpenOptions::new().create(true).append(true)
-                .open(&cache_path).unwrap();
-            for l in &lines { writeln!(cf, "{l}").unwrap(); }
-            println!("cached {} new verdicts -> {cache_path}", lines.len());
-        }
-        drop(cache_new);
-    }
+    flush(&cache_new, &cache_path);
+    println!("verdict cache flushed -> {cache_path}");
     let mut scount: HashMap<String, u32> = HashMap::new();
     for st in &stats { *scount.entry(st.clone()).or_insert(0) += 1; }
     let mut sc: Vec<_> = scount.iter().collect();
