@@ -124,3 +124,27 @@ Consequences, per cell:
 Next: sort the 89 cells into no-free-factor (instant) versus
 free-form families; write the descent per family (they cluster by
 the ~10 distinct free forms).
+
+## The multi-shift chain reduction (design, Round 232)
+
+For a multi-shift band factor g (χ-cells δ₁ < … < δ_k, conjugate
+paired), work modulo χ̄²:
+- every conjugate cell χ̄^{2δ} (δ ≥ 1) vanishes;
+- χ² + χ̄² = 2X gives χ² ≡ 2X (mod χ̄²), so χ^{2δ} ≡ (2X)^δ.
+
+Hence g = 0 at data forces the DIVISIBILITY
+
+  χ̄² | W(2X),  W(T) = Σ_δ z̄_δ·T^δ + (the real (0,0) cell),
+
+with z_δ the cell coefficients (π- and w-side Gaussian forms).
+Taking norms: q² | N(W(2X)) — an explicit integer form in
+(r, s, X, w)-data. This is the M2 J-chain shape one level up:
+- if N(W) is q-coprime structurally (p-powers, small forms with
+  q-excluded values), the factor dies outright;
+- otherwise iterate mod χ̄⁴ for the deeper layers, or the size
+  bound q² ≤ |N(W)| confines to a curve for the descent kit.
+
+Plan: extract W and N(W) for all 8,320 multi-shift factor
+instances, tally the distinct N-forms, and run the same
+classification ladder (irrationality, parity, dominance,
+square-branch) on the q²-divisibility conditions.
