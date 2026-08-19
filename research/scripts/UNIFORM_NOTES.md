@@ -3318,3 +3318,32 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   Milestone 3 is closed at every (a, b, c).
 - Cross-check: the swept grids' cached verdicts killed exactly
   these pairs by data checks; the theorem explains all of them.
+
+## Round 222: the layered band catalog and its factor structure
+
+- BANDS3 (env-gated in certifier3) builds the layered-sector band
+  of every live pair at (1,1,1): conditions are affine in B = ρ⁴
+  with A = χ⁴ symbolic; Cramer plus |B|² = w⁴ give one band
+  polynomial in (r, s, q, X, Y, w) per pair; substituting
+  A = (X + iY)² closes the construction. 9,612 pairs → 2,757
+  distinct bands (u3_bandcat_1_1_1.txt), plus 192 odd-shift pairs,
+  12 det-zero, 16 band-zero (the clean sector's degenerate types).
+- Classification (u3_bandclass.py): factor each band; certify
+  factors by parity at exact residues, monomiality,
+  sign-definiteness, and the composite-lemma span
+  (F ∝ Im(z·χ^{2m}π^{±2n}), z a Gaussian constant — dead by the
+  χ-valuation argument). 185 bands (604 pairs) certified so far.
+- STRUCTURE of the remaining factors, the real discovery: after
+  reduction modulo the circle (X² + Y² = q², which kills some
+  factors outright — one reduces to q²(q⁴ − 1)), every remaining
+  factor is Im(z_π·χ^{2m}) with z_π = B(r,s) + i·A(r,s) an explicit
+  π-side Gaussian form. Vanishing forces χ^{2m}·z_π ∈ ℝ, and the
+  valuation argument gives v_χ(N(z_π)) ≥ 2m — that is,
+  q^{2m} ≤ N(z_π)(r, s): a Pell-band size bound, the exact shape
+  the M2 layer killed with the support and mandatory-p arguments.
+  The layered sector reduces to a finite catalog of
+  N(z_π)-divisibility cells over the 23-form table.
+- Next: classifier v3 — reduce factors mod the circle first, then
+  extract z_π per factor and certify by the q^{2m} | N(z_π)
+  divisibility with the support analysis; dump the final residual
+  cells for the H-style descent.

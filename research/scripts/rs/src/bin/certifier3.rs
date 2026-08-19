@@ -683,6 +683,171 @@ fn main() {
     // the circle U^2+V^2 = w^2 collapse the pair to one reduction
     // form R(r,s,q,X,Y,w). R nonzero at every admissible data point
     // kills the pair. Compare against the cached verdicts.
+    if std::env::var("BANDS3").is_ok() {
+        // the layered-sector band catalog: eliminate B = rho^4 from
+        // each pair (conditions are affine in B), close with
+        // |B|^2 = w^4, substitute A = chi^4 = (X+iY)^2, and dump the
+        // distinct band polynomials in (r,s,q,X,Y,w).
+        // Slots during construction: (r,s,q,XA,YA,w).
+        let cmul = |a: &(P8, P8), b: &(P8, P8)| -> (P8, P8) {
+            (p8add(&p8mul(&a.0, &b.0), &p8neg(&p8mul(&a.1, &b.1))),
+             p8add(&p8mul(&a.0, &b.1), &p8mul(&a.1, &b.0)))
+        };
+        // per core: (cx, cy, c0) with condition cx*x + cy*y + c0 = 0
+        // (B = x + iy), or None for odd-shift / out-of-range cores
+        set_phase(2, coreset.len());
+        let tri: Vec<Option<(P8, P8, P8)>> = coreset.par_iter().map(|core| {
+            tick();
+            // range check + A-scaling
+            let mut need_q4 = false;
+            for m in core.keys() {
+                let d = m.2 as i32 - m.3 as i32;
+                let e = m.4 as i32 - m.5 as i32;
+                if d % 2 != 0 || d.abs() > 2 || e.abs() > 2 || e % 2 != 0 { return None; }
+                if d == -2 { need_q4 = true; }
+            }
+            // T_k = complex coeff of B^k, k in {-1, 0, 1}
+            let mut t: [(P8, P8); 3] = Default::default(); // idx k+1
+            for (m, c) in core {
+                let d = (m.2 as i32 - m.3 as i32) / 2;
+                let e = (m.4 as i32 - m.5 as i32) / 2;
+                let qsc = 2 * m.2.min(m.3) + if need_q4 && d >= 0 { 4 } else { 0 }
+                    + if need_q4 && d < 0 { 0 } else { 0 };
+                let wsc = 2 * m.4.min(m.5);
+                let mut mono = [0u16; 8];
+                mono[2] = qsc as u16;
+                mono[5] = wsc as u16;
+                let base = p8mono(mono, *c);
+                let uv = conj_pow_pair(0, 1, m.0, m.1);
+                let mut val = (p8mul(&base, &uv.0), p8mul(&base, &uv.1));
+                // A-power: with the q^4 pre-scale, d=-1 -> conj(A),
+                // d=0 -> q^4 (already in qsc), d=1 -> A*q^4(in qsc)
+                let am = |sgn: i64| -> (P8, P8) {
+                    let mut mx = [0u16; 8]; mx[3] = 1;
+                    let mut my = [0u16; 8]; my[4] = 1;
+                    (p8mono(mx, 1), p8mono(my, sgn as i128))
+                };
+                if d == 1 { val = cmul(&val, &am(1)); }
+                if d == -1 { val = cmul(&val, &am(-1)); }
+                let slot = &mut t[(e + 1) as usize];
+                slot.0 = p8add(&slot.0, &val.0);
+                slot.1 = p8add(&slot.1, &val.1);
+            }
+            let (re, im) = core_to_reim3(core);
+            let is_im = match (re.is_empty(), im.is_empty()) {
+                (false, true) => false,
+                (true, false) => true,
+                _ => false,
+            };
+            // gamma for im-part: T1 - conj(Tm1); for re-part: T1 + conj(Tm1)
+            let (t1, t0, tm1) = (&t[2], &t[1], &t[0]);
+            if is_im {
+                let g = p8add(&t1.0, &p8neg(&tm1.0));
+                let h = p8add(&t1.1, &tm1.1);
+                // Im(gamma*B) + Im(T0) = h*x + g*y + Im(T0)
+                Some((h, g, t0.1.clone()))
+            } else {
+                let g = p8add(&t1.0, &tm1.0);
+                let h = p8add(&t1.1, &p8neg(&tm1.1));
+                // Re(gamma*B) + Re(T0) = g*x - h*y + Re(T0)
+                Some((g, p8neg(&h), t0.0.clone()))
+            }
+        }).collect();
+        let n_odd = tri.iter().filter(|x| x.is_none()).count();
+        println!("bands3: {} cores, {} out-of-range (odd-shift etc.)",
+            coreset.len(), n_odd);
+        // substitute XA = X^2 - Y^2, YA = 2XY at the end
+        let subst_a = |p: &P8| -> P8 {
+            let mut out = P8::new();
+            for (m, c) in p {
+                // expand (X^2-Y^2)^a * (2XY)^b
+                let a_ = m[3] as usize;
+                let b_ = m[4] as usize;
+                // (X^2 - Y^2)^a via binomial
+                let mut terms: Vec<([u16; 2], BigInt)> = vec![([0, 0], c.clone())];
+                for _ in 0..a_ {
+                    let mut nt = Vec::new();
+                    for (e2, cc) in &terms {
+                        nt.push(([e2[0] + 2, e2[1]], cc.clone()));
+                        nt.push(([e2[0], e2[1] + 2], -cc.clone()));
+                    }
+                    terms = nt;
+                }
+                for _ in 0..b_ {
+                    for e2 in terms.iter_mut() {
+                        e2.1 = &e2.1 * 2;
+                        e2.0[0] += 1;
+                        e2.0[1] += 1;
+                    }
+                }
+                for (e2, cc) in terms {
+                    let mut mm = *m;
+                    mm[3] = e2[0];
+                    mm[4] = e2[1];
+                    let en = out.entry(mm).or_insert_with(BigInt::zero);
+                    *en += cc;
+                }
+            }
+            out.retain(|_, c| !c.is_zero());
+            out
+        };
+        let p8strip = |p: &P8| -> P8 {
+            if p.is_empty() { return p.clone(); }
+            let mut mins = [u16::MAX; 8];
+            for m in p.keys() { for i in 0..8 { mins[i] = mins[i].min(m[i]); } }
+            let out: P8 = p.iter().map(|(m, c)| {
+                let mut mm = *m;
+                for i in 0..8 { mm[i] -= mins[i]; }
+                (mm, c.clone())
+            }).collect();
+            let mut out = p8primitive(&out);
+            // sign normalize
+            if out.iter().next_back().map(|(_, c)| c < &BigInt::zero()).unwrap_or(false) {
+                for c in out.values_mut() { *c = -&*c; }
+            }
+            out
+        };
+        set_phase(3, pairlist.len());
+        let bands: Vec<String> = pairlist.par_iter().map(|(c1, c2)| {
+            tick();
+            let i1 = coreidx[&pser(c1)];
+            let i2 = coreidx[&pser(c2)];
+            let (Some((x1, y1, z1)), Some((x2, y2, z2))) = (&tri[i1], &tri[i2])
+                else { return "ODD-SHIFT".into() };
+            let det = p8add(&p8mul(x1, y2), &p8neg(&p8mul(x2, y1)));
+            if det.is_empty() { return "DET-ZERO".into() }
+            let nx = p8add(&p8mul(z2, y1), &p8neg(&p8mul(z1, y2)));
+            let ny = p8add(&p8mul(x2, z1), &p8neg(&p8mul(x1, z2)));
+            let mut w4 = [0u16; 8]; w4[5] = 4;
+            let band = p8add(&p8add(&p8mul(&nx, &nx), &p8mul(&ny, &ny)),
+                &p8neg(&p8mul(&p8mono(w4, 1), &p8mul(&det, &det))));
+            if band.is_empty() { return "BAND-ZERO".into() }
+            let b2 = p8strip(&subst_a(&band));
+            if b2.is_empty() { return "BAND-ZERO".into() }
+            b2.iter().map(|(m, c)| format!("{c},{},{},{},{},{},{}",
+                m[0], m[1], m[2], m[3], m[4], m[5]))
+                .collect::<Vec<_>>().join(";")
+        }).collect();
+        let mut tally: BTreeMap<&str, u32> = BTreeMap::new();
+        for b in &bands { *tally.entry(b.as_str()).or_insert(0) += 1; }
+        let nspecial = bands.iter().filter(|b|
+            *b == "ODD-SHIFT" || *b == "DET-ZERO" || *b == "BAND-ZERO").count();
+        println!("bands3: {} pairs -> {} distinct bands ({} special)",
+            bands.len(), tally.len(), nspecial);
+        for k in ["ODD-SHIFT", "DET-ZERO", "BAND-ZERO"] {
+            if let Some(n) = tally.get(k) { println!("  {k}: {n}"); }
+        }
+        {
+            use std::io::Write as _;
+            let mut bf = std::fs::File::create(
+                format!("u3_bandcat_{a}_{b}_{c}.txt")).unwrap();
+            for (k, n) in &tally {
+                writeln!(bf, "{n}	{k}").unwrap();
+            }
+        }
+        println!("band catalog -> u3_bandcat_{a}_{b}_{c}.txt");
+        return;
+    }
     if std::env::var("REDUCE3").is_ok() {
         // balance schema: group each live core's terms by the shift
         // cell (chi-shift, rho-shift); the cell coefficient P_{d,e}
