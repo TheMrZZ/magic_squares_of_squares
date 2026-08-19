@@ -3398,3 +3398,30 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   multi-shift chain factors (the 7,744-weighted bulk — one more
   elimination level down the χ-axis), the 192 odd-shift pairs, the
   40 χ-free leftovers, then the exponent telescoping.
+
+## Round 226: THE FERMAT-QUARTIC DESCENT — the top families die
+
+- The descent for the ℤ[i]-norm families. Family
+  r⁴ + 18r²s² + s⁴ = p⁴ + (4rs)² = N(p² + 4irs) (weight 156, the
+  largest): on the pinning locus, z_π is a real multiple of
+  χ̄^{2δ'}, and the χ-coprime cofactors (p-powers) drop out, so
+  p² + 4irs = λ·χ̄⁴ with λ ∈ ℚ. Both sides are primitive Gaussian
+  integers (gcd(p², 4rs) = 1 since p ∤ rs; χ̄⁴ is primitive), so
+  λ = ±1 or ±i. The ±i units die by parity (they would force p²
+  even). So p² + 4irs = ±χ̄⁴ exactly, and comparing components:
+  X² − Y² = ±p², X² + Y² = q². Multiply:
+  **X⁴ − Y⁴ = ±(pq)² — impossible by Fermat's classical quartic
+  descent** (x⁴ − y⁴ = z² has no solutions with xyz ≠ 0, and
+  X, Y, pq are all nonzero at admissible data). Dead at every
+  grid, no prime bound.
+- The same argument verbatim kills r⁴ + 6r²s² + s⁴ = p⁴ + (2rs)²
+  (weight 72): p² + 2irs = ±χ̄⁴ → the identical Fermat system.
+- The disc-8 quartics (r⁴ + 34r²s² + s⁴ = p⁴ + 2(4rs)²,
+  9r⁴ − 14r²s² + 9s⁴ = 9p⁴ − 2(4rs)²) need the ℤ[√±2]-versions of
+  the splitting — next in the queue.
+- The quadratic families (9r² + s², r² + 9s², …) do NOT die
+  locally: c = 1 leaves the genuine prime-curve locus q² = 9r² + s²
+  with χ² = ±(3r − is). These are the M2-terminal-list analogs;
+  their kill needs the pair's ρ-side overdetermination on the
+  locus (the stacked-coincidence argument) — queued after the
+  quartic tail.
