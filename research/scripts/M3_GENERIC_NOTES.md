@@ -91,3 +91,36 @@ the distinct catalog, then classify the factors (definite forms,
 irrational ratios, parity-nonzero, composite-reality) as in the
 clean sector. Degenerate branches (B-cross ≡ 0, band ≡ 0) get the
 aligned treatment: proportionality plus integrality.
+
+## The pinning-cell master reduction (Round 224)
+
+A pinning-cell factor is F = Im(z_π·χ^{2δ'}) with z_π an explicit
+π-side Gaussian form. If F = 0 at data:
+
+  χ^{2δ'}·z_π = t ∈ ℝ. Conjugating and comparing χ-valuations:
+  v_χ(t) = 2δ' + v_χ(z_π) and v_χ(t) = v_χ̄(z_π), so
+  v_χ̄(z_π) ≥ 2δ' — that is, χ̄^{2δ'} divides z_π. Writing
+  z_π = χ̄^{2δ'}·z' gives t = q^{2δ'}·z', so z' is REAL:
+
+  **z_π is a real multiple of χ̄^{2δ'}.**
+
+Consequences, per cell:
+1. q^{2δ'} | N(z_π)(r, s). The free binary factor F₀ of N(z_π)
+   (9r² + s², r⁴ + 34r²s² + s⁴, …) must absorb q^{2δ'} — the
+   power-law curve q^{2δ'} ≤ F₀ ~ p^{deg}. Cells whose N(z_π) has
+   NO free factor (pure p-powers, q-powers, (q⁴+1)-powers — a
+   large fraction of the 89) die immediately: nothing can carry
+   the χ̄-valuation.
+2. On the surviving curve loci the pinning is exact and rigid:
+   χ^{2δ'} = ±q^{δ'}·conj(z_π)/|z_π| is an explicit Gaussian
+   integer, so χ² must be an exact Gaussian ROOT of an explicit
+   π-side number — the Theorem-H master-kill shape (the
+   Pythagorean/coprime-splitting descent). Each of the free-form
+   families gets one such descent.
+3. The χ↔ρ symmetric run (eliminate A instead of B) produces the
+   same structure on the w-side; a pair on a curve locus must
+   satisfy both — the stacked coincidence that the descents kill.
+
+Next: sort the 89 cells into no-free-factor (instant) versus
+free-form families; write the descent per family (they cluster by
+the ~10 distinct free forms).
