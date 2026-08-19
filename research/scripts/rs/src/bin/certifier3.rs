@@ -764,6 +764,50 @@ fn main() {
             *pairprof.entry(key).or_insert(0) += 1;
         }
         println!("pair profile combinations: {} distinct", pairprof.len());
+        // clean-sector inventory: pairs where both cores have ONE
+        // positive cell — dump (cell1, P1, cell2, P2) types
+        let cellinfo: HashMap<String, Option<(i32, i32, String, bool)>> =
+            coreset.iter().map(|core| {
+                let mut pos: BTreeSet<(i32, i32)> = BTreeSet::new();
+                let mut zero = false;
+                for m in core.keys() {
+                    let d = m.2 as i32 - m.3 as i32;
+                    let e = m.4 as i32 - m.5 as i32;
+                    if d > 0 || (d == 0 && e > 0) { pos.insert((d, e)); }
+                    if d == 0 && e == 0 { zero = true; }
+                }
+                let v = if pos.len() == 1 {
+                    let &(d, e) = pos.iter().next().unwrap();
+                    let mut pp = Poly::new();
+                    for (m, c) in core {
+                        if m.2 as i32 - m.3 as i32 == d && m.4 as i32 - m.5 as i32 == e {
+                            let en = pp.entry((m.0, m.1, 0, 0, 0, 0)).or_insert(0);
+                            *en += c;
+                        }
+                    }
+                    let sp = strip(&pp);
+                    let norm = if sp.iter().next_back().map(|(_, c)| *c < 0).unwrap_or(false)
+                        { pneg(&sp) } else { sp };
+                    let ser: String = norm.iter().map(|(m, c)|
+                        format!("{c},{},{}", m.0, m.1)).collect::<Vec<_>>().join(";");
+                    Some((d, e, ser, zero))
+                } else { None };
+                (pser(core), v)
+            }).collect();
+        let mut cleantypes: BTreeMap<String, u32> = BTreeMap::new();
+        let mut nclean = 0u32;
+        for (c1, c2) in &pairlist {
+            let (Some(a1), Some(a2)) = (&cellinfo[&pser(c1)], &cellinfo[&pser(c2)])
+                else { continue };
+            nclean += 1;
+            let k1 = format!("({},{}){}[{}]", a1.0, a1.1, if a1.3 {"+Z"} else {""}, a1.2);
+            let k2 = format!("({},{}){}[{}]", a2.0, a2.1, if a2.3 {"+Z"} else {""}, a2.2);
+            let key = if k1 <= k2 { format!("{k1} x {k2}") } else { format!("{k2} x {k1}") };
+            *cleantypes.entry(key).or_insert(0) += 1;
+        }
+        println!("clean-sector pairs (both single-cell): {nclean}; {} types:",
+            cleantypes.len());
+        for (k, n) in &cleantypes { println!("  {n:5}  {k}"); }
         println!("cells-per-core distribution: {:?}", cellcount);
         println!("catalog size (distinct (shift-cell | P-form)): {}", catalog.len());
         let pforms: BTreeSet<String> = catalog.keys()

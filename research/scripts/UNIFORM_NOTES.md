@@ -3209,6 +3209,11 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Direct check: `lake env lean MsqLean/UClass2.lean` succeeds in
   4.26 seconds on a warm dependency cache, with no errors and no
   `sorry`.
+- New file `UClass2Base.lean`: `noAssignment_2_2` translates the
+  exact Theorem H router into the new generic class language. It
+  preserves the four nonzero offsets and their distinctness up to
+  sign. The `(2,2)` base of the M2 induction is now machine-checked.
+  Its direct Lean check took 5.31 seconds.
 
 ## Round 219: raw-eliminant gates are a dead end — back to pinnings
 
@@ -3230,3 +3235,30 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   pins bounds q^{2Δd}·r₃^{2Δe} by smooth·π-data — the Pell-band
   shape M2 killed. Then the layered profiles by chains, then the
   telescoping.
+
+## Round 220: the first generic M3 kill — the aligned clean sector
+
+- Inventory at (1,1,1): all 80 clean-sector pairs (both conditions
+  single-cell) are ALIGNED — the two conditions share the same
+  shift cell (d,e) ∈ {(0,2), (2,−2), (2,0), (2,2)}. 40 types.
+- THE CROSS LEMMA (generic, no prime bound): for every P-form pair
+  in the catalog, the cross Σ₁Ω₂ − Σ₂Ω₁ factors into
+  constants × r-, s-, (r±s)-powers × small quadratics. The
+  quadratics are either definite (r² + s², 2r² + s², r² + 3s², …)
+  or indefinite with a non-square ratio (3r² − s², r² − 2s²,
+  5r² − s², 19r² − s², 11r² − 9s², 7r² − 9s², …). Every factor is
+  nonzero at admissible data (r odd nonzero, s even nonzero,
+  irrationality of the non-square ratios). Zero identically-zero
+  crosses among all 55 catalog pairs.
+- Consequence 1 (homogeneous aligned pairs): Φ ∥ P₁ and Φ ∥ P₂
+  force the cross to vanish — contradiction. Dead at EVERY grid
+  (a,b,c); the kill is exponent-free because the cross has no
+  (q, r₃)-dependence at all.
+- Consequence 2 (affine pairs, the +Z types): the two conditions
+  are affine lines in the Φ-plane with the nonzero cross as
+  determinant — a unique rational Φ-candidate; the circle
+  |Φ|² = q^{2d}·r₃^{2e} closes into one explicit norm-band
+  equation in (r, s, q, r₃) — the M2 master/coprime-masters
+  route. These bands are the next work package.
+- Validation cross-check: the swept grids killed all these pairs
+  by data checks; the lemma explains every one of those verdicts.
