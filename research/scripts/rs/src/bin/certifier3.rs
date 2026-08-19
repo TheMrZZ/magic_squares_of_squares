@@ -857,19 +857,20 @@ fn main() {
             st
         };
         let _ = &record;
-        let i1c = coreidx[&pser(c1)];
-        let i2c = coreidx[&pser(c2)];
-        if gnone[i1c] { return record("vanish-early-1".into()) }
-        if gnone[i2c] { return record("vanish-early-2".into()) }
-        let Some(g1) = gof(i1c) else { return record("vanish-early-1".into()) };
-        let Some(g2) = gof(i2c) else { return record("vanish-early-2".into()) };
-        // the point-outer fast route already tested this pair
+        // the point-outer fast route already tested this pair — no
+        // symbolic recomputation on this path
         if !pair_susp[pi] {
             return record("dead (specialized resultant)".into());
         }
         if fast2_dead[pi] {
             return record("dead (direct data evaluation)".into());
         }
+        let i1c = coreidx[&pser(c1)];
+        let i2c = coreidx[&pser(c2)];
+        if gnone[i1c] { return record("vanish-early-1".into()) }
+        if gnone[i2c] { return record("vanish-early-2".into()) }
+        let Some(g1) = gof(i1c) else { return record("vanish-early-1".into()) };
+        let Some(g2) = gof(i2c) else { return record("vanish-early-2".into()) };
         // the alternate order still needs the raw parts
         let (Some(e1), Some(e2)) = (pick(c1), pick(c2)) else {
             return "empty-part".to_string();
