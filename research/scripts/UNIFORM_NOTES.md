@@ -3074,3 +3074,20 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Ten grids closed at three primes: every (a,b,c) with a ≥ b ≥ c,
   a ≤ 3 except (3,3,3), plus (4,1,1). About 2.5 billion leaves in
   total, all dead, same two-layer verdict structure everywhere.
+
+## Round 214: the (3,3,3) grid is closed — the a,b,c ≤ 3 cube is done
+
+- Every leaf of s·p³·q³·r³ is dead: 171 classes; 21.6 billion pairs
+  before dedup; 10,802,652 distinct live core pairs. The fast route
+  kills 10,798,436; all 4,216 suspicious pairs die by the direct data
+  evaluation. Zero survivors. The 2.7 GB verdict cache stays local.
+- Three engine fixes made this grid feasible on 48 GB: the rayon
+  reduce-merge for the enumeration sets, the fused elimination +
+  modular-view build (the exact BigInt table never materializes; the
+  537,942 needed polynomials recompute on demand), and the verdict
+  loop checking the fast verdicts before any recomputation (the
+  first attempt recomputed two eliminations per already-dead pair
+  and crawled at 600 pairs/s).
+- Milestone-3 exponent sweep complete at this stage: all eleven
+  grids with max exponent ≤ 3 plus (4,1,1) closed, about 7 billion
+  leaves total, identical two-layer verdict structure everywhere.
