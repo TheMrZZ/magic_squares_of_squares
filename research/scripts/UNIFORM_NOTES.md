@@ -3091,3 +3091,17 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Milestone-3 exponent sweep complete at this stage: all eleven
   grids with max exponent ≤ 3 plus (4,1,1) closed, about 7 billion
   leaves total, identical two-layer verdict structure everywhere.
+
+## Round 215: spot checks (4,2,1), (5,1,1), (4,2,2) closed
+
+- Three higher-exponent grids widen the Milestone-3 base, all with
+  zero survivors:
+  - (4,2,1): 147,164,160 leaves; 884,032 live core pairs
+    (883,152 fast route + 880 direct evaluation).
+  - (5,1,1): 40,680,192 leaves; 378,020 live core pairs
+    (377,444 + 576).
+  - (4,2,2): 1,192,477,440 leaves; 3,552,912 live core pairs
+    (3,550,528 + 2,384).
+- Fifteen grids total at three primes, about 10.4 billion leaves and
+  24 million live core pairs, all dead with the same two-layer
+  verdict structure. The (4,2,2) cache (704 MB) stays local.
