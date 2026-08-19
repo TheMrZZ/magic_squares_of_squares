@@ -3182,3 +3182,51 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   factorization pool). Next work package: port oracle.rs to the
   three-prime eliminant dumps and close the (1,1,1) oracle layer
   generically.
+
+## Round 219: the M2 Lean campaign resumes — the telescope is checked
+
+- The existing `(2,2)` M2 corpus builds with no errors. A cold build
+  took 274.40 seconds for `ScreenCert_2_2` and 66 seconds for
+  `PairCert_2_2`. The Rust certifier took 0.24 seconds. This separates
+  corpus build time from the final theorem check.
+- The router gap is now exact. Grid `(2,2)` has 3,104 live relation
+  pairs after grading. The current `PairCert_2_2` file covers the 104
+  residual pairs. The screen kills any pair that contains one of 112
+  dead relations. The other mechanical pair sectors still need a
+  semantic dispatcher.
+- An all-raw elimination experiment certified 2,016 of the 2,080
+  pairs whose two relations pass the screen. It left 64 coincident
+  affine eliminants. This route is valid, but it makes the generated
+  corpus much larger. It is not the primary design.
+- New file `UClass2.lean`: `ClassValue` is the exact folded two-prime
+  class family. `step_q` and `step_p` prove the `q²` and `p²`
+  telescope identities. `class_value_folded_mem` connects the
+  representation theorem to this family. The signed telescope,
+  distinctness cancellation, relation cancellation, and
+  `noAssignment_step_q` now give the complete generic induction
+  skeleton. The caller only has to kill assignments that contain a
+  top class.
+- Direct check: `lake env lean MsqLean/UClass2.lean` succeeds in
+  4.26 seconds on a warm dependency cache, with no errors and no
+  `sorry`.
+
+## Round 219: raw-eliminant gates are a dead end — back to pinnings
+
+- The mod-3 and mod-5 admissible sieves (r² + s² a nonzero square,
+  q² − X² a square, q, w nonzero) kill NONE of the 3,052 residual
+  eliminant forms: every one has admissible zeros mod both primes.
+  Together with the dyadic stall (the degenerate circle loci shadow
+  the data cone at every 2-power), this closes the route: generic
+  nonvanishing of raw eliminants is not provable by gates, and M2
+  never needed it either — its generic layer went through exact
+  pinnings, coprime masters, and crosses; the oracle gates only
+  killed the final univariate forms of that reduction.
+- Consequence for M3: derive the generic kills in the balance-form
+  coordinates (Rounds 216–217). First target: the clean sector —
+  pairs where both conditions are single-cell pins
+  χ^{2dᵢ}ρ^{2eᵢ} ∥ Pᵢ. The masters
+  4w̃ᵢ²·q^{2dᵢ}·r₃^{2eᵢ} = tᵢ²·(Σᵢ² + 4Ωᵢ²) with {2,3}-smooth w̃
+  feed the coprime-masters argument verbatim; the cross of the two
+  pins bounds q^{2Δd}·r₃^{2Δe} by smooth·π-data — the Pell-band
+  shape M2 killed. Then the layered profiles by chains, then the
+  telescoping.
