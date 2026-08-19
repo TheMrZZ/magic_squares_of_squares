@@ -3372,3 +3372,29 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - The generic-layer remaining work is now precisely bounded:
   (1) the 89 pinning-cell curve loci, (2) the multi-shift chains,
   (3) the 192 odd-shift pairs, (4) the 40 χ-free leftovers.
+
+## Round 225: the pinning cells sorted — 7 instant, 38 descent families
+
+- The master reduction (Round 224) sorts the 89 pinning cells:
+  7 cells (180 pair-weighted) have NO free binary factor in
+  N(z_π) — pure p-powers, q-powers, (q⁴+1)-powers — and die
+  instantly: nothing can carry the mandatory χ̄^{2δ'}-valuation.
+- The remaining 82 cells cluster into 38 free-form families, all
+  recognizable norm shapes over the π-data:
+  - quadratics: 9r² + s² = N(3r + is), r² + 9s², 5r² + s²,
+    r² + 5s², 5r² ± 4rs + s², r ± s;
+  - disc-8/disc-4 quartics: r⁴ + 18r²s² + s⁴ = p⁴ + (4rs)²,
+    r⁴ + 34r²s² + s⁴ = p⁴ + 2(4rs)²,
+    9r⁴ − 14r²s² + 9s⁴ = 9p⁴ − 2(4rs)²,
+    r⁴ + 6r²s² + s⁴ = p⁴ + (2rs)², 4r⁴ − 3r²s² + s⁴, mirrors;
+  - a tail of sextics and octics with small weight.
+- Each family needs one Theorem-H-style Gaussian-root descent: on
+  the locus, χ^{2δ'} = ±q^{δ'}·conj(z_π)/|z_π| exactly, so an
+  explicit π-side number must be a real multiple of a Gaussian
+  square — the coprime-splitting/Pythagorean analysis kills it.
+  The top six families carry most of the weight (156 + 120 + 96 +
+  88 + 88 + 72 of 1,364).
+- Remaining M3 generic work, in order: the 38 descents, the
+  multi-shift chain factors (the 7,744-weighted bulk — one more
+  elimination level down the χ-axis), the 192 odd-shift pairs, the
+  40 χ-free leftovers, then the exponent telescoping.
