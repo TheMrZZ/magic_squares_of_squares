@@ -736,6 +736,34 @@ fn main() {
             }
         }
         println!("schema: conjugate pairing ok {pair_ok}, broken {pair_bad}");
+        // profile classification: the set of positive shift cells
+        let mut profiles: BTreeMap<String, u32> = BTreeMap::new();
+        let mut coreprof: HashMap<String, String> = HashMap::new();
+        for core in &coreset {
+            let mut pos: BTreeSet<(i32, i32)> = BTreeSet::new();
+            let mut zero = false;
+            for m in core.keys() {
+                let d = m.2 as i32 - m.3 as i32;
+                let e = m.4 as i32 - m.5 as i32;
+                if d > 0 || (d == 0 && e > 0) { pos.insert((d, e)); }
+                if d == 0 && e == 0 { zero = true; }
+            }
+            let prof = format!("{:?}{}", pos.iter().collect::<Vec<_>>(),
+                if zero { "+Z" } else { "" });
+            *profiles.entry(prof.clone()).or_insert(0) += 1;
+            coreprof.insert(pser(core), prof);
+        }
+        println!("profiles ({} distinct):", profiles.len());
+        for (p, n) in &profiles { println!("  {n:6}  {p}"); }
+        // pair-level profile combinations
+        let mut pairprof: BTreeMap<String, u32> = BTreeMap::new();
+        for (c1, c2) in &pairlist {
+            let p1 = &coreprof[&pser(c1)];
+            let p2 = &coreprof[&pser(c2)];
+            let key = if p1 <= p2 { format!("{p1} || {p2}") } else { format!("{p2} || {p1}") };
+            *pairprof.entry(key).or_insert(0) += 1;
+        }
+        println!("pair profile combinations: {} distinct", pairprof.len());
         println!("cells-per-core distribution: {:?}", cellcount);
         println!("catalog size (distinct (shift-cell | P-form)): {}", catalog.len());
         let pforms: BTreeSet<String> = catalog.keys()
