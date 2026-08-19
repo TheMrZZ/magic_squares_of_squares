@@ -3464,3 +3464,25 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   needed at all.
 - Next: batch the descent over every pinning-cell pair and tally
   the outcomes (B = 0, |B|² − w⁴ structurally nonzero, or residue).
+
+## Round 229: the terminal descent at scale
+
+- u3_terminal_batch.py runs the pinned descent on every
+  single-positive-shift band factor of every pair at (1,1,1).
+  Outcomes (per factor instance):
+  - B-ZERO: 1,296 — Cramer's B vanishes identically on the pinned
+    locus while |ρ⁴| = w² > 0. Dead, no curve analysis.
+  - RATIO: 3,020 over 170 shapes. The λ-free ratios die by parity:
+    consistency needs (r²+s²)² = 16r²s² (odd = even),
+    (r²−s²)² = 4r²s², and kin. The λ-dependent ratios take the
+    normalization λ²·N(P) = q^{4δ'} substitution — queued.
+    408 instances have ratio ≡ 1: the locus is norm-consistent for
+    every w, and the kill is the ρ⁴-squareness (B-candidate must
+    be a Gaussian fourth power) — the aligned analog, queued.
+  - ALL-ZERO: 224 and DET-VANISH: 272 — degenerate sub-branches,
+    queued with the multi-shift factors (8,320 instances) for the
+    next elimination level.
+- The terminal-list mechanism is validated: coincidence loci lose
+  the second degree of freedom (B-annihilation) or die by parity;
+  only structured residue classes remain, each with a named
+  argument to write.
