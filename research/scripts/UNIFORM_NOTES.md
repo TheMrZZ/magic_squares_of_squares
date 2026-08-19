@@ -3486,3 +3486,19 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   the second degree of freedom (B-annihilation) or die by parity;
   only structured residue classes remain, each with a named
   argument to write.
+
+## Round 230: the lambda-substituted ratios — parity and dominance
+
+- Substituting the pinning normalization λ² = q^{2δ'}/N(P) into the
+  norm ratios: 1,060 factor branches die by parity and 48 by
+  definiteness on top of the 1,296 B-annihilations. 408 branches
+  have ratio ≡ 1 (the squareness queue); 1,504 residues over 152
+  shapes remain.
+- The residues are dominance kills: grouping by (r,s)-monomials
+  gives q-polynomial coefficients that are single-signed for q ≥ 2
+  (e.g. r²(3q⁸ − 2q⁴ − 1) + s²(5q⁸ + 2q⁴ + 1) > 0;
+  −8q¹⁰ + q⁸ + 2q⁴ + 1 < 0), and the √(r²+s²) = p forms die by
+  AM-GM (6rp ≤ 3(2r² + s²)) under the circle. The next tool is a
+  rigorous q-dominance checker (leading q-coefficient sign +
+  triangle-inequality bound with |r|, |s| ≤ p) to close the 152
+  shapes mechanically.

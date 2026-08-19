@@ -90,7 +90,35 @@ def outcome(pair):
             continue
         NB = sp.factor(sp.expand(nxv**2 + nyv**2))
         ratio = sp.factor(sp.simplify(NB / (w**4 * dv**2)))
-        outs.append(('RATIO', sp.sstr(ratio)[:180]))
+        # substitute the pinning normalization lam^2 = q^{4d'}/N(P)
+        NP = sp.expand(Pd * Pc)
+        dpr = pos[0]
+        lam2e = q**(2*dpr) / NP
+        rsub = sp.simplify(ratio.subs(lam, sp.sqrt(lam2e)))
+        if rsub == 1:
+            outs.append('RATIO-ONE')
+            continue
+        # kill test: rsub = 1 impossible?
+        diff = sp.together(rsub - 1)
+        num, den = sp.fraction(diff)
+        num = sp.expand(num)
+        # parity at admissible residues (r,q,w odd; s even)
+        val = num.subs({r: 1, s: 0, q: 1, w: 1})
+        if val.is_number and int(val) % 2 == 1:
+            outs.append('RATIO-KILL-PARITY')
+            continue
+        # sign-definiteness of num (w-free after clearing?)
+        try:
+            Pn = sp.Poly(num, r, s, q, w)
+            terms = Pn.terms()
+            if all(all(e % 2 == 0 for e in mm) for mm, _ in terms):
+                cs = [c for _, c in terms]
+                if all(c > 0 for c in cs) or all(c < 0 for c in cs):
+                    outs.append('RATIO-KILL-DEFINITE')
+                    continue
+        except Exception:
+            pass
+        outs.append(('RATIO-RESIDUE', sp.sstr(sp.factor(num))[:160]))
     return outs
 
 if __name__ == '__main__':
@@ -106,7 +134,7 @@ if __name__ == '__main__':
     for outs in res:
         for o in outs:
             if isinstance(o, tuple):
-                tally['RATIO'] += 1
+                tally[o[0]] += 1
                 ratios[o[1]] += 1
             else:
                 tally[o] += 1
