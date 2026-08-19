@@ -794,20 +794,106 @@ fn main() {
                 } else { None };
                 (pser(core), v)
             }).collect();
+        // full affine data per single-cell core: cell, P, Z-poly,
+        // vanishing-part type
+        let fullinfo: HashMap<String, Option<String>> = coreset.iter().map(|core| {
+            let mut pos: BTreeSet<(i32, i32)> = BTreeSet::new();
+            for m in core.keys() {
+                let d = m.2 as i32 - m.3 as i32;
+                let e = m.4 as i32 - m.5 as i32;
+                if d > 0 || (d == 0 && e > 0) { pos.insert((d, e)); }
+            }
+            let v = if pos.len() == 1 {
+                let &(d, e) = pos.iter().next().unwrap();
+                let mut pp = Poly::new();
+                let mut zz = Poly::new();
+                for (m, c) in core {
+                    let dd = m.2 as i32 - m.3 as i32;
+                    let ee = m.4 as i32 - m.5 as i32;
+                    if dd == d && ee == e {
+                        // keep the full (u,v) part plus the chi/rho
+                        // content (needed for the exact value)
+                        let en = pp.entry(*m).or_insert(0);
+                        *en += c;
+                    } else if dd == 0 && ee == 0 {
+                        let en = zz.entry(*m).or_insert(0);
+                        *en += c;
+                    }
+                }
+                let (re, im) = core_to_reim3(core);
+                let part = match (re.is_empty(), im.is_empty()) {
+                    (false, true) => "re",
+                    (true, false) => "im",
+                    (false, false) => "re",
+                    (true, true) => "none",
+                };
+                let ser = |p: &Poly| -> String {
+                    p.iter().map(|(m, c)| format!("{c},{},{},{},{},{},{}",
+                        m.0, m.1, m.2, m.3, m.4, m.5)).collect::<Vec<_>>().join(";")
+                };
+                Some(format!("cell=({d},{e}) part={part} P=[{}] Z=[{}]",
+                    ser(&pp), ser(&zz)))
+            } else { None };
+            (pser(core), v)
+        }).collect();
         let mut cleantypes: BTreeMap<String, u32> = BTreeMap::new();
         let mut nclean = 0u32;
         for (c1, c2) in &pairlist {
-            let (Some(a1), Some(a2)) = (&cellinfo[&pser(c1)], &cellinfo[&pser(c2)])
+            let (Some(a1), Some(a2)) = (&fullinfo[&pser(c1)], &fullinfo[&pser(c2)])
                 else { continue };
             nclean += 1;
-            let k1 = format!("({},{}){}[{}]", a1.0, a1.1, if a1.3 {"+Z"} else {""}, a1.2);
-            let k2 = format!("({},{}){}[{}]", a2.0, a2.1, if a2.3 {"+Z"} else {""}, a2.2);
-            let key = if k1 <= k2 { format!("{k1} x {k2}") } else { format!("{k2} x {k1}") };
+            let key = if a1 <= a2 { format!("{a1}  ||  {a2}") }
+                else { format!("{a2}  ||  {a1}") };
             *cleantypes.entry(key).or_insert(0) += 1;
         }
         println!("clean-sector pairs (both single-cell): {nclean}; {} types:",
             cleantypes.len());
         for (k, n) in &cleantypes { println!("  {n:5}  {k}"); }
+        // full cell dump for the layered analysis: every live core's
+        // complete cell decomposition plus the deduped pair type list
+        {
+            use std::io::Write as _;
+            let mut cf = std::fs::File::create(
+                format!("u3_cells_{a}_{b}_{c}.txt")).unwrap();
+            let ser = |p: &Poly| -> String {
+                p.iter().map(|(m, cc)| format!("{cc},{},{},{},{},{},{}",
+                    m.0, m.1, m.2, m.3, m.4, m.5)).collect::<Vec<_>>().join(";")
+            };
+            let mut coredesc: HashMap<String, String> = HashMap::new();
+            for core in &coreset {
+                let mut cells: BTreeMap<(i32, i32), Poly> = BTreeMap::new();
+                for (m, cc) in core {
+                    let d = m.2 as i32 - m.3 as i32;
+                    let e = m.4 as i32 - m.5 as i32;
+                    let en = cells.entry((d, e)).or_insert_with(Poly::new);
+                    let e2 = en.entry(*m).or_insert(0);
+                    *e2 += cc;
+                }
+                let (re, im) = core_to_reim3(core);
+                let part = match (re.is_empty(), im.is_empty()) {
+                    (false, true) => "re",
+                    (true, false) => "im",
+                    (false, false) => "re",
+                    (true, true) => "none",
+                };
+                let desc = format!("part={part} {}",
+                    cells.iter().map(|((d, e), p)|
+                        format!("cell=({d},{e})[{}]", ser(p)))
+                        .collect::<Vec<_>>().join(" "));
+                coredesc.insert(pser(core), desc);
+            }
+            let mut ptypes: BTreeMap<String, u32> = BTreeMap::new();
+            for (c1, c2) in &pairlist {
+                let d1 = &coredesc[&pser(c1)];
+                let d2 = &coredesc[&pser(c2)];
+                let key = if d1 <= d2 { format!("{d1}  ||  {d2}") }
+                    else { format!("{d2}  ||  {d1}") };
+                *ptypes.entry(key).or_insert(0) += 1;
+            }
+            for (k, n) in &ptypes { writeln!(cf, "{n}	{k}").unwrap(); }
+            println!("cell dump: {} distinct pair types -> u3_cells_{a}_{b}_{c}.txt",
+                ptypes.len());
+        }
         println!("cells-per-core distribution: {:?}", cellcount);
         println!("catalog size (distinct (shift-cell | P-form)): {}", catalog.len());
         let pforms: BTreeSet<String> = catalog.keys()

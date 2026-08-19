@@ -69,3 +69,25 @@ schema/profile extraction; further passes extend it.
 The naive c = 1 reduction (conditions linear in (U,V), Cramer plus
 the circle) is wrong: class elements carry ρ^{2l}, so conditions
 are quadratic in (U,V). The sector map killed the idea in one run.
+
+## The layered-sector reduction (design, Round 222)
+
+Every stable-catalog cell has ρ-shift e ∈ {−2, 0, 2}, so each
+condition is AFFINE in B = ρ^{2ε} once the χ-side value
+A = χ^{2δ} is kept symbolic:
+
+  Im(γᵢ·B) + tᵢ = 0, with γᵢ = T₁ᵢ − conj(T₋₁ᵢ),
+  T±1ᵢ = Σ_d conj(P_{d,±2})·A^{d/2}, tᵢ = Im(T₀ᵢ).
+
+The pair eliminates B by Cramer (the determinant is the B-cross);
+the circle |B|² = w^{2ε'} closes into ONE consistency band in
+(A, Ā, r, s, q, w). Substituting A = (X + iY)² gives a band
+polynomial in (r, s, q, X, Y, w) per pair — the layered analog of
+the Round-221 bands, one level deeper.
+
+Plan: build the bands for all 9,612 live pairs at (1,1,1) in the
+P8 engine (slots (r, s, q, X_A, Y_A, w)), dedupe and strip, dump
+the distinct catalog, then classify the factors (definite forms,
+irrational ratios, parity-nonzero, composite-reality) as in the
+clean sector. Degenerate branches (B-cross ≡ 0, band ≡ 0) get the
+aligned treatment: proportionality plus integrality.
