@@ -3157,3 +3157,28 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   library over the π-data, nothing new. The coprime-masters and
   cross arguments should port with the extra prime absorbed into
   the gcd tables, as the round-182 design predicted.
+
+## Round 218: the M3 oracle layer scoped — gates, library, residual forms
+
+- Goal: make the eliminant kills generic in the primes (the M2
+  oracle route). Recovered the 3,324 dumped (1,1,1) eliminants from
+  git history (commit 070400a) and ran the gate ladder.
+- Data 2-adics: r, q, X, w, U ≡ 1 mod 4 and s, Y, V ≡ 0 mod 4 at
+  every admissible point (A odd, B even in the canonical split).
+- Raw gates stall: parity + mod-4 kill only 64; mod-8 kills none.
+  Diagnosis: the eliminants vanish structurally at the
+  phase-degenerate circle point (Y = 0, X² = q²), and that point is
+  2-adically indistinguishable from real data mod small powers.
+- Library division fixes the start: dividing out (q² − X²)-powers
+  (= −Y² ≠ 0 at data) plus monomial content lets parity/mod-8 kill
+  272 more; 3,052 eliminants remain.
+- Full factorization of a survivor shows the true structure:
+  w-powers × (q² − 2X²)-powers × large irreducible (r,s,q,X)-forms.
+  New library element: q² − 2X² = Y² − X² ≠ 0 at data (odd² vs
+  even² parity). The large factors are the three-prime ORACLE
+  FORMS — the exact analog of M2's t0-forms, to be killed by the
+  ported gate ladder (parity on leading structure, dyadic pinch
+  with exact valuations from the split shapes, mod-ℓ sieve,
+  factorization pool). Next work package: port oracle.rs to the
+  three-prime eliminant dumps and close the (1,1,1) oracle layer
+  generically.
