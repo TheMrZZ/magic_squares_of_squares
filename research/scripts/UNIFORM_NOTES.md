@@ -3502,3 +3502,28 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   rigorous q-dominance checker (leading q-coefficient sign +
   triangle-inequality bound with |r|, |s| ≤ p) to close the 152
   shapes mechanically.
+
+## Round 231: the ratio residues classified to completion
+
+- u3_dominance.py certifies the λ-substituted ratio residues:
+  - DOMINANCE-KILL: 448 (certified q-dominance — Lipschitz-grid
+    lower bound on the top q-coefficient over the (r,s)-circle,
+    coefficient-sum upper bounds below, q ≥ 5).
+  - QFREE-IRRATIONAL-KILL: 112 (q-free shapes whose binary factors
+    have only irrational or parity-unrealizable rational roots —
+    r = ±s dies on r odd, s even).
+  - SQUARE-BRANCH: 640 — the radical survives, so λ is irrational
+    UNLESS N(P) is a perfect square at data: these branches reduce
+    to the explicit square conditions (the Pell-type curve loci),
+    each with the exact pinning available on the branch.
+  - TOP-VANISHES: 288 — the top q-coefficient is a form with
+    irrational-only zeros; as a nonzero integer it is ≥ 1, giving
+    the secondary band q^K ≤ M·p^deg — a deeper thin locus for the
+    third-level descent.
+  - GAP-TOO-SMALL: 16 — individual inspection queued.
+- Terminal-layer scoreboard at (1,1,1), factor-instance weighted:
+  B-annihilation 1,296; parity 1,060; definiteness 48; dominance
+  448; q-free irrationality 112 — closed. Residual: square-branch
+  640, secondary bands 288, gap 16, plus the degenerate
+  (ALL-ZERO/DET-VANISH 496), the multi-shift chains (8,320), and
+  the odd-shift pairs (192) — all queued with named arguments.
