@@ -3214,6 +3214,37 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   preserves the four nonzero offsets and their distinctness up to
   sign. The `(2,2)` base of the M2 induction is now machine-checked.
   Its direct Lean check took 5.31 seconds.
+- `TopQClosed` isolates the one remaining local obligation at each
+  rung. `noAssignment_all_b` now proves the full `b`-axis from the
+  checked `b = 1` base and top-bucket kills. This is the final
+  telescope wrapper; the remaining mathematical debt is entirely in
+  the generic top-class dispatcher.
+- The base was then strengthened from one finite grid to the complete
+  axis: `classValue_b1_to_uclass` identifies every nonzero
+  `UClass2(a,1)` value with an old `UniformA.UClass`, including the
+  conjugate-sign case. `noAssignment_b1` therefore reuses
+  `UniformA.no_assignment_uniform` to close `b = 1` for every
+  `a >= 1`. The direct file check took 5.80 seconds.
+- `noAssignment_all_two_exponents` now composes that full base with
+  the `q^2` telescope. It checks in the same file in 4.76 seconds.
+  Its only input not yet supplied is the generic `TopQClosed` theorem.
+- `signedClassValue_swap` proves that exchanging the two primes and
+  their Gaussian factors preserves the signed class family. The
+  conjugate relative orientation contributes a minus sign, which the
+  signed model absorbs. `noAssignment_swap` lifts this to the full
+  assignment statement. Consequently, `noAssignment_a1` closes the
+  complete `a = 1` axis from the same old theorem. After rebuilding
+  `UClass2`, the direct `UClass2Base.lean` check took 3.91 seconds.
+- `no_four_diffs_of_noAssignment` now connects the folded
+  representation theorem to a closed router at any `(a,b)`. It
+  cancels the rigid `s^2` factor in both relations and preserves all
+  four nonzero offsets and pairwise distinctions up to sign. The
+  direct `UClass2.lean` check took 6.20 seconds.
+- New file `TwoExponent.lean` exposes the conditional public theorem
+  for the original nine-distinct-squares problem. Its router-to-grid
+  proof checks in 4.40 seconds. `noAssignment_all_grid` packages the
+  entire class proof: its sole remaining input is one theorem that
+  closes every top-`q` assignment for `a >= 1`, `b >= 2`.
 
 ## Round 219: raw-eliminant gates are a dead end — back to pinnings
 
@@ -3262,3 +3293,28 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   route. These bands are the next work package.
 - Validation cross-check: the swept grids killed all these pairs
   by data checks; the lemma explains every one of those verdicts.
+
+## Round 221: THE CLEAN-SECTOR THEOREM — all single-cell pairs die generically
+
+- u3_bands.py builds, for each of the 80 clean pair types at
+  (1,1,1), the affine system in the Φ-plane (Φ = χ^{2d}ρ^{2e}),
+  solves it by Cramer (the Round-220 cross is the determinant), and
+  closes with the circle |Φ|² = q^{2d}·w^{2e}. Ten distinct band
+  polynomials result, and they sort the sector into three branches:
+  1. Homogeneous pairs — dead by the cross lemma (Round 220).
+  2. Band ≠ 0 (64 of 80 types) — the band factors are 3q⁴w⁴,
+     positive-definite quartics (3r⁴ + 26r²s² + 3s⁴), or forms with
+     irrational root ratios (3r⁴ − 26r²s² + 3s⁴ needs
+     (r/s)² = (13 ± √160)/3; (r² − 3s²), (3r² − s²), (r² + 21s²),
+     (21r² + s²) need √3 or √21 rational). Nonzero at every
+     admissible point — dead with no prime bound.
+  3. Band ≡ 0 (16 types) — the Cramer solution is purely real:
+     Φ = ±q², ±w², or ±q²w². But χ^{2d}ρ^{2e} is never purely real
+     or imaginary (the composite lemma: a product of powers of
+     distinct split primes is never real; single-prime case = the
+     Re/Im-of-a-power nonvanishing lemma). Dead.
+- Every branch is exponent-free: the cells (d, e) scale with the
+  grid but the three lemmas are power-generic. The clean sector of
+  Milestone 3 is closed at every (a, b, c).
+- Cross-check: the swept grids' cached verdicts killed exactly
+  these pairs by data checks; the theorem explains all of them.
