@@ -3135,3 +3135,25 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Next: the Σ/Ω linearization and w̃-support tables for the stable
   23-form catalog; then terminal/liveness classification; then the
   (δ,ε)-free passage and the telescoping.
+
+## Round 217: the Σ/Ω table — the M3 clean sector is simpler than M2's
+
+- u3_schema.py computes, for each of the 23 stable catalog forms P:
+  Σ = 2·Re P and Ω = Im P at (u, v) = (r + is, r − is), factored,
+  plus Res_r(Σ, Ω) and Res_s(Σ, Ω). Table in u3_schema_table.md.
+- Ten of the 23 forms are degenerate (one of Σ, Ω identically
+  zero). A single-cell condition with a degenerate P forces Re or
+  Im of χ^{2d}ρ^{2e} to vanish — dead outright by the composite
+  lemma (a product of powers of distinct split primes is never real
+  or imaginary). This is the M2 liveness filter, now a complete
+  verdict for those cells.
+- The thirteen nondegenerate forms all have {2,3}-smooth resultant
+  contents (3, 2, 6, 16, 24, 32, 64, 72). So the w̃-support of
+  every exact bi-shift pinning is {2,3}-smooth — strictly smaller
+  than M2's {2,3,5,7} support. The masters
+  4w̃²·q^{2d}·r₃^{2e} = t²·(Σ² + 4Ω²) are explicit norm equations
+  with tiny coefficient sets.
+- Σ/Ω shapes: r, s, r² ± s², r² − 2s², 2r² − s², rs — the M2
+  library over the π-data, nothing new. The coprime-masters and
+  cross arguments should port with the extra prime absorbed into
+  the gcd tables, as the round-182 design predicted.
