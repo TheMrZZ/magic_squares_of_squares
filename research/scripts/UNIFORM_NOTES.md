@@ -3449,3 +3449,18 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   This is the M2 "second condition delivers the contradiction"
   pattern, one level deeper. Next: compute B-cand per terminal
   family in sympy and write the closing descents.
+
+## Round 228: the terminal descent pilot — B-annihilation
+
+- u3_terminal_pilot.py finds a pair whose band carries the
+  (r²+s²)²(9r²+s²) pinning cell (shift d = 4, P = π̄⁴·(3r + is)
+  associate) and runs the exact descent: pin χ⁸ = λ·conj(P), solve
+  the pair's affine system for B = ρ⁴ by Cramer.
+- RESULT: on the pinned locus B ≡ 0 identically (for every λ), but
+  |ρ⁴| = w² > 0 — the pair dies by B-ANNIHILATION. The coincidence
+  locus takes away the pair's second degree of freedom entirely.
+  This is the "second condition delivers the contradiction" pattern
+  in its cleanest form; no Diophantine analysis of the curve is
+  needed at all.
+- Next: batch the descent over every pinning-cell pair and tally
+  the outcomes (B = 0, |B|² − w⁴ structurally nonzero, or residue).
