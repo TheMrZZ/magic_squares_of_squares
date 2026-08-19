@@ -74,5 +74,12 @@ if __name__ == '__main__':
     with open('u3_pinning_cells.txt', 'w') as f:
         for (kind, Nf), n in ncat.most_common():
             f.write(f"{n}\t{kind}\t{Nf}\n")
+    pcat = Counter()
+    for n, kind, P, Nf in res:
+        if kind.startswith('pinning') and P:
+            pcat[(kind, P, Nf)] += n
+    with open('u3_pinning_P.txt', 'w') as f:
+        for (kind, P, Nf), n in pcat.most_common():
+            f.write(f"{n}\t{kind}\t{P}\t{Nf}\n")
     for (kind, Nf), n in ncat.most_common(25):
         print(f"  [{n}] {kind}  N = {Nf[:120]}")

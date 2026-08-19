@@ -3425,3 +3425,27 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   their kill needs the pair's ρ-side overdetermination on the
   locus (the stacked-coincidence argument) — queued after the
   quartic tail.
+
+## Round 227: the disc-8 cascade and the M3 terminal list
+
+- The disc-8 quartic families do not die by Fermat alone. With the
+  explicit z_π (from u3_pinning_P.txt): for r⁴ + 34r²s² + s⁴ the
+  form is z = 6rs + i(r² − s²) = i-unit·(2π⁴ − π̄⁴); primitivity
+  gives z = ±i·χ̄⁴ exactly (the ±1 units die by parity), hence
+  X² − Y² = ±(r² − s²), XY = ±3rs, X² + Y² = q², and the coprime
+  splitting of q⁴ − (r² − s²)² = 36r²s² cascades into
+  q² = 9u² + v² with uv = rs — the QUADRATIC curve family. The
+  disc-8 quartics merge into the quadratic terminal list.
+- THE M3-(1,1,1) TERMINAL LIST: the quadratic prime-curve loci
+  (q² = 9r² + s², q² = r² + 9s², q² = 5r² + s² kin, and the
+  uv-cascade versions) — every remaining pinning family lands
+  here. On such a locus the pinning is exact: χ² is an explicit
+  Gaussian integer in the π-data.
+- THE TERMINAL KILL (design): with A = χ⁴ pinned exactly, the
+  pair's Cramer solution makes B = ρ⁴ an explicit Gaussian
+  rational in (r, s, q)-data. ρ-integrality plus |B| = w² is a
+  second exact descent on an explicit value — per family, this
+  closes by parity/definiteness or pins w to a non-prime value.
+  This is the M2 "second condition delivers the contradiction"
+  pattern, one level deeper. Next: compute B-cand per terminal
+  family in sympy and write the closing descents.
