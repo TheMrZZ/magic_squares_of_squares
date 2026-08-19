@@ -3347,3 +3347,28 @@ The last 64 leaves die by one argument, the **master quartic kill**:
   extract z_π per factor and certify by the q^{2m} | N(z_π)
   divisibility with the support analysis; dump the final residual
   cells for the H-style descent.
+
+## Round 223: the layered terminal landscape — 89 pinning cells
+
+- Classifier v3 decomposes every unresolved band factor by χ-shift
+  (substitute t = χ², clear t-powers, read the support). Results at
+  (1,1,1), weighted by pair multiplicity:
+  - 1,364 factors are SINGLE-SHIFT PINNING CELLS — 89 distinct
+    (shift, N(P)) types (u3_pinning_cells.txt). Vanishing pins
+    χ^{2δ} against an explicit π-side form P, and the valuation
+    argument forces q to divide N(P). The N(P) catalog is exactly
+    the power-law prime-curve list the original sweeps predicted:
+    p-powers times small binary forms — 9r² + s², r² + 9s²,
+    9r⁴ − 14r²s² + 9s⁴, r⁴ + 34r²s² + s⁴, r⁴ + 18r²s² + s⁴,
+    (q⁴ + 1)-factors, and a few sextics/octics. Each cell is a
+    "q on a prime curve" coincidence locus with the B-integrality
+    overdetermination still unused — the M2 terminal-list shape.
+  - 7,744 factors are multi-shift (2-4 positive cells) — the
+    χ-layered chains, one elimination level deeper.
+  - 40 have no χ-dependence at all (recheck with the base kit).
+- Engineering: the spawn-context Pool hung with zero CPU (fork
+  fixes it); two pathological N-factorizations pinned workers for
+  50 minutes — now guarded (factor only ≤ 25-term norms).
+- The generic-layer remaining work is now precisely bounded:
+  (1) the 89 pinning-cell curve loci, (2) the multi-shift chains,
+  (3) the 192 odd-shift pairs, (4) the 40 χ-free leftovers.
