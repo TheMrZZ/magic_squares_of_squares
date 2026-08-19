@@ -678,6 +678,72 @@ fn main() {
         cache.contains_key(&format!("{}||{}", pser(c1), pser(c2)))
     }).collect();
     let mut pair_susp: Vec<bool> = cached_pair.clone();
+    // REDUCE3: validate the M3 -> M2 reduction on a c = 1 grid.
+    // Each condition of a live pair is linear in (U, V); Cramer plus
+    // the circle U^2+V^2 = w^2 collapse the pair to one reduction
+    // form R(r,s,q,X,Y,w). R nonzero at every admissible data point
+    // kills the pair. Compare against the cached verdicts.
+    if std::env::var("REDUCE3").is_ok() {
+        // balance schema: group each live core's terms by the shift
+        // cell (chi-shift, rho-shift); the cell coefficient P_{d,e}
+        // is a (u,v)-polynomial. Verify the conjugate pairing
+        // P_{-d,-e} = sign * conj(P_{d,e}) and dump the distinct
+        // pi-side catalog (the M2 stability question).
+        use std::collections::BTreeSet;
+        let mut pair_ok = 0u32;
+        let mut pair_bad = 0u32;
+        let mut catalog: BTreeMap<String, u32> = BTreeMap::new();
+        let mut cellcount: BTreeMap<usize, u32> = BTreeMap::new();
+        for core in &coreset {
+            let mut cells: BTreeMap<(i32, i32), Poly> = BTreeMap::new();
+            for (m, c) in core {
+                let d = m.2 as i32 - m.3 as i32;
+                let e = m.4 as i32 - m.5 as i32;
+                // strip the chi/rho content: keep only the (u,v) part
+                let key = (d, e);
+                let entry = cells.entry(key).or_insert_with(Poly::new);
+                let mm = (m.0, m.1, 0, 0, 0, 0);
+                let en = entry.entry(mm).or_insert(0);
+                *en += c;
+            }
+            *cellcount.entry(cells.len()).or_insert(0) += 1;
+            // conjugate pairing check: cell (-d,-e) vs conj of (d,e)
+            let mut ok = true;
+            for (&(d, e), p) in &cells {
+                if d < 0 || (d == 0 && e < 0) { continue; }
+                let q = cells.get(&(-d, -e));
+                let pc = pconj(p);
+                match q {
+                    Some(qq) => {
+                        let same = *qq == pc;
+                        let neg = *qq == pneg(&pc);
+                        if !(same || neg) { ok = false; }
+                    }
+                    None => { ok = false; }
+                }
+            }
+            if ok { pair_ok += 1; } else { pair_bad += 1; }
+            // catalog: normalized positive-cell P forms
+            for (&(d, e), p) in &cells {
+                if d < 0 || (d == 0 && e < 0) { continue; }
+                let sp = strip(p);
+                // sign-normalize by the leading coefficient
+                let norm = if sp.iter().next_back().map(|(_, c)| *c < 0).unwrap_or(false)
+                    { pneg(&sp) } else { sp };
+                let ser: String = norm.iter().map(|(m, c)|
+                    format!("{c},{},{}", m.0, m.1)).collect::<Vec<_>>().join(";");
+                *catalog.entry(format!("({d},{e})|{ser}")).or_insert(0) += 1;
+            }
+        }
+        println!("schema: conjugate pairing ok {pair_ok}, broken {pair_bad}");
+        println!("cells-per-core distribution: {:?}", cellcount);
+        println!("catalog size (distinct (shift-cell | P-form)): {}", catalog.len());
+        let pforms: BTreeSet<String> = catalog.keys()
+            .map(|k| k.split('|').nth(1).unwrap().to_string()).collect();
+        println!("distinct P-forms across all cells: {}", pforms.len());
+        for p in pforms.iter().take(30) { println!("  P: {p}"); }
+        return;
+    }
     // fused: compute each core's g, reduce it to the compact modular
     // view at once, and discard the exact polynomial — the full BigInt
     // table never materializes

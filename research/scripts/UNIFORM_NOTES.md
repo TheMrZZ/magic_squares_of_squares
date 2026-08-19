@@ -3105,3 +3105,33 @@ The last 64 leaves die by one argument, the **master quartic kill**:
 - Fifteen grids total at three primes, about 10.4 billion leaves and
   24 million live core pairs, all dead with the same two-layer
   verdict structure. The (4,2,2) cache (704 MB) stays local.
+
+## Round 216: the M3 generic layer opens — balance schema and stability
+
+- Goal shift: from grid sweeps to the all-exponents theorem. The
+  REDUCE3 pass in certifier3 (env-gated) computes the balance schema
+  of every live core: group the core's monomials by the shift cell
+  (chi-shift, rho-shift) = (exp x − exp y, exp z − exp w); the cell
+  coefficient P_{d,e} is a (u,v)-polynomial.
+- Structure result 1 — conjugate pairing is PERFECT at every grid
+  tested ((1,1,1), (2,1,1), (3,1,1), (2,2,1), (1,1,2), (2,1,2),
+  (1,1,3); 73,000 cores): P_{−d,−e} = ± conj(P_{d,e}) always. So
+  each live condition is a pure Re/Im statement of
+  Σ_{cells > 0} conj(P_{d,e})·χ^{2d}·ρ^{2e} — the three-prime
+  balance form, the direct analog of the M2 layered sector.
+- Structure result 2 — rho-axis catalog stability: the distinct
+  P-form catalog along (1,1,c) is 21 → 23 → 23 for c = 1, 2, 3.
+  It stabilizes at c = 2; only the shift cells multiply. This is
+  M2's catalog-stability phenomenon on the new axis, and it is what
+  the c-telescoping needs.
+- Structure result 3 — the chi/rho symmetry is exact: (2,1,2) and
+  (2,2,1) agree in every statistic (18,366 cores, catalog 448/73,
+  same cell distribution). One generic argument covers both axes.
+- A first naive route (conditions linear in (U,V), Cramer + circle)
+  is dead: cores carry rho-squares, so the conditions are quadratic;
+  the sector map killed the idea in one run. The right kernel is the
+  bi-shift pinning χ^{2δ}ρ^{2ε} = z/w̃ with masters
+  4w̃²·q^{2δ}·r^{2ε} = Σ² + 4Ω² (the round-182 design).
+- Next: the Σ/Ω linearization and w̃-support tables for the stable
+  23-form catalog; then terminal/liveness classification; then the
+  (δ,ε)-free passage and the telescoping.
